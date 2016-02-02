@@ -1,0 +1,12 @@
+{
+  "name": "troccoli/lva",
+  "description": "Admin for LVA Referee Administrators",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Giulio Troccoli ",
+      "email": "giulio@troccoli.it"
+    }
+  ]
+}
