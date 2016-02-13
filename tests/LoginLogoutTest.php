@@ -3,6 +3,12 @@
 
 class LoginLogoutTest extends TestCase
 {
+    public function testLoginLinkExists()
+    {
+        $this->visit('/')
+            ->seeLink('Login', '/login');
+    }
+
     public function testLoginPageExists()
     {
         $this->visit('/login')
@@ -17,7 +23,8 @@ class LoginLogoutTest extends TestCase
             ->type('giulio@troccoli.it', 'email')
             ->type('MySpecialPassword', 'password')
             ->press('Login')
-            ->seePageIs('/');
+            ->seePageIs('/')
+            ->seeInElement('message', 'Successfully logged in');
     }
 
     public function testWrongPassword()
@@ -48,5 +55,20 @@ class LoginLogoutTest extends TestCase
             ->type('wrongpassword', 'password')
             ->seeInElement('messsage', 'We cannot verify your email and password.')
             ->seePageIs('/login');
+    }
+
+    public function testLogoutLinkExist()
+    {
+        // @todo Mock logged-in user
+        $this->visit('/')
+            ->seeLink('Logout', '/logout');
+    }
+
+    public function testSuccessfulLogout()
+    {
+        // @todo Mock logged-in user
+        $this->visit('/')
+            ->click('Logout')
+            ->seeInElement('message', 'Successfully logged out');
     }
 }
