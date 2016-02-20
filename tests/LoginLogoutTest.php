@@ -12,9 +12,9 @@ class LoginLogoutTest extends TestCase
     public function testLoginPageExists()
     {
         $this->visit('/login')
-            ->seeHeader('header', 'Login')
+            ->seeInElement('.panel-heading', 'Login')
             ->seeInField('email', '')
-            ->seeInField('password', '');
+            ->seeInField('password', null);
     }
 
     public function testSuccessfulLogin()
