@@ -26,6 +26,9 @@
     </style>
 </head>
 <body id="app-layout">
+<div class="alert alert-danger" role="alert">
+    <h1 class="text-center">This is still a Work In Progress.<br/>Please do not use, unless it's for testing.</h1>
+</div>
     <nav class="navbar navbar-default">
         <div class="container">
             <div class="navbar-header">

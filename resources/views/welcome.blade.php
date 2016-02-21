@@ -7,9 +7,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Welcome</div>
             </div>
-            <div class="alert alert-danger" role="alert">
-                <h1 class="text-center">This is still a Work In Progress.<br/>Please do not use, unless it's for testing.</h1>
-            </div>
+
         </div>
     </div>
 </div>
