@@ -13,7 +13,7 @@ class DatabaseSeeder extends Seeder
     {
         \Illuminate\Database\Eloquent\Model::unguard();
 
-        $this->call(UsersTableSeeder::class);
+        //$this->call(UsersTableSeeder::class);
 
         \Illuminate\Database\Eloquent\Model::reguard();
     }

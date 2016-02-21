@@ -1,8 +1,27 @@
 <?php
 
-
 class LoginLogoutTest extends TestCase
 {
+    private $user;
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $password = str_random(10);
+        $this->user = factory(App\User::class)->create(['password' => bcrypt($password)]);
+        $this->user->clearPassword = $password;
+    }
+
+    private function createUser()
+    {
+        $password = str_random(10);
+        $user = factory(App\User::class)->create(['password' => bcrypt($password)]);
+        $user->clearPassword = $password;
+
+        return $user;
+    }
+
     public function testLoginLinkExists()
     {
         $this->visit('/')
@@ -20,8 +39,8 @@ class LoginLogoutTest extends TestCase
     public function testSuccessfulLogin()
     {
         $this->visit('/login')
-            ->type('giulio@troccoli.it', 'email')
-            ->type('MySpecialPassword', 'password')
+            ->type($this->user->email, 'email')
+            ->type($this->user->clearPassword, 'password')
             ->press('Login')
             ->seePageIs('/')
             ->seeInElement('.panel-heading', 'Welcome');
@@ -30,8 +49,8 @@ class LoginLogoutTest extends TestCase
     public function testWrongPassword()
     {
         $this->visit('/login')
-            ->type('giulio@troccoli.it', 'email')
-            ->type('wrongpassword', 'password')
+            ->type($this->user->email, 'email')
+            ->type($this->user->clearPassword . 'abc', 'password')
             ->press('Login')
             ->seeInElement('span.help-block', 'These credentials do not match our records.')
             ->seePageIs('/login');
@@ -41,8 +60,8 @@ class LoginLogoutTest extends TestCase
     public function testWrongEmail()
     {
         $this->visit('/login')
-            ->type('giulio@troccoli.com', 'email')
-            ->type('MySpecialPassword', 'password')
+            ->type($this->user->email . '.com', 'email')
+            ->type($this->user->clearPassword, 'password')
             ->press('Login')
             ->seeInElement('span.help-block', 'These credentials do not match our records.')
             ->seePageIs('/login');
@@ -52,8 +71,8 @@ class LoginLogoutTest extends TestCase
     public function testWrongEmailAndPassword()
     {
         $this->visit('/login')
-            ->type('giulio@troccoli.com', 'email')
-            ->type('wrongpassword', 'password')
+            ->type($this->user->email . '.com', 'email')
+            ->type($this->user->clearPassword . 'abc', 'password')
             ->press('Login')
             ->seeInElement('span.help-block', 'These credentials do not match our records.')
             ->seePageIs('/login');
