@@ -24,7 +24,7 @@ class LoginLogoutTest extends TestCase
             ->type('MySpecialPassword', 'password')
             ->press('Login')
             ->seePageIs('/')
-            ->seeInElement('message', 'Successfully logged in');
+            ->seeInElement('.panel-heading', 'Welcome');
     }
 
     public function testWrongPassword()
@@ -33,7 +33,7 @@ class LoginLogoutTest extends TestCase
             ->type('giulio@troccoli.it', 'email')
             ->type('wrongpassword', 'password')
             ->press('Login')
-            ->seeInElement('message', 'We cannot verify your email and password.')
+            ->seeInElement('span.help-block', 'These credentials do not match our records.')
             ->seePageIs('/login');
 
     }
@@ -43,7 +43,8 @@ class LoginLogoutTest extends TestCase
         $this->visit('/login')
             ->type('giulio@troccoli.com', 'email')
             ->type('MySpecialPassword', 'password')
-            ->seeInElement('messsage', 'We cannot verify your email and password.')
+            ->press('Login')
+            ->seeInElement('span.help-block', 'These credentials do not match our records.')
             ->seePageIs('/login');
 
     }
@@ -53,7 +54,8 @@ class LoginLogoutTest extends TestCase
         $this->visit('/login')
             ->type('giulio@troccoli.com', 'email')
             ->type('wrongpassword', 'password')
-            ->seeInElement('messsage', 'We cannot verify your email and password.')
+            ->press('Login')
+            ->seeInElement('span.help-block', 'These credentials do not match our records.')
             ->seePageIs('/login');
     }
 
