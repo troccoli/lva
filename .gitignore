@@ -1,5 +1,6 @@
+/.phpstorm.meta.php
 /.idea
-/jlhs8Y
+/lva-server
 /vendor
 /node_modules
 .env*
