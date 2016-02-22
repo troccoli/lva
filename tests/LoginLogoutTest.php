@@ -13,15 +13,6 @@ class LoginLogoutTest extends TestCase
         $this->user->clearPassword = $password;
     }
 
-    private function createUser()
-    {
-        $password = str_random(10);
-        $user = factory(App\User::class)->create(['password' => bcrypt($password)]);
-        $user->clearPassword = $password;
-
-        return $user;
-    }
-
     public function testLoginLinkExists()
     {
         $this->visit('/')
@@ -78,18 +69,48 @@ class LoginLogoutTest extends TestCase
             ->seePageIs('/login');
     }
 
+    public function testMissingEmail()
+    {
+        $this->visit('/login')
+            ->type($this->user->clearPassword . 'abc', 'password')
+            ->press('Login')
+            ->seeInElement('span.help-block', 'The email field is required.')
+            ->seePageIs('/login');
+    }
+
+    public function testMissingPassword()
+    {
+        $this->visit('/login')
+            ->type($this->user->email . '.com', 'email')
+            ->press('Login')
+            ->seeInElement('span.help-block', 'The password field is required.')
+            ->seePageIs('/login');
+    }
+
+    public function testMissingEmailAndPassword()
+    {
+        $this->visit('/login')
+            ->press('Login')
+            ->seeInElement('span.help-block', 'The email field is required.')
+            ->seeInElement('span.help-block', 'The password field is required.')
+            ->seePageIs('/login');
+    }
+
     public function testLogoutLinkExist()
     {
-        // @todo Mock logged-in user
+        $this->be($this->user);
+
         $this->visit('/')
             ->seeLink('Logout', '/logout');
     }
 
     public function testSuccessfulLogout()
     {
-        // @todo Mock logged-in user
+        unset($this->user->clearPassword);
+        $this->be($this->user);
+        
         $this->visit('/')
             ->click('Logout')
-            ->seeInElement('message', 'Successfully logged out');
+            ->seePageIs('/');
     }
 }
