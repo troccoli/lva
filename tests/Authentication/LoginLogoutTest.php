@@ -1,6 +1,10 @@
 <?php
 
-class LoginLogoutTest extends TestCase
+namespace Authentication;
+
+use App;
+
+class LoginLogoutTest extends \TestCase
 {
     private $user;
 
@@ -24,7 +28,8 @@ class LoginLogoutTest extends TestCase
         $this->visit('/login')
             ->seeInElement('.panel-heading', 'Login')
             ->seeInField('email', '')
-            ->seeInField('password', null);
+            ->seeInField('password', null)
+            ->seeInElement('button', 'Login');
     }
 
     public function testSuccessfulLogin()
