@@ -11,10 +11,6 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -26,12 +22,30 @@ Route::get('/', function () {
 |
 */
 Route::group(['middleware' => 'web'], function () {
+
+    Route::get('/', ['as' => 'home', 'uses' => 'HomeController@showHome']);
+
     /*
      |-------------------------------------------------------------------------
      | Authentication Routes
      |-------------------------------------------------------------------------
+     | We don't use Route::auth() because that does not define names for the routes
+     | Instead, the routes defined in Route::auth() are copied here (and assigned a name)
      */
-    Route::auth();
+    //Route::auth();
+    // Authentication Routes...
+    Route::group(['namespace' => 'Auth'], function () {
+        Route::get('login', ['as' => 'login', 'uses' => 'AuthController@showLoginForm']);
+        Route::post('login', ['as' => 'loginSubmit', 'uses' => 'AuthController@login']);
+        Route::get('logout', ['as' => 'logout', 'uses' => 'AuthController@logout']);
 
-    Route::get('/home', ['as' => 'home', 'uses' => 'HomeController@index']);
+        // Registration Routes...
+        Route::get('register', ['as' => 'register', 'uses' => 'AuthController@showRegistrationForm']);
+        Route::post('register', ['as' => 'registerSubmit', 'uses' => 'AuthController@register']);
+
+        // Password Reset Routes...
+        Route::get('password/reset/{token?}', ['as' => 'passwordReset', 'uses' => 'PasswordController@showResetForm']);
+        Route::post('password/email', ['as' => 'passwordResetEmail', 'uses' => 'PasswordController@sendResetLinkEmail']);
+        Route::post('password/reset', ['as' => 'passwordResetSubmit', 'uses' => 'PasswordController@reset']);
+    });
 });
