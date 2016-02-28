@@ -7,4 +7,12 @@ class HomePageTest extends TestCase
     {
         $this->visit(route('home'))->assertResponseOk();
     }
+    
+    public function testLoginAndRegisterLinksExist()
+    {
+        $this->visit(route('home'))
+            ->seeLink('Login', route('login'))
+            ->seeLink('Register', route('register'))
+            ->dontSeeLink('Logout');
+    }
 }

@@ -10,6 +10,15 @@ namespace Authentication;
 
 class RegistrationTest extends \TestCase
 {
+    private $user;
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->user = $this->getFakeUser();
+    }
+
     public function testRegistrationLinkExists()
     {
         $this->visit(route('home'))
@@ -20,11 +29,19 @@ class RegistrationTest extends \TestCase
     {
         $this->visit(route('register'))
             ->seeInElement('.panel-heading', 'Register')
-            ->seeInField('name' , '')
+            ->seeInField('name', '')
             ->seeInField('email', '')
             ->seeInField('password', null)
             ->seeInField('password_confirmation', null)
             ->seeInElement('button', 'Register');
+    }
+
+    public function testCannotRegisterWhenAlreadyLoggedIn()
+    {
+        $this->be($this->user);
+
+        $this->visit(route('register'))
+            ->seePageIs(route('home'));
     }
 
     public function testSuccessfulRegistration()
@@ -87,11 +104,25 @@ class RegistrationTest extends \TestCase
             ->seeInField('name', 'Test user 1')
             ->seeInField('email', 'test1@example');
     }
-    
+
     public function testAlreadyUsedEmail()
     {
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+            // Register one user
+        $this->visit(route('register'))
+            ->type('Test user 1', 'name')
+            ->type('test1@example.com', 'email')
+            ->type('password1', 'password')
+            ->type('password1', 'password_confirmation')
+            ->press('Register')
+            // Logout after registration
+            ->visit(route('logout'))
+            // Try to register another user with the same email address
+            ->visit(route('register'))
+            ->type('Test user 2', 'name')
+            ->type('test1@example.com', 'email')
+            ->press('Register')
+            ->seeInElement('span.help-block', 'The email has already been taken.')
+            ->seeInField('name', 'Test user 2')
+            ->seeInField('email', 'test1@example.com');
     }
 }

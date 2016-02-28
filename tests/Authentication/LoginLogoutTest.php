@@ -21,6 +21,15 @@ class LoginLogoutTest extends \TestCase
             ->seeLink('Login', route('login'));
     }
 
+    public function testCannotLoginWhenAlreadyLoggedIn()
+    {
+        $this->be($this->user);
+
+        $this->visit(route('login'))
+            ->seePageIs(route('home'));
+    }
+
+
     public function testLoginPageExists()
     {
         $this->visit(route('login'))
