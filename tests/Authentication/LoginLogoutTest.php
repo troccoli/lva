@@ -46,7 +46,6 @@ class LoginLogoutTest extends \TestCase
             ->type($this->user->clearPassword, 'password')
             ->press('Login')
             ->seePageIs(route('home'))
-            ->seeInElement('.panel-heading', 'Dashboard')
             ->seeInElement('nav .navbar-right li.dropdown a', $this->user->name);
     }
 

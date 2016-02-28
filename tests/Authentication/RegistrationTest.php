@@ -53,7 +53,6 @@ class RegistrationTest extends \TestCase
             ->type('password1', 'password_confirmation')
             ->press('Register')
             ->seePageIs(route('home'))
-            ->seeInElement('.panel-heading', 'Dashboard')
             ->seeInElement('nav .navbar-right li.dropdown a', 'Test user 1');
     }
 
