@@ -3,6 +3,7 @@
 /lva-server
 /vendor
 /node_modules
-.env*
+.env
+.env.*
 !.env.example
 _ide_helper.php
