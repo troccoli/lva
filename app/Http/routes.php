@@ -24,6 +24,9 @@
 Route::group(['middleware' => 'web'], function () {
 
     Route::get('/', ['as' => 'home', 'uses' => 'HomeController@showHome']);
+    // The /home URL is hard-coded in the Auth code generated my Laravel artisan
+    // Rather than change the generated code, I defined its route
+    Route::any('/home', 'HomeController@showHome');
 
     /*
      |-------------------------------------------------------------------------
