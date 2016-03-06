@@ -57,9 +57,7 @@
 
         <div class="collapse navbar-collapse" id="app-navbar-collapse">
             <!-- Left Side Of Navbar -->
-            <ul class="nav navbar-nav">
-                <li><a href="{{ route('home') }}">Home</a></li>
-            </ul>
+            {!! Breadcrumbs::renderIfExists() !!}
 
             <!-- Right Side Of Navbar -->
             <ul class="nav navbar-nav navbar-right">

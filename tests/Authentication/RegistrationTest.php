@@ -25,6 +25,12 @@ class RegistrationTest extends \TestCase
             ->seeLink('Register', route('register'));
     }
 
+    public function testBreadcrumbs()
+    {
+        $this->visit(route('register'))
+            ->seeInElement('ol.breadcrumb li.active', 'Register');
+    }
+
     public function testRegistrationPageExists()
     {
         $this->visit(route('register'))

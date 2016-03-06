@@ -7,6 +7,12 @@ class HomePageTest extends TestCase
     {
         $this->visit(route('home'))->assertResponseOk();
     }
+
+    public function testBreadcrumbs()
+    {
+        $this->visit(route('home'))
+            ->seeInElement('ol.breadcrumb li.active', 'Home');
+    }
     
     public function testLoginAndRegisterLinksExist()
     {

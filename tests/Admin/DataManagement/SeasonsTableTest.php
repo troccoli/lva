@@ -16,5 +16,13 @@ class SeasonsTableTest extends \TestCase
         $this->visit(route('admin::dataManagement::seasons'))
             ->seePageIs(route('login'));
     }
-    
+
+    public function testBreadcrumbs()
+    {
+        $this->be($this->getFakeUser());
+        
+        $this->visit(route('admin::dataManagement::seasons'))
+            ->seeInElement('ol.breadcrumb li.active', 'Seasons');
+    }
+
 }

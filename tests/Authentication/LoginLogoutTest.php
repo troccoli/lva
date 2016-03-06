@@ -21,6 +21,12 @@ class LoginLogoutTest extends \TestCase
             ->seeLink('Login', route('login'));
     }
 
+    public function testBreadcrumbs()
+    {
+        $this->visit(route('login'))
+            ->seeInElement('ol.breadcrumb li.active', 'Login');
+    }
+
     public function testCannotLoginWhenAlreadyLoggedIn()
     {
         $this->be($this->admin);

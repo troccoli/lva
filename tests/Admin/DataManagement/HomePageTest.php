@@ -25,7 +25,15 @@ class HomePageTest extends \TestCase
         $this->visit(route('admin::dataManagement'))
             ->seePageIs(route('login'));
     }
-    
+
+    public function testBreadcrumbs()
+    {
+        $this->be($this->admin);
+        
+        $this->visit(route('admin::dataManagement'))
+            ->seeInElement('ol.breadcrumb li.active', 'Data Management');
+    }
+
     public function testSeasonsTableButton()
     {
         $this->be($this->admin);

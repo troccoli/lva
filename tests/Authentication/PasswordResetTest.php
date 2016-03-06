@@ -21,6 +21,12 @@ class PasswordResetTest extends \TestCase
         $this->admin = $this->getFakeUser();
     }
 
+    public function testBreadcrumbs()
+    {
+        $this->visit(route('passwordReset'))
+            ->seeInElement('ol.breadcrumb li.active', 'Reset Password');
+    }
+
     public function testPasswordResetLinkExist()
     {
         $this->visit(route('login'))
