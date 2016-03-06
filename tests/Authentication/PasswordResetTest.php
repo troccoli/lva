@@ -12,13 +12,13 @@ use Illuminate\Auth\Passwords\PasswordResetServiceProvider;
 
 class PasswordResetTest extends \TestCase
 {
-    private $user;
+    private $admin;
 
     protected function setUp()
     {
         parent::setUp();
 
-        $this->user = $this->getFakeUser();
+        $this->admin = $this->getFakeUser();
     }
 
     public function testPasswordResetLinkExist()
@@ -37,7 +37,7 @@ class PasswordResetTest extends \TestCase
     public function testSuccessfulPasswordReset()
     {
         $this->visit(route('passwordReset'))
-            ->type($this->user->email, 'email')
+            ->type($this->admin->email, 'email')
             ->press('Send Password Reset Link')
             ->seeInElement('.alert', 'We have e-mailed your password reset link!')
             ->seeInField('email', '');
@@ -62,7 +62,7 @@ class PasswordResetTest extends \TestCase
     public function testNonExistingEmail()
     {
         $this->visit(route('passwordReset'))
-            ->type($this->user->email . '.com', 'email')
+            ->type($this->admin->email . '.com', 'email')
             ->press('Send Password Reset Link')
             ->seeInElement('span.help-block', 'We can\'t find a user with that e-mail address.')
             ->seeInField('email', '');

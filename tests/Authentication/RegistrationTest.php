@@ -10,13 +10,13 @@ namespace Authentication;
 
 class RegistrationTest extends \TestCase
 {
-    private $user;
+    private $admin;
 
     protected function setUp()
     {
         parent::setUp();
 
-        $this->user = $this->getFakeUser();
+        $this->admin = $this->getFakeUser();
     }
 
     public function testRegistrationLinkExists()
@@ -38,7 +38,7 @@ class RegistrationTest extends \TestCase
 
     public function testCannotRegisterWhenAlreadyLoggedIn()
     {
-        $this->be($this->user);
+        $this->be($this->admin);
 
         $this->visit(route('register'))
             ->seePageIs(route('home'));

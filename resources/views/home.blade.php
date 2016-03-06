@@ -18,7 +18,7 @@
                     <div class="panel-heading">Administrators</div>
 
                     <div class="panel-body">
-                        <a href="#">Data management</a>
+                        <a href="{{ route('admin::dataManagement') }}">Data management</a>
                     </div>
                 </div>
             </div>
