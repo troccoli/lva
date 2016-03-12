@@ -1,1 +1,49 @@
+@import "partials/variables";
 @import "partials/base";
+
+#app-navbar {
+  z-index: 1000;
+  width: 100%;
+  top: 0;
+
+  .navbar-brand {
+    padding-top: 0;
+  }
+}
+
+#breadcrumbs {
+  width: 100%;
+  //position: absolute;
+  //top: 282px;
+  //margin-bottom: 10px;
+}
+
+#lva-header {
+  font-size: 60px;
+  color: $lva-color;
+
+  img {
+    float: left;
+  }
+
+  p {
+    margin: 0;
+    text-align: center;
+    padding-right: 80px;
+  }
+
+  @media(max-width: $screen-md) {
+    font-size: 40px;
+  }
+  @media(max-width: $screen-sm) {
+    font-size: 30px;
+  }
+  @media(max-width: $screen-xs) {
+    font-size: 20px;
+  }
+}
+
+#page-content {
+  //position: absolute;
+  //top: 348px;
+}

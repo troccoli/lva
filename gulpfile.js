@@ -16,9 +16,13 @@ elixir(function (mix) {
     mix.sass('app.scss');
 
     // Javascript
+    mix.browserify('app.js');
 
     // Versioning
     mix.version([
-        'css/app.css'
+        // Stylesheets
+        'css/app.css',
+        // Javascripts
+        'js/app.js'
     ]);
 });
