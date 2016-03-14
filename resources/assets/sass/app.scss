@@ -1,45 +1,37 @@
 @import "partials/variables";
 @import "partials/base";
+@import "partials/lva-header";
 
 #app-navbar {
   z-index: 1000;
   width: 100%;
   top: 0;
+  margin-bottom: 1px;
+  background-color: $lva-navbar-color;
+  border: none;
 
   .navbar-brand {
     padding-top: 0;
+  }
+
+  .dropdown.open {
+    .dropdown-toggle {
+      background-color: $lva-color;
+    }
   }
 }
 
 #breadcrumbs {
   width: 100%;
+  background-color: $lva-light-color;
   //position: absolute;
   //top: 282px;
-  //margin-bottom: 10px;
-}
+  margin-bottom: 10px;
+  border: none;
 
-#lva-header {
-  font-size: 60px;
-  color: $lva-color;
-
-  img {
-    float: left;
-  }
-
-  p {
-    margin: 0;
-    text-align: center;
-    padding-right: 80px;
-  }
-
-  @media(max-width: $screen-md) {
-    font-size: 40px;
-  }
-  @media(max-width: $screen-sm) {
-    font-size: 30px;
-  }
-  @media(max-width: $screen-xs) {
-    font-size: 20px;
+  .breadcrumb {
+    background-color: $lva-light-color;
+    margin-bottom: 0;
   }
 }
 

@@ -27,7 +27,7 @@
 </div>
 
 <nav id='app-navbar' class="navbar navbar-default">
-    <div class="container">
+    <div class="container-fluid">
         <div class="navbar-header">
 
             <!-- Collapsed Hamburger -->
@@ -87,15 +87,11 @@
     </div>
 </nav>
 
-<div id="lva-header">
-    <div class="container">
-        <p><img src=" {{ asset('/images/lva-logo.png') }}"/> London Volleyball Association</p>
-    </div>
-</div>
-
 <nav id="breadcrumbs">
-    <div class="container">
-        {!! Breadcrumbs::renderIfExists() !!}
+    <div class="container-fluid">
+        <div class="col-md-12">
+            {!! Breadcrumbs::renderIfExists() !!}
+        </div>
     </div>
 </nav>
 

@@ -1,0 +1,39 @@
+#lva-header {
+  font-size: 60px;
+  color: $lva-color;
+
+  img {
+    float: left;
+  }
+
+  .lva-header-text {
+    padding: 0;
+  }
+
+  p {
+    margin: 0;
+    text-align: center;
+  }
+
+  @media(max-width: $screen-md) {
+    font-size: 40px;
+
+    .lva-header-text {
+      padding-top: 10px;
+    }
+  }
+  @media(max-width: $screen-sm) {
+    font-size: 30px;
+
+    .lva-header-text {
+      padding-top: 15px;
+    }
+  }
+  @media(max-width: $screen-xs) {
+    font-size: 20px;
+
+    .lva-header-text {
+      padding-top: 20px;
+    }
+  }
+}
