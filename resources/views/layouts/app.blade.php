@@ -28,72 +28,79 @@
 
 <nav id='app-navbar' class="navbar navbar-default">
     <div class="container-fluid">
-        <div class="navbar-header">
+        <div class="row">
+            <div class="navbar-header">
 
-            <!-- Collapsed Hamburger -->
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                    data-target="#app-navbar-collapse">
-                <span class="sr-only">Toggle Navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-        </div>
+                <!-- Collapsed Hamburger -->
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#app-navbar-collapse">
+                    <span class="sr-only">Toggle Navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
 
-        <div class="collapse navbar-collapse" id="app-navbar-collapse">
-            <ul class="nav navbar-nav">
-                <li class="dropdown">
-                    <a id="drop1" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                       aria-haspopup="true" aria-expanded="false">
-                        Referees <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="drop1">
-                        <li><a href="#">Available matches</a></li>
-                    </ul>
-                </li>
-                @if (!Auth::guest())
+            <div class="collapse navbar-collapse" id="app-navbar-collapse">
+                <ul class="nav navbar-nav">
                     <li class="dropdown">
-                        <a id="drop2" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                        <a id="drop1" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                            aria-haspopup="true" aria-expanded="false">
-                            Administrators <span class="caret"></span>
+                            Referees <span class="caret"></span>
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="drop2">
-                            <li><a href="{{ route('admin::dataManagement') }}">Data managements</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="#">Separated link</a></li>
+                        <ul class="dropdown-menu" aria-labelledby="drop1">
+                            <li><a href="#">Available matches</a></li>
                         </ul>
                     </li>
-                @endif
-            </ul>
-            <!-- Right Side Of Navbar -->
-            <ul class="nav navbar-nav navbar-right">
-                <!-- Authentication Links -->
-                @if (Auth::guest())
-                    <li><a href="{{ route('login') }}">Login</a></li>
-                    <li><a href="{{ route('register') }}">Register</a></li>
-                @else
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                            {{ Auth::user()->name }} <span class="caret"></span>
-                        </a>
+                    @if (!Auth::guest())
+                        <li class="dropdown">
+                            <a id="drop2" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                               aria-haspopup="true" aria-expanded="false">
+                                Administrators <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="drop2">
+                                <li><a href="{{ route('admin::dataManagement') }}">Data managements</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">Separated link</a></li>
+                            </ul>
+                        </li>
+                    @endif
+                </ul>
+                <!-- Right Side Of Navbar -->
+                <ul class="nav navbar-nav navbar-right">
+                    <!-- Authentication Links -->
+                    @if (Auth::guest())
+                        <li><a href="{{ route('login') }}">Login</a></li>
+                        <li><a href="{{ route('register') }}">Register</a></li>
+                    @else
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                               aria-expanded="false">
+                                <i class="fa fa-user"></i> {{ Auth::user()->name }} <span class="caret"></span>
+                            </a>
 
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="{{ route('logout') }}"><i class="fa fa-btn fa-sign-out"></i>Logout</a></li>
-                        </ul>
-                    </li>
-                @endif
-            </ul>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="{{ route('logout') }}"><i class="fa fa-btn fa-sign-out"></i>Logout</a></li>
+                            </ul>
+                        </li>
+                    @endif
+                </ul>
+            </div>
         </div>
     </div>
 </nav>
 
+@if (!Route::is('home'))
 <nav id="breadcrumbs">
     <div class="container-fluid">
-        <div class="col-md-12">
-            {!! Breadcrumbs::renderIfExists() !!}
+        <div class="row">
+            <div class="col-md-12">
+                {!! Breadcrumbs::renderIfExists() !!}
+            </div>
         </div>
     </div>
 </nav>
+@endif
 
 <div id="page-content">
     @yield('content')

@@ -3,7 +3,7 @@
  */
 
 (function ($) {
-    $('#app-navbar').affix({
+    $('#app-navbar, #breadcrumbs').affix({
         offset: {
             top: 220
         }
