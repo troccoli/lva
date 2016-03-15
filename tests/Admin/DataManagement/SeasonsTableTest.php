@@ -8,8 +8,9 @@
 
 namespace Admin\DataManagement;
 
+use Tests\TestCase;
 
-class SeasonsTableTest extends \TestCase
+class SeasonsTableTest extends TestCase
 {
     public function testRedirectToLoginIfNotAdmin()
     {
@@ -20,9 +21,8 @@ class SeasonsTableTest extends \TestCase
     public function testBreadcrumbs()
     {
         $this->be($this->getFakeUser());
-        
-        $this->visit(route('admin::dataManagement::seasons'))
-            ->seeInElement('ol.breadcrumb li.active', 'Seasons');
+
+        $this->breadcrumbsTests('admin::dataManagement::seasons', 'Seasons');
     }
 
 }

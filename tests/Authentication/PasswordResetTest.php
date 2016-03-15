@@ -8,9 +8,9 @@
 
 namespace Authentication;
 
-use Illuminate\Auth\Passwords\PasswordResetServiceProvider;
+use Tests\TestCase;
 
-class PasswordResetTest extends \TestCase
+class PasswordResetTest extends TestCase
 {
     private $admin;
 
@@ -23,8 +23,7 @@ class PasswordResetTest extends \TestCase
 
     public function testBreadcrumbs()
     {
-        $this->visit(route('passwordReset'))
-            ->seeInElement('ol.breadcrumb li.active', 'Reset Password');
+        $this->breadcrumbsTests('passwordReset', 'Reset Password');
     }
 
     public function testPasswordResetLinkExist()

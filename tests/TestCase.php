@@ -1,6 +1,13 @@
 <?php
 
-class TestCase extends Illuminate\Foundation\Testing\TestCase
+namespace Tests;
+
+use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Contracts\Console\Kernel;
+use Artisan;
+use App\User;
+
+class TestCase extends BaseTestCase
 {
     protected $users = [];
 
@@ -20,7 +27,7 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
     {
         $app = require __DIR__ . '/../bootstrap/app.php';
 
-        $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+        $app->make(Kernel::class)->bootstrap();
 
         return $app;
     }
@@ -31,11 +38,15 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
         Artisan::call('migrate:refresh');
     }
 
+    /**
+     * @param int|null $userId
+     * @return mixed
+     */
     protected function getFakeUser($userId = null)
     {
         if (is_null($userId)) {
             $password = str_random(10);
-            $user = factory(App\User::class)
+            $user = factory(User::class)
                 ->create([
                     'password' => bcrypt($password),
                 ]);
@@ -44,7 +55,7 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
             $this->users[$userId] = $user;
         } elseif (!isset($this->users[$userId])) {
             $password = str_random(10);
-            $user = factory(App\User::class)
+            $user = factory(User::class)
                 ->create([
                     'id'       => $userId,
                     'password' => bcrypt($password),
@@ -54,5 +65,18 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
         }
     
         return $this->users[$userId];
+    }
+
+    /**
+     * @param string $routeName
+     * @param string $breadcrumb
+     */
+    protected function breadcrumbsTests($routeName, $breadcrumb)
+    {
+        $page = $this->visit(route($routeName));
+
+        $this->assertEquals(1, $page->crawler->filter('#breadcrumbs')->count());
+
+        $page->seeInElement('ol.breadcrumb li.active', $breadcrumb);
     }
 }

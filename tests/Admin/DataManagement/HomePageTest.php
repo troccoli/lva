@@ -8,8 +8,9 @@
 
 namespace Admin\DataManagement;
 
+use Tests\TestCase;
 
-class HomePageTest extends \TestCase
+class HomePageTest extends TestCase
 {
     private $admin;
     
@@ -29,9 +30,8 @@ class HomePageTest extends \TestCase
     public function testBreadcrumbs()
     {
         $this->be($this->admin);
-        
-        $this->visit(route('admin::dataManagement'))
-            ->seeInElement('ol.breadcrumb li.active', 'Data Management');
+
+        $this->breadcrumbsTests('admin::dataManagement', 'Data Management');
     }
 
     public function testSeasonsTableButton()

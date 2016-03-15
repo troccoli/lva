@@ -3,8 +3,9 @@
 namespace Authentication;
 
 use App;
+use Tests\TestCase;
 
-class LoginLogoutTest extends \TestCase
+class LoginLogoutTest extends TestCase
 {
     private $admin;
 
@@ -23,8 +24,7 @@ class LoginLogoutTest extends \TestCase
 
     public function testBreadcrumbs()
     {
-        $this->visit(route('login'))
-            ->seeInElement('ol.breadcrumb li.active', 'Login');
+        $this->breadcrumbsTests('login', 'Login');
     }
 
     public function testCannotLoginWhenAlreadyLoggedIn()

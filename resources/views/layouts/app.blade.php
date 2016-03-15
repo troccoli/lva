@@ -59,7 +59,7 @@
                                 Administrators <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="drop2">
-                                <li><a href="{{ route('admin::dataManagement') }}">Data managements</a></li>
+                                <li><a href="{{ route('admin::dataManagement') }}">Data management</a></li>
                                 <li role="separator" class="divider"></li>
                                 <li><a href="#">Separated link</a></li>
                             </ul>

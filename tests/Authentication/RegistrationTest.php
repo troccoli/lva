@@ -8,7 +8,9 @@
 
 namespace Authentication;
 
-class RegistrationTest extends \TestCase
+use Tests\TestCase;
+
+class RegistrationTest extends TestCase
 {
     private $admin;
 
@@ -27,8 +29,7 @@ class RegistrationTest extends \TestCase
 
     public function testBreadcrumbs()
     {
-        $this->visit(route('register'))
-            ->seeInElement('ol.breadcrumb li.active', 'Register');
+        $this->breadcrumbsTests('register', 'Register');
     }
 
     public function testRegistrationPageExists()

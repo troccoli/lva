@@ -1,5 +1,8 @@
 <?php
 
+namespace Tests;
+
+use Tests\TestCase;
 
 class HomePageTest extends TestCase
 {
@@ -10,8 +13,8 @@ class HomePageTest extends TestCase
 
     public function testBreadcrumbs()
     {
-        $this->visit(route('home'))
-            ->seeInElement('ol.breadcrumb li.active', 'Home');
+        $page = $this->visit(route('home'));
+        $this->assertEquals(0, $page->crawler->filter('#breadcrumbs')->count());
     }
     
     public function testLoginAndRegisterLinksExist()
