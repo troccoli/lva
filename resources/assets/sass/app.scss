@@ -1,42 +1,8 @@
 @import "partials/variables";
 @import "partials/base";
+@import "partials/navbar";
+@import "partials/breadcrumbs";
 @import "partials/lva-header";
-
-#app-navbar {
-  z-index: 1000;
-  width: 100%;
-  top: 0;
-  margin-bottom: 0;
-  background-color: $lva-navbar-bg-color;
-  border: none;
-  border-radius: 0;
-
-  .navbar-brand {
-    padding-top: 0;
-  }
-
-  .dropdown.open {
-    .dropdown-toggle {
-      background-color: $lva-navbar-dropdown-bg-color;
-    }
-  }
-}
-
-#breadcrumbs {
-  z-index: 900;
-  width: 100%;
-  top: 50px;
-  background-color: $lva-breadcrumbs-bg-color;
-  //position: absolute;
-  //top: 282px;
-  margin-bottom: 10px;
-  border: none;
-
-  .breadcrumb {
-    background-color: $lva-breadcrumbs-bg-color;
-    margin-bottom: 0;
-  }
-}
 
 #page-content {
   //position: absolute;
