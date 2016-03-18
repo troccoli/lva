@@ -17,7 +17,6 @@
   "require": {
     "php": ">=5.6.18",
     "laravel/framework": "5.2.*",
-    "barryvdh/laravel-ide-helper": "^2.1",
     "davejamesmiller/laravel-breadcrumbs": "^3.0"
   },
   "require-dev": {
@@ -25,7 +24,8 @@
     "mockery/mockery": "0.9.*",
     "phpunit/phpunit": "5.2.*",
     "symfony/css-selector": "2.8.*|3.0.*",
-    "symfony/dom-crawler": "2.8.*|3.0.*"
+    "symfony/dom-crawler": "2.8.*|3.0.*",
+    "barryvdh/laravel-ide-helper": "^2.1"
   },
   "autoload": {
     "classmap": [
