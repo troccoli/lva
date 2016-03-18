@@ -1,0 +1,35 @@
+#lva-header {
+  font-size: 4vw;
+  color: $header-text-color;
+
+  .lva-logo-min-width {
+    min-width: 80px;
+  }
+
+  .lva-header-text {
+    padding: 0;
+  }
+
+  p {
+    margin: 0;
+    text-align: center;
+  }
+
+  @media(max-width: $screen-md) {
+    .lva-header-text {
+      padding-top: 10px;
+    }
+  }
+
+  @media(max-width: $screen-sm) {
+    .lva-header-text {
+      padding-top: 15px;
+    }
+  }
+
+  @media(max-width: $screen-xs) {
+    .lva-header-text {
+      padding-top: 20px;
+    }
+  }
+}

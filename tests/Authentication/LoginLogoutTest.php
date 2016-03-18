@@ -3,16 +3,17 @@
 namespace Authentication;
 
 use App;
+use Tests\TestCase;
 
-class LoginLogoutTest extends \TestCase
+class LoginLogoutTest extends TestCase
 {
-    private $user;
+    private $admin;
 
     protected function setUp()
     {
         parent::setUp();
 
-        $this->user = $this->getFakeUser();
+        $this->admin = $this->getFakeUser();
     }
 
     public function testLoginLinkExists()
@@ -21,9 +22,14 @@ class LoginLogoutTest extends \TestCase
             ->seeLink('Login', route('login'));
     }
 
+    public function testBreadcrumbs()
+    {
+        $this->breadcrumbsTests('login', 'Login');
+    }
+
     public function testCannotLoginWhenAlreadyLoggedIn()
     {
-        $this->be($this->user);
+        $this->be($this->admin);
 
         $this->visit(route('login'))
             ->seePageIs(route('home'));
@@ -42,18 +48,18 @@ class LoginLogoutTest extends \TestCase
     public function testSuccessfulLogin()
     {
         $this->visit(route('login'))
-            ->type($this->user->email, 'email')
-            ->type($this->user->clearPassword, 'password')
+            ->type($this->admin->email, 'email')
+            ->type($this->admin->clearPassword, 'password')
             ->press('Login')
             ->seePageIs(route('home'))
-            ->seeInElement('nav .navbar-right li.dropdown a', $this->user->name);
+            ->seeInElement('nav .navbar-right li.dropdown a', $this->admin->name);
     }
 
     public function testWrongPassword()
     {
         $this->visit(route('login'))
-            ->type($this->user->email, 'email')
-            ->type($this->user->clearPassword . 'abc', 'password')
+            ->type($this->admin->email, 'email')
+            ->type($this->admin->clearPassword . 'abc', 'password')
             ->press('Login')
             ->seeInElement('span.help-block', 'These credentials do not match our records.')
             ->seePageIs(route('login'));
@@ -63,8 +69,8 @@ class LoginLogoutTest extends \TestCase
     public function testWrongEmail()
     {
         $this->visit(route('login'))
-            ->type($this->user->email . '.com', 'email')
-            ->type($this->user->clearPassword, 'password')
+            ->type($this->admin->email . '.com', 'email')
+            ->type($this->admin->clearPassword, 'password')
             ->press('Login')
             ->seeInElement('span.help-block', 'These credentials do not match our records.')
             ->seePageIs(route('login'));
@@ -74,8 +80,8 @@ class LoginLogoutTest extends \TestCase
     public function testWrongEmailAndPassword()
     {
         $this->visit(route('login'))
-            ->type($this->user->email . '.com', 'email')
-            ->type($this->user->clearPassword . 'abc', 'password')
+            ->type($this->admin->email . '.com', 'email')
+            ->type($this->admin->clearPassword . 'abc', 'password')
             ->press('Login')
             ->seeInElement('span.help-block', 'These credentials do not match our records.')
             ->seePageIs(route('login'));
@@ -84,7 +90,7 @@ class LoginLogoutTest extends \TestCase
     public function testMissingEmail()
     {
         $this->visit(route('login'))
-            ->type($this->user->clearPassword . 'abc', 'password')
+            ->type($this->admin->clearPassword . 'abc', 'password')
             ->press('Login')
             ->seeInElement('span.help-block', 'The email field is required.')
             ->seePageIs(route('login'));
@@ -93,7 +99,7 @@ class LoginLogoutTest extends \TestCase
     public function testMissingPassword()
     {
         $this->visit(route('login'))
-            ->type($this->user->email . '.com', 'email')
+            ->type($this->admin->email . '.com', 'email')
             ->press('Login')
             ->seeInElement('span.help-block', 'The password field is required.')
             ->seePageIs(route('login'));
@@ -110,7 +116,7 @@ class LoginLogoutTest extends \TestCase
 
     public function testLogoutLinkExist()
     {
-        $this->be($this->user);
+        $this->be($this->admin);
 
         $this->visit(route('home'))
             ->seeLink('Logout', route('logout'));
@@ -118,8 +124,8 @@ class LoginLogoutTest extends \TestCase
 
     public function testSuccessfulLogout()
     {
-        unset($this->user->clearPassword);
-        $this->be($this->user);
+        unset($this->admin->clearPassword);
+        $this->be($this->admin);
         
         $this->visit(route('home'))
             ->click('Logout')

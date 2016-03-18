@@ -1,11 +1,20 @@
 <?php
 
+namespace Tests;
+
+use Tests\TestCase;
 
 class HomePageTest extends TestCase
 {
     public function testLandingPage()
     {
         $this->visit(route('home'))->assertResponseOk();
+    }
+
+    public function testBreadcrumbs()
+    {
+        $page = $this->visit(route('home'));
+        $this->assertEquals(0, $page->crawler->filter('#breadcrumbs')->count());
     }
     
     public function testLoginAndRegisterLinksExist()

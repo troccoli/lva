@@ -1,28 +1,19 @@
 @extends('layouts.app')
 
+
 @section('content')
-    <div class="container">
+    <div id="lva-header" class="container-fluid">
         <div class="row">
-            <div class="col-md-3 col-md-offset-1">
-                <div class="panel panel-primary">
-                    <div class="panel-heading">Referees</div>
-
-                    <div class="panel-body">
-                        <a href="#">Available matches</a>
-                    </div>
-                </div>
+            <div class="col-md-1 col-sm-2 col-xs-3">
+                <img src="{{ asset('/images/lva-logo.png') }}" style="float: left;"/>
             </div>
-            @if (!Auth::guest())
-            <div class="col-md-3">
-                <div class="panel panel-info">
-                    <div class="panel-heading">Administrators</div>
-
-                    <div class="panel-body">
-                        <a href="#">Data management</a>
-                    </div>
-                </div>
+            <div class="col-md-10 col-sm-8 col-xs-6 lva-header-text">
+                <p>London Volleyball Association</p>
             </div>
-            @endif
+            <div class="col-md-1 col-sm-2 col-xs-3">
+                <img src="{{ asset('/images/lva-logo.png') }}" style="float: right"/>
+            </div>
         </div>
     </div>
+
 @endsection
