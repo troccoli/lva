@@ -17,12 +17,14 @@ elixir(function (mix) {
 
     // Javascript
     mix.browserify('app.js');
+    mix.scripts('libraries/bootbox.js', 'public/js/libraries');
 
     // Versioning
     mix.version([
         // Stylesheets
         'css/app.css',
         // Javascripts
-        'js/app.js'
+        'js/app.js',
+        'js/libraries/bootbox.js'
     ]);
 });
