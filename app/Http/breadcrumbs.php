@@ -33,7 +33,19 @@ Breadcrumbs::register('admin::dataManagement', function($b) {
     $b->push('Data Management', route('admin::dataManagement'));
 });
 
-Breadcrumbs::register('admin::dataManagement::seasons', function($b) {
+Breadcrumbs::register('admin.data-management.seasons.index', function($b) {
     $b->parent('admin::dataManagement');
-    $b->push('Seasons', route('admin::dataManagement::seasons'));
+    $b->push('Seasons', route('admin.data-management.seasons.index'));
+});
+Breadcrumbs::register('admin.data-management.seasons.create', function($b) {
+    $b->parent('admin.data-management.seasons.index');
+    $b->push('Add', route('admin.data-management.seasons.create'));
+});
+Breadcrumbs::register('admin.data-management.seasons.edit', function($b) {
+    $b->parent('admin.data-management.seasons.index');
+    $b->push('Edit');
+});
+Breadcrumbs::register('admin.data-management.seasons.show', function($b) {
+    $b->parent('admin.data-management.seasons.index');
+    $b->push('View');
 });

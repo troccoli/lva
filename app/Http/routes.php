@@ -11,6 +11,8 @@
 |
 */
 
+Route::singularResourceParameters();
+
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -52,11 +54,10 @@ Route::group(['middleware' => 'web'], function () {
         Route::post('password/reset', ['as' => 'passwordResetSubmit', 'uses' => 'PasswordController@reset']);
     });
 
-    Route::group(['prefix' => 'admin', 'as' => 'admin::', 'namespace' => 'Admin', 'middleware' => 'auth'], function () {
-        Route::get('data-management', ['as' => 'dataManagement', 'uses' => 'DataManagement@showHome']);
-
-        Route::group(['prefix' => 'data-management', 'as' => 'dataManagement::', 'namespace' => 'DataManagement' ], function () {
-            Route::get('seasons', ['as' => 'seasons', 'uses' => 'Seasons@showHome']);
+    Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => 'auth'], function () {
+        Route::get('data-management', ['as' => 'admin::dataManagement', 'uses' => 'DataManagementController@showHome']);
+        Route::group(['prefix' => 'data-management', 'namespace' => 'DataManagement'], function () {
+            Route::resource('seasons', 'SeasonsController');
         });
     });
 });

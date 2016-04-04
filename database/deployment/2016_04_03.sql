@@ -1,0 +1,1 @@
+create table `seasons` (`id` int unsigned not null auto_increment primary key, `season` varchar(255) not null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8 collate utf8_unicode_ci engine = InnoDB;

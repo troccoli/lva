@@ -26,6 +26,7 @@ class AppServiceProvider extends ServiceProvider
         if($this->app->environment('local'))
         {
             $this->app->register('Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider');
+            $this->app->register('Appzcoder\CrudGenerator\CrudGeneratorServiceProvider');
         }
     }
 }
