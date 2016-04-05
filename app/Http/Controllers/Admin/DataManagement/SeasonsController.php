@@ -43,7 +43,7 @@ class SeasonsController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, ['season' => 'required', ]);
+        $this->validate($request, ['season' => 'required',]);
 
         Season::create($request->all());
 
@@ -55,7 +55,7 @@ class SeasonsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      *
      * @return Response
      */
@@ -69,7 +69,7 @@ class SeasonsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      *
      * @return Response
      */
@@ -83,13 +83,13 @@ class SeasonsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  int  $id
+     * @param  int $id
      *
      * @return Response
      */
     public function update($id, Request $request)
     {
-        $this->validate($request, ['season' => 'required', ]);
+        $this->validate($request, ['season' => 'required',]);
 
         $season = Season::findOrFail($id);
         $season->update($request->all());
@@ -102,20 +102,21 @@ class SeasonsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      *
      * @return Response
      */
     public function destroy($id)
     {
-        if (false) {
+        // @todo Check whether the season can be deleted, i.e. there are no divisions ins this season
+        $canBeDeleted = true;
+        if ($canBeDeleted) {
             Season::destroy($id);
-
             Flash::success('Season deleted!');
-
         } else {
             Flash::error('Cannot delete season');
         }
+
         return redirect('admin/data-management/seasons');
 
     }
