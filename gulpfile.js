@@ -18,7 +18,6 @@ elixir(function (mix) {
     // Javascript
     mix.browserify('app.js');
     mix.browserify('confirm-delete.js');
-    mix.scripts('libraries/bootbox.js', 'public/js/libraries');
 
     // Versioning
     mix.version([
@@ -26,7 +25,6 @@ elixir(function (mix) {
         'css/app.css',
         // Javascripts
         'js/app.js',
-        'js/confirm-delete.js',
-        'js/libraries/bootbox.js'
+        'js/confirm-delete.js'
     ]);
 });

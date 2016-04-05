@@ -27,7 +27,7 @@
                             'url' => ['admin/data-management/seasons', $item->id],
                             'style' => 'display:inline'
                         ]) !!}
-                            {!! Form::submit('Delete', ['class' => 'btn btn-danger btn-xs']) !!}
+                            {!! Form::submit('Delete', ['class' => 'btn btn-danger btn-xs', 'data-toggle' => 'confirmation']) !!}
                         {!! Form::close() !!}
                     </td>
                 </tr>
@@ -64,6 +64,6 @@
 @endsection
 
 @section('javascript')
-    <script src="{{ url(elixir('js/libraries/bootbox.js')) }}"></script>
+    <script src="{{ url('js/libraries/bootstrap-confirmation.min.js') }}"></script>
     <script src="{{ url(elixir('js/confirm-delete.js')) }}"></script>
 @endsection
