@@ -8,13 +8,6 @@
 
     {!! Form::open(['url' => 'admin/data-management/clubs', 'class' => 'form-horizontal']) !!}
 
-                <div class="form-group {{ $errors->has('id') ? 'has-error' : ''}}">
-                {!! Form::label('id', 'Id: ', ['class' => 'col-sm-3 control-label']) !!}
-                <div class="col-sm-6">
-                    {!! Form::number('id', null, ['class' => 'form-control']) !!}
-                    {!! $errors->first('id', '<p class="help-block">:message</p>') !!}
-                </div>
-            </div>
             <div class="form-group {{ $errors->has('club') ? 'has-error' : ''}}">
                 {!! Form::label('club', 'Club: ', ['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-sm-6">

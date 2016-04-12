@@ -8,12 +8,12 @@
         <table class="table table-bordered table-striped table-hover">
             <thead>
                 <tr>
-                    <th>ID.</th> <th>Id</th><th>Club</th>
+                    <th>ID.</th><th>Club</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>{{ $club->id }}</td> <td> {{ $club->id }} </td><td> {{ $club->club }} </td>
+                    <td>{{ $club->id }}</td> <td> {{ $club->club }} </td>
                 </tr>
             </tbody>    
         </table>
