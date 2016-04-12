@@ -33,6 +33,7 @@ Breadcrumbs::register('admin::dataManagement', function($b) {
     $b->push('Data Management', route('admin::dataManagement'));
 });
 
+// Data Management - Seasons
 Breadcrumbs::register('admin.data-management.seasons.index', function($b) {
     $b->parent('admin::dataManagement');
     $b->push('Seasons', route('admin.data-management.seasons.index'));
@@ -47,5 +48,22 @@ Breadcrumbs::register('admin.data-management.seasons.edit', function($b) {
 });
 Breadcrumbs::register('admin.data-management.seasons.show', function($b) {
     $b->parent('admin.data-management.seasons.index');
+    $b->push('View');
+});
+// Data Management - Clubs
+Breadcrumbs::register('admin.data-management.clubs.index', function($b) {
+    $b->parent('admin::dataManagement');
+    $b->push('Clubs', route('admin.data-management.clubs.index'));
+});
+Breadcrumbs::register('admin.data-management.clubs.create', function($b) {
+    $b->parent('admin.data-management.clubs.index');
+    $b->push('Add', route('admin.data-management.clubs.create'));
+});
+Breadcrumbs::register('admin.data-management.clubs.edit', function($b) {
+    $b->parent('admin.data-management.clubs.index');
+    $b->push('Edit');
+});
+Breadcrumbs::register('admin.data-management.clubs.show', function($b) {
+    $b->parent('admin.data-management.clubs.index');
     $b->push('View');
 });

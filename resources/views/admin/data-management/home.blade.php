@@ -5,6 +5,7 @@
         <div class="row">
             <div class="col-md-3">
                 <a id="seasons-table" href="{{ route('admin.data-management.seasons.index') }}" class="btn btn-primary"><i class="fa fa-table"></i> Seasons</a>
+                <a id="clubs-table" href="{{ route('admin.data-management.clubs.index') }}" class="btn btn-primary"><i class="fa fa-table"></i> Clubs</a>
             </div>
         </div>
     </div>

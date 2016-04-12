@@ -58,6 +58,7 @@ Route::group(['middleware' => 'web'], function () {
         Route::get('data-management', ['as' => 'admin::dataManagement', 'uses' => 'DataManagementController@showHome']);
         Route::group(['prefix' => 'data-management', 'namespace' => 'DataManagement'], function () {
             Route::resource('seasons', 'SeasonsController');
+            Route::resource('clubs', 'ClubsController');
         });
     });
 });
