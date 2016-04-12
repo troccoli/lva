@@ -8,7 +8,7 @@
         <table class="table table-bordered table-striped table-hover">
             <thead>
                 <tr>
-                    <th>ID.</th> %%formHeadingHtml%%
+                    <th>Id</th> %%formHeadingHtml%%
                 </tr>
             </thead>
             <tbody>

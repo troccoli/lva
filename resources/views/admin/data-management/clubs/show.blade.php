@@ -8,7 +8,7 @@
         <table class="table table-bordered table-striped table-hover">
             <thead>
                 <tr>
-                    <th>ID.</th><th>Club</th>
+                    <th>Id</th><th>Club</th>
                 </tr>
             </thead>
             <tbody>
