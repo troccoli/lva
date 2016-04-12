@@ -33,6 +33,7 @@ Breadcrumbs::register('admin::dataManagement', function($b) {
     $b->push('Data Management', route('admin::dataManagement'));
 });
 
+// Data Management - Seasons
 Breadcrumbs::register('admin.data-management.seasons.index', function($b) {
     $b->parent('admin::dataManagement');
     $b->push('Seasons', route('admin.data-management.seasons.index'));
@@ -47,5 +48,41 @@ Breadcrumbs::register('admin.data-management.seasons.edit', function($b) {
 });
 Breadcrumbs::register('admin.data-management.seasons.show', function($b) {
     $b->parent('admin.data-management.seasons.index');
+    $b->push('View');
+});
+
+// Data Management - Clubs
+Breadcrumbs::register('admin.data-management.clubs.index', function($b) {
+    $b->parent('admin::dataManagement');
+    $b->push('Clubs', route('admin.data-management.clubs.index'));
+});
+Breadcrumbs::register('admin.data-management.clubs.create', function($b) {
+    $b->parent('admin.data-management.clubs.index');
+    $b->push('Add', route('admin.data-management.clubs.create'));
+});
+Breadcrumbs::register('admin.data-management.clubs.edit', function($b) {
+    $b->parent('admin.data-management.clubs.index');
+    $b->push('Edit');
+});
+Breadcrumbs::register('admin.data-management.clubs.show', function($b) {
+    $b->parent('admin.data-management.clubs.index');
+    $b->push('View');
+});
+
+// Data Management - Venues
+Breadcrumbs::register('admin.data-management.venues.index', function($b) {
+    $b->parent('admin::dataManagement');
+    $b->push('Venues', route('admin.data-management.venues.index'));
+});
+Breadcrumbs::register('admin.data-management.venues.create', function($b) {
+    $b->parent('admin.data-management.venues.index');
+    $b->push('Add', route('admin.data-management.venues.create'));
+});
+Breadcrumbs::register('admin.data-management.venues.edit', function($b) {
+    $b->parent('admin.data-management.venues.index');
+    $b->push('Edit');
+});
+Breadcrumbs::register('admin.data-management.venues.show', function($b) {
+    $b->parent('admin.data-management.venues.index');
     $b->push('View');
 });
