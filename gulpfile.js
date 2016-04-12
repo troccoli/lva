@@ -17,12 +17,14 @@ elixir(function (mix) {
 
     // Javascript
     mix.browserify('app.js');
+    mix.browserify('confirm-delete.js');
 
     // Versioning
     mix.version([
         // Stylesheets
         'css/app.css',
         // Javascripts
-        'js/app.js'
+        'js/app.js',
+        'js/confirm-delete.js'
     ]);
 });

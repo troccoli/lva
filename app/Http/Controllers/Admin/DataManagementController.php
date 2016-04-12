@@ -10,7 +10,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 
-class DataManagement extends Controller
+class DataManagementController extends Controller
 {
     public function showHome()
     {
