@@ -1,5 +1,29 @@
-create table `users` (`id` int unsigned not null auto_increment primary key, `name` varchar(255) not null, `email` varchar(255) not null, `password` varchar(60) not null, `remember_token` varchar(100) null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8 collate utf8_unicode_ci engine = InnoDB;
-alter table `users` add unique `users_email_unique`(`email`);
-create table `password_resets` (`email` varchar(255) not null, `token` varchar(255) not null, `created_at` timestamp not null) default character set utf8 collate utf8_unicode_ci engine = InnoDB;
-alter table `password_resets` add index `password_resets_email_index`(`email`);
-alter table `password_resets` add index `password_resets_token_index`(`token`);
+CREATE TABLE `users` (
+  `id`             INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `name`           VARCHAR(255) NOT NULL,
+  `email`          VARCHAR(255) NOT NULL,
+  `password`       VARCHAR(60)  NOT NULL,
+  `remember_token` VARCHAR(100) NULL,
+  `created_at`     TIMESTAMP    NULL,
+  `updated_at`     TIMESTAMP    NULL
+)
+  DEFAULT CHARACTER SET utf8
+  COLLATE utf8_unicode_ci
+  ENGINE = InnoDB;
+
+ALTER TABLE `users`
+  ADD UNIQUE `users_email_unique`(`email`);
+
+CREATE TABLE `password_resets` (
+  `email`      VARCHAR(255) NOT NULL,
+  `token`      VARCHAR(255) NOT NULL,
+  `created_at` TIMESTAMP    NOT NULL
+)
+  DEFAULT CHARACTER SET utf8
+  COLLATE utf8_unicode_ci
+  ENGINE = InnoDB;
+
+ALTER TABLE `password_resets`
+  ADD INDEX `password_resets_email_index`(`email`);
+ALTER TABLE `password_resets`
+  ADD INDEX `password_resets_token_index`(`token`);
