@@ -86,3 +86,21 @@ Breadcrumbs::register('admin.data-management.venues.show', function($b) {
     $b->parent('admin.data-management.venues.index');
     $b->push('View');
 });
+
+// Data Management - Roles
+Breadcrumbs::register('admin.data-management.roles.index', function($b) {
+    $b->parent('admin::dataManagement');
+    $b->push('Roles', route('admin.data-management.roles.index'));
+});
+Breadcrumbs::register('admin.data-management.roles.create', function($b) {
+    $b->parent('admin.data-management.roles.index');
+    $b->push('Add', route('admin.data-management.roles.create'));
+});
+Breadcrumbs::register('admin.data-management.roles.edit', function($b) {
+    $b->parent('admin.data-management.roles.index');
+    $b->push('Edit');
+});
+Breadcrumbs::register('admin.data-management.roles.show', function($b) {
+    $b->parent('admin.data-management.roles.index');
+    $b->push('View');
+});
