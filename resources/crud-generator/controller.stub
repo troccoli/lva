@@ -9,6 +9,7 @@ use DummyRootNamespaceModels\{{modelName}};
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Session;
+use Laracasts\Flash\Flash;
 
 class DummyClass extends Controller
 {
