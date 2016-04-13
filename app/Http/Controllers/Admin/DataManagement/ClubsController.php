@@ -9,6 +9,7 @@ use App\Models\Club;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Session;
+use Laracasts\Flash\Flash;
 
 class ClubsController extends Controller
 {
@@ -45,7 +46,7 @@ class ClubsController extends Controller
         
         Club::create($request->all());
 
-        Flass::success('Club added!');
+        Flash::success('Club added!');
 
         return redirect('admin/data-management/clubs');
     }

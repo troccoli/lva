@@ -9,6 +9,7 @@ use App\Models\Role;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Session;
+use Laracasts\Flash\Flash;
 
 class RolesController extends Controller
 {
@@ -46,7 +47,7 @@ class RolesController extends Controller
 
         Role::create($request->all());
 
-        Flass::success(''Role added!');
+        Flash::success('Role added!');
 
         return redirect('admin/data-management/roles');
     }

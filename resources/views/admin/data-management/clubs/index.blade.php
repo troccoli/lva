@@ -17,6 +17,7 @@
                 {{-- */$x++;/* --}}
                 <tr>
                     <td>{{ $x }}</td>
+                    <td><a href="{{ url('admin/data-management/clubs', $item->id) }}">{{ $item->club }}</a></td>
                     <td>
                         <a href="{{ url('admin/data-management/clubs/' . $item->id . '/edit') }}">
                             <button type="submit" class="btn btn-primary btn-xs">Update</button>

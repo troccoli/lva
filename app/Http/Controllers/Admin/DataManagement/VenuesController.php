@@ -9,6 +9,7 @@ use App\Models\Venue;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Session;
+use Laracasts\Flash\Flash;
 
 class VenuesController extends Controller
 {
@@ -45,7 +46,7 @@ class VenuesController extends Controller
         
         Venue::create($request->all());
 
-        Flass::success('Venue added!');
+        Flash::success('Venue added!');
 
         return redirect('admin/data-management/venues');
     }

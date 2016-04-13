@@ -9,6 +9,7 @@ use DummyRootNamespaceModels\{{modelName}};
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Session;
+use Laracasts\Flash\Flash;
 
 class DummyClass extends Controller
 {
@@ -45,7 +46,7 @@ class DummyClass extends Controller
         {{validationRules}}
         {{modelName}}::create($request->all());
 
-        Flass::success(''{{modelName}} added!');
+        Flash::success('{{modelName}} added!');
 
         return redirect('{{routeGroup}}{{crudName}}');
     }
