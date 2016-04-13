@@ -104,3 +104,21 @@ Breadcrumbs::register('admin.data-management.roles.show', function($b) {
     $b->parent('admin.data-management.roles.index');
     $b->push('View');
 });
+
+// Data Management - Divisions
+Breadcrumbs::register('admin.data-management.divisions.index', function($b) {
+    $b->parent('admin::dataManagement');
+    $b->push('Divisions', route('admin.data-management.divisions.index'));
+});
+Breadcrumbs::register('admin.data-management.divisions.create', function($b) {
+    $b->parent('admin.data-management.divisions.index');
+    $b->push('Add', route('admin.data-management.divisions.create'));
+});
+Breadcrumbs::register('admin.data-management.divisions.edit', function($b) {
+    $b->parent('admin.data-management.divisions.index');
+    $b->push('Edit');
+});
+Breadcrumbs::register('admin.data-management.divisions.show', function($b) {
+    $b->parent('admin.data-management.divisions.index');
+    $b->push('View');
+});
