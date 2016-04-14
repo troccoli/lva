@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Club extends Model
+class Team extends Model
 {
 
     /**
@@ -12,17 +12,17 @@ class Club extends Model
      *
      * @var string
      */
-    protected $table = 'clubs';
+    protected $table = 'teams';
 
     /**
      * Attributes that should be mass-assignable.
      *
      * @var array
      */
-    protected $fillable = ['club'];
+    protected $fillable = ['club_id', 'team'];
 
-    public function teams()
+    public function club()
     {
-        return $this->hasMany('App\Models\Team');
+        return $this->belongsTo('App\Models\Club');
     }
 }

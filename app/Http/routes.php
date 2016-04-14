@@ -62,6 +62,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::resource('venues', 'VenuesController');
             Route::resource('roles', 'RolesController');
             Route::resource('divisions', 'DivisionsController');
+            Route::resource('teams', 'TeamsController');
         });
     });
 });

@@ -122,3 +122,21 @@ Breadcrumbs::register('admin.data-management.divisions.show', function($b) {
     $b->parent('admin.data-management.divisions.index');
     $b->push('View');
 });
+
+// Data Management - Teams
+Breadcrumbs::register('admin.data-management.teams.index', function($b) {
+    $b->parent('admin::dataManagement');
+    $b->push('Teams', route('admin.data-management.teams.index'));
+});
+Breadcrumbs::register('admin.data-management.teams.create', function($b) {
+    $b->parent('admin.data-management.teams.index');
+    $b->push('Add', route('admin.data-management.teams.create'));
+});
+Breadcrumbs::register('admin.data-management.teams.edit', function($b) {
+    $b->parent('admin.data-management.teams.index');
+    $b->push('Edit');
+});
+Breadcrumbs::register('admin.data-management.teams.show', function($b) {
+    $b->parent('admin.data-management.teams.index');
+    $b->push('View');
+});

@@ -6,12 +6,13 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use App\Models\Club;
+use App\Models\Team;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Session;
 use Laracasts\Flash\Flash;
 
-class ClubsController extends Controller
+class TeamsController extends Controller
 {
 
     /**
@@ -21,9 +22,9 @@ class ClubsController extends Controller
      */
     public function index()
     {
-        $clubs = Club::paginate(15);
+        $teams = Team::paginate(15);
 
-        return view('admin.data-management.clubs.index', compact('clubs'));
+        return view('admin.data-management.teams.index', compact('teams'));
     }
 
     /**
@@ -33,7 +34,7 @@ class ClubsController extends Controller
      */
     public function create()
     {
-        return view('admin.data-management.clubs.create');
+        return view('admin.data-management.teams.create', ['clubs' => Club::all()]);
     }
 
     /**
@@ -43,12 +44,13 @@ class ClubsController extends Controller
      */
     public function store(Request $request)
     {
-        
-        Club::create($request->all());
+        $this->validate($request, ['club_id' => 'required', 'team' => 'required', ]);
 
-        Flash::success('Club added!');
+        Team::create($request->all());
 
-        return redirect('admin/data-management/clubs');
+        Flash::success('Team added!');
+
+        return redirect('admin/data-management/teams');
     }
 
     /**
@@ -60,9 +62,9 @@ class ClubsController extends Controller
      */
     public function show($id)
     {
-        $club = Club::findOrFail($id);
+        $team = Team::findOrFail($id);
 
-        return view('admin.data-management.clubs.show', compact('club'));
+        return view('admin.data-management.teams.show', compact('team'));
     }
 
     /**
@@ -74,9 +76,10 @@ class ClubsController extends Controller
      */
     public function edit($id)
     {
-        $club = Club::findOrFail($id);
+        $team = Team::findOrFail($id);
+        $clubs = Club::all();
 
-        return view('admin.data-management.clubs.edit', compact('club'));
+        return view('admin.data-management.teams.edit', compact('team', 'clubs'));
     }
 
     /**
@@ -88,13 +91,14 @@ class ClubsController extends Controller
      */
     public function update($id, Request $request)
     {
-        
-        $club = Club::findOrFail($id);
-        $club->update($request->all());
+        $this->validate($request, ['club_id' => 'required', 'team' => 'required', ]);
 
-        Flash::success('Club updated!');
+        $team = Team::findOrFail($id);
+        $team->update($request->all());
 
-        return redirect('admin/data-management/clubs');
+        Flash::success('Team updated!');
+
+        return redirect('admin/data-management/teams');
     }
 
     /**
@@ -106,15 +110,11 @@ class ClubsController extends Controller
      */
     public function destroy($id)
     {
-        $canBeDeleted = empty(Club::find($id)->teams->toArray());
-        if ($canBeDeleted) {
-            Club::destroy($id);
-            Flash::success('Club deleted!');
-        } else {
-            Flash::error('Cannot delete because they are existing teams in this club.');
-        }
-       
-        return redirect('admin/data-management/clubs');
+        Team::destroy($id);
+
+        Flash::success('Team deleted!');
+
+        return redirect('admin/data-management/teams');
     }
 
 }

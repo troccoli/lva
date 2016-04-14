@@ -15,7 +15,7 @@
                 <div class="form-group {{ $errors->has('season_id') ? 'has-error' : ''}}">
                 {!! Form::label('season_id', 'Season: ', ['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-sm-6">
-                    {!! Form::select('season_id', array_column($seasons->toArray(), 'season', 'id'), null, ['class' => 'form-control']) !!}
+                    {!! Form::select('season_id', array_column($seasons->toArray(), 'season', 'id'), $division->season->id, ['class' => 'form-control']) !!}
                     {!! $errors->first('season_id', '<p class="help-block">:message</p>') !!}
                 </div>
             </div>
