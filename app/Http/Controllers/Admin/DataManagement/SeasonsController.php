@@ -108,13 +108,12 @@ class SeasonsController extends Controller
      */
     public function destroy($id)
     {
-        // @todo Check whether the season can be deleted, i.e. there are no divisions ins this season
-        $canBeDeleted = true;
+        $canBeDeleted = empty(Season::find($id)->divisions->toArray());
         if ($canBeDeleted) {
             Season::destroy($id);
             Flash::success('Season deleted!');
         } else {
-            Flash::error('Cannot delete season');
+            Flash::error('Cannot delete because they are existing divisions in this season.');
         }
 
         return redirect('admin/data-management/seasons');
