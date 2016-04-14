@@ -21,4 +21,8 @@ class Division extends Model
      */
     protected $fillable = ['season_id', 'division'];
 
+    public function season()
+    {
+        return $this->belongsTo('App\Models\Season');
+    }
 }

@@ -8,7 +8,7 @@
         <table class="table table-bordered table-striped table-hover">
             <thead>
                 <tr>
-                    <th>Id</th><th>Season Id</th><th>Division</th><th>Actions</th>
+                    <th>Id</th><th>Season</th><th>Division</th><th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -17,7 +17,8 @@
                 {{-- */$x++;/* --}}
                 <tr>
                     <td>{{ $x }}</td>
-                    <td><a href="{{ url('admin/data-management/divisions', $item->id) }}">{{ $item->season_id }}</a></td><td>{{ $item->division }}</td>
+                    <td>{{ $item->season->season }}</td>
+                    <td><a href="{{ url('admin/data-management/divisions', $item->id) }}">{{ $item->division }}</a></td>
                     <td>
                         <a href="{{ url('admin/data-management/divisions/' . $item->id . '/edit') }}">
                             <button type="submit" class="btn btn-primary btn-xs">Update</button>

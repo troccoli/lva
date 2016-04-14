@@ -21,4 +21,8 @@ class Season extends Model
      */
     protected $fillable = ['season'];
 
+    public function divisions()
+    {
+        return $this->hasMany('App\Models\Division');
+    }
 }

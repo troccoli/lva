@@ -8,12 +8,12 @@
         <table class="table table-bordered table-striped table-hover">
             <thead>
                 <tr>
-                    <th>Id</th> <th>Season Id</th><th>Division</th>
+                    <th>Id</th> <th>Season</th><th>Division</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>{{ $division->id }}</td> <td> {{ $division->season_id }} </td><td> {{ $division->division }} </td>
+                    <td>{{ $division->id }}</td> <td> {{ $division->season->season }} </td><td> {{ $division->division }} </td>
                 </tr>
             </tbody>    
         </table>

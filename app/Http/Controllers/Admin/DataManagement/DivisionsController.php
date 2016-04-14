@@ -9,6 +9,9 @@ use App\Models\Division;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Session;
+use Laracasts\Flash\Flash;
+
+use App\Models\Season;
 
 class DivisionsController extends Controller
 {
@@ -32,7 +35,7 @@ class DivisionsController extends Controller
      */
     public function create()
     {
-        return view('admin.data-management.divisions.create');
+        return view('admin.data-management.divisions.create', ['seasons' => Season::all()]);
     }
 
     /**
@@ -42,7 +45,7 @@ class DivisionsController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, ['division' => 'required', ]);
+        $this->validate($request, ['season_id' => 'required', 'division' => 'required']);
 
         Division::create($request->all());
 
@@ -75,8 +78,9 @@ class DivisionsController extends Controller
     public function edit($id)
     {
         $division = Division::findOrFail($id);
+        $seasons = Season::all();
 
-        return view('admin.data-management.divisions.edit', compact('division'));
+        return view('admin.data-management.divisions.edit', compact('division', 'seasons'));
     }
 
     /**
