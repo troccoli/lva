@@ -8,15 +8,12 @@
         <table class="table table-bordered table-striped table-hover">
             <thead>
                 <tr>
-                    <th>Id</th><th>Role</th><th>Actions</th>
+                    <th>Role</th><th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-            {{-- */$x=0;/* --}}
             @foreach($roles as $item)
-                {{-- */$x++;/* --}}
                 <tr>
-                    <td>{{ $x }}</td>
                     <td><a href="{{ url('admin/data-management/roles', $item->id) }}">{{ $item->role }}</a></td>
                     <td>
                         <a href="{{ url('admin/data-management/roles/' . $item->id . '/edit') }}">
