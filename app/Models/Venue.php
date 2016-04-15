@@ -21,4 +21,8 @@ class Venue extends Model
      */
     protected $fillable = ['venue'];
 
+    public function fixtures()
+    {
+        return $this->hasMany('App\Models\Fixture');
+    }
 }

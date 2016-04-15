@@ -25,4 +25,9 @@ class Division extends Model
     {
         return $this->belongsTo('App\Models\Season');
     }
+    
+    public function fixtures()
+    {
+        return $this->hasMany('App\Models\Fixture');
+    }
 }

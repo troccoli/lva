@@ -140,3 +140,21 @@ Breadcrumbs::register('admin.data-management.teams.show', function($b) {
     $b->parent('admin.data-management.teams.index');
     $b->push('View');
 });
+
+// Data Management - Fixtures
+Breadcrumbs::register('admin.data-management.fixtures.index', function($b) {
+    $b->parent('admin::dataManagement');
+    $b->push('Fixtures', route('admin.data-management.fixtures.index'));
+});
+Breadcrumbs::register('admin.data-management.fixtures.create', function($b) {
+    $b->parent('admin.data-management.fixtures.index');
+    $b->push('Add', route('admin.data-management.fixtures.create'));
+});
+Breadcrumbs::register('admin.data-management.fixtures.edit', function($b) {
+    $b->parent('admin.data-management.fixtures.index');
+    $b->push('Edit');
+});
+Breadcrumbs::register('admin.data-management.fixtures.show', function($b) {
+    $b->parent('admin.data-management.fixtures.index');
+    $b->push('View');
+});
