@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Fixture extends Model
@@ -50,5 +51,20 @@ class Fixture extends Model
     public function venue()
     {
         return $this->belongsTo('App\Models\Venue');
+    }
+
+    public function getWarmUpTimeAttribute($time)
+    {
+        return Carbon::createFromFormat('H:i:s', $time);
+    }
+
+    public function getStartTimeAttribute($time)
+    {
+        return Carbon::createFromFormat('H:i:s', $time);
+    }
+
+    public function getMatchDateAttribute($date)
+    {
+        return Carbon::createFromFormat('Y-m-d', $date);
     }
 }

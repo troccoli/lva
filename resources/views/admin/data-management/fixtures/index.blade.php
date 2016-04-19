@@ -28,8 +28,8 @@
                             </a>
                         </td>
                         <td>{{ $item->match_date->format('j M Y') }}</td>
-                        <td>{{ $item->warm_up_time }}</td>
-                        <td>{{ $item->start_time }}</td>
+                        <td>{{ $item->warm_up_time->format('H:i') }}</td>
+                        <td>{{ $item->start_time->format('H:i') }}</td>
                         <td>{{ $item->home_team->team }}</td>
                         <td>{{ $item->away_team->team }}</td>
                         <td>{{ $item->venue->venue }}</td>

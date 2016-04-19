@@ -25,8 +25,8 @@
                     <td>{{ $fixture->division->division }}</td>
                     <td>{{ $fixture->match_number }}</td>
                     <td>{{ $fixture->match_date->format('j M Y') }}</td>
-                    <td>{{ $fixture->warm_up_time }}</td>
-                    <td>{{ $fixture->start_time }}</td>
+                    <td>{{ $fixture->warm_up_time->format('H:i') }}</td>
+                    <td>{{ $fixture->start_time->format('H:i') }}</td>
                     <td>{{ $fixture->home_team->team }}</td>
                     <td>{{ $fixture->away_team->team }}</td>
                     <td>{{ $fixture->venue->venue }}</td>

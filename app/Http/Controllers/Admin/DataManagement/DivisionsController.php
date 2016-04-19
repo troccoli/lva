@@ -57,7 +57,7 @@ class DivisionsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      *
      * @return Response
      */
@@ -71,7 +71,7 @@ class DivisionsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      *
      * @return Response
      */
@@ -86,13 +86,13 @@ class DivisionsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  int  $id
+     * @param  int $id
      *
      * @return Response
      */
     public function update($id, Request $request)
     {
-        $this->validate($request, ['division' => 'required', ]);
+        $this->validate($request, ['division' => 'required',]);
 
         $division = Division::findOrFail($id);
         $division->update($request->all());
@@ -105,16 +105,20 @@ class DivisionsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      *
      * @return Response
      */
     public function destroy($id)
     {
-        Division::destroy($id);
-
-        Flash::success('Division deleted!');
-
+        $canBeDeleted = empty(Division::find($id)->fixtures->toArray());
+        if ($canBeDeleted) {
+            Division::destroy($id);
+            Flash::success('Division deleted!');
+        } else {
+            Flash::error('Cannot delete because they are existing fixtures in this division.');
+        }
+       
         return redirect('admin/data-management/divisions');
     }
 

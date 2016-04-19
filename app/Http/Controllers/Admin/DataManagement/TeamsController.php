@@ -44,7 +44,7 @@ class TeamsController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, ['club_id' => 'required', 'team' => 'required', ]);
+        $this->validate($request, ['club_id' => 'required', 'team' => 'required',]);
 
         Team::create($request->all());
 
@@ -56,7 +56,7 @@ class TeamsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      *
      * @return Response
      */
@@ -70,7 +70,7 @@ class TeamsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      *
      * @return Response
      */
@@ -85,13 +85,13 @@ class TeamsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  int  $id
+     * @param  int $id
      *
      * @return Response
      */
     public function update($id, Request $request)
     {
-        $this->validate($request, ['club_id' => 'required', 'team' => 'required', ]);
+        $this->validate($request, ['club_id' => 'required', 'team' => 'required']);
 
         $team = Team::findOrFail($id);
         $team->update($request->all());
@@ -104,15 +104,19 @@ class TeamsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      *
      * @return Response
      */
     public function destroy($id)
     {
-        Team::destroy($id);
-
-        Flash::success('Team deleted!');
+        $canBeDeleted = empty(Team::find($id)->fixtures->toArray());
+        if ($canBeDeleted) {
+            Team::destroy($id);
+            Flash::success('Team deleted!');
+        } else {
+            Flash::error('Cannot delete because they are existing fixtures for this team.');
+        }
 
         return redirect('admin/data-management/teams');
     }

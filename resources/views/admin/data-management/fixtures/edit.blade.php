@@ -29,21 +29,21 @@
             <div class="form-group {{ $errors->has('match_date') ? 'has-error' : ''}}">
                 {!! Form::label('match_date', 'Match Date: ', ['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-sm-6">
-                    {!! Form::date('match_date', null, ['class' => 'form-control', 'required' => 'required']) !!}
+                    {!! Form::date('match_date', $fixture->match_date->format('Y-m-d'), ['class' => 'form-control', 'required' => 'required']) !!}
                     {!! $errors->first('match_date', '<p class="help-block">:message</p>') !!}
                 </div>
             </div>
             <div class="form-group {{ $errors->has('warm_up_time') ? 'has-error' : ''}}">
                 {!! Form::label('warm_up_time', 'Warm Up Time: ', ['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-sm-6">
-                    {!! Form::input('time', 'warm_up_time', null, ['class' => 'form-control', 'required' => 'required']) !!}
+                    {!! Form::input('time', 'warm_up_time', $fixture->warm_up_time->format('H:i'), ['class' => 'form-control', 'required' => 'required']) !!}
                     {!! $errors->first('warm_up_time', '<p class="help-block">:message</p>') !!}
                 </div>
             </div>
             <div class="form-group {{ $errors->has('start_time') ? 'has-error' : ''}}">
                 {!! Form::label('start_time', 'Start Time: ', ['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-sm-6">
-                    {!! Form::input('time', 'start_time', null, ['class' => 'form-control', 'required' => 'required']) !!}
+                    {!! Form::input('time', 'start_time', $fixture->start_time->format('H:i'), ['class' => 'form-control', 'required' => 'required']) !!}
                     {!! $errors->first('start_time', '<p class="help-block">:message</p>') !!}
                 </div>
             </div>
