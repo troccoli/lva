@@ -25,9 +25,14 @@ class Team extends Model
     {
         return $this->belongsTo('App\Models\Club');
     }
-    
-    public function fixtures()
+
+    public function awayFixtures()
     {
-        return $this->hasMany('App\Models\Fixture');
+        return $this->hasMany('App\Models\Fixture', 'away_team_id');
+    }
+
+    public function homeFixtures()
+    {
+        return $this->hasMany('App\Models\Fixture', 'home_team_id');
     }
 }

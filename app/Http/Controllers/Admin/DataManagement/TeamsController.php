@@ -110,7 +110,8 @@ class TeamsController extends Controller
      */
     public function destroy($id)
     {
-        $canBeDeleted = empty(Team::find($id)->fixtures->toArray());
+        $team = Team::find($id);
+        $canBeDeleted = empty($team->homeFixtures->toArray()) && empty($team->awayFixtures->toArray());
         if ($canBeDeleted) {
             Team::destroy($id);
             Flash::success('Team deleted!');

@@ -30,9 +30,7 @@ class Fixture extends Model
         'away_team_id',
         'venue_id'
     ];
-
-    protected $dates = ['match_date'];
-
+    
     public function division()
     {
         return $this->belongsTo('App\Models\Division');
