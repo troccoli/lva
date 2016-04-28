@@ -8,7 +8,7 @@
 
     {!! Form::open(['url' => 'admin/data-management/fixtures', 'class' => 'form-horizontal']) !!}
 
-                <div class="form-group {{ $errors->has('division_id') ? 'has-error' : ''}}">
+    <div class="form-group {{ $errors->has('division_id') ? 'has-error' : ''}}">
                 {!! Form::label('division_id', 'Division: ', ['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-sm-6">
                     {!! Form::select('division_id', array_column($divisions->toArray(), 'division', 'id'), null, ['class' => 'form-control', 'required' => 'required']) !!}

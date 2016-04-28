@@ -21,4 +21,13 @@ class Role extends Model
      */
     protected $fillable = ['role'];
 
+    public function available_appointment()
+    {
+        return $this->hasMany('App\Models\AvailableAppointment');
+    }
+
+    public function __toString()
+    {
+        return $this->role;
+    }
 }

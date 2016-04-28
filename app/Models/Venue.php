@@ -25,4 +25,9 @@ class Venue extends Model
     {
         return $this->hasMany('App\Models\Fixture');
     }
+
+    public function __toString()
+    {
+        return $this->venue;
+    }
 }

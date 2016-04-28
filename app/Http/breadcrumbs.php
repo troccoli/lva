@@ -158,3 +158,21 @@ Breadcrumbs::register('admin.data-management.fixtures.show', function($b) {
     $b->parent('admin.data-management.fixtures.index');
     $b->push('View');
 });
+
+// Data Management - Available Appointments
+Breadcrumbs::register('admin.data-management.available-appointments.index', function ($b) {
+    $b->parent('admin::dataManagement');
+    $b->push('Available appointments', route('admin.data-management.available-appointments.index'));
+});
+Breadcrumbs::register('admin.data-management.available-appointments.create', function ($b) {
+    $b->parent('admin.data-management.available-appointments.index');
+    $b->push('Add', route('admin.data-management.available-appointments.create'));
+});
+Breadcrumbs::register('admin.data-management.available-appointments.edit', function ($b) {
+    $b->parent('admin.data-management.available-appointments.index');
+    $b->push('Edit');
+});
+Breadcrumbs::register('admin.data-management.available-appointments.show', function ($b) {
+    $b->parent('admin.data-management.available-appointments.index');
+    $b->push('View');
+});

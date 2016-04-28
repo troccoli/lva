@@ -35,4 +35,9 @@ class Team extends Model
     {
         return $this->hasMany('App\Models\Fixture', 'home_team_id');
     }
+
+    public function __toString()
+    {
+        return $this->team;
+    }
 }

@@ -11,6 +11,9 @@
                 <a id="divisions-table" href="{{ route('admin.data-management.divisions.index') }}" class="btn btn-primary"><i class="fa fa-table"></i> Divisions</a>
                 <a id="teams-table" href="{{ route('admin.data-management.teams.index') }}" class="btn btn-primary"><i class="fa fa-table"></i> Teams</a>
                 <a id="fixtures-table" href="{{ route('admin.data-management.fixtures.index') }}" class="btn btn-primary"><i class="fa fa-table"></i> Fixtures</a>
+                <a id="available-appointments-table"
+                   href="{{ route('admin.data-management.available-appointments.index') }}" class="btn btn-primary"><i
+                            class="fa fa-table"></i> Available appointments</a>
             </div>
         </div>
     </div>

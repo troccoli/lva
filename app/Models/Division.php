@@ -30,4 +30,9 @@ class Division extends Model
     {
         return $this->hasMany('App\Models\Fixture');
     }
+
+    public function __toString()
+    {
+        return $this->season . ' ' . $this->division;
+    }
 }

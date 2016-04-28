@@ -25,4 +25,9 @@ class Season extends Model
     {
         return $this->hasMany('App\Models\Division');
     }
+
+    public function __toString()
+    {
+        return $this->season;
+    }
 }

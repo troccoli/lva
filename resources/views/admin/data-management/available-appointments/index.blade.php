@@ -3,43 +3,33 @@
 @section('content')
 
     <div class="container-fluid">
-        <h1>Fixtures <a href="{{ url('admin/data-management/fixtures/create') }}"
-                        class="btn btn-primary pull-right btn-sm">Add New Fixture</a></h1>
+        <h1>Available appointments <a href="{{ url('admin/data-management/available-appointments/create') }}"
+                                      class="btn btn-primary pull-right btn-sm">Add New Appointment</a></h1>
         <div class="table">
             <table class="table table-bordered table-striped table-hover">
                 <thead>
                 <tr>
-                    <th></th>
-                    <th>Date</th>
-                    <th>Warm-up time</th>
-                    <th>Start time</th>
-                    <th>Home</th>
-                    <th>Away</th>
-                    <th>Venue</th>
+                    <th>Fixture</th>
+                    <th>Role</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-                @foreach($fixtures as $item)
+                @foreach($availableAppointments as $item)
                     <tr>
                         <td>
-                            <a href="{{ url('admin/data-management/fixtures', $item->id) }}">
-                                {{ $item->division }}:{{ $item->match_number }}
+                            <a href="{{ url('admin/data-management/available-appointments', $item->id) }}">
+                                {{ $item->fixture }}
                             </a>
                         </td>
-                        <td>{{ $item->match_date->format('j M Y') }}</td>
-                        <td>{{ $item->warm_up_time->format('H:i') }}</td>
-                        <td>{{ $item->start_time->format('H:i') }}</td>
-                        <td>{{ $item->home_team }}</td>
-                        <td>{{ $item->away_team }}</td>
-                        <td>{{ $item->venue }}</td>
+                        <td>{{ $item->role->role }}</td>
                         <td>
-                            <a href="{{ url('admin/data-management/fixtures/' . $item->id . '/edit') }}">
+                            <a href="{{ url('admin/data-management/available-appointments/' . $item->id . '/edit') }}">
                                 <button type="submit" class="btn btn-primary btn-xs">Update</button>
                             </a> /
                             {!! Form::open([
                                 'method'=>'DELETE',
-                                'url' => ['admin/data-management/fixtures', $item->id],
+                                'url' => ['admin/data-management/available-appointments', $item->id],
                                 'style' => 'display:inline'
                             ]) !!}
                             {!! Form::submit('Delete', ['class' => 'btn btn-danger btn-xs', 'data-toggle' => 'confirmation']) !!}
@@ -49,7 +39,7 @@
                 @endforeach
                 </tbody>
             </table>
-            <div class="pagination"> {!! $fixtures->render() !!} </div>
+            <div class="pagination"> {!! $availableAppointments->render() !!} </div>
         </div>
     </div>
 

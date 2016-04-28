@@ -64,6 +64,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::resource('divisions', 'DivisionsController');
             Route::resource('teams', 'TeamsController');
             Route::resource('fixtures', 'FixturesController');
+            Route::resource('available-appointments', 'AvailableAppointmentsController');
         });
     });
 });

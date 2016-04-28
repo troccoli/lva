@@ -51,6 +51,11 @@ class Fixture extends Model
         return $this->belongsTo('App\Models\Venue');
     }
 
+    public function available_appointments()
+    {
+        return $this->hasMany('App\Models\AvailableAppointment');
+    }
+    
     public function getWarmUpTimeAttribute($time)
     {
         return Carbon::createFromFormat('H:i:s', $time);
@@ -64,5 +69,14 @@ class Fixture extends Model
     public function getMatchDateAttribute($date)
     {
         return Carbon::createFromFormat('Y-m-d', $date);
+    }
+
+    public function __toString()
+    {
+        return
+            $this->division . ':' . $this->match_number . ' ' .
+            $this->match_date->format('d/m/y') . ' ' .
+            $this->start_time->format('H:i') . '(' . $this->warm_up_time->format('H:i') . ') ' .
+            $this->home_team . ' v ' . $this->away_team;
     }
 }

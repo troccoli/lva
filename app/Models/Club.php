@@ -25,4 +25,9 @@ class Club extends Model
     {
         return $this->hasMany('App\Models\Team');
     }
+
+    public function __toString()
+    {
+        return $this->club;
+    }
 }
