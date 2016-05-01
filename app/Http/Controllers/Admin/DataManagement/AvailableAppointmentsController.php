@@ -5,12 +5,11 @@ namespace App\Http\Controllers\Admin\DataManagement;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use App\Http\Requests\AvailableAppointmentRequest;
+
 use App\Models\AvailableAppointment;
 use App\Models\Fixture;
 use App\Models\Role;
-use Carbon\Carbon;
-use Session;
-use Laracasts\Flash\Flash;
 
 class AvailableAppointmentsController extends Controller
 {
@@ -18,7 +17,7 @@ class AvailableAppointmentsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return mixed
      */
     public function index()
     {
@@ -30,7 +29,7 @@ class AvailableAppointmentsController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return Response
+     * @return mixed
      */
     public function create()
     {
@@ -43,14 +42,14 @@ class AvailableAppointmentsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Requests\AvailableAppointmentRequest $request
-     * @return Response
+     * @param AvailableAppointmentRequest $request
+     * @return mixed
      */
-    public function store(Requests\AvailableAppointmentRequest $request)
+    public function store(AvailableAppointmentRequest $request)
     {
         AvailableAppointment::create($request->all());
 
-        Flash::success('Appointment added!');
+        \Flash::success('Appointment added!');
 
         return redirect('admin/data-management/available-appointments');
     }
@@ -60,7 +59,7 @@ class AvailableAppointmentsController extends Controller
      *
      * @param  int $id
      *
-     * @return Response
+     * @return mixed
      */
     public function show($id)
     {
@@ -74,7 +73,7 @@ class AvailableAppointmentsController extends Controller
      *
      * @param  int $id
      *
-     * @return Response
+     * @return mixed
      */
     public function edit($id)
     {
@@ -89,17 +88,17 @@ class AvailableAppointmentsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param Requests\AvailableAppointmentRequest $request
-     * @param  int $id
+     * @param AvailableAppointmentRequest $request
+     * @param int $id
      *
-     * @return Response
+     * @return mixed
      */
-    public function update(Requests\AvailableAppointmentRequest $request, $id)
+    public function update(AvailableAppointmentRequest $request, $id)
     {
         $availableAppointment = AvailableAppointment::findOrFail($id);
         $availableAppointment->update($request->all());
 
-        Flash::success('Appointment updated!');
+        \Flash::success('Appointment updated!');
 
         return redirect('admin/data-management/available-appointments');
     }
@@ -109,13 +108,13 @@ class AvailableAppointmentsController extends Controller
      *
      * @param  int $id
      *
-     * @return Response
+     * @return mixed
      */
     public function destroy($id)
     {
         AvailableAppointment::destroy($id);
 
-        Flash::success('Appointment deleted!');
+        \Flash::success('Appointment deleted!');
 
         return redirect('admin/data-management/available-appointments');
     }

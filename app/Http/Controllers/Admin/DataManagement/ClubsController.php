@@ -7,9 +7,6 @@ use App\Http\Controllers\Controller;
 
 use App\Models\Club;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
-use Session;
-use Laracasts\Flash\Flash;
 
 class ClubsController extends Controller
 {
@@ -17,7 +14,7 @@ class ClubsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return mixed
      */
     public function index()
     {
@@ -29,7 +26,7 @@ class ClubsController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return Response
+     * @return mixed
      */
     public function create()
     {
@@ -39,14 +36,15 @@ class ClubsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return Response
+     * @param Request $request
+     *
+     * @return mixed
      */
     public function store(Request $request)
     {
-        
         Club::create($request->all());
 
-        Flash::success('Club added!');
+        \Flash::success('Club added!');
 
         return redirect('admin/data-management/clubs');
     }
@@ -56,7 +54,7 @@ class ClubsController extends Controller
      *
      * @param  int  $id
      *
-     * @return Response
+     * @return mixed
      */
     public function show($id)
     {
@@ -70,7 +68,7 @@ class ClubsController extends Controller
      *
      * @param  int  $id
      *
-     * @return Response
+     * @return mixed
      */
     public function edit($id)
     {
@@ -82,17 +80,17 @@ class ClubsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  int  $id
+     * @param Request $request
+     * @param int $id
      *
-     * @return Response
+     * @return mixed
      */
-    public function update($id, Request $request)
+    public function update(Request $request, $id)
     {
-        
         $club = Club::findOrFail($id);
         $club->update($request->all());
 
-        Flash::success('Club updated!');
+        \Flash::success('Club updated!');
 
         return redirect('admin/data-management/clubs');
     }
@@ -102,16 +100,16 @@ class ClubsController extends Controller
      *
      * @param  int  $id
      *
-     * @return Response
+     * @return mixed
      */
     public function destroy($id)
     {
         $canBeDeleted = empty(Club::find($id)->teams->toArray());
         if ($canBeDeleted) {
             Club::destroy($id);
-            Flash::success('Club deleted!');
+            \Flash::success('Club deleted!');
         } else {
-            Flash::error('Cannot delete because they are existing teams in this club.');
+            \Flash::error('Cannot delete because they are existing teams in this club.');
         }
        
         return redirect('admin/data-management/clubs');

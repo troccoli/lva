@@ -10,17 +10,13 @@ use App\Models\Fixture;
 use App\Models\Team;
 use App\Models\Venue;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
-use Session;
-use Laracasts\Flash\Flash;
 
 class FixturesController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return mixed
      */
     public function index()
     {
@@ -32,7 +28,7 @@ class FixturesController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return Response
+     * @return mixed
      */
     public function create()
     {
@@ -46,7 +42,9 @@ class FixturesController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return Response
+     * @param Request $request
+     *
+     * @return mixed
      */
     public function store(Request $request)
     {
@@ -63,7 +61,7 @@ class FixturesController extends Controller
 
         Fixture::create($request->all());
 
-        Flash::success('Fixture added!');
+        \Flash::success('Fixture added!');
 
         return redirect('admin/data-management/fixtures');
     }
@@ -71,9 +69,9 @@ class FixturesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int $id
+     * @param int $id
      *
-     * @return Response
+     * @return mixed
      */
     public function show($id)
     {
@@ -85,9 +83,9 @@ class FixturesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int $id
+     * @param int $id
      *
-     * @return Response
+     * @return mixed
      */
     public function edit($id)
     {
@@ -102,11 +100,12 @@ class FixturesController extends Controller
     /**
      * Update the specified resource in storage.
      *
+     * @param Request $request
      * @param  int $id
      *
-     * @return Response
+     * @return mixed
      */
-    public function update($id, Request $request)
+    public function update(Request $request, $id)
     {
         $this->validate($request, [
             'division_id'  => 'required',
@@ -122,7 +121,7 @@ class FixturesController extends Controller
         $fixture = Fixture::findOrFail($id);
         $fixture->update($request->all());
 
-        Flash::success('Fixture updated!');
+        \Flash::success('Fixture updated!');
 
         return redirect('admin/data-management/fixtures');
     }
@@ -132,13 +131,13 @@ class FixturesController extends Controller
      *
      * @param  int $id
      *
-     * @return Response
+     * @return mixed
      */
     public function destroy($id)
     {
         Fixture::destroy($id);
 
-        Flash::success('Fixture deleted!');
+        \Flash::success('Fixture deleted!');
 
         return redirect('admin/data-management/fixtures');
     }

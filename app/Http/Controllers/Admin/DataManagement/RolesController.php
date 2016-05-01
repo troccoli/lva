@@ -7,17 +7,13 @@ use App\Http\Controllers\Controller;
 
 use App\Models\Role;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
-use Session;
-use Laracasts\Flash\Flash;
 
 class RolesController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return mixed
      */
     public function index()
     {
@@ -29,7 +25,7 @@ class RolesController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return Response
+     * @return mixed
      */
     public function create()
     {
@@ -39,7 +35,9 @@ class RolesController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return Response
+     * @param Request $request
+     *
+     * @return mixed
      */
     public function store(Request $request)
     {
@@ -47,7 +45,7 @@ class RolesController extends Controller
 
         Role::create($request->all());
 
-        Flash::success('Role added!');
+        \Flash::success('Role added!');
 
         return redirect('admin/data-management/roles');
     }
@@ -55,9 +53,9 @@ class RolesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      *
-     * @return Response
+     * @return mixed
      */
     public function show($id)
     {
@@ -69,9 +67,9 @@ class RolesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      *
-     * @return Response
+     * @return mixed
      */
     public function edit($id)
     {
@@ -83,18 +81,19 @@ class RolesController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  int  $id
+     * @param Request $request
+     * @param int $id
      *
-     * @return Response
+     * @return mixed
      */
-    public function update($id, Request $request)
+    public function update(Request $request, $id)
     {
         $this->validate($request, ['role' => 'required', ]);
 
         $role = Role::findOrFail($id);
         $role->update($request->all());
 
-        Flash::success('Role updated!');
+        \Flash::success('Role updated!');
 
         return redirect('admin/data-management/roles');
     }
@@ -102,15 +101,15 @@ class RolesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      *
-     * @return Response
+     * @return mixed
      */
     public function destroy($id)
     {
         Role::destroy($id);
 
-        Flash::success('Role deleted!');
+        \Flash::success('Role deleted!');
 
         return redirect('admin/data-management/roles');
     }

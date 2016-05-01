@@ -7,19 +7,15 @@ use App\Http\Controllers\Controller;
 
 use App\Models\Division;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
-use Session;
-use Laracasts\Flash\Flash;
 
 use App\Models\Season;
 
 class DivisionsController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return mixed
      */
     public function index()
     {
@@ -31,7 +27,7 @@ class DivisionsController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return Response
+     * @return mixed
      */
     public function create()
     {
@@ -41,7 +37,9 @@ class DivisionsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return Response
+     * @param Request $request
+     *
+     * @return mixed
      */
     public function store(Request $request)
     {
@@ -49,7 +47,7 @@ class DivisionsController extends Controller
 
         Division::create($request->all());
 
-        Flash::success('Division added!');
+        \Flash::success('Division added!');
 
         return redirect('admin/data-management/divisions');
     }
@@ -57,9 +55,9 @@ class DivisionsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int $id
+     * @param int $id
      *
-     * @return Response
+     * @return mixed
      */
     public function show($id)
     {
@@ -71,9 +69,9 @@ class DivisionsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int $id
+     * @param int $id
      *
-     * @return Response
+     * @return mixed
      */
     public function edit($id)
     {
@@ -86,18 +84,19 @@ class DivisionsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  int $id
+     * @param Request $request
+     * @param int $id
      *
-     * @return Response
+     * @return mixed
      */
-    public function update($id, Request $request)
+    public function update(Request $request, $id)
     {
         $this->validate($request, ['division' => 'required',]);
 
         $division = Division::findOrFail($id);
         $division->update($request->all());
 
-        Flash::success('Division updated!');
+        \Flash::success('Division updated!');
 
         return redirect('admin/data-management/divisions');
     }
@@ -105,18 +104,18 @@ class DivisionsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int $id
+     * @param int $id
      *
-     * @return Response
+     * @return mixed
      */
     public function destroy($id)
     {
         $canBeDeleted = empty(Division::find($id)->fixtures->toArray());
         if ($canBeDeleted) {
             Division::destroy($id);
-            Flash::success('Division deleted!');
+            \Flash::success('Division deleted!');
         } else {
-            Flash::error('Cannot delete because they are existing fixtures in this division.');
+            \Flash::error('Cannot delete because they are existing fixtures in this division.');
         }
        
         return redirect('admin/data-management/divisions');

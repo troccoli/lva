@@ -9,11 +9,9 @@ use DummyRootNamespaceModels\{{modelName}};
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Session;
-use Laracasts\Flash\Flash;
 
 class DummyClass extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
@@ -39,6 +37,8 @@ class DummyClass extends Controller
     /**
      * Store a newly created resource in storage.
      *
+     * @param Request $request
+     *
      * @return Response
      */
     public function store(Request $request)
@@ -46,7 +46,7 @@ class DummyClass extends Controller
         {{validationRules}}
         {{modelName}}::create($request->all());
 
-        Flash::success('{{modelName}} added!');
+        \Flash::success('{{modelName}} added!');
 
         return redirect('{{routeGroup}}{{crudName}}');
     }
@@ -82,17 +82,18 @@ class DummyClass extends Controller
     /**
      * Update the specified resource in storage.
      *
+     * @param Request $request
      * @param  int  $id
      *
      * @return Response
      */
-    public function update($id, Request $request)
+    public function update(Request $request, $id)
     {
         {{validationRules}}
         ${{crudNameSingular}} = {{modelName}}::findOrFail($id);
         ${{crudNameSingular}}->update($request->all());
 
-        Flash::success('{{modelName}} updated!');
+        \Flash::success('{{modelName}} updated!');
 
         return redirect('{{routeGroup}}{{crudName}}');
     }
@@ -108,7 +109,7 @@ class DummyClass extends Controller
     {
         {{modelName}}::destroy($id);
 
-        Flash::success('{{modelName}} deleted!');
+        \Flash::success('{{modelName}} deleted!');
 
         return redirect('{{routeGroup}}{{crudName}}');
     }
