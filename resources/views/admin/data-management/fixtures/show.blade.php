@@ -1,6 +1,6 @@
-@extends('layouts.app')
+@extends('admin.data-management.home')
 
-@section('content')
+@section('crud')
 
     <div class="container-fluid">
         <h1>Fixture</h1>

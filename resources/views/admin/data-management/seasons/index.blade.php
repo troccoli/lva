@@ -1,9 +1,10 @@
-@extends('layouts.app')
+@extends('admin.data-management.home')
 
-@section('content')
+@section('crud')
 
 <div class="container-fluid">
-    <h1>Seasons <a href="{{ url('admin/data-management/seasons/create') }}" class="btn btn-primary pull-right btn-sm">Add New Season</a></h1>
+    <h1>Seasons <a href="{{ url('admin/data-management/seasons/create') }}" class="btn btn-primary pull-right btn-sm">New
+            season</a></h1>
     <div class="table">
         <table class="table table-bordered table-striped table-hover">
             <thead>
@@ -12,16 +13,16 @@
                 </tr>
             </thead>
             <tbody>
-            @foreach($seasons as $item)
+            @foreach($seasons as $season)
                 <tr>
-                    <td><a href="{{ url('admin/data-management/seasons', $item->id) }}">{{ $item->season }}</a></td>
+                    <td><a href="{{ url('admin/data-management/seasons', $season->id) }}">{{ $season->season }}</a></td>
                     <td>
-                        <a href="{{ url('admin/data-management/seasons/' . $item->id . '/edit') }}">
+                        <a href="{{ url('admin/data-management/seasons/' . $season->id . '/edit') }}">
                             <button type="submit" class="btn btn-primary btn-xs">Update</button>
                         </a> /
                         {!! Form::open([
                             'method'=>'DELETE',
-                            'url' => ['admin/data-management/seasons', $item->id],
+                            'url' => ['admin/data-management/seasons', $season->id],
                             'style' => 'display:inline'
                         ]) !!}
                             {!! Form::submit('Delete', ['class' => 'btn btn-danger btn-xs', 'data-toggle' => 'confirmation']) !!}

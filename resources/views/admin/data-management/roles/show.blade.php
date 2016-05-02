@@ -1,23 +1,25 @@
-@extends('layouts.app')
+@extends('admin.data-management.home')
 
-@section('content')
+@section('crud')
 
-<div class="container-fluid">
-    <h1>Role</h1>
-    <div class="table-responsive">
-        <table class="table table-bordered table-striped table-hover">
-            <thead>
+    <div class="container-fluid">
+        <h1>Role</h1>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover">
+                <thead>
                 <tr>
-                    <th>Id</th> <th>Role</th>
+                    <th>Id</th>
+                    <th>Role</th>
                 </tr>
-            </thead>
-            <tbody>
+                </thead>
+                <tbody>
                 <tr>
-                    <td>{{ $role->id }}</td> <td> {{ $role->role }} </td>
+                    <td>{{ $role->id }}</td>
+                    <td>{{ $role->role }}</td>
                 </tr>
-            </tbody>    
-        </table>
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
 
 @endsection

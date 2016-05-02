@@ -1,23 +1,23 @@
-@extends('layouts.app')
+@extends('admin.data-management.home')
 
-@section('content')
+@section('crud')
 
     <div class="container-fluid">
-        <h1>Availableappointment</h1>
+        <h1>Available appointment</h1>
         <div class="table-responsive">
             <table class="table table-bordered table-striped table-hover">
                 <thead>
                 <tr>
                     <th>Id</th>
-                    <th>Fixture Id</th>
-                    <th>Role Id</th>
+                    <th>Fixture</th>
+                    <th>Role</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
-                    <td>{{ $availableappointment->id }}</td>
-                    <td> {{ $availableappointment->fixture_id }} </td>
-                    <td> {{ $availableappointment->role_id }} </td>
+                    <td>{{ $availableAppointment->id }}</td>
+                    <td>{{ $availableAppointment->fixture }}</td>
+                    <td>{{ $availableAppointment->role }}</td>
                 </tr>
                 </tbody>
             </table>
