@@ -2,12 +2,11 @@
 
 namespace Tests;
 
-use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Contracts\Console\Kernel;
 use Artisan;
 use App\User;
 
-class TestCase extends BaseTestCase
+class TestCase extends \Illuminate\Foundation\Testing\TestCase
 {
     protected $users = [];
 
