@@ -41,7 +41,7 @@ class SeasonsController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, ['season' => 'required',]);
+        $this->validate($request, ['season' => 'required|unique:seasons']);
 
         Season::create($request->all());
 
@@ -88,7 +88,7 @@ class SeasonsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, ['season' => 'required',]);
+        $this->validate($request, ['season' => 'required|unique:seasons,season,' . $id]);
 
         $season = Season::findOrFail($id);
         $season->update($request->all());

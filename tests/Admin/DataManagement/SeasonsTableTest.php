@@ -15,9 +15,6 @@ class SeasonsTableTest extends TestCase
 {
     const BASE_ROUTE = 'admin.data-management.seasons';
 
-    /** @var Season $existingSeason */
-    private $existingSeason = null;
-
     public function testRedirectIfNotAdmin()
     {
         $this->visit(route(self::BASE_ROUTE . '.index'))
@@ -52,59 +49,87 @@ class SeasonsTableTest extends TestCase
     {
         $this->be($this->getFakeUser());
 
+        /** @var Season $season */
+        $season = factory(Season::class)->create();
+        $seasonId = $season->id;
+        $seasonName = $season->season;
+
         // Brand new season
-        $newSeason = 'New ' . $this->existingSeason->season;
+        $newSeasonName = 'New ' . $season->season;
         $this->visit(route(self::BASE_ROUTE . '.create'))
-            ->type($newSeason, 'season')
+            ->type($newSeasonName, 'season')
             ->press('Add')
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-success', 'Season added!')
-            ->seeInDatabase('seasons', ['id' => 2, 'season' => $newSeason]);
+            ->seeInDatabase('seasons', ['id' => $seasonId + 1, 'season' => $newSeasonName]);
 
         // Already existing season
-        $this->markTestIncomplete('Fix the validation for already existing season');
+        $this->visit(route(self::BASE_ROUTE . '.create'))
+            ->type($seasonName, 'season')
+            ->press('Add')
+            ->seePageIs(route(self::BASE_ROUTE . '.create'))
+            ->seeInElement('.alert.alert-danger', 'The season already exists.')
+            ->seeInDatabase('seasons', ['id' => $seasonId, 'season' => $seasonName]);
     }
 
     public function testEditSeason()
     {
         $this->be($this->getFakeUser());
 
-        // Brand new season
-        $newSeason = 'New ' . $this->existingSeason->season;
-        $this->seeInDatabase('seasons', ['id' => 1, 'season' => $this->existingSeason->season])
-            ->visit(route(self::BASE_ROUTE . '.edit', [1]))
-            ->type($newSeason, 'season')
+        /** @var Season $season */
+        $season = factory(Season::class)->create();
+        $seasonId = $season->id;
+        $seasonName = $season->season;
+
+        $newSeasonName = 'New ' . $seasonName;
+        $this->seeInDatabase('seasons', ['id' => $seasonId, 'season' => $seasonName])
+            ->visit(route(self::BASE_ROUTE . '.edit', [$seasonId]))
+            ->type($newSeasonName, 'season')
             ->press('Update')
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-success', 'Season updated!')
-            ->seeInDatabase('seasons', ['id' => 1, 'season' => $newSeason]);
+            ->seeInDatabase('seasons', ['id' => $seasonId, 'season' => $newSeasonName]);
+        $seasonName = $newSeasonName;
+
+        $anotherSeason = factory(Season::class)->create();
+        $anotherSeasonName = $anotherSeason->season;
 
         // Already existing season
-        $this->markTestIncomplete('Fix the validation for already existing season');
+        $this->seeInDatabase('seasons', ['id' => $seasonId, 'season' => $seasonName])
+            ->visit(route(self::BASE_ROUTE . '.edit', [$seasonId]))
+            ->type($anotherSeasonName, 'season')
+            ->press('Update')
+            ->seePageIs(route(self::BASE_ROUTE . '.edit', [$seasonId]))
+            ->seeInElement('.alert.alert-danger', 'The season already exists.')
+            ->seeInDatabase('seasons', ['id' => $seasonId, 'season' => $seasonName]);
     }
 
     public function testShowSeason()
     {
         $this->be($this->getFakeUser());
 
-        $this->visit(route(self::BASE_ROUTE . '.show', [1]))
-            ->seeInElement('tbody tr td:nth-child(1)', 1)
-            ->seeInElement('tbody tr td:nth-child(2)', $this->existingSeason->season);
+        /** @var Season $season */
+        $season = factory(Season::class)->create();
+        $seasonId = $season->id;
+        $seasonName = $season->season;
+
+        $this->visit(route(self::BASE_ROUTE . '.show', [$seasonId]))
+            ->seeInElement('tbody tr td:nth-child(1)', $seasonId)
+            ->seeInElement('tbody tr td:nth-child(2)', $seasonName);
     }
 
     public function testDeleteSeason()
     {
         $this->be($this->getFakeUser());
 
-        $this->seeInDatabase('seasons', ['id' => 1, 'season' => $this->existingSeason->season])
-            ->call('DELETE', route(self::BASE_ROUTE . '.destroy', [1]))
-            ->isRedirect(route(self::BASE_ROUTE . '.index'));
-        $this->dontSeeInDatabase('seasons', ['id' => 1]);
-    }
+        /** @var Season $season */
+        $season = factory(Season::class)->create();
+        $seasonId = $season->id;
+        $seasonName = $season->season;
 
-    protected function setUp()
-    {
-        parent::setUp();
-        $this->existingSeason = factory(Season::class)->create();
+        $this->seeInDatabase('seasons', ['id' => $seasonId, 'season' => $seasonName])
+            ->call('DELETE', route(self::BASE_ROUTE . '.destroy', [$seasonId]))
+            ->isRedirect(route(self::BASE_ROUTE . '.index'));
+        $this->dontSeeInDatabase('seasons', ['id' => $seasonId]);
     }
 }

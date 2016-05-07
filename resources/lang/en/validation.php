@@ -89,8 +89,8 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'season' => [
+            'unique' => 'The season already exists.',
         ],
     ],
 
