@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('admin.data-management.home')
 
 @section('crud')
 

@@ -43,7 +43,10 @@ class DivisionsController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, ['season_id' => 'required', 'division' => 'required']);
+        $this->validate($request, [
+            'season_id' => 'required|exists:seasons,id',
+            'division'  => 'required|unique:divisions,division,NULL,id,season_id,' . $request->get('season_id'),
+        ]);
 
         Division::create($request->all());
 
@@ -91,7 +94,10 @@ class DivisionsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, ['division' => 'required',]);
+        $this->validate($request, [
+            'season_id' => 'required|exists:seasons,id',
+            'division'  => 'required|unique:divisions,division,NULL,id,season_id,' . $request->get('season_id'),
+        ]);
 
         $division = Division::findOrFail($id);
         $division->update($request->all());
@@ -117,7 +123,7 @@ class DivisionsController extends Controller
         } else {
             \Flash::error('Cannot delete because they are existing fixtures in this division.');
         }
-       
+
         return redirect('admin/data-management/divisions');
     }
 

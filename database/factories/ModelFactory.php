@@ -22,6 +22,15 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
 
 $factory->define(\App\Models\Season::class, function (\Faker\Generator $faker) {
     return [
-        'season' => $faker->name,
+        'season' => $faker->word,
+    ];
+});
+
+$factory->define(App\Models\Division::class, function (\Faker\Generator $faker) {
+    return [
+        'division'  => $faker->word,
+        'season_id' => function () {
+            return factory(App\Models\Season::class)->create()->id;
+        },
     ];
 });

@@ -89,8 +89,11 @@ return [
     */
 
     'custom' => [
-        'season' => [
+        'season'   => [
             'unique' => 'The season already exists.',
+        ],
+        'division' => [
+            'unique' => 'The division already exists in the same season.',
         ],
     ],
 
