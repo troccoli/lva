@@ -55,7 +55,7 @@ class SeasonsTableTest extends TestCase
         $seasonName = $season->season;
 
         // Brand new season
-        $newSeasonName = 'New ' . $season->season;
+        $newSeasonName = 'New ' . $seasonName;
         $this->visit(route(self::BASE_ROUTE . '.create'))
             ->type($newSeasonName, 'season')
             ->press('Add')
