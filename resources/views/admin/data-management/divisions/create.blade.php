@@ -6,7 +6,7 @@
         <h1>Add new division</h1>
         <hr/>
 
-        @include('_partial.crud-errors');
+        @include('_partial.crud-errors')
 
         {!! Form::open(['url' => 'admin/data-management/divisions', 'class' => 'form-horizontal']) !!}
 

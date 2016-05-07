@@ -6,7 +6,7 @@
         <h1>Edit role</h1>
         <hr/>
 
-        @include('_partial.crud-errors');
+        @include('_partial.crud-errors')
 
         {!! Form::model($role, [
             'method' => 'PATCH',

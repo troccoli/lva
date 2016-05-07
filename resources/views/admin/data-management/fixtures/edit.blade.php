@@ -6,7 +6,7 @@
         <h1>Edit fixture</h1>
         <hr/>
 
-        @include('_partial.crud-errors');
+        @include('_partial.crud-errors')
 
         {!! Form::model($fixture, [
             'method' => 'PATCH',

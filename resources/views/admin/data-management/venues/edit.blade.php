@@ -6,7 +6,7 @@
         <h1>Edit venue</h1>
         <hr/>
 
-        @include('_partial.crud-errors');
+        @include('_partial.crud-errors')
 
         {!! Form::model($venue, [
             'method' => 'PATCH',

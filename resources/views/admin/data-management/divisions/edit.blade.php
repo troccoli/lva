@@ -6,7 +6,7 @@
         <h1>Edit division</h1>
         <hr/>
 
-        @include('_partial.crud-errors');
+        @include('_partial.crud-errors')
 
         {!! Form::model($division, [
             'method' => 'PATCH',

@@ -6,7 +6,7 @@
         <h1>Edit team</h1>
         <hr/>
 
-        @include('_partial.crud-errors');
+        @include('_partial.crud-errors')
 
         {!! Form::model($team, [
             'method' => 'PATCH',

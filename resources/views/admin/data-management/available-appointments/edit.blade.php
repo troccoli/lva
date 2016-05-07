@@ -13,7 +13,7 @@
         <h1>Edit appointment</h1>
         <hr/>
 
-        @include('_partial.crud-errors');
+        @include('_partial.crud-errors')
 
         {!! Form::model($availableAppointment, [
             'method' => 'PATCH',

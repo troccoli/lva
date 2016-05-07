@@ -6,7 +6,7 @@
         <h1>Add new team</h1>
         <hr/>
 
-        @include('_partial.crud-errors');
+        @include('_partial.crud-errors')
 
         {!! Form::open(['url' => 'admin/data-management/teams', 'class' => 'form-horizontal']) !!}
 
