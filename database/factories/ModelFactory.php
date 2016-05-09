@@ -13,9 +13,9 @@
 
 $factory->define(App\User::class, function (Faker\Generator $faker) {
     return [
-        'name' => $faker->name,
-        'email' => $faker->email,
-        'password' => bcrypt(str_random(10)),
+        'name'           => $faker->name,
+        'email'          => $faker->email,
+        'password'       => bcrypt(str_random(10)),
         'remember_token' => str_random(10),
     ];
 });
@@ -38,5 +38,14 @@ $factory->define(App\Models\Division::class, function (\Faker\Generator $faker) 
 $factory->define(\App\Models\Club::class, function (\Faker\Generator $faker) {
     return [
         'club' => $faker->word,
+    ];
+});
+
+$factory->define(App\Models\Team::class, function (\Faker\Generator $faker) {
+    return [
+        'team'    => $faker->word,
+        'club_id' => function () {
+            return factory(App\Models\Club::class)->create()->id;
+        },
     ];
 });

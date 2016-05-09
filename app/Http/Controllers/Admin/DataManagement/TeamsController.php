@@ -42,7 +42,10 @@ class TeamsController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, ['club_id' => 'required', 'team' => 'required',]);
+        $this->validate($request, [
+            'club_id' => 'required|exists:clubs,id',
+            'team'    => 'required|unique:teams,team,NULL,id,club_id,' . $request->get('club_id'),
+        ]);
 
         Team::create($request->all());
 
@@ -90,8 +93,11 @@ class TeamsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, ['club_id' => 'required', 'team' => 'required']);
-
+        $this->validate($request, [
+            'club_id' => 'required|exists:clubs,id',
+            'team'    => 'required|unique:teams,team,NULL,id,club_id,' . $request->get('club_id'),
+        ]);
+        
         $team = Team::findOrFail($id);
         $team->update($request->all());
 
