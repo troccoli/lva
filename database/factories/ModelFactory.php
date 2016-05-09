@@ -55,3 +55,9 @@ $factory->define(\App\Models\Role::class, function (\Faker\Generator $faker) {
         'role' => $faker->word,
     ];
 });
+
+$factory->define(\App\Models\Venue::class, function (\Faker\Generator $faker) {
+    return [
+        'venue' => $faker->word,
+    ];
+});

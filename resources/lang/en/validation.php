@@ -104,6 +104,9 @@ return [
         'role'     => [
             'unique' => 'The role already exists.',
         ],
+        'venue'    => [
+            'unique' => 'The venue already exists.',
+        ],
     ],
 
     /*

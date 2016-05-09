@@ -41,6 +41,7 @@ class VenuesController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validate($request, ['venue' => 'required|unique:venues']);
 
         Venue::create($request->all());
 
@@ -87,6 +88,7 @@ class VenuesController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $this->validate($request, ['venue' => 'required|unique:venues,venue,' . $id]);
 
         $venue = Venue::findOrFail($id);
         $venue->update($request->all());
