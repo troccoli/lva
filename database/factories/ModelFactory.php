@@ -49,3 +49,9 @@ $factory->define(App\Models\Team::class, function (\Faker\Generator $faker) {
         },
     ];
 });
+
+$factory->define(\App\Models\Role::class, function (\Faker\Generator $faker) {
+    return [
+        'role' => $faker->word,
+    ];
+});
