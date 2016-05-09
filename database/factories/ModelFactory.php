@@ -34,3 +34,9 @@ $factory->define(App\Models\Division::class, function (\Faker\Generator $faker) 
         },
     ];
 });
+
+$factory->define(\App\Models\Club::class, function (\Faker\Generator $faker) {
+    return [
+        'club' => $faker->word,
+    ];
+});

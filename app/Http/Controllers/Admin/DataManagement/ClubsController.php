@@ -42,6 +42,8 @@ class ClubsController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validate($request, ['club' => 'required|unique:clubs']);
+
         Club::create($request->all());
 
         \Flash::success('Club added!');
@@ -87,6 +89,8 @@ class ClubsController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $this->validate($request, ['club' => 'required|unique:clubs,club,' . $id]);
+
         $club = Club::findOrFail($id);
         $club->update($request->all());
 

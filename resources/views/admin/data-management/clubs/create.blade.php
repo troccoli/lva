@@ -3,7 +3,7 @@
 @section('crud')
 
     <div class="container-fluid">
-        <h1>Add new club</h1>
+        <h1>Add a new club</h1>
         <hr/>
 
         @include('_partial.crud-errors')

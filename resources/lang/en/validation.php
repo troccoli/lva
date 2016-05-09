@@ -95,6 +95,9 @@ return [
         'division' => [
             'unique' => 'The division already exists in the same season.',
         ],
+        'club'     => [
+            'unique' => 'The club already exists.',
+        ],
     ],
 
     /*
