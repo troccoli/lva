@@ -48,16 +48,28 @@ class FixturesController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'division_id'  => 'required',
-            'match_number' => 'required',
-            'match_date'   => 'required',
-            'warm_up_time' => 'required',
-            'start_time'   => 'required',
-            'home_team_id' => 'required',
-            'away_team_id' => 'required',
-            'venue_id'     => 'required',
-        ]);
+        $this->validate($request,
+            [
+                'division_id'  =>
+                    'required|' .
+                    'exists:divisions,id|' .
+                    'unique:fixtures,division_id,NULL,id' .
+                    ',home_team_id,' . $request->get('home_team_id') .
+                    ',away_team_id,' . $request->get('away_team_id'),
+                'match_number' => 'required|unique:fixtures,match_number,NULL,id,division_id,' . $request->get('division_id'),
+                'match_date'   => 'required',
+                'warm_up_time' => 'required',
+                'start_time'   => 'required',
+                'home_team_id' => 'required|exists:teams,id',
+                'away_team_id' => 'required|exists:teams,id|different:home_team_id',
+                'venue_id'     => 'required|exists:venues,id',
+            ],
+            [
+                'away_team_id.different' => 'The away team cannot be the same as the home team.',
+                'division_id.unique'     => 'The fixture for these two teams have already been added in this division.',
+                'match_number.unique'    => 'There is already a match with the same number in this division.',
+            ]
+        );
 
         Fixture::create($request->all());
 
@@ -93,7 +105,7 @@ class FixturesController extends Controller
         $divisions = Division::all();
         $teams = Team::all();
         $venues = Venue::all();
-        
+
         return view('admin.data-management.fixtures.edit', compact('fixture', 'divisions', 'teams', 'venues'));
     }
 
@@ -107,17 +119,29 @@ class FixturesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'division_id'  => 'required',
-            'match_number' => 'required',
-            'match_date'   => 'required',
-            'warm_up_time' => 'required',
-            'start_time'   => 'required',
-            'home_team_id' => 'required',
-            'away_team_id' => 'required',
-            'venue_id'     => 'required',
-        ]);
-        
+        $this->validate($request,
+            [
+                'division_id'  =>
+                    'required|' .
+                    'exists:divisions,id|' .
+                    'unique:fixtures,division_id,NULL,id' .
+                    ',home_team_id,' . $request->get('home_team_id') .
+                    ',away_team_id,' . $request->get('away_team_id'),
+                'match_number' => 'required|unique:fixtures,match_number,NULL,id,division_id,' . $request->get('division_id'),
+                'match_date'   => 'required',
+                'warm_up_time' => 'required',
+                'start_time'   => 'required',
+                'home_team_id' => 'required|exists:teams,id',
+                'away_team_id' => 'required|exists:teams,id|different:home_team_id',
+                'venue_id'     => 'required|exists:venues,id',
+            ],
+            [
+                'away_team_id.different' => 'The away team cannot be the same as the home team.',
+                'division_id.unique'     => 'The fixture for these two teams have already been added in this division.',
+                'match_number.unique'    => 'There is already a match with the same number in this division.',
+            ]
+        );
+
         $fixture = Fixture::findOrFail($id);
         $fixture->update($request->all());
 

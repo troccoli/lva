@@ -77,9 +77,9 @@ $factory->define(\App\Models\Fixture::class, function (\Faker\Generator $faker) 
             return factory(\App\Models\Venue::class)->create()->id;
         },
         'match_number' => $faker->numberBetween(1, 100),
-        'match_date'   => $faker->date(),
-        'warm_up_time' => $faker->time(),
-        'start_time'   => $faker->time(),
+        'match_date'   => $faker->date('Y-m-d'),
+        'warm_up_time' => $faker->time('H:i:s'),
+        'start_time'   => $faker->time('H:i:s'),
     ];
 });
 

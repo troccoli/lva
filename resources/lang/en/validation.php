@@ -106,7 +106,7 @@ return [
         ],
         'venue'    => [
             'unique' => 'The venue already exists.',
-        ],
+        ]
     ],
 
     /*
