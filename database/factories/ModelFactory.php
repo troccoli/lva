@@ -15,8 +15,8 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
     return [
         'name'           => $faker->unique()->name,
         'email'          => $faker->unique()->email,
-        'password'       => bcrypt(str_random(10)),
-        'remember_token' => str_random(10),
+        'password'       => bcrypt($faker->unique()->password()),
+        'remember_token' => $faker->unique()->md5,
     ];
 });
 
@@ -76,10 +76,10 @@ $factory->define(\App\Models\Fixture::class, function (\Faker\Generator $faker) 
         'venue_id'     => function () {
             return factory(\App\Models\Venue::class)->create()->id;
         },
-        'match_number' => $faker->numberBetween(1, 100),
-        'match_date'   => $faker->date('Y-m-d'),
-        'warm_up_time' => $faker->time('H:i:s'),
-        'start_time'   => $faker->time('H:i:s'),
+        'match_number' => $faker->unique()->numberBetween(1, 100),
+        'match_date'   => $faker->unique()->date('Y-m-d'),
+        'warm_up_time' => $faker->unique()->time('H:i:s'),
+        'start_time'   => $faker->unique()->time('H:i:s'),
     ];
 });
 
