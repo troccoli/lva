@@ -2,8 +2,6 @@
 
 namespace Tests;
 
-use Tests\TestCase;
-
 class HomePageTest extends TestCase
 {
     public function testLandingPage()

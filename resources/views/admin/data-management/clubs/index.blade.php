@@ -1,42 +1,41 @@
-@extends('layouts.app')
+@extends('admin.data-management.home')
 
-@section('content')
+@section('crud')
 
-<div class="container-fluid">
-    <h1>Clubs <a href="{{ url('admin/data-management/clubs/create') }}" class="btn btn-primary pull-right btn-sm">Add New Club</a></h1>
-    <div class="table">
-        <table class="table table-bordered table-striped table-hover">
-            <thead>
+    <div class="container-fluid">
+        <h1>Clubs <a href="{{ url('admin/data-management/clubs/create') }}" class="btn btn-primary pull-right btn-sm">New
+                club</a></h1>
+        <div class="table">
+            <table class="table table-bordered table-striped table-hover">
+                <thead>
                 <tr>
-                    <th>S.No</th><th>Id</th><th>Club</th><th>Actions</th>
+                    <th>Club</th>
+                    <th>Actions</th>
                 </tr>
-            </thead>
-            <tbody>
-            {{-- */$x=0;/* --}}
-            @foreach($clubs as $item)
-                {{-- */$x++;/* --}}
-                <tr>
-                    <td>{{ $x }}</td>
-                    <td><a href="{{ url('admin/data-management/clubs', $item->id) }}">{{ $item->id }}</a></td><td>{{ $item->club }}</td>
-                    <td>
-                        <a href="{{ url('admin/data-management/clubs/' . $item->id . '/edit') }}">
-                            <button type="submit" class="btn btn-primary btn-xs">Update</button>
-                        </a> /
-                        {!! Form::open([
-                            'method'=>'DELETE',
-                            'url' => ['admin/data-management/clubs', $item->id],
-                            'style' => 'display:inline'
-                        ]) !!}
+                </thead>
+                <tbody>
+                @foreach($clubs as $club)
+                    <tr>
+                        <td><a href="{{ url('admin/data-management/clubs', $club->id) }}">{{ $club->club }}</a></td>
+                        <td>
+                            <a href="{{ url('admin/data-management/clubs/' . $club->id . '/edit') }}">
+                                <button type="submit" class="btn btn-primary btn-xs">Update</button>
+                            </a> /
+                            {!! Form::open([
+                                'method'=>'DELETE',
+                                'url' => ['admin/data-management/clubs', $club->id],
+                                'style' => 'display:inline'
+                            ]) !!}
                             {!! Form::submit('Delete', ['class' => 'btn btn-danger btn-xs', 'data-toggle' => 'confirmation']) !!}
-                        {!! Form::close() !!}
-                    </td>
-                </tr>
-            @endforeach
-            </tbody>
-        </table>
-        <div class="pagination"> {!! $clubs->render() !!} </div>
+                            {!! Form::close() !!}
+                        </td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+            <div class="pagination"> {!! $clubs->render() !!} </div>
+        </div>
     </div>
-</div>
 
 @endsection
 

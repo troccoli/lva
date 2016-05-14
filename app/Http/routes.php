@@ -60,6 +60,11 @@ Route::group(['middleware' => 'web'], function () {
             Route::resource('seasons', 'SeasonsController');
             Route::resource('clubs', 'ClubsController');
             Route::resource('venues', 'VenuesController');
+            Route::resource('roles', 'RolesController');
+            Route::resource('divisions', 'DivisionsController');
+            Route::resource('teams', 'TeamsController');
+            Route::resource('fixtures', 'FixturesController');
+            Route::resource('available-appointments', 'AvailableAppointmentsController');
         });
     });
 });

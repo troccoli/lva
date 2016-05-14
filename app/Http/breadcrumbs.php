@@ -86,3 +86,93 @@ Breadcrumbs::register('admin.data-management.venues.show', function($b) {
     $b->parent('admin.data-management.venues.index');
     $b->push('View');
 });
+
+// Data Management - Roles
+Breadcrumbs::register('admin.data-management.roles.index', function($b) {
+    $b->parent('admin::dataManagement');
+    $b->push('Roles', route('admin.data-management.roles.index'));
+});
+Breadcrumbs::register('admin.data-management.roles.create', function($b) {
+    $b->parent('admin.data-management.roles.index');
+    $b->push('Add', route('admin.data-management.roles.create'));
+});
+Breadcrumbs::register('admin.data-management.roles.edit', function($b) {
+    $b->parent('admin.data-management.roles.index');
+    $b->push('Edit');
+});
+Breadcrumbs::register('admin.data-management.roles.show', function($b) {
+    $b->parent('admin.data-management.roles.index');
+    $b->push('View');
+});
+
+// Data Management - Divisions
+Breadcrumbs::register('admin.data-management.divisions.index', function($b) {
+    $b->parent('admin::dataManagement');
+    $b->push('Divisions', route('admin.data-management.divisions.index'));
+});
+Breadcrumbs::register('admin.data-management.divisions.create', function($b) {
+    $b->parent('admin.data-management.divisions.index');
+    $b->push('Add', route('admin.data-management.divisions.create'));
+});
+Breadcrumbs::register('admin.data-management.divisions.edit', function($b) {
+    $b->parent('admin.data-management.divisions.index');
+    $b->push('Edit');
+});
+Breadcrumbs::register('admin.data-management.divisions.show', function($b) {
+    $b->parent('admin.data-management.divisions.index');
+    $b->push('View');
+});
+
+// Data Management - Teams
+Breadcrumbs::register('admin.data-management.teams.index', function($b) {
+    $b->parent('admin::dataManagement');
+    $b->push('Teams', route('admin.data-management.teams.index'));
+});
+Breadcrumbs::register('admin.data-management.teams.create', function($b) {
+    $b->parent('admin.data-management.teams.index');
+    $b->push('Add', route('admin.data-management.teams.create'));
+});
+Breadcrumbs::register('admin.data-management.teams.edit', function($b) {
+    $b->parent('admin.data-management.teams.index');
+    $b->push('Edit');
+});
+Breadcrumbs::register('admin.data-management.teams.show', function($b) {
+    $b->parent('admin.data-management.teams.index');
+    $b->push('View');
+});
+
+// Data Management - Fixtures
+Breadcrumbs::register('admin.data-management.fixtures.index', function($b) {
+    $b->parent('admin::dataManagement');
+    $b->push('Fixtures', route('admin.data-management.fixtures.index'));
+});
+Breadcrumbs::register('admin.data-management.fixtures.create', function($b) {
+    $b->parent('admin.data-management.fixtures.index');
+    $b->push('Add', route('admin.data-management.fixtures.create'));
+});
+Breadcrumbs::register('admin.data-management.fixtures.edit', function($b) {
+    $b->parent('admin.data-management.fixtures.index');
+    $b->push('Edit');
+});
+Breadcrumbs::register('admin.data-management.fixtures.show', function($b) {
+    $b->parent('admin.data-management.fixtures.index');
+    $b->push('View');
+});
+
+// Data Management - Available Appointments
+Breadcrumbs::register('admin.data-management.available-appointments.index', function ($b) {
+    $b->parent('admin::dataManagement');
+    $b->push('Available appointments', route('admin.data-management.available-appointments.index'));
+});
+Breadcrumbs::register('admin.data-management.available-appointments.create', function ($b) {
+    $b->parent('admin.data-management.available-appointments.index');
+    $b->push('Add', route('admin.data-management.available-appointments.create'));
+});
+Breadcrumbs::register('admin.data-management.available-appointments.edit', function ($b) {
+    $b->parent('admin.data-management.available-appointments.index');
+    $b->push('Edit');
+});
+Breadcrumbs::register('admin.data-management.available-appointments.show', function ($b) {
+    $b->parent('admin.data-management.available-appointments.index');
+    $b->push('View');
+});

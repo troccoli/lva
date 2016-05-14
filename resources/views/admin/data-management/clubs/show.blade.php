@@ -1,23 +1,25 @@
-@extends('layouts.app')
+@extends('admin.data-management.home')
 
-@section('content')
+@section('crud')
 
-<div class="container-fluid">
-    <h1>Club</h1>
-    <div class="table-responsive">
-        <table class="table table-bordered table-striped table-hover">
-            <thead>
+    <div class="container-fluid">
+        <h1>Club</h1>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover">
+                <thead>
                 <tr>
-                    <th>ID.</th> <th>Id</th><th>Club</th>
+                    <th>Id</th>
+                    <th>Club</th>
                 </tr>
-            </thead>
-            <tbody>
+                </thead>
+                <tbody>
                 <tr>
-                    <td>{{ $club->id }}</td> <td> {{ $club->id }} </td><td> {{ $club->club }} </td>
+                    <td>{{ $club->id }}</td>
+                    <td>{{ $club->club }}</td>
                 </tr>
-            </tbody>    
-        </table>
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
 
 @endsection

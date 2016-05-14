@@ -7,16 +7,13 @@ use App\Http\Controllers\Controller;
 
 use App\Models\Venue;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
-use Session;
 
 class VenuesController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return mixed
      */
     public function index()
     {
@@ -28,7 +25,7 @@ class VenuesController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return Response
+     * @return mixed
      */
     public function create()
     {
@@ -38,14 +35,17 @@ class VenuesController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return Response
+     * @param Request $request
+     *
+     * @return mixed
      */
     public function store(Request $request)
     {
-        
+        $this->validate($request, ['venue' => 'required|unique:venues']);
+
         Venue::create($request->all());
 
-        Flass::success('Venue added!');
+        \Flash::success('Venue added!');
 
         return redirect('admin/data-management/venues');
     }
@@ -53,9 +53,9 @@ class VenuesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      *
-     * @return Response
+     * @return mixed
      */
     public function show($id)
     {
@@ -67,9 +67,9 @@ class VenuesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      *
-     * @return Response
+     * @return mixed
      */
     public function edit($id)
     {
@@ -81,17 +81,19 @@ class VenuesController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  int  $id
+     * @param Request $request
+     * @param int $id
      *
-     * @return Response
+     * @return mixed
      */
-    public function update($id, Request $request)
+    public function update(Request $request, $id)
     {
-        
+        $this->validate($request, ['venue' => 'required|unique:venues,venue,' . $id]);
+
         $venue = Venue::findOrFail($id);
         $venue->update($request->all());
 
-        Flash::success('Venue updated!');
+        \Flash::success('Venue updated!');
 
         return redirect('admin/data-management/venues');
     }
@@ -99,16 +101,20 @@ class VenuesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      *
-     * @return Response
+     * @return mixed
      */
     public function destroy($id)
     {
-        Venue::destroy($id);
-
-        Flash::success('Venue deleted!');
-
+        $canBeDeleted = empty(Venue::find($id)->fixtures->toArray());
+        if ($canBeDeleted) {
+            Venue::destroy($id);
+            \Flash::success('Venue deleted!');
+        } else {
+            \Flash::error('Cannot delete because they are existing fixtures at this venue.');
+        }
+        
         return redirect('admin/data-management/venues');
     }
 

@@ -89,9 +89,24 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'season'   => [
+            'unique' => 'The season already exists.',
         ],
+        'division' => [
+            'unique' => 'The division already exists in the same season.',
+        ],
+        'club'     => [
+            'unique' => 'The club already exists.',
+        ],
+        'team'     => [
+            'unique' => 'The team already exists in the same club.',
+        ],
+        'role'     => [
+            'unique' => 'The role already exists.',
+        ],
+        'venue'    => [
+            'unique' => 'The venue already exists.',
+        ]
     ],
 
     /*
