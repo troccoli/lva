@@ -8,7 +8,7 @@ use App\User;
 
 class TestCase extends \Illuminate\Foundation\Testing\TestCase
 {
-    protected $seasons = [];
+    protected $users = [];
 
     /**
      * The base URL to use while testing the application.
@@ -51,8 +51,8 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase
                 ]);
             $user->clearPassword = $password;
             $userId = $user->id;
-            $this->seasons[$userId] = $user;
-        } elseif (!isset($this->seasons[$userId])) {
+            $this->users[$userId] = $user;
+        } elseif (!isset($this->users[$userId])) {
             $password = str_random(10);
             $user = factory(User::class)
                 ->create([
@@ -60,10 +60,10 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase
                     'password' => bcrypt($password),
                 ]);
             $user->clearPassword = $password;
-            $this->seasons[$userId] = $user;
+            $this->users[$userId] = $user;
         }
 
-        return $this->seasons[$userId];
+        return $this->users[$userId];
     }
 
     /**
