@@ -8,6 +8,8 @@
 
 namespace Admin\DataManagement;
 
+use App\Models\Division;
+use PhpParser\Node\Expr\AssignOp\Div;
 use Tests\TestCase;
 use App\Models\Season;
 
@@ -144,9 +146,27 @@ class SeasonsTableTest extends TestCase
             'id'     => $season->id,
             'season' => $season->season,
         ])
-            ->call('DELETE', route(self::BASE_ROUTE . '.destroy', [$season->id]))
-            ->isRedirect(route(self::BASE_ROUTE . '.index'));
+            ->makeRequest('DELETE', route(self::BASE_ROUTE . '.destroy', [$season->id]))
+            ->seePageIs(route(self::BASE_ROUTE . '.index'))
+            ->seeInElement('#flash-notification .alert.alert-success', 'Season deleted!')
+            ->dontSeeInDatabase('seasons', ['id' => $seasonId]);
 
-        $this->dontSeeInDatabase('seasons', ['id' => $seasonId]);
+        // Delete a season with divisions
+        /** @var Season $season */
+        $season = factory(Season::class)->create();
+        /** @var Division $division */
+        $division = factory(Division::class)->create(['season_id' => $season->id]);
+
+        $this->seeInDatabase('seasons', [
+            'id'     => $season->id,
+            'season' => $season->season,
+        ])
+            ->makeRequest('DELETE', route(self::BASE_ROUTE . '.destroy', [$season->id]))
+            ->seePageIs(route(self::BASE_ROUTE . '.index'))
+            ->seeInElement('#flash-notification .alert.alert-danger', 'Cannot delete because they are existing divisions in this season.')
+            ->seeInDatabase('seasons', [
+                'id'     => $season->id,
+                'season' => $season->season,
+            ]);
     }
 }

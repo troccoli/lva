@@ -159,10 +159,13 @@ class FixturesController extends Controller
      */
     public function destroy($id)
     {
-        Fixture::destroy($id);
-
-        \Flash::success('Fixture deleted!');
-
+        $canBeDeleted = empty(Fixture::find($id)->available_appointments->toArray());
+        if ($canBeDeleted) {
+            Fixture::destroy($id);
+            \Flash::success('Fixture deleted!');
+        } else {
+            \Flash::error('Cannot delete because they are existing appointments for this fixture.');
+        }
         return redirect('admin/data-management/fixtures');
     }
 

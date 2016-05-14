@@ -8,6 +8,7 @@
 
 namespace Admin\DataManagement;
 
+use App\Models\AvailableAppointment;
 use Tests\TestCase;
 use App\Models\Role;
 
@@ -144,9 +145,27 @@ class RolesTableTest extends TestCase
             'id'   => $role->id,
             'role' => $role->role,
         ])
-            ->call('DELETE', route(self::BASE_ROUTE . '.destroy', [$role->id]))
-            ->isRedirect(route(self::BASE_ROUTE . '.index'));
+            ->makeRequest('DELETE', route(self::BASE_ROUTE . '.destroy', [$role->id]))
+            ->seePageIs(route(self::BASE_ROUTE . '.index'))
+            ->seeInElement('#flash-notification .alert.alert-success', 'Role deleted!')
+            ->dontSeeInDatabase('roles', ['id' => $roleId]);
 
-        $this->dontSeeInDatabase('roles', ['id' => $roleId]);
+        // Delete a role with available appointments
+        /** @var Role $role */
+        $role = factory(Role::class)->create();
+        /** @var AvailableAppointment $appointment */
+        $appointment = factory(AvailableAppointment::class)->create(['role_id' => $role->id]);
+
+        $this->seeInDatabase('roles', [
+            'id'   => $role->id,
+            'role' => $role->role,
+        ])
+            ->makeRequest('DELETE', route(self::BASE_ROUTE . '.destroy', [$role->id]))
+            ->seePageIs(route(self::BASE_ROUTE . '.index'))
+            ->seeInElement('#flash-notification .alert.alert-danger', 'Cannot delete because they are existing appointments for this role.')
+            ->seeInDatabase('roles', [
+                'id'   => $role->id,
+                'role' => $role->role,
+            ]);
     }
 }

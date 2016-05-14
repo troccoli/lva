@@ -8,6 +8,7 @@
 
 namespace Admin\DataManagement;
 
+use App\Models\Team;
 use Tests\TestCase;
 use App\Models\Club;
 
@@ -144,9 +145,26 @@ class ClubsTableTest extends TestCase
             'id'   => $club->id,
             'club' => $club->club,
         ])
-            ->call('DELETE', route(self::BASE_ROUTE . '.destroy', [$club->id]))
-            ->isRedirect(route(self::BASE_ROUTE . '.index'));
+            ->makeRequest('DELETE', route(self::BASE_ROUTE . '.destroy', [$club->id]))
+            ->seePageIs(route(self::BASE_ROUTE . '.index'))
+            ->seeInElement('#flash-notification .alert.alert-success', 'Club deleted!')
+            ->dontSeeInDatabase('clubs', ['id' => $clubId]);
 
-        $this->dontSeeInDatabase('clubs', ['id' => $clubId]);
+        // Delete a clubs with teams
+        /** @var Club $club */
+        $club = factory(Club::class)->create();
+        /** @var Team $team */
+        $team = factory(Team::class)->create(['club_id' => $club->id]);
+        $this->seeInDatabase('clubs', [
+            'id'   => $club->id,
+            'club' => $club->club,
+        ])
+            ->makeRequest('DELETE', route(self::BASE_ROUTE . '.destroy', [$club->id]))
+            ->seePageIs(route(self::BASE_ROUTE . '.index'))
+            ->seeInElement('#flash-notification .alert.alert-danger', 'Cannot delete because they are existing teams in this club.')
+            ->seeInDatabase('clubs', [
+                'id'   => $club->id,
+                'club' => $club->club,
+            ]);
     }
 }

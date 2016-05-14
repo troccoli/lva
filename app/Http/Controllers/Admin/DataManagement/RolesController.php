@@ -107,10 +107,14 @@ class RolesController extends Controller
      */
     public function destroy($id)
     {
-        Role::destroy($id);
-
-        \Flash::success('Role deleted!');
-
+        $canBeDeleted = empty(Role::find($id)->available_appointment->toArray());
+        if ($canBeDeleted) {
+            Role::destroy($id);
+            \Flash::success('Role deleted!');
+        } else {
+            \Flash::error('Cannot delete because they are existing appointments for this role.');
+        }
+        
         return redirect('admin/data-management/roles');
     }
 

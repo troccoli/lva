@@ -8,6 +8,7 @@
 
 namespace Admin\DataManagement;
 
+use App\Models\Fixture;
 use Tests\TestCase;
 use App\Models\Team;
 use App\Models\Club;
@@ -175,9 +176,47 @@ class TeamsTableTest extends TestCase
             'club_id' => $team->club_id,
             'team'    => $team->team,
         ])
-            ->call('DELETE', route(self::BASE_ROUTE . '.destroy', [$team->id]))
-            ->isRedirect(route(self::BASE_ROUTE . '.index'));
-        
-        $this->dontSeeInDatabase('teams', ['id' => $teamId]);
+            ->makeRequest('DELETE', route(self::BASE_ROUTE . '.destroy', [$team->id]))
+            ->seePageIs(route(self::BASE_ROUTE . '.index'))
+            ->seeInElement('#flash-notification .alert.alert-success', 'Team deleted!')
+            ->dontSeeInDatabase('teams', ['id' => $teamId]);
+
+        // Delete team with fixtures
+        /** @var Team $team */
+        $team = factory(Team::class)->create();
+        /** @var Fixture $fixture */
+        $fixture = factory(Fixture::class)->create(['home_team_id' => $team->id]);
+
+        $this->seeInDatabase('teams', [
+            'id'      => $team->id,
+            'club_id' => $team->club_id,
+            'team'    => $team->team,
+        ])
+            ->makeRequest('DELETE', route(self::BASE_ROUTE . '.destroy', [$team->id]))
+            ->seePageIs(route(self::BASE_ROUTE . '.index'))
+            ->seeInElement('#flash-notification .alert.alert-danger', 'Cannot delete because they are existing fixtures for this team.')
+            ->seeInDatabase('teams', [
+                'id'      => $team->id,
+                'club_id' => $team->club_id,
+                'team'    => $team->team,
+            ]);
+
+        Fixture::destroy($fixture->id);
+        /** @var Fixture $fixture */
+        $fixture = factory(Fixture::class)->create(['away_team_id' => $team->id]);
+
+        $this->seeInDatabase('teams', [
+            'id'      => $team->id,
+            'club_id' => $team->club_id,
+            'team'    => $team->team,
+        ])
+            ->makeRequest('DELETE', route(self::BASE_ROUTE . '.destroy', [$team->id]))
+            ->seePageIs(route(self::BASE_ROUTE . '.index'))
+            ->seeInElement('#flash-notification .alert.alert-danger', 'Cannot delete because they are existing fixtures for this team.')
+            ->seeInDatabase('teams', [
+                'id'      => $team->id,
+                'club_id' => $team->club_id,
+                'team'    => $team->team,
+            ]);
     }
 }

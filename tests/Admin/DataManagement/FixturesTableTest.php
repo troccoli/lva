@@ -8,6 +8,7 @@
 
 namespace Admin\DataManagement;
 
+use App\Models\AvailableAppointment;
 use Tests\TestCase;
 use App\Models\Fixture;
 
@@ -243,9 +244,41 @@ class FixturesTableTest extends TestCase
             'warm_up_time' => $fixture->warm_up_time,
             'start_time'   => $fixture->start_time,
         ])
-            ->call('DELETE', route(self::BASE_ROUTE . '.destroy', [$fixture->id]))
-            ->isRedirect(route(self::BASE_ROUTE . '.index'));
+            ->makeRequest('DELETE', route(self::BASE_ROUTE . '.destroy', [$fixture->id]))
+            ->seePageIs(route(self::BASE_ROUTE . '.index'))
+            ->seeInElement('#flash-notification .alert.alert-success', 'Fixture deleted!')
+            ->dontSeeInDatabase('fixtures', ['id' => $fixtureId]);
 
-        $this->dontSeeInDatabase('fixtures', ['id' => $fixtureId]);
+        // Delete fixture with existing appointment
+        /** @var Fixture $fixture */
+        $fixture = factory(Fixture::class)->create();
+        /** @var AvailableAppointment $appointment */
+        $appointment = factory(AvailableAppointment::class)->create(['fixture_id' => $fixture->id]);
+
+        $this->seeInDatabase('fixtures', [
+            'id'           => $fixture->id,
+            'division_id'  => $fixture->division_id,
+            'home_team_id' => $fixture->home_team_id,
+            'away_team_id' => $fixture->away_team_id,
+            'venue_id'     => $fixture->venue_id,
+            'match_number' => $fixture->match_number,
+            'match_date'   => $fixture->match_date->format('Y-m-d'),
+            'warm_up_time' => $fixture->warm_up_time,
+            'start_time'   => $fixture->start_time,
+        ])
+            ->makeRequest('DELETE', route(self::BASE_ROUTE . '.destroy', [$fixture->id]))
+            ->seePageIs(route(self::BASE_ROUTE . '.index'))
+            ->seeInElement('#flash-notification .alert.alert-danger', 'Cannot delete because they are existing appointments for this fixture.')
+            ->seeInDatabase('fixtures', [
+                'id'           => $fixture->id,
+                'division_id'  => $fixture->division_id,
+                'home_team_id' => $fixture->home_team_id,
+                'away_team_id' => $fixture->away_team_id,
+                'venue_id'     => $fixture->venue_id,
+                'match_number' => $fixture->match_number,
+                'match_date'   => $fixture->match_date->format('Y-m-d'),
+                'warm_up_time' => $fixture->warm_up_time,
+                'start_time'   => $fixture->start_time,
+            ]);
     }
 }

@@ -8,6 +8,7 @@
 
 namespace Admin\DataManagement;
 
+use App\Models\Fixture;
 use Tests\TestCase;
 use App\Models\Division;
 use App\Models\Season;
@@ -177,9 +178,29 @@ class DivisionsTableTest extends TestCase
             'season_id' => $division->season_id,
             'division'  => $division->division,
         ])
-            ->call('DELETE', route(self::BASE_ROUTE . '.destroy', [$division->id]))
-            ->isRedirect(route(self::BASE_ROUTE . '.index'));
+            ->makeRequest('DELETE', route(self::BASE_ROUTE . '.destroy', [$division->id]))
+            ->seePageIs(route(self::BASE_ROUTE . '.index'))
+            ->seeInElement('#flash-notification .alert.alert-success', 'Division deleted!')
+            ->dontSeeInDatabase('divisions', ['id' => $divisionId]);
 
-        $this->dontSeeInDatabase('divisions', ['id' => $divisionId]);
+        // Delete division with fixtures
+        /** @var Division $division */
+        $division = factory(Division::class)->create();
+        /** @var Fixture $fixture */
+        $fixture = factory(Fixture::class)->create(['division_id' => $division->id]);
+
+        $this->seeInDatabase('divisions', [
+            'id'        => $division->id,
+            'season_id' => $division->season_id,
+            'division'  => $division->division,
+        ])
+            ->makeRequest('DELETE', route(self::BASE_ROUTE . '.destroy', [$division->id]))
+            ->seePageIs(route(self::BASE_ROUTE . '.index'))
+            ->seeInElement('#flash-notification .alert.alert-danger', 'Cannot delete because they are existing fixtures in this division.')
+            ->seeInDatabase('divisions', [
+                'id'        => $division->id,
+                'season_id' => $division->season_id,
+                'division'  => $division->division,
+            ]);
     }
 }

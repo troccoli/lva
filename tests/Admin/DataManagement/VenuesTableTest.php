@@ -8,6 +8,7 @@
 
 namespace Admin\DataManagement;
 
+use App\Models\Fixture;
 use Tests\TestCase;
 use App\Models\Venue;
 
@@ -144,9 +145,26 @@ class VenuesTableTest extends TestCase
             'id'    => $venue->id,
             'venue' => $venue->venue,
         ])
-            ->call('DELETE', route(self::BASE_ROUTE . '.destroy', [$venue->id]))
-            ->isRedirect(route(self::BASE_ROUTE . '.index'));
+            ->makeRequest('DELETE', route(self::BASE_ROUTE . '.destroy', [$venue->id]))
+            ->seePageIs(route(self::BASE_ROUTE . '.index'))
+            ->seeInElement('#flash-notification .alert.alert-success', 'Venue deleted!')
+            ->dontSeeInDatabase('venues', ['id' => $venueId]);
 
-        $this->dontSeeInDatabase('venues', ['id' => $venueId]);
+        // Delete a venue with fixtures
+        /** @var Venue $venue */
+        $venue = factory(Venue::class)->create();
+        $fixture = factory(Fixture::class)->create(['venue_id' => $venue->id]);
+
+        $this->seeInDatabase('venues', [
+            'id'    => $venue->id,
+            'venue' => $venue->venue,
+        ])
+            ->makeRequest('DELETE', route(self::BASE_ROUTE . '.destroy', [$venue->id]))
+            ->seePageIs(route(self::BASE_ROUTE . '.index'))
+            ->seeInElement('#flash-notification .alert.alert-danger', 'Cannot delete because they are existing fixtures at this venue.')
+            ->seeInDatabase('venues', [
+                'id'    => $venue->id,
+                'venue' => $venue->venue,
+            ]);
     }
 }

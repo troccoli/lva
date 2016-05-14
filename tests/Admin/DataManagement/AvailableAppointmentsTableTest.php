@@ -223,9 +223,8 @@ class AvailableAppointmentsTableTest extends TestCase
             'fixture_id' => $appointment->fixture_id,
             'role_id'    => $appointment->role_id,
         ])
-            ->call('DELETE', route(self::BASE_ROUTE . '.destroy', [$appointment->id]))
-            ->isRedirect(route(self::BASE_ROUTE . '.index'));
-
-        $this->dontSeeInDatabase('available_appointments', ['id' => $appointmentId]);
+            ->makeRequest('DELETE', route(self::BASE_ROUTE . '.destroy', [$appointment->id]))
+            ->seePageIs(route(self::BASE_ROUTE . '.index'))
+            ->dontSeeInDatabase('available_appointments', ['id' => $appointmentId]);
     }
 }
