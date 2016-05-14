@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * App\Models\Role
  *
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\AvailableAppointment[] $available_appointment
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\AvailableAppointment[] $available_appointments
  * @mixin \Eloquent
  * @property integer $id
  * @property string $role
@@ -35,7 +35,7 @@ class Role extends Model
      */
     protected $fillable = ['role'];
 
-    public function available_appointment()
+    public function available_appointments()
     {
         return $this->hasMany('App\Models\AvailableAppointment');
     }

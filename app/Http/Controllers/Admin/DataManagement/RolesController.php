@@ -107,7 +107,7 @@ class RolesController extends Controller
      */
     public function destroy($id)
     {
-        $canBeDeleted = empty(Role::find($id)->available_appointment->toArray());
+        $canBeDeleted = empty(Role::find($id)->available_appointments->toArray());
         if ($canBeDeleted) {
             Role::destroy($id);
             \Flash::success('Role deleted!');
