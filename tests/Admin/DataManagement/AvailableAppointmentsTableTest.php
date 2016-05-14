@@ -51,157 +51,149 @@ class AvailableAppointmentsTableTest extends TestCase
     {
         $this->be($this->getFakeUser());
 
-        /** @var AvailableAppointment $availableAppointment */
-        $availableAppointment = factory(AvailableAppointment::class)->create();
-        $availableAppointmentId = $availableAppointment->id;
-        $fixtureId = $availableAppointment->fixture_id;
-        $roleId = $availableAppointment->role_id;
+        /** @var AvailableAppointment $appointment */
+        $appointment = factory(AvailableAppointment::class)->make();
 
-        $otherFixtureId = factory(Fixture::class)->create()->id;
-        $otherRoleId = factory(Role::class)->create()->id;
+        /** @var Fixture $newFixture */
+        $newFixture = factory(Fixture::class)->create();
+        /** @var Role $newRole */
+        $newRole = factory(Role::class)->create();
 
         // Brand new appointment
         $this->visit(route(self::BASE_ROUTE . '.create'))
-            ->select($otherFixtureId, 'fixture_id')
-            ->select($otherRoleId, 'role_id')
+            ->select($appointment->fixture_id, 'fixture_id')
+            ->select($appointment->role_id, 'role_id')
             ->press('Add')
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-success', 'Appointment added!')
             ->seeInDatabase('available_appointments', [
-                'id'         => $availableAppointmentId + 1,
-                'fixture_id' => $otherFixtureId,
-                'role_id'    => $otherRoleId,
+                'id'         => 1,
+                'fixture_id' => $appointment->fixture_id,
+                'role_id'    => $appointment->role_id,
             ]);
 
         // Already existing appointment in the same fixture with different role
         $this->visit(route(self::BASE_ROUTE . '.create'))
-            ->select($fixtureId, 'fixture_id')
-            ->select($otherRoleId, 'role_id')
+            ->select($appointment->fixture_id, 'fixture_id')
+            ->select($newRole->id, 'role_id')
             ->press('Add')
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-success', 'Appointment added!')
             ->seeInDatabase('available_appointments', [
-                'id'         => $availableAppointmentId + 2,
-                'fixture_id' => $fixtureId,
-                'role_id'    => $otherRoleId,
+                'id'         => 2,
+                'fixture_id' => $appointment->fixture_id,
+                'role_id'    => $newRole->id,
             ]);
 
         // Already existing appointment in the same role with different fixture
         $this->visit(route(self::BASE_ROUTE . '.create'))
-            ->select($otherFixtureId, 'fixture_id')
-            ->select($roleId, 'role_id')
+            ->select($newFixture->id, 'fixture_id')
+            ->select($appointment->role_id, 'role_id')
             ->press('Add')
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-success', 'Appointment added!')
             ->seeInDatabase('available_appointments', [
-                'id'         => $availableAppointmentId + 3,
-                'fixture_id' => $otherFixtureId,
-                'role_id'    => $roleId,
+                'id'         => 3,
+                'fixture_id' => $newFixture->id,
+                'role_id'    => $appointment->role_id,
             ]);
 
         // Already existing appointment
         $this->visit(route(self::BASE_ROUTE . '.create'))
-            ->select($fixtureId, 'fixture_id')
-            ->select($roleId, 'role_id')
+            ->select($appointment->fixture_id, 'fixture_id')
+            ->select($appointment->role_id, 'role_id')
             ->press('Add')
             ->seePageIs(route(self::BASE_ROUTE . '.create'))
             ->seeInElement('.alert.alert-danger', 'Appointment already added.')
-            ->seeInDatabase('available_appointments', [
-                'id'         => $availableAppointmentId,
-                'fixture_id' => $fixtureId,
-                'role_id'    => $roleId,
-            ]);
+            ->dontSeeInDatabase('available_appointments', ['id' => 4]);
     }
 
     public function testEditAvailableAppointment()
     {
         $this->be($this->getFakeUser());
 
-        /** @var AvailableAppointment $availableAppointment */
-        $availableAppointment = factory(AvailableAppointment::class)->create();
-        $availableAppointmentId = $availableAppointment->id;
-        $fixtureId = $availableAppointment->fixture_id;
-        $roleId = $availableAppointment->role_id;
+        /** @var AvailableAppointment $appointment */
+        $appointment = factory(AvailableAppointment::class)->create();
 
-        $otherFixtureId = factory(Fixture::class)->create()->id;
-        $otherRoleId = factory(Role::class)->create()->id;
+        /** @var Fixture $newFixture */
+        $newFixture = factory(Fixture::class)->create();
+        /** @var Role $newRole */
+        $newRole = factory(Role::class)->create();
 
         // Change the role of the existing appointment
         $this->seeInDatabase('available_appointments', [
-            'id'         => $availableAppointmentId,
-            'fixture_id' => $fixtureId,
-            'role_id'    => $roleId,
+            'id'         => $appointment->id,
+            'fixture_id' => $appointment->fixture_id,
+            'role_id'    => $appointment->role_id,
         ])
-            ->visit(route(self::BASE_ROUTE . '.edit', [$availableAppointmentId]))
-            ->select($otherRoleId, 'role_id')
+            ->visit(route(self::BASE_ROUTE . '.edit', [$appointment->id]))
+            ->select($newRole->id, 'role_id')
             ->press('Update')
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-success', 'Appointment updated!')
             ->seeInDatabase('available_appointments', [
-                'id'         => $availableAppointmentId,
-                'fixture_id' => $fixtureId,
-                'role_id'    => $otherRoleId,
+                'id'         => $appointment->id,
+                'fixture_id' => $appointment->fixture_id,
+                'role_id'    => $newRole->id,
             ]);
-        $roleId = $otherRoleId;
+        $appointment->role_id = $newRole->id;
 
         // Change the fixture of the existing appointment
         $this->seeInDatabase('available_appointments', [
-            'id'         => $availableAppointmentId,
-            'fixture_id' => $fixtureId,
-            'role_id'    => $roleId,
+            'id'         => $appointment->id,
+            'fixture_id' => $appointment->fixture_id,
+            'role_id'    => $appointment->role_id,
         ])
-            ->visit(route(self::BASE_ROUTE . '.edit', [$availableAppointmentId]))
-            ->select($otherFixtureId, 'fixture_id')
+            ->visit(route(self::BASE_ROUTE . '.edit', [$appointment->id]))
+            ->select($newFixture->id, 'fixture_id')
             ->press('Update')
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-success', 'Appointment updated!')
             ->seeInDatabase('available_appointments', [
-                'id'         => $availableAppointmentId,
-                'fixture_id' => $otherFixtureId,
-                'role_id'    => $roleId,
+                'id'         => $appointment->id,
+                'fixture_id' => $newFixture->id,
+                'role_id'    => $appointment->role_id,
             ]);
-        $fixtureId = $otherFixtureId;
+        $appointment->fixture_id = $newFixture->id;
 
         // Already existing availableAppointment in the same fixture
-        /** @var AvailableAppointment $anotherAvailableAppointment */
-        $anotherAvailableAppointment = factory(AvailableAppointment::class)->create(['fixture_id' => $fixtureId]);
-        $anotherAvailableAppointmentRoleId = $anotherAvailableAppointment->role_id;
+        /** @var AvailableAppointment $newAppointment */
+        $newAppointment = factory(AvailableAppointment::class)->create(['fixture_id' => $appointment->fixture_id]);
 
         $this->seeInDatabase('available_appointments', [
-            'id'         => $availableAppointmentId,
-            'fixture_id' => $fixtureId,
-            'role_id'    => $roleId,
+            'id'         => $appointment->id,
+            'fixture_id' => $appointment->fixture_id,
+            'role_id'    => $appointment->role_id,
         ])
-            ->visit(route(self::BASE_ROUTE . '.edit', [$availableAppointmentId]))
-            ->select($anotherAvailableAppointmentRoleId, 'role_id')
+            ->visit(route(self::BASE_ROUTE . '.edit', [$appointment->id]))
+            ->select($newAppointment->role_id, 'role_id')
             ->press('Update')
-            ->seePageIs(route(self::BASE_ROUTE . '.edit', [$availableAppointmentId]))
+            ->seePageIs(route(self::BASE_ROUTE . '.edit', [$appointment->id]))
             ->seeInElement('.alert.alert-danger', 'Appointment already added.')
             ->seeInDatabase('available_appointments', [
-                'id'         => $availableAppointmentId,
-                'fixture_id' => $fixtureId,
-                'role_id'    => $roleId,
+                'id'         => $appointment->id,
+                'fixture_id' => $appointment->fixture_id,
+                'role_id'    => $appointment->role_id,
             ]);
 
         // Already existing availableAppointment in the same role
-        /** @var AvailableAppointment $yetAnotherAvailableAppointment */
-        $yetAnotherAvailableAppointment = factory(AvailableAppointment::class)->create(['role_id' => $roleId]);
-        $yetAnotherAvailableAppointmentFixtureId = $yetAnotherAvailableAppointment->fixture_id;
+        /** @var AvailableAppointment $anotherAppointment */
+        $anotherAppointment = factory(AvailableAppointment::class)->create(['role_id' => $appointment->role_id]);
 
         $this->seeInDatabase('available_appointments', [
-            'id'         => $availableAppointmentId,
-            'fixture_id' => $fixtureId,
-            'role_id'    => $roleId,
+            'id'         => $appointment->id,
+            'fixture_id' => $appointment->fixture_id,
+            'role_id'    => $appointment->role_id,
         ])
-            ->visit(route(self::BASE_ROUTE . '.edit', [$availableAppointmentId]))
-            ->select($yetAnotherAvailableAppointmentFixtureId, 'fixture_id')
+            ->visit(route(self::BASE_ROUTE . '.edit', [$appointment->id]))
+            ->select($anotherAppointment->fixture_id, 'fixture_id')
             ->press('Update')
-            ->seePageIs(route(self::BASE_ROUTE . '.edit', [$availableAppointmentId]))
+            ->seePageIs(route(self::BASE_ROUTE . '.edit', [$appointment->id]))
             ->seeInElement('.alert.alert-danger', 'Appointment already added.')
             ->seeInDatabase('available_appointments', [
-                'id'         => $availableAppointmentId,
-                'fixture_id' => $fixtureId,
-                'role_id'    => $roleId,
+                'id'         => $appointment->id,
+                'fixture_id' => $appointment->fixture_id,
+                'role_id'    => $appointment->role_id,
             ]);
     }
 
@@ -209,43 +201,31 @@ class AvailableAppointmentsTableTest extends TestCase
     {
         $this->be($this->getFakeUser());
 
-        /** @var AvailableAppointment $availableAppointment */
-        $availableAppointment = factory(AvailableAppointment::class)->create();
-        $availableAppointmentId = $availableAppointment->id;
-        $fixtureId = $availableAppointment->fixture_id;
-        $roleId = $availableAppointment->role_id;
+        /** @var AvailableAppointment $appointment */
+        $appointment = factory(AvailableAppointment::class)->create();
 
-        /** @var Fixture $fixture */
-        $fixture = Fixture::find($fixtureId);
-        $fixtureName = $fixture->fixture;
-
-        /** @var Role $role */
-        $role = Role::find($roleId);
-        $roleName = $role->role;
-
-        $this->visit(route(self::BASE_ROUTE . '.show', [$availableAppointmentId]))
-            ->seeInElement('tbody tr td:nth-child(1)', $availableAppointmentId)
-            ->seeInElement('tbody tr td:nth-child(2)', $fixtureName)
-            ->seeInElement('tbody tr td:nth-child(3)', $roleName);
+        $this->visit(route(self::BASE_ROUTE . '.show', [$appointment->id]))
+            ->seeInElement('tbody tr td:nth-child(1)', $appointment->id)
+            ->seeInElement('tbody tr td:nth-child(2)', $appointment->fixture)
+            ->seeInElement('tbody tr td:nth-child(3)', $appointment->role);
     }
 
     public function testDeleteAvailableAppointment()
     {
         $this->be($this->getFakeUser());
 
-        /** @var AvailableAppointment $availableAppointment */
-        $availableAppointment = factory(AvailableAppointment::class)->create();
-        $availableAppointmentId = $availableAppointment->id;
-        $fixtureId = $availableAppointment->fixture_id;
-        $roleId = $availableAppointment->role_id;
+        /** @var AvailableAppointment $appointment */
+        $appointment = factory(AvailableAppointment::class)->create();
+        $appointmentId = $appointment->id;
 
         $this->seeInDatabase('available_appointments', [
-            'id'         => $availableAppointmentId,
-            'fixture_id' => $fixtureId,
-            'role_id'    => $roleId])
-            ->call('DELETE', route(self::BASE_ROUTE . '.destroy', [$availableAppointmentId]))
+            'id'         => $appointment->id,
+            'fixture_id' => $appointment->fixture_id,
+            'role_id'    => $appointment->role_id,
+        ])
+            ->call('DELETE', route(self::BASE_ROUTE . '.destroy', [$appointment->id]))
             ->isRedirect(route(self::BASE_ROUTE . '.index'));
 
-        $this->dontSeeInDatabase('available_appointments', ['id' => $availableAppointmentId]);
+        $this->dontSeeInDatabase('available_appointments', ['id' => $appointmentId]);
     }
 }

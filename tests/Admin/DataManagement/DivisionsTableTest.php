@@ -8,9 +8,9 @@
 
 namespace Admin\DataManagement;
 
+use Tests\TestCase;
 use App\Models\Division;
 use App\Models\Season;
-use Tests\TestCase;
 
 class DivisionsTableTest extends TestCase
 {
@@ -51,29 +51,33 @@ class DivisionsTableTest extends TestCase
         $this->be($this->getFakeUser());
 
         /** @var Division $division */
-        $division = factory(Division::class)->create();
-        $divisionId = $division->id;
-        $seasonId = $division->season_id;
-        $divisionName = $division->division;
+        $division = factory(Division::class)->make();
 
         // Brand new division
-        $newDivisionName = 'New ' . $divisionName;
         $this->visit(route(self::BASE_ROUTE . '.create'))
-            ->select($seasonId, 'season_id')
-            ->type($newDivisionName, 'division')
+            ->select($division->season_id, 'season_id')
+            ->type($division->division, 'division')
             ->press('Add')
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-success', 'Division added!')
-            ->seeInDatabase('divisions', ['id' => $divisionId + 1, 'season_id' => $seasonId, 'division' => $newDivisionName]);
+            ->seeInDatabase('divisions', [
+                'id'        => 1,
+                'season_id' => $division->season_id,
+                'division'  => $division->division,
+            ]);
 
         // Already existing division in the same season
         $this->visit(route(self::BASE_ROUTE . '.create'))
-            ->select($seasonId, 'season_id')
-            ->type($divisionName, 'division')
+            ->select($division->season_id, 'season_id')
+            ->type($division->division, 'division')
             ->press('Add')
             ->seePageIs(route(self::BASE_ROUTE . '.create'))
             ->seeInElement('.alert.alert-danger', 'The division already exists in the same season.')
-            ->seeInDatabase('divisions', ['id' => $divisionId, 'season_id' => $seasonId, 'division' => $divisionName]);
+            ->seeInDatabase('divisions', [
+                'id'        => 1,
+                'season_id' => $division->season_id,
+                'division'  => $division->division,
+            ]);
     }
 
     public function testEditDivision()
@@ -82,46 +86,69 @@ class DivisionsTableTest extends TestCase
 
         /** @var Division $division */
         $division = factory(Division::class)->create();
-        $divisionId = $division->id;
-        $seasonId = $division->season_id;
-        $divisionName = $division->division;
+
+        /** @var Division $newDivision */
+        $newDivision = factory(Division::class)->make();
 
         // Change the name of the division
-        $newDivisionName = 'New ' . $divisionName;
-        $this->seeInDatabase('divisions', ['id' => $divisionId, 'season_id' => $seasonId, 'division' => $divisionName])
-            ->visit(route(self::BASE_ROUTE . '.edit', [$divisionId]))
-            ->type($newDivisionName, 'division')
+        $this->seeInDatabase('divisions', [
+            'id'        => $division->id,
+            'season_id' => $division->season_id,
+            'division'  => $division->division,
+        ])
+            ->visit(route(self::BASE_ROUTE . '.edit', [$division->id]))
+            ->type($newDivision->division, 'division')
             ->press('Update')
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-success', 'Division updated!')
-            ->seeInDatabase('divisions', ['id' => $divisionId, 'season_id' => $seasonId, 'division' => $newDivisionName]);
-        $divisionName = $newDivisionName;
-
-        // Already existing division in the same season
-        /** @var Division $anotherDivision */
-        $anotherDivision = factory(Division::class)->create(['season_id' => $seasonId]);
-        $anotherDivisionName = $anotherDivision->division;
-
-        $this->seeInDatabase('divisions', ['id' => $divisionId, 'season_id' => $seasonId, 'division' => $divisionName])
-            ->visit(route(self::BASE_ROUTE . '.edit', [$divisionId]))
-            ->type($anotherDivisionName, 'division')
-            ->press('Update')
-            ->seePageIs(route(self::BASE_ROUTE . '.edit', [$divisionId]))
-            ->seeInElement('.alert.alert-danger', 'The division already exists in the same season.')
-            ->seeInDatabase('divisions', ['id' => $divisionId, 'season_id' => $seasonId, 'division' => $divisionName]);
+            ->seeInDatabase('divisions', [
+                'id'        => $division->id,
+                'season_id' => $division->season_id,
+                'division'  => $newDivision->division,
+            ]);
+        $division->division = $newDivision->division;
+        unset($newDivision);
 
         // Move division to a different season
-        $anotherSeason = factory(Season::class)->create();
-        $anotherSeasonId = $anotherSeason->id;
+        $season = factory(Season::class)->create();
 
-        $this->seeInDatabase('divisions', ['id' => $divisionId, 'season_id' => $seasonId, 'division' => $divisionName])
-            ->visit(route(self::BASE_ROUTE . '.edit', [$divisionId]))
-            ->select($anotherSeasonId, 'season_id')
-            ->type($divisionName, 'division')
+        $this->seeInDatabase('divisions', [
+            'id'        => $division->id,
+            'season_id' => $division->season_id,
+            'division'  => $division->division,
+        ])
+            ->visit(route(self::BASE_ROUTE . '.edit', [$division->id]))
+            ->select($season->id, 'season_id')
             ->press('Update')
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-success', 'Division updated!')
-            ->seeInDatabase('divisions', ['id' => $divisionId, 'season_id' => $anotherSeasonId, 'division' => $newDivisionName]);
+            ->seeInDatabase('divisions', [
+                'id'        => $division->id,
+                'season_id' => $season->id,
+                'division'  => $division->division,
+            ]);
+        $division->season_id = $season->id;
+        unset($season);
+
+        // Already existing division in the same season
+        /** @var Division $newDivision */
+        $newDivision = factory(Division::class)->create(['season_id' => $division->season_id]);
+
+        $this->seeInDatabase('divisions', [
+            'id'        => $division->id,
+            'season_id' => $division->season_id,
+            'division'  => $division->division,
+        ])
+            ->visit(route(self::BASE_ROUTE . '.edit', [$division->id]))
+            ->type($newDivision->division, 'division')
+            ->press('Update')
+            ->seePageIs(route(self::BASE_ROUTE . '.edit', [$division->id]))
+            ->seeInElement('.alert.alert-danger', 'The division already exists in the same season.')
+            ->seeInDatabase('divisions', [
+                'id'        => $division->id,
+                'season_id' => $division->season_id,
+                'division'  => $division->division,
+            ]);
     }
 
     public function testShowDivision()
@@ -130,18 +157,11 @@ class DivisionsTableTest extends TestCase
 
         /** @var Division $division */
         $division = factory(Division::class)->create();
-        $divisionId = $division->id;
-        $seasonId = $division->season_id;
-        $divisionName = $division->division;
 
-        /** @var Season $season */
-        $season = Season::find($seasonId);
-        $seasonName = $season->season;
-
-        $this->visit(route(self::BASE_ROUTE . '.show', [$divisionId]))
-            ->seeInElement('tbody tr td:nth-child(1)', $divisionId)
-            ->seeInElement('tbody tr td:nth-child(2)', $seasonName)
-            ->seeInElement('tbody tr td:nth-child(3)', $divisionName);
+        $this->visit(route(self::BASE_ROUTE . '.show', [$division->id]))
+            ->seeInElement('tbody tr td:nth-child(1)', $division->id)
+            ->seeInElement('tbody tr td:nth-child(2)', $division->season)
+            ->seeInElement('tbody tr td:nth-child(3)', $division->division);
     }
 
     public function testDeleteDivision()
@@ -151,12 +171,15 @@ class DivisionsTableTest extends TestCase
         /** @var Division $division */
         $division = factory(Division::class)->create();
         $divisionId = $division->id;
-        $seasonId = $division->season_id;
-        $divisionName = $division->division;
 
-        $this->seeInDatabase('divisions', ['id' => $divisionId, 'season_id' => $seasonId, 'division' => $divisionName])
-            ->call('DELETE', route(self::BASE_ROUTE . '.destroy', [$divisionId]))
+        $this->seeInDatabase('divisions', [
+            'id'        => $division->id,
+            'season_id' => $division->season_id,
+            'division'  => $division->division,
+        ])
+            ->call('DELETE', route(self::BASE_ROUTE . '.destroy', [$division->id]))
             ->isRedirect(route(self::BASE_ROUTE . '.index'));
+
         $this->dontSeeInDatabase('divisions', ['id' => $divisionId]);
     }
 }

@@ -50,26 +50,29 @@ class RolesTableTest extends TestCase
         $this->be($this->getFakeUser());
 
         /** @var Role $role */
-        $role = factory(Role::class)->create();
-        $roleId = $role->id;
-        $roleName = $role->role;
+        $role = factory(Role::class)->make();
 
         // Brand new role
-        $newRoleName = 'New ' . $roleName;
         $this->visit(route(self::BASE_ROUTE . '.create'))
-            ->type($newRoleName, 'role')
+            ->type($role->role, 'role')
             ->press('Add')
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-success', 'Role added!')
-            ->seeInDatabase('roles', ['id' => $roleId + 1, 'role' => $newRoleName]);
+            ->seeInDatabase('roles', [
+                'id'   => 1,
+                'role' => $role->role,
+            ]);
 
         // Already existing role
         $this->visit(route(self::BASE_ROUTE . '.create'))
-            ->type($roleName, 'role')
+            ->type($role->role, 'role')
             ->press('Add')
             ->seePageIs(route(self::BASE_ROUTE . '.create'))
             ->seeInElement('.alert.alert-danger', 'The role already exists.')
-            ->seeInDatabase('roles', ['id' => $roleId, 'role' => $roleName]);
+            ->seeInDatabase('roles', [
+                'id'   => 1,
+                'role' => $role->role,
+            ]);
     }
 
     public function testEditRole()
@@ -78,30 +81,43 @@ class RolesTableTest extends TestCase
 
         /** @var Role $role */
         $role = factory(Role::class)->create();
-        $roleId = $role->id;
-        $roleName = $role->role;
 
-        $newRoleName = 'New ' . $roleName;
-        $this->seeInDatabase('roles', ['id' => $roleId, 'role' => $roleName])
-            ->visit(route(self::BASE_ROUTE . '.edit', [$roleId]))
-            ->type($newRoleName, 'role')
+        /** @var Role $newRole */
+        $newRole = factory(Role::class)->make();
+
+
+        $this->seeInDatabase('roles', [
+            'id'   => 1,
+            'role' => $role->role,
+        ])
+            ->visit(route(self::BASE_ROUTE . '.edit', [$role->id]))
+            ->type($newRole->role, 'role')
             ->press('Update')
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-success', 'Role updated!')
-            ->seeInDatabase('roles', ['id' => $roleId, 'role' => $newRoleName]);
-        $roleName = $newRoleName;
+            ->seeInDatabase('roles', [
+                'id'   => 1,
+                'role' => $newRole->role,
+            ]);
+        $role->role = $newRole->role;
+        unset($newRole);
 
-        $anotherRole = factory(Role::class)->create();
-        $anotherRoleName = $anotherRole->role;
+        /** @var Role $newRole */
+        $newRole = factory(Role::class)->create();
 
         // Already existing role
-        $this->seeInDatabase('roles', ['id' => $roleId, 'role' => $roleName])
-            ->visit(route(self::BASE_ROUTE . '.edit', [$roleId]))
-            ->type($anotherRoleName, 'role')
+        $this->seeInDatabase('roles', [
+            'id'   => $role->id,
+            'role' => $role->role,
+        ])
+            ->visit(route(self::BASE_ROUTE . '.edit', [$role->id]))
+            ->type($newRole->role, 'role')
             ->press('Update')
-            ->seePageIs(route(self::BASE_ROUTE . '.edit', [$roleId]))
+            ->seePageIs(route(self::BASE_ROUTE . '.edit', [$role->id]))
             ->seeInElement('.alert.alert-danger', 'The role already exists.')
-            ->seeInDatabase('roles', ['id' => $roleId, 'role' => $roleName]);
+            ->seeInDatabase('roles', [
+                'id'   => $role->id,
+                'role' => $role->role]);
     }
 
     public function testShowRole()
@@ -110,12 +126,10 @@ class RolesTableTest extends TestCase
 
         /** @var Role $role */
         $role = factory(Role::class)->create();
-        $roleId = $role->id;
-        $roleName = $role->role;
 
-        $this->visit(route(self::BASE_ROUTE . '.show', [$roleId]))
-            ->seeInElement('tbody tr td:nth-child(1)', $roleId)
-            ->seeInElement('tbody tr td:nth-child(2)', $roleName);
+        $this->visit(route(self::BASE_ROUTE . '.show', [$role->id]))
+            ->seeInElement('tbody tr td:nth-child(1)', $role->id)
+            ->seeInElement('tbody tr td:nth-child(2)', $role->role);
     }
 
     public function testDeleteRole()
@@ -125,11 +139,14 @@ class RolesTableTest extends TestCase
         /** @var Role $role */
         $role = factory(Role::class)->create();
         $roleId = $role->id;
-        $roleName = $role->role;
 
-        $this->seeInDatabase('roles', ['id' => $roleId, 'role' => $roleName])
-            ->call('DELETE', route(self::BASE_ROUTE . '.destroy', [$roleId]))
+        $this->seeInDatabase('roles', [
+            'id'   => $role->id,
+            'role' => $role->role,
+        ])
+            ->call('DELETE', route(self::BASE_ROUTE . '.destroy', [$role->id]))
             ->isRedirect(route(self::BASE_ROUTE . '.index'));
+
         $this->dontSeeInDatabase('roles', ['id' => $roleId]);
     }
 }

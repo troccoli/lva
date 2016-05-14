@@ -50,26 +50,29 @@ class ClubsTableTest extends TestCase
         $this->be($this->getFakeUser());
 
         /** @var Club $club */
-        $club = factory(Club::class)->create();
-        $clubId = $club->id;
-        $clubName = $club->club;
+        $club = factory(Club::class)->make();
 
         // Brand new club
-        $newClubName = 'New ' . $clubName;
         $this->visit(route(self::BASE_ROUTE . '.create'))
-            ->type($newClubName, 'club')
+            ->type($club->club, 'club')
             ->press('Add')
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-success', 'Club added!')
-            ->seeInDatabase('clubs', ['id' => $clubId + 1, 'club' => $newClubName]);
+            ->seeInDatabase('clubs', [
+                'id'   => 1,
+                'club' => $club->club,
+            ]);
 
         // Already existing club
         $this->visit(route(self::BASE_ROUTE . '.create'))
-            ->type($clubName, 'club')
+            ->type($club->club, 'club')
             ->press('Add')
             ->seePageIs(route(self::BASE_ROUTE . '.create'))
             ->seeInElement('.alert.alert-danger', 'The club already exists.')
-            ->seeInDatabase('clubs', ['id' => $clubId, 'club' => $clubName]);
+            ->seeInDatabase('clubs', [
+                'id'   => 1,
+                'club' => $club->club,
+            ]);
     }
 
     public function testEditClub()
@@ -78,30 +81,43 @@ class ClubsTableTest extends TestCase
 
         /** @var Club $club */
         $club = factory(Club::class)->create();
-        $clubId = $club->id;
-        $clubName = $club->club;
 
-        $newClubName = 'New ' . $clubName;
-        $this->seeInDatabase('clubs', ['id' => $clubId, 'club' => $clubName])
-            ->visit(route(self::BASE_ROUTE . '.edit', [$clubId]))
-            ->type($newClubName, 'club')
+        /** @var Club $newClub */
+        $newClub = factory(Club::class)->make();
+
+        $this->seeInDatabase('clubs', [
+            'id'   => $club->id,
+            'club' => $club->club,
+        ])
+            ->visit(route(self::BASE_ROUTE . '.edit', [$club->id]))
+            ->type($newClub->club, 'club')
             ->press('Update')
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-success', 'Club updated!')
-            ->seeInDatabase('clubs', ['id' => $clubId, 'club' => $newClubName]);
-        $clubName = $newClubName;
+            ->seeInDatabase('clubs', [
+                'id'   => $club->id,
+                'club' => $newClub->club,
+            ]);
+        $club->club = $newClub->club;
+        unset($newClub);
 
-        $anotherClub = factory(Club::class)->create();
-        $anotherClubName = $anotherClub->club;
+        /** @var Club $newClub */
+        $newClub = factory(Club::class)->create();
 
         // Already existing club
-        $this->seeInDatabase('clubs', ['id' => $clubId, 'club' => $clubName])
-            ->visit(route(self::BASE_ROUTE . '.edit', [$clubId]))
-            ->type($anotherClubName, 'club')
+        $this->seeInDatabase('clubs', [
+            'id'   => $club->id,
+            'club' => $club->club,
+        ])
+            ->visit(route(self::BASE_ROUTE . '.edit', [$club->id]))
+            ->type($newClub->club, 'club')
             ->press('Update')
-            ->seePageIs(route(self::BASE_ROUTE . '.edit', [$clubId]))
+            ->seePageIs(route(self::BASE_ROUTE . '.edit', [$club->id]))
             ->seeInElement('.alert.alert-danger', 'The club already exists.')
-            ->seeInDatabase('clubs', ['id' => $clubId, 'club' => $clubName]);
+            ->seeInDatabase('clubs', [
+                'id'   => $club->id,
+                'club' => $club->club,
+            ]);
     }
 
     public function testShowClub()
@@ -110,12 +126,10 @@ class ClubsTableTest extends TestCase
 
         /** @var Club $club */
         $club = factory(Club::class)->create();
-        $clubId = $club->id;
-        $clubName = $club->club;
 
-        $this->visit(route(self::BASE_ROUTE . '.show', [$clubId]))
-            ->seeInElement('tbody tr td:nth-child(1)', $clubId)
-            ->seeInElement('tbody tr td:nth-child(2)', $clubName);
+        $this->visit(route(self::BASE_ROUTE . '.show', [$club->id]))
+            ->seeInElement('tbody tr td:nth-child(1)', $club->id)
+            ->seeInElement('tbody tr td:nth-child(2)', $club->club);
     }
 
     public function testDeleteClub()
@@ -125,11 +139,14 @@ class ClubsTableTest extends TestCase
         /** @var Club $club */
         $club = factory(Club::class)->create();
         $clubId = $club->id;
-        $clubName = $club->club;
 
-        $this->seeInDatabase('clubs', ['id' => $clubId, 'club' => $clubName])
-            ->call('DELETE', route(self::BASE_ROUTE . '.destroy', [$clubId]))
+        $this->seeInDatabase('clubs', [
+            'id'   => $club->id,
+            'club' => $club->club,
+        ])
+            ->call('DELETE', route(self::BASE_ROUTE . '.destroy', [$club->id]))
             ->isRedirect(route(self::BASE_ROUTE . '.index'));
+
         $this->dontSeeInDatabase('clubs', ['id' => $clubId]);
     }
 }

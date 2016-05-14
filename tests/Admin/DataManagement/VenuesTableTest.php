@@ -50,26 +50,29 @@ class VenuesTableTest extends TestCase
         $this->be($this->getFakeUser());
 
         /** @var Venue $venue */
-        $venue = factory(Venue::class)->create();
-        $venueId = $venue->id;
-        $venueName = $venue->venue;
+        $venue = factory(Venue::class)->make();
 
         // Brand new venue
-        $newVenueName = 'New ' . $venueName;
         $this->visit(route(self::BASE_ROUTE . '.create'))
-            ->type($newVenueName, 'venue')
+            ->type($venue->venue, 'venue')
             ->press('Add')
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-success', 'Venue added!')
-            ->seeInDatabase('venues', ['id' => $venueId + 1, 'venue' => $newVenueName]);
+            ->seeInDatabase('venues', [
+                'id'    => 1,
+                'venue' => $venue->venue,
+            ]);
 
         // Already existing venue
         $this->visit(route(self::BASE_ROUTE . '.create'))
-            ->type($venueName, 'venue')
+            ->type($venue->venue, 'venue')
             ->press('Add')
             ->seePageIs(route(self::BASE_ROUTE . '.create'))
             ->seeInElement('.alert.alert-danger', 'The venue already exists.')
-            ->seeInDatabase('venues', ['id' => $venueId, 'venue' => $venueName]);
+            ->seeInDatabase('venues', [
+                'id'    => 1,
+                'venue' => $venue->venue,
+            ]);
     }
 
     public function testEditVenue()
@@ -78,30 +81,43 @@ class VenuesTableTest extends TestCase
 
         /** @var Venue $venue */
         $venue = factory(Venue::class)->create();
-        $venueId = $venue->id;
-        $venueName = $venue->venue;
 
-        $newVenueName = 'New ' . $venueName;
-        $this->seeInDatabase('venues', ['id' => $venueId, 'venue' => $venueName])
-            ->visit(route(self::BASE_ROUTE . '.edit', [$venueId]))
-            ->type($newVenueName, 'venue')
+        /** @var Venue $newVenue */
+        $newVenue = factory(Venue::class)->make();
+
+        $this->seeInDatabase('venues', [
+            'id'    => $venue->id,
+            'venue' => $venue->venue,
+        ])
+            ->visit(route(self::BASE_ROUTE . '.edit', [$venue->id]))
+            ->type($newVenue->venue, 'venue')
             ->press('Update')
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-success', 'Venue updated!')
-            ->seeInDatabase('venues', ['id' => $venueId, 'venue' => $newVenueName]);
-        $venueName = $newVenueName;
+            ->seeInDatabase('venues', [
+                'id'    => $venue->id,
+                'venue' => $newVenue->venue,
+            ]);
+        $venue->venue = $newVenue->venue;
+        unset($newVenue);
 
-        $anotherVenue = factory(Venue::class)->create();
-        $anotherVenueName = $anotherVenue->venue;
+        /** @var Venue $newVenue */
+        $newVenue = factory(Venue::class)->create();
 
         // Already existing venue
-        $this->seeInDatabase('venues', ['id' => $venueId, 'venue' => $venueName])
-            ->visit(route(self::BASE_ROUTE . '.edit', [$venueId]))
-            ->type($anotherVenueName, 'venue')
+        $this->seeInDatabase('venues', [
+            'id'    => $venue->id,
+            'venue' => $venue->venue,
+        ])
+            ->visit(route(self::BASE_ROUTE . '.edit', [$venue->id]))
+            ->type($newVenue->venue, 'venue')
             ->press('Update')
-            ->seePageIs(route(self::BASE_ROUTE . '.edit', [$venueId]))
+            ->seePageIs(route(self::BASE_ROUTE . '.edit', [$venue->id]))
             ->seeInElement('.alert.alert-danger', 'The venue already exists.')
-            ->seeInDatabase('venues', ['id' => $venueId, 'venue' => $venueName]);
+            ->seeInDatabase('venues', [
+                'id'    => $venue->id,
+                'venue' => $venue->venue,
+            ]);
     }
 
     public function testShowVenue()
@@ -110,12 +126,10 @@ class VenuesTableTest extends TestCase
 
         /** @var Venue $venue */
         $venue = factory(Venue::class)->create();
-        $venueId = $venue->id;
-        $venueName = $venue->venue;
 
-        $this->visit(route(self::BASE_ROUTE . '.show', [$venueId]))
-            ->seeInElement('tbody tr td:nth-child(1)', $venueId)
-            ->seeInElement('tbody tr td:nth-child(2)', $venueName);
+        $this->visit(route(self::BASE_ROUTE . '.show', [$venue->id]))
+            ->seeInElement('tbody tr td:nth-child(1)', $venue->id)
+            ->seeInElement('tbody tr td:nth-child(2)', $venue->venue);
     }
 
     public function testDeleteVenue()
@@ -125,11 +139,14 @@ class VenuesTableTest extends TestCase
         /** @var Venue $venue */
         $venue = factory(Venue::class)->create();
         $venueId = $venue->id;
-        $venueName = $venue->venue;
 
-        $this->seeInDatabase('venues', ['id' => $venueId, 'venue' => $venueName])
-            ->call('DELETE', route(self::BASE_ROUTE . '.destroy', [$venueId]))
+        $this->seeInDatabase('venues', [
+            'id'    => $venue->id,
+            'venue' => $venue->venue,
+        ])
+            ->call('DELETE', route(self::BASE_ROUTE . '.destroy', [$venue->id]))
             ->isRedirect(route(self::BASE_ROUTE . '.index'));
+
         $this->dontSeeInDatabase('venues', ['id' => $venueId]);
     }
 }

@@ -8,7 +8,6 @@
 
 namespace Admin\DataManagement;
 
-use Faker\Generator;
 use Tests\TestCase;
 use App\Models\Fixture;
 
@@ -130,12 +129,12 @@ class FixturesTableTest extends TestCase
 
         /** @var Fixture $fixture */
         $fixture = factory(Fixture::class)->create();
-        $fixtureId = $fixture->id;
 
-        $newFixture = factory(Fixture::class)->make();
+        /** @var Fixture $newFixture */
+        $newFixture = factory(Fixture::class)->make(['id' => $fixture->id]);
 
         // Edit all  details
-        $this->visit(route(self::BASE_ROUTE . '.edit', $fixtureId))
+        $this->visit(route(self::BASE_ROUTE . '.edit', [$fixture->id]))
             ->select($newFixture->division_id, 'division_id')
             ->select($newFixture->home_team_id, 'home_team_id')
             ->select($newFixture->away_team_id, 'away_team_id')
@@ -159,46 +158,48 @@ class FixturesTableTest extends TestCase
                 'start_time'   => $newFixture->start_time,
             ]);
         $fixture = $newFixture;
+        unset($newFixture);
 
         // Use the same team for home and away
-        $this->visit(route(self::BASE_ROUTE . '.edit', $fixtureId))
+        $this->visit(route(self::BASE_ROUTE . '.edit', [$fixture->id]))
             ->select($fixture->home_team_id, 'home_team_id')
             ->select($fixture->home_team_id, 'away_team_id')
             ->press('Update')
-            ->seePageIs(route(self::BASE_ROUTE . '.edit', $fixtureId))
+            ->seePageIs(route(self::BASE_ROUTE . '.edit', [$fixture->id]))
             ->seeInElement('.alert.alert-danger', 'The away team cannot be the same as the home team.')
             ->seeInDatabase('fixtures', [
-                'id'           => $fixtureId,
+                'id'           => $fixture->id,
                 'home_team_id' => $fixture->home_team_id,
                 'away_team_id' => $fixture->away_team_id,
             ]);
 
+        /** @var Fixture $newFixture */
         $newFixture = factory(Fixture::class)->create();
 
         // Use the same division, home and away teams of an existing fixture
-        $this->visit(route(self::BASE_ROUTE . '.edit', $fixtureId))
+        $this->visit(route(self::BASE_ROUTE . '.edit', [$fixture->id]))
             ->select($newFixture->division_id, 'division_id')
             ->select($newFixture->home_team_id, 'home_team_id')
             ->select($newFixture->away_team_id, 'away_team_id')
             ->press('Update')
-            ->seePageIs(route(self::BASE_ROUTE . '.edit', $fixtureId))
+            ->seePageIs(route(self::BASE_ROUTE . '.edit', [$fixture->id]))
             ->seeInElement('.alert.alert-danger', 'The fixture for these two teams have already been added in this division.')
             ->seeInDatabase('fixtures', [
-                'id'           => $fixtureId,
+                'id'           => $fixture->id,
                 'division_id'  => $fixture->division_id,
                 'home_team_id' => $fixture->home_team_id,
                 'away_team_id' => $fixture->away_team_id,
             ]);
 
         // Use the same division and match number of an existing fixture
-        $this->visit(route(self::BASE_ROUTE . '.edit', $fixtureId))
+        $this->visit(route(self::BASE_ROUTE . '.edit', [$fixture->id]))
             ->select($newFixture->division_id, 'division_id')
             ->type($newFixture->match_number, 'match_number')
             ->press('Update')
-            ->seePageIs(route(self::BASE_ROUTE . '.edit', $fixtureId))
+            ->seePageIs(route(self::BASE_ROUTE . '.edit', [$fixture->id]))
             ->seeInElement('.alert.alert-danger', 'There is already a match with the same number in this division.')
             ->seeInDatabase('fixtures', [
-                'id'           => $fixtureId,
+                'id'           => $fixture->id,
                 'division_id'  => $fixture->division_id,
                 'match_number' => $fixture->match_number,
             ]);
@@ -211,7 +212,7 @@ class FixturesTableTest extends TestCase
         /** @var Fixture $fixture */
         $fixture = factory(Fixture::class)->create();
 
-        $this->visit(route(self::BASE_ROUTE . '.show', $fixture->id))
+        $this->visit(route(self::BASE_ROUTE . '.show', [$fixture->id]))
             ->seeInElement('tbody tr td:nth-child(1)', $fixture->division->season)
             ->seeInElement('tbody tr td:nth-child(2)', $fixture->division->division)
             ->seeInElement('tbody tr td:nth-child(3)', $fixture->match_number)
@@ -242,7 +243,7 @@ class FixturesTableTest extends TestCase
             'warm_up_time' => $fixture->warm_up_time,
             'start_time'   => $fixture->start_time,
         ])
-            ->call('DELETE', route(self::BASE_ROUTE . '.destroy', $fixtureId))
+            ->call('DELETE', route(self::BASE_ROUTE . '.destroy', [$fixture->id]))
             ->isRedirect(route(self::BASE_ROUTE . '.index'));
 
         $this->dontSeeInDatabase('fixtures', ['id' => $fixtureId]);

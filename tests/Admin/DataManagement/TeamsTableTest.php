@@ -51,29 +51,33 @@ class TeamsTableTest extends TestCase
         $this->be($this->getFakeUser());
 
         /** @var Team $team */
-        $team = factory(Team::class)->create();
-        $teamId = $team->id;
-        $clubId = $team->club_id;
-        $teamName = $team->team;
+        $team = factory(Team::class)->make();
 
         // Brand new team
-        $newTeamName = 'New ' . $teamName;
         $this->visit(route(self::BASE_ROUTE . '.create'))
-            ->select($clubId, 'club_id')
-            ->type($newTeamName, 'team')
+            ->select($team->club_id, 'club_id')
+            ->type($team->team, 'team')
             ->press('Add')
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-success', 'Team added!')
-            ->seeInDatabase('teams', ['id' => $teamId + 1, 'club_id' => $clubId, 'team' => $newTeamName]);
+            ->seeInDatabase('teams', [
+                'id'      => 1,
+                'club_id' => $team->club_id,
+                'team'    => $team->team,
+            ]);
 
         // Already existing team in the same club
         $this->visit(route(self::BASE_ROUTE . '.create'))
-            ->select($clubId, 'club_id')
-            ->type($teamName, 'team')
+            ->select($team->club_id, 'club_id')
+            ->type($team->team, 'team')
             ->press('Add')
             ->seePageIs(route(self::BASE_ROUTE . '.create'))
             ->seeInElement('.alert.alert-danger', 'The team already exists in the same club.')
-            ->seeInDatabase('teams', ['id' => $teamId, 'club_id' => $clubId, 'team' => $teamName]);
+            ->seeInDatabase('teams', [
+                'id'      => 1,
+                'club_id' => $team->club_id,
+                'team'    => $team->team,
+            ]);
     }
 
     public function testEditTeam()
@@ -82,46 +86,67 @@ class TeamsTableTest extends TestCase
 
         /** @var Team $team */
         $team = factory(Team::class)->create();
-        $teamId = $team->id;
-        $clubId = $team->club_id;
-        $teamName = $team->team;
+
+        /** @var Team $newTeam */
+        $newTeam = factory(Team::class)->make();
 
         // Change the name of the team
-        $newTeamName = 'New ' . $teamName;
-        $this->seeInDatabase('teams', ['id' => $teamId, 'club_id' => $clubId, 'team' => $teamName])
-            ->visit(route(self::BASE_ROUTE . '.edit', [$teamId]))
-            ->type($newTeamName, 'team')
+        $this->seeInDatabase('teams', [
+            'id'      => $team->id,
+            'club_id' => $team->club_id,
+            'team'    => $team->team,
+        ])
+            ->visit(route(self::BASE_ROUTE . '.edit', [$team->id]))
+            ->type($newTeam->team, 'team')
             ->press('Update')
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-success', 'Team updated!')
-            ->seeInDatabase('teams', ['id' => $teamId, 'club_id' => $clubId, 'team' => $newTeamName]);
-        $teamName = $newTeamName;
+            ->seeInDatabase('teams', [
+                'id'      => $team->id,
+                'club_id' => $team->club_id,
+                'team'    => $newTeam->team,
+            ]);
+        $team->team = $newTeam->team;
+        unset($newTeam);
 
         // Already existing team in the same club
-        /** @var Team $anotherTeam */
-        $anotherTeam = factory(Team::class)->create(['club_id' => $clubId]);
-        $anotherTeamName = $anotherTeam->team;
+        /** @var Team $newTeam */
+        $newTeam = factory(Team::class)->create(['club_id' => $team->club_id]);
 
-        $this->seeInDatabase('teams', ['id' => $teamId, 'club_id' => $clubId, 'team' => $teamName])
-            ->visit(route(self::BASE_ROUTE . '.edit', [$teamId]))
-            ->type($anotherTeamName, 'team')
+        $this->seeInDatabase('teams', [
+            'id'      => $team->id,
+            'club_id' => $team->club_id,
+            'team'    => $team->team,
+        ])
+            ->visit(route(self::BASE_ROUTE . '.edit', [$team->id]))
+            ->type($newTeam->team, 'team')
             ->press('Update')
-            ->seePageIs(route(self::BASE_ROUTE . '.edit', [$teamId]))
+            ->seePageIs(route(self::BASE_ROUTE . '.edit', [$team->id]))
             ->seeInElement('.alert.alert-danger', 'The team already exists in the same club.')
-            ->seeInDatabase('teams', ['id' => $teamId, 'club_id' => $clubId, 'team' => $teamName]);
+            ->seeInDatabase('teams', [
+                'id'      => $team->id,
+                'club_id' => $team->club_id,
+                'team'    => $team->team,
+            ]);
 
         // Move team to a different club
-        $anotherClub = factory(Club::class)->create();
-        $anotherClubId = $anotherClub->id;
+        $club = factory(Club::class)->create();
 
-        $this->seeInDatabase('teams', ['id' => $teamId, 'club_id' => $clubId, 'team' => $teamName])
-            ->visit(route(self::BASE_ROUTE . '.edit', [$teamId]))
-            ->select($anotherClubId, 'club_id')
-            ->type($teamName, 'team')
+        $this->seeInDatabase('teams', [
+            'id'      => $team->id,
+            'club_id' => $team->club_id,
+            'team'    => $team->team,
+        ])
+            ->visit(route(self::BASE_ROUTE . '.edit', [$team->id]))
+            ->select($club->id, 'club_id')
             ->press('Update')
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-success', 'Team updated!')
-            ->seeInDatabase('teams', ['id' => $teamId, 'club_id' => $anotherClubId, 'team' => $newTeamName]);
+            ->seeInDatabase('teams', [
+                'id'      => $team->id,
+                'club_id' => $club->id,
+                'team'    => $team->team,
+            ]);
     }
 
     public function testShowTeam()
@@ -130,18 +155,11 @@ class TeamsTableTest extends TestCase
 
         /** @var Team $team */
         $team = factory(Team::class)->create();
-        $teamId = $team->id;
-        $clubId = $team->club_id;
-        $teamName = $team->team;
 
-        /** @var Club $club */
-        $club = Club::find($clubId);
-        $clubName = $club->club;
-
-        $this->visit(route(self::BASE_ROUTE . '.show', [$teamId]))
-            ->seeInElement('tbody tr td:nth-child(1)', $teamId)
-            ->seeInElement('tbody tr td:nth-child(2)', $clubName)
-            ->seeInElement('tbody tr td:nth-child(3)', $teamName);
+        $this->visit(route(self::BASE_ROUTE . '.show', [$team->id]))
+            ->seeInElement('tbody tr td:nth-child(1)', $team->id)
+            ->seeInElement('tbody tr td:nth-child(2)', $team->club)
+            ->seeInElement('tbody tr td:nth-child(3)', $team->team);
     }
 
     public function testDeleteTeam()
@@ -151,12 +169,15 @@ class TeamsTableTest extends TestCase
         /** @var Team $team */
         $team = factory(Team::class)->create();
         $teamId = $team->id;
-        $clubId = $team->club_id;
-        $teamName = $team->team;
 
-        $this->seeInDatabase('teams', ['id' => $teamId, 'club_id' => $clubId, 'team' => $teamName])
-            ->call('DELETE', route(self::BASE_ROUTE . '.destroy', [$teamId]))
+        $this->seeInDatabase('teams', [
+            'id'      => $team->id,
+            'club_id' => $team->club_id,
+            'team'    => $team->team,
+        ])
+            ->call('DELETE', route(self::BASE_ROUTE . '.destroy', [$team->id]))
             ->isRedirect(route(self::BASE_ROUTE . '.index'));
+        
         $this->dontSeeInDatabase('teams', ['id' => $teamId]);
     }
 }
