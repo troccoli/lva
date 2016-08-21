@@ -4,10 +4,12 @@
 /public/build
 /.phpstorm.meta.php
 /.idea
-/lva-server
+/.vagrant
+/puphpet
 /vendor
 /node_modules
 .env
 .env.*
 !.env.example
 _ide_helper.php
+Vagrantfile
