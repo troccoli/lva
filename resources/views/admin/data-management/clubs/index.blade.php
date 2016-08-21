@@ -1,6 +1,6 @@
-@extends('admin.data-management.home')
+@extends('layouts.app')
 
-@section('crud')
+@section('content')
 
     <div class="container-fluid">
         <h1>Clubs <a href="{{ url('admin/data-management/clubs/create') }}" class="btn btn-primary pull-right btn-sm">New

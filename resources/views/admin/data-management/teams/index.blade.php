@@ -1,6 +1,6 @@
-@extends('admin.data-management.home')
+@extends('layouts.app')
 
-@section('crud')
+@section('content')
 
     <div class="container-fluid">
         <h1>Teams <a href="{{ url('admin/data-management/teams/create') }}" class="btn btn-primary pull-right btn-sm">New
