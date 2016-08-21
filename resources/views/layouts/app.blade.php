@@ -15,6 +15,7 @@
     <!-- Styles -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="{{ url(elixir('css/app.css')) }}" rel="stylesheet"/>
+    @yield('stylesheets')
 </head>
 <body id="app-layout">
 <div class="jumbotron alert alert-danger" role="alert">

@@ -1,5 +1,8 @@
 @extends('layouts.app')
 
+@section('stylesheets')
+    <link href="{{ url(elixir('css/data-management.css')) }}" rel="stylesheet"/>
+@endsection
 @section('content')
     <div class="container">
         <div class="row">
@@ -12,9 +15,7 @@
                     </div>
                     <div class="panel-body">
                         <p>
-                            From here you can manage all the data. Click on the button of the table
-                            you want to use and from there you will be able to add, modify and delete
-                            records.
+                            This is where you manage raw data: add, delete or update records.
                         </p>
                         <ul class="nav nav-pills nav-stacked">
                             <li role="presentation">

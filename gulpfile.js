@@ -14,6 +14,7 @@ var elixir = require('laravel-elixir');
 elixir(function (mix) {
     // Styles
     mix.sass('app.scss');
+    mix.sass('data-management.scss');
 
     // Javascript
     mix.browserify('app.js');
@@ -23,6 +24,7 @@ elixir(function (mix) {
     mix.version([
         // Stylesheets
         'css/app.css',
+        'css/data-management.css',
         // Javascripts
         'js/app.js',
         'js/confirm-delete.js'
