@@ -63,6 +63,27 @@
                     </div>
                 </div>
             </div>
+            <div class="col-xs-3">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            Start of season
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <p>
+                            Tasks to be typically carried out at the beginning of a new season
+                        </p>
+                        <ul class="nav nav-pills nav-stacked">
+                            <li role="presentation">
+                                <a href="{{ route('uploadFixtures') }}">
+                                    <i class="fa fa-upload" aria-hidden="true"></i> Load fixtures
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 @endsection

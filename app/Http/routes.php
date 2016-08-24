@@ -65,6 +65,11 @@ Route::group(['middleware' => 'web'], function () {
             Route::resource('teams', 'TeamsController');
             Route::resource('fixtures', 'FixturesController');
             Route::resource('available-appointments', 'AvailableAppointmentsController');
+
+            Route::group(['prefix' => 'upload'], function () {
+                Route::get('fixtures', ['as' => 'uploadFixtures', 'uses' => 'LoadController@loadFixtures']);
+                Route::post('fixtures', ['as' => 'uploadFixtures', 'uses' => 'LoadController@loadFixturesGo']);
+            });
         });
     });
 });
