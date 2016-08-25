@@ -18,10 +18,18 @@
         <div class="form-group {{ $errors->has('upload_file') ? 'has-error' : ''}}">
             {!! Form::label('upload_file', 'File: ', ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-6">
-                {!! Form::file('upload_file') !!}
+                <div class="input-group">
+                    <label class="input-group-btn">
+                    <span class="btn btn-primary">
+                        Browse&hellip; <input name="upload_file" type="file" style="display: none;">
+                    </span>
+                    </label>
+                    <input type="text" class="form-control" readonly>
+                </div>
                 {!! $errors->first('upload_file', '<p class="help-block">:message</p>') !!}
             </div>
         </div>
+
 
         <div class="form-group">
             <div class="col-sm-offset-3 col-sm-3">
@@ -32,4 +40,8 @@
         {!! Form::close() !!}
     </div>
 
+@endsection
+
+@section('javascript')
+    <script src="{{ url(elixir('js/file-browse.js')) }}"></script>
 @endsection

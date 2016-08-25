@@ -19,6 +19,7 @@ elixir(function (mix) {
     // Javascript
     mix.browserify('app.js');
     mix.browserify('confirm-delete.js');
+    mix.browserify('file-browse.js');
 
     // Versioning
     mix.version([
@@ -27,6 +28,7 @@ elixir(function (mix) {
         'css/data-management.css',
         // Javascripts
         'js/app.js',
-        'js/confirm-delete.js'
+        'js/confirm-delete.js',
+        'js/file-browse.js'
     ]);
 });
