@@ -1,9 +1,11 @@
 /**
  * Created by Giulio Troccoli <giulio@troccoli.it> on 25/08/2016.
+ *
+ * https://www.abeautifulsite.net/whipping-file-inputs-into-shape-with-bootstrap-3
  */
 (function ($) {
     // We can attach the `fileselect` event to all file inputs on the page
-    $(document).on('change', ':file', function () {
+    $('form').on('change', ':file', function () {
         var input = $(this),
             numFiles = input.get(0).files ? input.get(0).files.length : 1,
             label = input.val().replace(/\\/g, '/').replace(/.*\//, '');

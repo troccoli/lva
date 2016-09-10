@@ -176,3 +176,9 @@ Breadcrumbs::register('admin.data-management.available-appointments.show', funct
     $b->parent('admin.data-management.available-appointments.index');
     $b->push('View');
 });
+
+// Data Management - Upload Fixtures
+Breadcrumbs::register('uploadFixtures', function ($b) {
+    $b->parent('admin::dataManagement');
+    $b->push('Upload fixtures');
+});

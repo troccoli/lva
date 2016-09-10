@@ -22,13 +22,5 @@ elixir(function (mix) {
     mix.browserify('file-browse.js');
 
     // Versioning
-    mix.version([
-        // Stylesheets
-        'css/app.css',
-        'css/data-management.css',
-        // Javascripts
-        'js/app.js',
-        'js/confirm-delete.js',
-        'js/file-browse.js'
-    ]);
+    mix.version(['css/*.css', 'js/*.js']);
 });

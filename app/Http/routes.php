@@ -67,8 +67,8 @@ Route::group(['middleware' => 'web'], function () {
             Route::resource('available-appointments', 'AvailableAppointmentsController');
 
             Route::group(['prefix' => 'upload'], function () {
-                Route::get('fixtures', ['as' => 'uploadFixtures', 'uses' => 'LoadController@loadFixtures']);
-                Route::post('fixtures', ['as' => 'uploadFixtures', 'uses' => 'LoadController@loadFixturesGo']);
+                Route::get('fixtures', ['as' => 'uploadFixtures', 'uses' => 'LoadController@uploadFixtures']);
+                Route::post('fixtures', ['as' => 'uploadFixtures', 'uses' => 'LoadController@startUploadFixtures']);
             });
         });
     });
