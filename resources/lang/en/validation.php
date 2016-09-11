@@ -88,7 +88,7 @@ return [
     |
     */
 
-    'custom' => [
+    'custom'           => [
         'season'   => [
             'unique' => 'The season already exists.',
         ],
@@ -106,8 +106,9 @@ return [
         ],
         'venue'    => [
             'unique' => 'The venue already exists.',
-        ]
+        ],
     ],
+    'required_headers' => 'The :headers fields must all be present in the file.',
 
     /*
     |--------------------------------------------------------------------------

@@ -69,6 +69,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::group(['prefix' => 'upload'], function () {
                 Route::get('fixtures', ['as' => 'uploadFixtures', 'uses' => 'LoadController@uploadFixtures']);
                 Route::post('fixtures', ['as' => 'uploadFixtures', 'uses' => 'LoadController@startUploadFixtures']);
+                Route::get('status', ['as' => 'uploadStatus', 'uses' => 'LoadController@processJob']);
             });
         });
     });

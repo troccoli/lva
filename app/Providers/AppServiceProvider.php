@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Validators\CustomValidators;
 use Illuminate\Support\ServiceProvider;
+use Validator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,7 +15,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Validator::extend('required_headers', CustomValidators::class . '@requiredHeaders');
+        Validator::replacer('required_headers', CustomValidators::class . '@requiredHeadersMessage');
     }
 
     /**
