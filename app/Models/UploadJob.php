@@ -23,6 +23,32 @@ class UploadJob extends Model
 {
     const TYPE_FIXTURES = 'fixtures';
 
+    const STATUS_NOT_STARTED = 0;
+    const STATUS_VALIDATING_RECORDS = 1;
+    const STATUS_INSERTING_RECORDS = 2;
+    const STATUS_DONE = 99;
+
     protected $table = 'upload_jobs';
     protected $fillable = ['file', 'type', 'status'];
+
+    public function getStatus($value)
+    {
+        return json_decode($value);
+    }
+
+    public function setStatus($value)
+    {
+        return json_encode($value);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function save(array $options = [])
+    {
+        // Fire the "status updated" event
+        return parent::save($options);
+    }
+
+
 }

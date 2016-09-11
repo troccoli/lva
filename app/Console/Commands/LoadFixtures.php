@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Models\UploadJob;
+use App\Services\InteractiveFixturesUploadService;
 use Illuminate\Console\Command;
 
 class LoadFixtures extends Command
@@ -12,22 +14,24 @@ class LoadFixtures extends Command
      * @var string
      */
     protected $signature = 'lva:load:fixtures {job : The id of the job to run}';
-
     /**
      * The console command description.
      *
      * @var string
      */
     protected $description = 'Upload of fixtures from a CSV file';
+    /** @var InteractiveFixturesUploadService */
+    private $service;
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
+     * LoadFixtures constructor.
+     * @param InteractiveFixturesUploadService $service
      */
-    public function __construct()
+    public function __construct(InteractiveFixturesUploadService $service)
     {
         parent::__construct();
+
+        $this->service = $service;
     }
 
     /**
@@ -38,5 +42,15 @@ class LoadFixtures extends Command
     public function handle()
     {
         $jobId = $this->argument('job');
+
+        $job = UploadJob::findOrFail($jobId);
+
+        $this->service->processJob($job);
+
+        // Get the status and find out last stage of the process
+
+        // Skip already processed stages
+
+        // Run current and all next stages
     }
 }
