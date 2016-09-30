@@ -14,12 +14,14 @@ class LoadFixtures extends Command
      * @var string
      */
     protected $signature = 'lva:load:fixtures {job : The id of the job to run}';
+
     /**
      * The console command description.
      *
      * @var string
      */
     protected $description = 'Upload of fixtures from a CSV file';
+
     /** @var InteractiveFixturesUploadService */
     private $service;
 

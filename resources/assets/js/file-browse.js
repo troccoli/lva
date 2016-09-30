@@ -1,5 +1,5 @@
 /**
- * Created by Giulio Troccoli <giulio@troccoli.it> on 25/08/2016.
+ * Created by Giulio Troccoli-Allard <giulio@troccoli.it> on 25/08/2016.
  *
  * https://www.abeautifulsite.net/whipping-file-inputs-into-shape-with-bootstrap-3
  */

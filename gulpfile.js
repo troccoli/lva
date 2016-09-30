@@ -20,7 +20,7 @@ elixir(function (mix) {
     mix.browserify('app.js');
     mix.browserify('confirm-delete.js');
     mix.browserify('file-browse.js');
-    mix.browserify('load-fixtures.js');
+    mix.browserify('load-fixtures-status-update.js');
 
     // Versioning
     mix.version(['css/*.css', 'js/*.js']);

@@ -1,48 +1,37 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Giulio Troccoli <giulio@troccoli.it>
+ * User: Giulio Troccoli-Allard <giulio@troccoli.it>
  * Date: 10/09/2016
  * Time: 15:32
  */
 
 namespace App\Services;
 
+use App\Services\Contracts\InteractiveUploadContract;
 use Illuminate\Http\UploadedFile;
 
 use App\Models\UploadJob;
-use App\Services\Interfaces\InteractiveUploadInterface;
-use Symfony\Component\HttpFoundation\File\File;
 
-class InteractiveFixturesUploadService implements InteractiveUploadInterface
+class InteractiveFixturesUploadService implements InteractiveUploadContract
 {
     const UPLOAD_DIR = '/app/files/';
 
-    /** @var StatusLoggerService */
-    private $logger;
-
-    /** @var \SplFileObject */
-    private $statusFile;
-
-    /**
-     * @inheritDoc
-     */
-    public function __construct(StatusLoggerService $logger)
-    {
-        $this->logger = $logger;
-    }
+    /*******************
+     * PRIVATE METHODS *
+     *******************/
 
     /**
      * @inheritdoc
      */
     public function createJob(UploadedFile $file)
     {
-        $fixtureFile = $file->move(storage_path() . self::UPLOAD_DIR);
+        $fixtureFile = $file->move(storage_path() . self::UPLOAD_DIR, $file->getClientOriginalName());
 
         $job = UploadJob::create([
             'file'   => $fixtureFile->getFilename(),
             'type'   => UploadJob::TYPE_FIXTURES,
-            'status' => json_encode([]),
+            'status' => ['status_code' => UploadJob::STATUS_NOT_STARTED],
         ]);
 
         return $job->id;
@@ -58,11 +47,10 @@ class InteractiveFixturesUploadService implements InteractiveUploadInterface
         if ($statusCode == UploadJob::STATUS_NOT_STARTED) {
             $status = $this->initialStatus();
             $this->updateStatus($job, $status);
-            // Start
         }
 
         if ($statusCode == UploadJob::STATUS_VALIDATING_RECORDS) {
-            // validate each record
+            //$this->validateFixtures();
         }
 
         if ($statusCode == UploadJob::STATUS_INSERTING_RECORDS) {
@@ -73,14 +61,15 @@ class InteractiveFixturesUploadService implements InteractiveUploadInterface
             // Clean up
         }
     }
+
     /************************************
      * INTERFACE IMPLEMENTATION METHODS *
      ************************************/
 
-    /*******************
-     * PRIVATE METHODS *
-     *******************/
-
+    /**
+     * @param UploadJob $job
+     * @return int
+     */
     private function getStatusCode(UploadJob $job)
     {
         $status = $job->status;
@@ -92,10 +81,13 @@ class InteractiveFixturesUploadService implements InteractiveUploadInterface
         return UploadJob::STATUS_NOT_STARTED;
     }
 
+    /**
+     * @return array
+     */
     private function initialStatus()
     {
         return [
-
+            'status_code' => UploadJob::STATUS_VALIDATING_RECORDS,
         ];
     }
 
@@ -104,11 +96,8 @@ class InteractiveFixturesUploadService implements InteractiveUploadInterface
      */
     public function updateStatus(UploadJob $job, array $newStatus)
     {
-        if (is_null($this->statusFile)) {
-            $this->statusFile = $this->logger->createStatusFile('upload_fixtures_status_' . $job->id);
-        }
-
-        $this->logger->setStatus($this->statusFile, json_encode($newStatus));
+        $job->status = $newStatus;
+        $job->save();
     }
 
 

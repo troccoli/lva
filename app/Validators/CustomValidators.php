@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Giulio Troccoli <giulio@troccoli.it>
+ * User: Giulio Troccoli-Allard <giulio@troccoli.it>
  * Date: 11/09/2016
  * Time: 12:49
  */

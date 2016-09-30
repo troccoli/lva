@@ -30,7 +30,7 @@ Breadcrumbs::register('passwordReset', function($b) {
 // Data Management
 Breadcrumbs::register('admin::dataManagement', function($b) {
     $b->parent('home');
-    $b->push('Data Management', route('admin::dataManagement'));
+    $b->push('Data management', route('admin::dataManagement'));
 });
 
 // Data Management - Seasons
@@ -180,5 +180,10 @@ Breadcrumbs::register('admin.data-management.available-appointments.show', funct
 // Data Management - Upload Fixtures
 Breadcrumbs::register('uploadFixtures', function ($b) {
     $b->parent('admin::dataManagement');
-    $b->push('Upload fixtures');
+    $b->push('Upload fixtures', route('uploadFixtures'));
+});
+// Data Management - Upload Fixtures - Staus
+Breadcrumbs::register('uploadStatus', function ($b) {
+    $b->parent('uploadFixtures');
+    $b->push('Status');
 });

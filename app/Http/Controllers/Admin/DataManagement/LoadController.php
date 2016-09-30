@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Giulio Troccoli <giulio@troccoli.it>
+ * User: Giulio Troccoli-Allard <giulio@troccoli.it>
  * Date: 23/08/2016
  * Time: 19:33
  */
@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Admin\DataManagement;
 
 use App\Http\Controllers\Controller;
 
+use App\Models\UploadJob;
 use App\Services\InteractiveFixturesUploadService as FileUploadService;
 use Illuminate\Http\Request;
 use App\Models\Season;
@@ -46,19 +47,15 @@ class LoadController extends Controller
         // Create upload job
         $jobId = $this->uploadService->createJob($request->file('upload_file'));
 
-        // Redirect to status page (this will actually start the job)
+        // Start the uploading
+        Artisan::call('lva:load:fixtures', ['job' => $jobId]);
+
+        // Redirect to the status page
         return Redirect::route('uploadStatus', ['job_id' => $jobId]);
     }
 
-    public function processJob()
+    public function uploadStatus(UploadJob $uploadJob)
     {
-        $jobId = Input::get('job_id', null);
-        if (is_null($jobId) || (int)$jobId != $jobId || (int)$jobId <= 0) {
-            return Redirect::route('uploadFixtures');
-        }
-
-        Artisan::call('lva:load:fixtures', ['job' => $jobId]);
-
-        return view('admin.data-management.load.status');
+        return view('admin.data-management.load.status', ['job' => $uploadJob]);
     }
 }

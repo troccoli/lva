@@ -23,6 +23,10 @@ Route::singularResourceParameters();
 | kernel and includes session state, CSRF protection, and more.
 |
 */
+Route::group(['prefix' => 'api/v1', 'middleware' => 'auth:api', 'namespace' => 'Api\v1'], function () {
+    Route::get('upload_status.json', ['uses' => 'UploadApiController@getUploadStatus']);
+});
+
 Route::group(['middleware' => 'web'], function () {
 
     Route::get('/', ['as' => 'home', 'uses' => 'HomeController@showHome']);
@@ -69,7 +73,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::group(['prefix' => 'upload'], function () {
                 Route::get('fixtures', ['as' => 'uploadFixtures', 'uses' => 'LoadController@uploadFixtures']);
                 Route::post('fixtures', ['as' => 'uploadFixtures', 'uses' => 'LoadController@startUploadFixtures']);
-                Route::get('status', ['as' => 'uploadStatus', 'uses' => 'LoadController@processJob']);
+                Route::get('status/{uploadJob}', ['as' => 'uploadStatus', 'uses' => 'LoadController@uploadStatus']);
             });
         });
     });

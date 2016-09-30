@@ -5,13 +5,17 @@
   "license": "MIT",
   "authors": [
     {
-      "name": "Giulio Troccoli ",
+      "name": "Giulio Troccoli-Allard",
       "email": "giulio@troccoli.it"
     }
   ],
   "keywords": [
     "framework",
-    "laravel"
+    "laravel",
+    "volleyball",
+    "referee",
+    "admin",
+    "london"
   ],
   "type": "project",
   "require": {
@@ -20,8 +24,7 @@
     "davejamesmiller/laravel-breadcrumbs": "^3.0",
     "laravelcollective/html": "^5.2",
     "laracasts/flash": "^2.0",
-    "league/csv": "^8.0",
-    "pusher/pusher-php-server": "~2.0"
+    "league/csv": "^8.0"
   },
   "require-dev": {
     "fzaninotto/faker": "~1.4",

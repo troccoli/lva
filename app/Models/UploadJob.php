@@ -18,6 +18,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\UploadJob whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\UploadJob whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string $status
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\UploadJob whereStatus($value)
  */
 class UploadJob extends Model
 {
@@ -31,24 +33,20 @@ class UploadJob extends Model
     protected $table = 'upload_jobs';
     protected $fillable = ['file', 'type', 'status'];
 
-    public function getStatus($value)
+    /**
+     * @param string $value
+     * @return array
+     */
+    public function getStatusAttribute($value)
     {
-        return json_decode($value);
-    }
-
-    public function setStatus($value)
-    {
-        return json_encode($value);
+        return json_decode($value, true);
     }
 
     /**
-     * @inheritDoc
+     * @param array $value
      */
-    public function save(array $options = [])
+    public function setStatusAttribute($value)
     {
-        // Fire the "status updated" event
-        return parent::save($options);
+        $this->attributes['status'] = json_encode($value);
     }
-
-
 }
