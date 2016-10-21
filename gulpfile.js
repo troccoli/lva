@@ -15,6 +15,7 @@ elixir(function (mix) {
     // Styles
     mix.sass('app.scss');
     mix.sass('data-management.scss');
+    mix.sass('load-fixtures.scss');
 
     // Javascript
     mix.browserify('app.js');

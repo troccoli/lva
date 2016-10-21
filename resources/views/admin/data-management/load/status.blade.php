@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@section('stylesheets')
+    <link href="{{ url(elixir('css/load-fixtures.css')) }}" rel="stylesheet"/>
+@endsection
+
 @section('content')
     {!! Form::hidden('api_token', Auth::user()->api_token, ['id' => 'api_token']) !!}
     {!! Form::hidden('job_id', $job->id, ['id' => 'job_id']) !!}
@@ -18,9 +22,11 @@
         <p id="message"></p>
     </div>
 
+    @include('_partial.load-fixture-modal');
 @endsection
 
 @section('javascript')
-
+    <script type="text/javascript"
+            src="https://cdn.jsdelivr.net/jquery.loadingoverlay/1.4.1/loadingoverlay.min.js"></script>
     <script src="{{ url(elixir('js/load-fixtures-status-update.js')) }}"></script>
 @endsection

@@ -56,6 +56,7 @@ class LoadController extends Controller
 
     public function uploadStatus(UploadJob $uploadJob)
     {
+        $uploadJob->save();
         return view('admin.data-management.load.status', ['job' => $uploadJob]);
     }
 }
