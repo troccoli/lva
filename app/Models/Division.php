@@ -5,21 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Division
- *
- * @property-read \App\Models\Season $season
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Fixture[] $fixtures
- * @mixin \Eloquent
- * @property integer $id
- * @property integer $season_id
- * @property string $division
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Division whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Division whereSeasonId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Division whereDivision($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Division whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Division whereUpdatedAt($value)
+ * Class Division
+ * @package App\Models
  */
 class Division extends Model
 {
@@ -40,12 +27,12 @@ class Division extends Model
 
     public function season()
     {
-        return $this->belongsTo('App\Models\Season');
+        return $this->belongsTo(Season::class);
     }
-    
+
     public function fixtures()
     {
-        return $this->hasMany('App\Models\Fixture');
+        return $this->hasMany(Fixture::class);
     }
 
     public function __toString()

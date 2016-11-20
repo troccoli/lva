@@ -5,33 +5,30 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Season
+ * Class VenueSynonym
  * @package App\Models
  */
-class Season extends Model
+class VenueSynonym extends Model
 {
-
     /**
      * The database table used by the model.
      *
      * @var string
      */
-    protected $table = 'seasons';
+    protected $table = 'venues_synonyms';
 
     /**
      * Attributes that should be mass-assignable.
      *
      * @var array
      */
-    protected $fillable = ['season'];
+    protected $fillable = ['synonym', 'venue_id'];
 
-    public function divisions()
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function venue()
     {
-        return $this->hasMany(Division::class);
-    }
-
-    public function __toString()
-    {
-        return $this->season;
+        return $this->hasOne(Venue::class);
     }
 }

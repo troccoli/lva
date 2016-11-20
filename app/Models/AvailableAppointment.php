@@ -5,21 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\AvailableAppointment
- *
- * @property-read \App\Models\Fixture $fixture
- * @property-read \App\Models\Role $role
- * @mixin \Eloquent
- * @property integer $id
- * @property integer $fixture_id
- * @property integer $role_id
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @method static \Illuminate\Database\Query\Builder|\App\Models\AvailableAppointment whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\AvailableAppointment whereFixtureId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\AvailableAppointment whereRoleId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\AvailableAppointment whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\AvailableAppointment whereUpdatedAt($value)
+ * Class AvailableAppointment
+ * @package App\Models
  */
 class AvailableAppointment extends Model
 {
@@ -40,11 +27,11 @@ class AvailableAppointment extends Model
 
     public function fixture()
     {
-        return $this->belongsTo('App\Models\Fixture');
+        return $this->belongsTo(Fixture::class);
     }
 
     public function role()
     {
-        return $this->belongsTo('App\Models\Role');
+        return $this->belongsTo(Role::class);
     }
 }

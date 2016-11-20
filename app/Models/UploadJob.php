@@ -5,21 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\UploadJob
- *
- * @property integer $id
- * @property string $file
- * @property string $type
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @method static \Illuminate\Database\Query\Builder|\App\Models\UploadJob whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\UploadJob whereFile($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\UploadJob whereType($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\UploadJob whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\UploadJob whereUpdatedAt($value)
- * @mixin \Eloquent
- * @property string $status
- * @method static \Illuminate\Database\Query\Builder|\App\Models\UploadJob whereStatus($value)
+ * Class UploadJob
+ * @package App\Models
  */
 class UploadJob extends Model
 {
@@ -51,6 +38,46 @@ class UploadJob extends Model
             default:
                 return "Status code $statusCode not recognised";
         }
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function mappedTeams()
+    {
+        return $this->hasMany(MappedTeam::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function mappedVenues()
+    {
+        return $this->hasMany(MappedVenue::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function newTeams()
+    {
+        return $this->hasMany(NewTeams::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function newVenues()
+    {
+        return $this->hasMany(NewVenues::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function modelData()
+    {
+        return $this->hasMany(UploadJobData::class);
     }
 
     /**
