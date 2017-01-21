@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class TeamSynonym
+ *
  * @package App\Models
  */
 class TeamSynonym extends Model
@@ -29,6 +30,16 @@ class TeamSynonym extends Model
      * @var array
      */
     protected $fillable = ['synonym', 'team_id'];
+
+    /**
+     * @param string $synonym
+     *
+     * @return Team|null
+     */
+    public static function findBySynonym($synonym)
+    {
+        return self::where('synonym', $synonym)->first()->team;
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne

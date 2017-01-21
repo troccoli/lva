@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Team
+ *
  * @package App\Models
  */
 class Team extends Model
@@ -24,6 +25,16 @@ class Team extends Model
      * @var array
      */
     protected $fillable = ['club_id', 'team'];
+
+    /**
+     * @param string $team
+     *
+     * @return Team|null
+     */
+    public static function findByName($team)
+    {
+        return self::where('team', $team)->first();
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

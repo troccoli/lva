@@ -25,6 +25,16 @@ class VenueSynonym extends Model
     protected $fillable = ['synonym', 'venue_id'];
 
     /**
+     * @param string $synonym
+     *
+     * @return Venue|null
+     */
+    public static function findBySynonym($synonym)
+    {
+        return self::where('synonym', $synonym)->first()->venue;
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function venue()

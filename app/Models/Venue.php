@@ -26,6 +26,16 @@ class Venue extends Model
     protected $fillable = ['venue'];
 
     /**
+     * @param string $venue
+     *
+     * @return Venue|null
+     */
+    public static function findByName($venue)
+    {
+        return self::where('venue', $venue)->first();
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function fixtures()

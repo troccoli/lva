@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class UploadJob
+ *
  * @package App\Models
  */
 class UploadJob extends Model
@@ -81,19 +82,27 @@ class UploadJob extends Model
     }
 
     /**
-     * @param string $value
      * @return array
      */
-    public function getStatusAttribute($value)
+    public function getStatus()
     {
-        return json_decode($value, true);
+        return json_decode($this->status, true);
     }
 
     /**
-     * @param array $value
+     * @param array $status
+     *
+     * @return UploadJob
      */
-    public function setStatusAttribute($value)
+    public function setStatus($status)
     {
-        $this->attributes['status'] = json_encode($value);
+        $this->status = json_encode($status);
+
+        return $this;
+    }
+
+    public function getFile()
+    {
+        return $this->file;
     }
 }

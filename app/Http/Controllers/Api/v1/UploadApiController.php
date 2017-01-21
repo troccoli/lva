@@ -22,7 +22,7 @@ class UploadApiController extends Controller
         }
 
         $status = UploadJob::STATUS_UNKNOWN_DATA;
-        $uploadJob->status = [
+        $uploadJob->setStatus([
             'StatusCode'    => $status,
             'StatusMessage' => UploadJob::getStatusMessage($status),
             'Progress'      => rand(10, 99),
@@ -73,39 +73,14 @@ class UploadApiController extends Controller
                 ],
 
             ],
-
-
-        ];
+        ]);
 
         return response()->json([
             'Timestamp' => time(),
             'Error'     => false,
             'Message'   => 'Job found',
-            'Status'    => $uploadJob->status,
+            'Status'    => $uploadJob->getStatus(),
         ]);
-    }
-
-    private function checkForJob()
-    {
-        $jobId = Input::get('job', null);
-        if (null === $jobId) {
-            return [
-                'Timestamp' => time(),
-                'Error'     => true,
-                'Message'   => 'Job parameter missing',
-            ];
-        }
-        $uploadJob = UploadJob::find($jobId);
-
-        if (is_null($uploadJob)) {
-            return [
-                'Timestamp' => time(),
-                'Error'     => true,
-                'Message'   => 'Job not found',
-            ];
-        }
-
-        return $uploadJob;
     }
 
     public function addTeam()
@@ -154,5 +129,28 @@ class UploadApiController extends Controller
         return response()->json([
             'success' => false,
         ]);
+    }
+
+    private function checkForJob()
+    {
+        $jobId = Input::get('job', null);
+        if (null === $jobId) {
+            return [
+                'Timestamp' => time(),
+                'Error'     => true,
+                'Message'   => 'Job parameter missing',
+            ];
+        }
+        $uploadJob = UploadJob::find($jobId);
+
+        if (is_null($uploadJob)) {
+            return [
+                'Timestamp' => time(),
+                'Error'     => true,
+                'Message'   => 'Job not found',
+            ];
+        }
+
+        return $uploadJob;
     }
 }
