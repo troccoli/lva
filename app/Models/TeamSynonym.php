@@ -38,7 +38,12 @@ class TeamSynonym extends Model
      */
     public static function findBySynonym($synonym)
     {
-        return self::where('synonym', $synonym)->first()->team;
+        $synonym = self::where('synonym', $synonym)->first();
+        if ($synonym) {
+            return $synonym->name;
+        }
+
+        return null;
     }
 
     /**

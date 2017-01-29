@@ -21,7 +21,7 @@ class UploadJob extends Model
     const STATUS_DONE = 99;
 
     protected $table = 'upload_jobs';
-    protected $fillable = ['file', 'type', 'status'];
+    protected $fillable = ['file', 'row_count', 'type', 'status'];
 
     public static function getStatusMessage($statusCode)
     {
@@ -90,6 +90,46 @@ class UploadJob extends Model
     }
 
     /**
+     * @return string
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    /**
+     * @param string $filename
+     *
+     * @return UploadJob
+     */
+    public function setFile($filename)
+    {
+        $this->file = $filename;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return UploadJob
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function getStatus()
@@ -110,10 +150,22 @@ class UploadJob extends Model
     }
 
     /**
-     * @return string
+     * @return int|null
      */
-    public function getFile()
+    public function getRowCount()
     {
-        return $this->file;
+        return $this->row_count;
+    }
+
+    /**
+     * @param int $count
+     *
+     * @return UploadJob
+     */
+    public function setRowCount($count)
+    {
+        $this->row_count = $count;
+
+        return $this;
     }
 }

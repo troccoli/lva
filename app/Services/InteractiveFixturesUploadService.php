@@ -52,6 +52,18 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
      ************************************/
 
     /**
+     * @param resource $handle
+     *
+     * @return array
+     */
+    public static function readOneLine(&$handle)
+    {
+        return array_map(function ($field) {
+            return str_replace(['"', "\n", "\r"], '', $field);
+        }, explode(',', fgets($handle)));
+    }
+
+    /**
      * @inheritdoc
      */
     public function createJob(UploadedFile $file)
@@ -59,14 +71,26 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
         /** @var UploadedFile $fixtureFile */
         $fixtureFile = $file->move(storage_path() . self::UPLOAD_DIR, $file->getClientOriginalName());
 
-        $job = UploadJob::create([
-            'file'   => $fixtureFile->getFilename(),
-            'type'   => UploadJob::TYPE_FIXTURES,
-            'status' => ['status_code' => UploadJob::STATUS_NOT_STARTED],
-        ]);
+        $handle = fopen($fixtureFile->getRealPath(), 'rb');
+        $lines = 0;
+        while (!feof($handle)) {
+            $lines += substr_count(fread($handle, 8192), "\n");
+        }
+        fclose($handle);
+
+        $job = new UploadJob();
+        $job->setFile($fixtureFile->getFilename())
+            ->setType(UploadJob::TYPE_FIXTURES)
+            ->setRowCount($lines - 1)// Don't count the first line as they are the headers
+            ->setStatus(['status_code' => UploadJob::STATUS_NOT_STARTED])
+            ->save();
 
         return $job->getId();
     }
+
+    /*******************
+     * PRIVATE METHODS *
+     *******************/
 
     /**
      * @inheritDoc
@@ -95,17 +119,16 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
             /** @var resource $csvFile */
             $csvFile = fopen(storage_path() . self::UPLOAD_DIR . $job->getFile(), 'r');
 
-            $headers = fgets($csvFile);
+            $headers = self::readOneLine($csvFile);
 
             $this->getIntoPosition($csvFile, $processedLines);
 
             $allRowsProcessed = true;
             while (!feof($csvFile)) {
-                $row = array_combine($headers, fgets($csvFile));
+                $row = array_combine($headers, self::readOneLine($csvFile));
                 if (!$this->isValidRow($row)) {
                     // @todo Prepare for asking the user what to do
                     $allRowsProcessed = false;
-                    fclose($csvFile);
                     break;
                 }
                 $this->insertFixture($job->getId(), $row);
@@ -131,10 +154,6 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
             // @todo Clean up
         }
     }
-
-    /*******************
-     * PRIVATE METHODS *
-     *******************/
 
     /**
      * @param resource $file

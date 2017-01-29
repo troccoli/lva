@@ -8,16 +8,16 @@
 
 namespace App\Validators;
 
+use App\Services\InteractiveFixturesUploadService;
 use Illuminate\Http\UploadedFile;
-use League\Csv\Reader;
 
 class CustomValidators
 {
     public function requiredHeaders($attribute, $value, $parameters, $validator)
     {
         if ($value instanceof UploadedFile) {
-            $csv = Reader::createFromPath($value->getRealPath());
-            $headers = $csv->fetchOne();
+            $handle = fopen($value->getRealPath(), 'r');
+            $headers = InteractiveFixturesUploadService::readOneLine($handle);
 
             if ($parameters == array_intersect($parameters, $headers)) {
                 return true;
