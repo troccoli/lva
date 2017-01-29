@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class MappedTeam
+ *
  * @package App\Models
  */
 class MappedTeam extends Model
@@ -45,4 +46,13 @@ class MappedTeam extends Model
     {
         return $this->hasOne(Team::class);
     }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
 }

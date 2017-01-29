@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Team extends Model
 {
-
     /**
      * The database table used by the model.
      *
@@ -74,6 +73,14 @@ class Team extends Model
     public function mapped()
     {
         return $this->hasMany(MappedTeam::class);
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**

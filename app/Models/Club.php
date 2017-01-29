@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Club
+ *
  * @package App\Models
  */
 class Club extends Model
 {
-
     /**
      * The database table used by the model.
      *
@@ -25,11 +25,33 @@ class Club extends Model
      */
     protected $fillable = ['club'];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function teams()
     {
         return $this->hasMany(Team::class);
     }
 
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->club;
+    }
+
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->club;

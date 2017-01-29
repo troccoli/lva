@@ -76,9 +76,17 @@ class UploadJob extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function modelData()
+    public function uploadData()
     {
         return $this->hasMany(UploadJobData::class);
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**
@@ -101,6 +109,9 @@ class UploadJob extends Model
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getFile()
     {
         return $this->file;

@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class MappedVenue
+ *
  * @package App\Models
  */
 class MappedVenue extends Model
@@ -44,5 +45,13 @@ class MappedVenue extends Model
     public function venue()
     {
         return $this->hasOne(Venue::class);
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 }

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Role
+ *
  * @package App\Models
  */
 class Role extends Model
@@ -25,11 +26,25 @@ class Role extends Model
      */
     protected $fillable = ['role'];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function available_appointments()
     {
         return $this->hasMany(AvailableAppointment::class);
     }
 
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->role;

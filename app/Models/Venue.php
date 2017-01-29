@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Venue
+ *
  * @package App\Models
  */
 class Venue extends Model
 {
-
     /**
      * The database table used by the model.
      *
@@ -57,6 +57,22 @@ class Venue extends Model
     public function mapped()
     {
         return $this->hasMany(MappedVenue::class);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getName()
+    {
+        return $this->venue();
     }
 
     /**

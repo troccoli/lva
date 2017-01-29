@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class AvailableAppointment
+ *
  * @package App\Models
  */
 class AvailableAppointment extends Model
 {
-
     /**
      * The database table used by the model.
      *
@@ -25,13 +25,27 @@ class AvailableAppointment extends Model
      */
     protected $fillable = ['fixture_id', 'role_id'];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function fixture()
     {
         return $this->belongsTo(Fixture::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function role()
     {
         return $this->belongsTo(Role::class);
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 }

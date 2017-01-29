@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class UploadJobData
+ *
  * @package App\Models
  */
 class UploadJobData extends Model
@@ -28,7 +29,7 @@ class UploadJobData extends Model
      *
      * @var array
      */
-    protected $fillable = ['upload_job_id', 'model_data'];
+    protected $fillable = ['upload_job_id', 'model', 'model_data'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
@@ -36,5 +37,65 @@ class UploadJobData extends Model
     public function uploadJob()
     {
         return $this->hasOne(UploadJob::class);
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $jobId
+     *
+     * @return UploadJobData
+     */
+    public function setJobId($jobId)
+    {
+        $this->upload_job_id = $jobId;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getModel()
+    {
+        return $this->model;
+    }
+
+    /**
+     * @param string $model
+     *
+     * @return UploadJobData
+     */
+    public function setModel($model)
+    {
+        $this->model = $model;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getData()
+    {
+        return $this->model_data;
+    }
+
+    /**
+     * @param string $data
+     *
+     * @return UploadJobData
+     */
+    public function setData($data)
+    {
+        $this->model_data = $data;
+
+        return $this;
     }
 }

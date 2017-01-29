@@ -8,11 +8,15 @@
 
 namespace App\Services;
 
+use App\Models\Division;
+use App\Models\Fixture;
 use App\Models\Team;
 use App\Models\TeamSynonym;
+use App\Models\UploadJobData;
 use App\Models\Venue;
 use App\Models\VenueSynonym;
 use App\Services\Contracts\InteractiveUploadContract;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\UploadedFile;
 
@@ -61,7 +65,7 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
             'status' => ['status_code' => UploadJob::STATUS_NOT_STARTED],
         ]);
 
-        return $job->id;
+        return $job->getId();
     }
 
     /**
@@ -81,6 +85,7 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
         if ($statusCode == UploadJob::STATUS_NOT_STARTED) {
 
             $status = $this->statusService->getNextStepStatus($status);
+            $statusCode = $this->statusService->getStatusCode($status);
             $job->setStatus($status)->save();
         }
 
@@ -94,29 +99,36 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
 
             $this->getIntoPosition($csvFile, $processedLines);
 
+            $allRowsProcessed = true;
             while (!feof($csvFile)) {
                 $row = array_combine($headers, fgets($csvFile));
                 if (!$this->isValidRow($row)) {
-                    // Prepare for asking the user what to do
+                    // @todo Prepare for asking the user what to do
+                    $allRowsProcessed = false;
                     fclose($csvFile);
                     break;
                 }
+                $this->insertFixture($job->getId(), $row);
+
                 $processedLines++;
                 $this->statusService->setStatusProcessedLines($status, $processedLines);
                 $job->setStatus($status)->save();
             }
             fclose($csvFile);
 
-            $status = $this->statusService->getNextStepStatus($status);
-            $job->setStatus($status)->save();
+            if ($allRowsProcessed) {
+                $status = $this->statusService->getNextStepStatus($status);
+                $statusCode = $this->statusService->getStatusCode($status);
+                $job->setStatus($status)->save();
+            }
         }
 
         if ($statusCode == UploadJob::STATUS_INSERTING_RECORDS) {
-            // insert into DB
+            // @todo insert into DB
         }
 
         if ($statusCode == UploadJob::STATUS_DONE) {
-            // Clean up
+            // @todo Clean up
         }
     }
 
@@ -186,5 +198,30 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
         }
 
         return true;
+    }
+
+    private function insertFixture($jobId, $data)
+    {
+
+        $fixture = new Fixture();
+        $fixture
+            ->setDivision(Division::find($data['Code'])->getId())
+            ->setMatchNumber($data['Match'])
+            ->setMatchDate(Carbon::createFromFormat('d/m/Y', $data['date']))
+            ->setWarmUpTime(Carbon::createFromFormat('H:i:s', $data['WUTime']))
+            ->setStartTime(Carbon::createFromFormat('H:i:s', $data['StartTime']))
+            ->setHomeTeam(Team::findByName($data['Home'])->getId())
+            ->setAwayTeam(Team::findByName($data['Away'])->getId())
+            ->setVenue(Venue::findByName($data['Hall'])->getId());
+
+        $jobData = new UploadJobData();
+
+        $jobData
+            ->setJobId($jobId)
+            ->setModel(Fixture::class)
+            ->setData($fixture->toJson())
+            ->save();
+
+        unset($fixture);
     }
 }

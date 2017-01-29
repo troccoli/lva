@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class NewVenues
+ *
  * @package App\Models
  */
 class NewVenues extends Model
@@ -36,5 +37,13 @@ class NewVenues extends Model
     public function uploadJob()
     {
         return $this->hasOne(UploadJob::class);
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 }

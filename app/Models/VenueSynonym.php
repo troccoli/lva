@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class VenueSynonym
+ *
  * @package App\Models
  */
 class VenueSynonym extends Model
@@ -40,5 +41,13 @@ class VenueSynonym extends Model
     public function venue()
     {
         return $this->hasOne(Venue::class);
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 }
