@@ -2,14 +2,19 @@
 
 namespace App\Http\Controllers\Admin\DataManagement;
 
-use App\Http\Requests;
+use App\Http\Requests\StoreDivisionRequest as StoreRequest;
+use App\Http\Requests\UpdateDivisionRequest as UpdateRequest;
 use App\Http\Controllers\Controller;
 
+use Laracasts\Flash\Flash; 
 use App\Models\Division;
-use Illuminate\Http\Request;
-
 use App\Models\Season;
 
+/**
+ * Class DivisionsController
+ *
+ * @package App\Http\Controllers\Admin\DataManagement
+ */
 class DivisionsController extends Controller
 {
     /**
@@ -37,20 +42,15 @@ class DivisionsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param StoreRequest $request
      *
      * @return mixed
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
-        $this->validate($request, [
-            'season_id' => 'required|exists:seasons,id',
-            'division'  => 'required|unique:divisions,division,NULL,id,season_id,' . $request->get('season_id'),
-        ]);
-
         Division::create($request->all());
 
-        \Flash::success('Division added!');
+        Flash::success('Division added!');
 
         return redirect('admin/data-management/divisions');
     }
@@ -87,22 +87,18 @@ class DivisionsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
-     * @param int $id
+     * @param UpdateRequest $request
+     * @param int           $id
      *
      * @return mixed
      */
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request, $id)
     {
-        $this->validate($request, [
-            'season_id' => 'required|exists:seasons,id',
-            'division'  => 'required|unique:divisions,division,NULL,id,season_id,' . $request->get('season_id'),
-        ]);
-
+        /** @var Division $division */
         $division = Division::findOrFail($id);
         $division->update($request->all());
 
-        \Flash::success('Division updated!');
+        Flash::success('Division updated!');
 
         return redirect('admin/data-management/divisions');
     }
@@ -119,9 +115,9 @@ class DivisionsController extends Controller
         $canBeDeleted = empty(Division::find($id)->fixtures->toArray());
         if ($canBeDeleted) {
             Division::destroy($id);
-            \Flash::success('Division deleted!');
+            Flash::success('Division deleted!');
         } else {
-            \Flash::error('Cannot delete because they are existing fixtures in this division.');
+            Flash::error('Cannot delete because they are existing fixtures in this division.');
         }
 
         return redirect('admin/data-management/divisions');

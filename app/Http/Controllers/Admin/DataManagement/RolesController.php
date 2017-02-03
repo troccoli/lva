@@ -2,12 +2,18 @@
 
 namespace App\Http\Controllers\Admin\DataManagement;
 
-use App\Http\Requests;
+use App\Http\Requests\StoreRoleRequest as StoreRequest;
+use App\Http\Requests\UpdateRoleRequest as UpdateRequest;
 use App\Http\Controllers\Controller;
 
+use Laracasts\Flash\Flash;
 use App\Models\Role;
-use Illuminate\Http\Request;
 
+/**
+ * Class RolesController
+ *
+ * @package App\Http\Controllers\Admin\DataManagement
+ */
 class RolesController extends Controller
 {
     /**
@@ -35,17 +41,15 @@ class RolesController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param StoreRequest $request
      *
      * @return mixed
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
-        $this->validate($request, ['role' => 'required|unique:roles']);
-
         Role::create($request->all());
 
-        \Flash::success('Role added!');
+        Flash::success('Role added!');
 
         return redirect('admin/data-management/roles');
     }
@@ -81,19 +85,18 @@ class RolesController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
-     * @param int $id
+     * @param UpdateRequest $request
+     * @param int           $id
      *
      * @return mixed
      */
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request, $id)
     {
-        $this->validate($request, ['role' => 'required|unique:roles,role,' . $id]);
-
+        /** @var Role $role */
         $role = Role::findOrFail($id);
         $role->update($request->all());
 
-        \Flash::success('Role updated!');
+        Flash::success('Role updated!');
 
         return redirect('admin/data-management/roles');
     }
@@ -110,11 +113,11 @@ class RolesController extends Controller
         $canBeDeleted = empty(Role::find($id)->available_appointments->toArray());
         if ($canBeDeleted) {
             Role::destroy($id);
-            \Flash::success('Role deleted!');
+            Flash::success('Role deleted!');
         } else {
-            \Flash::error('Cannot delete because they are existing appointments for this role.');
+            Flash::error('Cannot delete because they are existing appointments for this role.');
         }
-        
+
         return redirect('admin/data-management/roles');
     }
 

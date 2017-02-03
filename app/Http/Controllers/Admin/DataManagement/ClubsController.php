@@ -2,12 +2,18 @@
 
 namespace App\Http\Controllers\Admin\DataManagement;
 
-use App\Http\Requests;
+use App\Http\Requests\StoreClubRequest as StoreRequest;
+use App\Http\Requests\UpdateClubRequest as UpdateRequest;
 use App\Http\Controllers\Controller;
 
+use Laracasts\Flash\Flash;
 use App\Models\Club;
-use Illuminate\Http\Request;
 
+/**
+ * Class ClubsController
+ *
+ * @package App\Http\Controllers\Admin\DataManagement
+ */
 class ClubsController extends Controller
 {
 
@@ -36,17 +42,15 @@ class ClubsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param StoreRequest $request
      *
      * @return mixed
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
-        $this->validate($request, ['club' => 'required|unique:clubs']);
-
         Club::create($request->all());
 
-        \Flash::success('Club added!');
+        Flash::success('Club added!');
 
         return redirect('admin/data-management/clubs');
     }
@@ -54,7 +58,7 @@ class ClubsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      *
      * @return mixed
      */
@@ -68,7 +72,7 @@ class ClubsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      *
      * @return mixed
      */
@@ -82,19 +86,18 @@ class ClubsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
-     * @param int $id
+     * @param UpdateRequest $request
+     * @param int           $id
      *
      * @return mixed
      */
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request, $id)
     {
-        $this->validate($request, ['club' => 'required|unique:clubs,club,' . $id]);
-
+        /** @var Club $club */
         $club = Club::findOrFail($id);
         $club->update($request->all());
 
-        \Flash::success('Club updated!');
+        Flash::success('Club updated!');
 
         return redirect('admin/data-management/clubs');
     }
@@ -102,7 +105,7 @@ class ClubsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      *
      * @return mixed
      */
@@ -111,11 +114,11 @@ class ClubsController extends Controller
         $canBeDeleted = empty(Club::find($id)->teams->toArray());
         if ($canBeDeleted) {
             Club::destroy($id);
-            \Flash::success('Club deleted!');
+            Flash::success('Club deleted!');
         } else {
-            \Flash::error('Cannot delete because they are existing teams in this club.');
+            Flash::error('Cannot delete because they are existing teams in this club.');
         }
-       
+
         return redirect('admin/data-management/clubs');
     }
 

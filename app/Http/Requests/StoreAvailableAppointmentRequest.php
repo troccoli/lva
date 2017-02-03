@@ -2,10 +2,15 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Requests\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Contracts\Validation\Validator;
 
-class AvailableAppointmentRequest extends Request
+/**
+ * Class StoreAvailableAppointmentRequest
+ *
+ * @package App\Http\Requests
+ */
+class StoreAvailableAppointmentRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,7 +19,7 @@ class AvailableAppointmentRequest extends Request
      */
     public function authorize()
     {
-        return true;
+        return Auth::check();
     }
 
     /**
@@ -36,9 +41,7 @@ class AvailableAppointmentRequest extends Request
     protected function formatErrors(Validator $validator)
     {
         return [[
-            'Appointment already added.',
-        ]];
+                    'Appointment already added.',
+                ]];
     }
-
-
 }
