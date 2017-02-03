@@ -32,7 +32,12 @@ class VenueSynonym extends Model
      */
     public static function findBySynonym($synonym)
     {
-        return self::where('synonym', $synonym)->first()->venue;
+        $synonym = self::where('synonym', $synonym)->first();
+        if ($synonym) {
+            return $synonym->venue;
+        }
+
+        return null;
     }
 
     /**
