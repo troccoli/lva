@@ -2,6 +2,10 @@
 /resources/assets/.sass-cache
 /public/css
 /public/build
+# Laravel 5 & Lumen specific
+bootstrap/cache/
+storage/
+
 /.phpstorm.meta.php
 /.idea
 /.vagrant
