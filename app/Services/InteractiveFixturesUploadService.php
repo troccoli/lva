@@ -13,6 +13,7 @@ use App\Models\Fixture;
 use App\Models\Team;
 use App\Models\TeamSynonym;
 use App\Models\UploadJobData;
+use App\Models\UploadJobStatus;
 use App\Models\Venue;
 use App\Models\VenueSynonym;
 use App\Services\Contracts\InteractiveUploadContract;
@@ -28,22 +29,25 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
 
     /** @var StatusService */
     private $statusService;
+    private $uploadDataService;
 
     /** @var Collection */
     private $mappedTeams;
     /** @var Collection */
     private $mappedVenues;
     /** @var Collection */
-    private $newTeams;
-    /** @var Collection */
     private $newVenues;
 
     /**
      * @inheritDoc
      */
-    public function __construct(StatusService $statusService)
+    public function __construct(
+        StatusService $statusService,
+        UploadDataService $uploadDataService
+    )
     {
         $this->statusService = $statusService;
+        $this->uploadDataService = $uploadDataService;
     }
 
 
@@ -82,10 +86,10 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
         $job->setFile($fixtureFile->getFilename())
             ->setType(UploadJob::TYPE_FIXTURES)
             ->setRowCount($lines - 1)// Don't count the first line as they are the headers
-            ->setStatus(['status_code' => UploadJob::STATUS_NOT_STARTED])
+            ->setStatus($this->statusService->getInitialStatus()->toArray())
             ->save();
 
-        return $job->getId();
+        return $job;
     }
 
     /*******************
@@ -99,58 +103,91 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
     {
         $this->mappedTeams = $job->mappedTeams;
         $this->mappedVenues = $job->mappedVenues;
-        $this->newTeams = $job->newTeams;
         $this->newVenues = $job->newVenues;
 
-        $status = $job->getStatus();
+        /** @var UploadJobStatus $status */
+        $status = $this->statusService->loadStatus($job->getStatus());
 
-        $statusCode = $this->statusService->getStatusCode($status);
-
-        if ($statusCode == UploadJob::STATUS_NOT_STARTED) {
-
-            $status = $this->statusService->getNextStepStatus($status);
-            $statusCode = $this->statusService->getStatusCode($status);
-            $job->setStatus($status)->save();
+        if ($status->isNotStarted()) {
+            $status->moveForward()->setTotalLines($job->getRowCount());
+            $job->setStatus($status->toArray())->save();
         }
 
-        if ($statusCode == UploadJob::STATUS_VALIDATING_RECORDS) {
-            $processedLines = $this->statusService->getStatusProcessedLines($status);
+        if ($status->isValidating()) {
+            $processedLines = $status->getProcessedLines();
 
             /** @var resource $csvFile */
             $csvFile = fopen(storage_path() . self::UPLOAD_DIR . $job->getFile(), 'r');
 
+            // Get the headers
             $headers = self::readOneLine($csvFile);
 
+            // Skip already processed lines
             $this->getIntoPosition($csvFile, $processedLines);
 
+            // Start processing
             $allRowsProcessed = true;
             while (!feof($csvFile)) {
                 $row = array_combine($headers, self::readOneLine($csvFile));
-                if (!$this->isValidRow($row)) {
-                    // @todo Prepare for asking the user what to do
+
+                // Store the current line
+                $this->statusService->setProcessingLine($status,
+                    $row['Code'],
+                    $row['Match'],
+                    $row['Home'],
+                    $row['Away'],
+                    Carbon::createFromFormat('d/m/Y', $row['Date']),
+                    Carbon::createFromFormat('H:i:s', $row['WUTime']),
+                    Carbon::createFromFormat('H:i:s', $row['StartTime']),
+                    $row['Hall']
+                );
+
+                // Start validation
+                $isValid = true;
+                if (!$this->isValidTeam($row['Home'])) {
                     $allRowsProcessed = false;
+                    $isValid = false;
+                    $this->statusService->setUnknownHomeTeam($status);
+                }
+                if (!$this->isValidTeam($row['Away'])) {
+                    $allRowsProcessed = false;
+                    $isValid = false;
+                    $this->statusService->setUnknownHomeTeam($status);
+                }
+                if (!$this->isValidVenue($row['Hall'])) {
+                    $allRowsProcessed = false;
+                    $isValid = false;
+                    $this->statusService->setUnknownVenue($status);
+                }
+
+                // Is something is not valid stop the process
+                if (!$isValid) {
                     break;
                 }
+
+                // Everything is ok, so store the fixture to be inserted later
                 $this->insertFixture($job->getId(), $row);
 
-                $processedLines++;
-                $this->statusService->setStatusProcessedLines($status, $processedLines);
-                $job->setStatus($status)->save();
+                // Update the line counter
+                $status->setProcessedLines(++$processedLines);
+                $job->setStatus($status->toArray())->save();
             }
             fclose($csvFile);
 
+            // If we exited the loop because we have processed all line then advance to next stage
             if ($allRowsProcessed) {
-                $status = $this->statusService->getNextStepStatus($status);
-                $statusCode = $this->statusService->getStatusCode($status);
-                $job->setStatus($status)->save();
+                $status->moveForward()->setTotalRows(UploadJobData::findByJobId($job->getId())->count());
             }
+
+            // Whether we stop because of an error or because we're finished validating, save the status
+            $job->setStatus($status->toArray())->save();
         }
 
-        if ($statusCode == UploadJob::STATUS_INSERTING_RECORDS) {
+        if ($status->isInserting()) {
             // @todo insert into DB
         }
 
-        if ($statusCode == UploadJob::STATUS_DONE) {
+        if ($status->isDone()) {
             // @todo Clean up
         }
     }
@@ -169,32 +206,19 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
     }
 
     /**
-     * @param array $row
+     * @param string $team
      *
      * @return bool
      */
-    private function isValidRow($row)
-    {
-        $isValid = true;
-
-        $isValid = $isValid && $this->isValidTeam($row['Home']);
-        $isValid = $isValid && $this->isValidTeam($row['Away']);
-
-        $isValid = $isValid && $this->isValidVenue($row['Hall']);
-
-        return $isValid;
-    }
-
     private function isValidTeam($team)
     {
+        /** @var Team $model */
         $model = Team::findByName($team);
         if (is_null($model)) {
             $model = TeamSynonym::findBySynonym($team);
         }
         if (is_null($model)) {
-            if (!in_array($team, $this->mappedTeams->pluck('team')->all()) &&
-                !in_array($team, $this->newTeams->pluck('team')->all())
-            ) {
+            if (!in_array($team, $this->mappedTeams->pluck('team')->all())) {
                 return false;
             }
         }
@@ -202,8 +226,14 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
         return true;
     }
 
+    /**
+     * @param string $venue
+     *
+     * @return bool
+     */
     private function isValidVenue($venue)
     {
+        /** @var Venue $model */
         $model = Venue::findByName($venue);
         if (is_null($model)) {
             $model = VenueSynonym::findBySynonym($venue);
@@ -219,27 +249,25 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
         return true;
     }
 
+    /**
+     * @param int   $jobId
+     * @param array $data
+     */
     private function insertFixture($jobId, $data)
     {
-
+        /** @var Fixture $fixture */
         $fixture = new Fixture();
         $fixture
-            ->setDivision(Division::find($data['Code'])->getId())
+            ->setDivision(Division::findByName($data['Code'])->getId())
             ->setMatchNumber($data['Match'])
-            ->setMatchDate(Carbon::createFromFormat('d/m/Y', $data['date']))
+            ->setMatchDate(Carbon::createFromFormat('d/m/Y', $data['Date']))
             ->setWarmUpTime(Carbon::createFromFormat('H:i:s', $data['WUTime']))
             ->setStartTime(Carbon::createFromFormat('H:i:s', $data['StartTime']))
             ->setHomeTeam(Team::findByName($data['Home'])->getId())
             ->setAwayTeam(Team::findByName($data['Away'])->getId())
             ->setVenue(Venue::findByName($data['Hall'])->getId());
 
-        $jobData = new UploadJobData();
-
-        $jobData
-            ->setJobId($jobId)
-            ->setModel(Fixture::class)
-            ->setData($fixture->toJson())
-            ->save();
+        $this->uploadDataService->add($jobId, Fixture::class, $fixture);
 
         unset($fixture);
     }

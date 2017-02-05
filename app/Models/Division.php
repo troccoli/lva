@@ -27,6 +27,16 @@ class Division extends Model
     protected $fillable = ['season_id', 'division'];
 
     /**
+     * @param string $division
+     *
+     * @return Division|null
+     */
+    public static function findByName($division)
+    {
+        return self::where('division', $division)->first();
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function season()

@@ -24,7 +24,7 @@
                     </div>
                 </div>
                 <p>
-                    The follolwing data has not been found in the database. If it's new then add it. If not, then
+                    The following data has not been found in the database. If it's new then add it. If not, then
                     please check the available options and map it to one of the existing.
                 </p>
                 <h4>What would you like to do?</h4>

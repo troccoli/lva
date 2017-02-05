@@ -8,6 +8,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -30,6 +31,16 @@ class UploadJobData extends Model
      * @var array
      */
     protected $fillable = ['upload_job_id', 'model', 'model_data'];
+
+    /**
+     * @param $jobId
+     *
+     * @return Collection
+     */
+    public static function findByJobId($jobId)
+    {
+        return self::where('upload_job_id', $jobId)->get();
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne

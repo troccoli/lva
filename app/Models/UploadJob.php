@@ -13,33 +13,8 @@ class UploadJob extends Model
 {
     const TYPE_FIXTURES = 'fixtures';
 
-    const STATUS_NOT_STARTED = 0;
-    const STATUS_VALIDATING_RECORDS = 1;
-    const STATUS_INSERTING_RECORDS = 2;
-    const STATUS_UNKNOWN_DATA = 11;
-    const STATUS_UNKNOWN_VENUE = 12;
-    const STATUS_DONE = 99;
-
     protected $table = 'upload_jobs';
     protected $fillable = ['file', 'row_count', 'type', 'status'];
-
-    public static function getStatusMessage($statusCode)
-    {
-        switch ($statusCode) {
-            case self::STATUS_NOT_STARTED:
-                return 'Not started';
-            case self::STATUS_VALIDATING_RECORDS:
-                return 'Validating records';
-            case self::STATUS_INSERTING_RECORDS:
-                return 'Inserting records';
-            case self::STATUS_UNKNOWN_DATA:
-                return 'Unknown data';
-            case self::STATUS_DONE:
-                return 'Done';
-            default:
-                return "Status code $statusCode not recognised";
-        }
-    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -55,14 +30,6 @@ class UploadJob extends Model
     public function mappedVenues()
     {
         return $this->hasMany(MappedVenue::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function newTeams()
-    {
-        return $this->hasMany(NewTeams::class);
     }
 
     /**

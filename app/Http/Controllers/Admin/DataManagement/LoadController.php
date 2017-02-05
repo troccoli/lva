@@ -41,17 +41,17 @@ class LoadController extends Controller
     {
         $this->validate($request, [
             'season_id'   => 'required|exists:seasons,id',
-            'upload_file' => 'required|file|required_headers:Region,Code,Match,Home,Away,WUTime,StartTime,Discipline,Hall',
+            'upload_file' => 'required|file|required_headers:Region,Code,Match,Home,Away,Date,WUTime,StartTime,Discipline,Hall',
         ]);
 
         // Create upload job
-        $jobId = $this->uploadService->createJob($request->file('upload_file'));
+        $job = $this->uploadService->createJob($request->file('upload_file'));
 
         // Start the uploading
-        Artisan::call('lva:load:fixtures', ['job' => $jobId]);
+        $this->uploadService->processJob($job);
 
         // Redirect to the status page
-        return Redirect::route('uploadStatus', ['job_id' => $jobId]);
+        return Redirect::route('uploadStatus', ['job_id' => $job->getId()]);
     }
 
     public function uploadStatus(UploadJob $uploadJob)

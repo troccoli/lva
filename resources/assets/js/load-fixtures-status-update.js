@@ -87,21 +87,31 @@
         },
 
         createUnknownRow = function createUnknownRow(tmplId, text, map) {
-            var unknown = $('#' + tmplId).clone(true).removeClass('hidden').attr('id', '');
+            var unknown = $('#' + tmplId).clone(true).removeClass('hidden').attr('id', ''),
+                addButton = unknown.find('.add-button'),
+                mapButton = unknown.find('.map-button');
 
             unknown.find('p').text(text);
-            unknown.find('.add-button').data('apiurl', map.ApiUrls.Add);
+            if (map.ApiUrls.Add) {
+                addButton.data('apiurl', map.ApiUrls.Add);
+                addButton.on('click', AddUnknown);
+            } else {
+                addButton.addClass('disabled').blur();
+            }
 
-            var select = unknown.find('select');
-            $.each(map.Mapping, function (index, option) {
-                var $option = $("<option></option>")
-                    .attr("value", option.value)
-                    .text(option.text);
-                select.append($option);
-            });
-            unknown.find('.map-button').data('apiurl', map.ApiUrls.Map);
-
-            unknown.on('click', '.add-button', AddUnknown).on('click', '.map-button', MapUnknown);
+            if (map.ApiUrls.Map) {
+                var select = unknown.find('select');
+                $.each(map.Mapping, function (index, option) {
+                    var $option = $("<option></option>")
+                        .attr("value", option.value)
+                        .text(option.text);
+                    select.append($option);
+                });
+                mapButton.data('apiurl', map.ApiUrls.Map);
+                mapButton.on('click', MapUnknown);
+            } else {
+                mapButton.addClass('disabled').blur();
+            }
 
             return unknown;
         },
@@ -132,7 +142,7 @@
                     .attr('aria-valuenow', status.Progress)
                     .find('.sr-only').html(status.Progress + '% Complete');
 
-                if (status.StatusCode == 11) {
+                if (status.StatusCode == 10) {
                     $('#load-fixture-modal').find('.modal-title').text(status.StatusMessage);
 
                     populateCurrentFixture($('#load-fixture-modal'), status.Fixture);

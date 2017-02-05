@@ -10,10 +10,24 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Models\UploadJob;
+use App\Models\UploadJobStatus;
+use App\Services\StatusService;
 use Illuminate\Support\Facades\Input;
 
 class UploadApiController extends Controller
 {
+    /** @var StatusService */
+    private $statusService;
+
+    /**
+     * @inheritDoc
+     */
+    public function __construct(StatusService $statusService)
+    {
+        $this->statusService = $statusService;
+    }
+
+
     public function getUploadStatus()
     {
         $uploadJob = $this->checkForJob();
@@ -21,10 +35,13 @@ class UploadApiController extends Controller
             return response()->json($uploadJob);
         }
 
-        $status = UploadJob::STATUS_UNKNOWN_DATA;
-        $uploadJob->setStatus([
-            'StatusCode'    => $status,
-            'StatusMessage' => UploadJob::getStatusMessage($status),
+        $status = new UploadJobStatus();
+        $status->load([
+            'status_code' => UploadJobStatus::STATUS_UNKNOWN_DATA,
+        ]);
+        $f = [
+            'StatusCode'    => $status->getStatusCode(),
+            'StatusMessage' => $status->getStatusCodeMessage(),
             'Progress'      => rand(10, 99),
             'Fixture'       => [
                 'Division'    => 'M1A',
@@ -45,7 +62,6 @@ class UploadApiController extends Controller
                         ['value' => 2, 'text' => 'k.s. Osemka Men 2'],
                     ],
                     'ApiUrls' => [
-                        'Add' => '/api/v1/teams',
                         'Map' => '/api/v1/maps/team',
                     ],
                 ],
@@ -57,7 +73,6 @@ class UploadApiController extends Controller
                         ['value' => 2, 'text' => 'k.s. Osemka Men 2'],
                     ],
                     'ApiUrls' => [
-                        'Add' => '/api/v1/teams',
                         'Map' => '/api/v1/maps/team',
                     ],
                 ],
@@ -73,25 +88,13 @@ class UploadApiController extends Controller
                 ],
 
             ],
-        ]);
+        ];
 
         return response()->json([
             'Timestamp' => time(),
             'Error'     => false,
             'Message'   => 'Job found',
-            'Status'    => $uploadJob->getStatus(),
-        ]);
-    }
-
-    public function addTeam()
-    {
-        $uploadJob = $this->checkForJob();
-        if (!$uploadJob instanceof UploadJob) {
-            return response($uploadJob);
-        }
-
-        return response()->json([
-            'success' => true,
+            'Status'    => $f,
         ]);
     }
 
@@ -102,8 +105,10 @@ class UploadApiController extends Controller
             return response($uploadJob);
         }
 
+        // @todo implement mapping a team
+
         return response()->json([
-            'success' => false,
+            'success' => true,
         ]);
     }
 
@@ -113,6 +118,8 @@ class UploadApiController extends Controller
         if (!$uploadJob instanceof UploadJob) {
             return response($uploadJob);
         }
+
+        // @todo implement adding a venue
 
         return response()->json([
             'success' => true,
@@ -125,6 +132,8 @@ class UploadApiController extends Controller
         if (!$uploadJob instanceof UploadJob) {
             return response($uploadJob);
         }
+
+        // @todo implemenr mapping a venue
 
         return response()->json([
             'success' => false,

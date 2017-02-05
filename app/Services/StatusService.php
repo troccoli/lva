@@ -8,8 +8,8 @@
 
 namespace App\Services;
 
-use App\Services\Contracts\StatusContract;
-use App\Models\UploadJob;
+use App\Models\UploadJobStatus;
+use Carbon\Carbon;
 
 /**
  * Class StatusService
@@ -20,39 +20,136 @@ use App\Models\UploadJob;
  *
  * @package App\Services
  */
-class StatusService implements StatusContract
+class StatusService
 {
     /**
-     * @param array $status
+     * @param array $statusArray
+     *
+     * @return UploadJobStatus
+     */
+    public function loadStatus(array $statusArray)
+    {
+        $status = new UploadJobStatus();
+        $status->load($statusArray);
+
+        return $status;
+    }
+
+    /**
+     * @return UploadJobStatus
+     */
+    public function getInitialStatus()
+    {
+        return new UploadJobStatus();
+    }
+
+    /**
+     * @param UploadJobStatus $status
+     * @param string          $division
+     * @param string          $matchNumber
+     * @param string          $homeTeam
+     * @param string          $awayTeam
+     * @param Carbon          $date
+     * @param Carbon          $warmUpTime
+     * @param Carbon          $startTime
+     * @param string          $venue
+     */
+    public function setProcessingLine(
+        UploadJobStatus $status,
+        $division,
+        $matchNumber,
+        $homeTeam,
+        $awayTeam,
+        Carbon $date,
+        Carbon $warmUpTime,
+        Carbon $startTime,
+        $venue
+    )
+    {
+        $status
+            ->setProcessingLineDivision($division)
+            ->setProcessingLineMatchNumber($matchNumber)
+            ->setProcessingLineHomeTeam($homeTeam)
+            ->setProcessingLineAwayTeam($awayTeam)
+            ->setProcessingLineDate($date->format('D d/m/y'))
+            ->setProcessingLineWarmUpTime($warmUpTime->format('H:i'))
+            ->setProcessingLineStartTime($startTime->format('H:i'))
+            ->setProcessingLineVenue($venue);
+    }
+
+    /**
+     * @param array $statusArray
      *
      * @return array
      */
-    public function getNextStepStatus($status)
+    public function apiFormat($statusArray)
     {
-        $newStatus = [
-            'status_code' => UploadJob::STATUS_NOT_STARTED,
+        $status = new UploadJobStatus();
+        $status->load($statusArray);
+
+        $formattedStatus = [
+            'StatusCode'    => $status->getStatusCode(),
+            'StatusMessage' => $status->getStatusCodeMessage(),
         ];
 
-        switch ($status['status_code']) {
-            case UploadJob::STATUS_NOT_STARTED:
-                $newStatus = [
-                    'status_code'     => UploadJob::STATUS_VALIDATING_RECORDS,
-                    'processed_lines' => 0,
-                ];
-                break;
-            case UploadJob::STATUS_VALIDATING_RECORDS:
-                $newStatus = [
-                    'status_code' => UploadJob::STATUS_INSERTING_RECORDS,
-                ];
-                break;
-            case UploadJob::STATUS_INSERTING_RECORDS:
-                $newStatus = [
-                    'status_code' => UploadJob::STATUS_DONE,
-                ];
-                break;
+        if ($status->isValidating()) {
+            $formattedStatus['Progress'] = floor($status->getProcessedLines() * 100 / $status->getTotalLines());
+        } elseif ($status->isInserting()) {
+            $formattedStatus['Progress'] = floor($status->getProcessedRows() * 100 / $status->getTotalRows());
         }
 
-        return $newStatus;
+        $formattedStatus['Fixture'] = [
+            'Division'    => $status->getProcessingLineDivision(),
+            'MatchNumber' => $status->getProcessingLineMatchNumber(),
+            'HomeTeam'    => $status->getProcessingLineHomeTeam(),
+            'AwayTeam'    => $status->getProcessingLineAwayTeam(),
+            'Date'        => $status->getProcessingLineDate(),
+            'WarmUpTime'  => $status->getProcessingLineWarmUpTime(),
+            'StartTime'   => $status->getProcessingLineStartTime(),
+            'Venue'       => $status->getProcessingLineVenue(),
+        ];
+
+        foreach ($status->getUnknowns() as $unknownType => $mappings) {
+            switch ($unknownType) {
+                case UploadJobStatus::UNKNOWN_HOME_TEAM:
+                    $formattedStatus['Unknowns']['HomeTeam'] = [
+                        'Mapping' => $mappings,
+                        'ApiUrls' => [
+                            'Map' => route('loading-map-team'),
+                        ],
+                    ];
+                    break;
+                case UploadJobStatus::UNKNOWN_AWAY_TEAM:
+                    $formattedStatus['Unknowns']['AwayTeam'] = [
+                        'Mapping' => $mappings,
+                        'ApiUrls' => [
+                            'Map' => route('loading-map-team'),
+                        ],
+                    ];
+                    break;
+                case UploadJobStatus::UNKNOWN_VENUE:
+                    $formattedStatus['Unknowns']['Venue'] = [
+                        'Mapping' => $mappings,
+                        'ApiUrls' => [
+                            'Add' => route('loading-add-venue'),
+                            'Map' => route('loading-map-venue'),
+                        ],
+                    ];
+                    break;
+            }
+        }
+
+        return $formattedStatus;
+    }
+
+    /**
+     * @param UploadJobStatus $status
+     *
+     * @return UploadJobStatus
+     */
+    public function getNextStepStatus($status)
+    {
+        return $status->moveForward();
     }
 
     /**
@@ -66,41 +163,33 @@ class StatusService implements StatusContract
             return $status['status_code'];
         }
 
-        return UploadJob::STATUS_NOT_STARTED;
+        return UploadJobStatus::STATUS_NOT_STARTED;
     }
 
-    /**
-     * @param array $status
-     *
-     * @return int
-     * @throws \RuntimeException
-     */
-    public function getStatusProcessedLines($status)
+    public function setUnknownHomeTeam(UploadJobStatus $status)
     {
-        $statusCode = $this->getStatusCode($status);
+        // Get the possible mapping
+        $mappings = [];
 
-        if ($statusCode == UploadJob::STATUS_VALIDATING_RECORDS && array_has($status, 'processed_lines')) {
-            return $status['processed_lines'];
-        }
-
-        throw new \RuntimeException('Invalid status for retrieving number of already processed lines.');
+        // Add the unknown
+        $status->setUnknown(UploadJobStatus::UNKNOWN_HOME_TEAM, $mappings);
     }
 
-    /**
-     * @param array $status
-     * @param int   $processedLines
-     *
-     * @throws \RuntimeException
-     */
-    public function setStatusProcessedLines(&$status, $processedLines)
+    public function setUnknownAwayTeam(UploadJobStatus $status)
     {
-        $statusCode = $this->getStatusCode($status);
+        // Get the possible mapping
+        $mappings = [];
 
-        if ($statusCode == UploadJob::STATUS_VALIDATING_RECORDS) {
-            $status['processed_lines'] = $processedLines;
-        }
-
-        throw new \RuntimeException('Invalid status for setting number of already processed lines.');
+        // Add the unknown
+        $status->setUnknown(UploadJobStatus::UNKNOWN_AWAY_TEAM, $mappings);
     }
 
+    public function setUnknownVenue(UploadJobStatus $status)
+    {
+        // Get the possible mapping
+        $mappings = [];
+
+        // Add the unknown
+        $status->setUnknown(UploadJobStatus::UNKNOWN_VENUE, $mappings);
+    }
 }

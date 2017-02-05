@@ -16,7 +16,7 @@ interface InteractiveUploadContract
     /**
      * @param UploadedFile $file
      *
-     * @return int
+     * @return mixed
      */
     public function createJob(UploadedFile $file);
 
