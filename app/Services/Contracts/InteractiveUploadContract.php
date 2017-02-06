@@ -14,11 +14,12 @@ use Illuminate\Http\UploadedFile;
 interface InteractiveUploadContract
 {
     /**
+     * @param int          $seasonId
      * @param UploadedFile $file
      *
      * @return mixed
      */
-    public function createJob(UploadedFile $file);
+    public function createJob($seasonId, UploadedFile $file);
 
     /**
      * @param UploadJob $job

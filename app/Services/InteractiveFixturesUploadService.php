@@ -10,6 +10,7 @@ namespace App\Services;
 
 use App\Models\Division;
 use App\Models\Fixture;
+use App\Models\Season;
 use App\Models\Team;
 use App\Models\TeamSynonym;
 use App\Models\UploadJobData;
@@ -29,7 +30,9 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
 
     /** @var StatusService */
     private $statusService;
+    /** @var UploadDataService */
     private $uploadDataService;
+    private $mappingService;
 
     /** @var Collection */
     private $mappedTeams;
@@ -43,11 +46,12 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
      */
     public function __construct(
         StatusService $statusService,
-        UploadDataService $uploadDataService
-    )
-    {
+        UploadDataService $uploadDataService,
+        MappingService $mappingService
+    ) {
         $this->statusService = $statusService;
         $this->uploadDataService = $uploadDataService;
+        $this->mappingService = $mappingService;
     }
 
 
@@ -70,7 +74,7 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
     /**
      * @inheritdoc
      */
-    public function createJob(UploadedFile $file)
+    public function createJob($seasonId, UploadedFile $file)
     {
         /** @var UploadedFile $fixtureFile */
         $fixtureFile = $file->move(storage_path() . self::UPLOAD_DIR, $file->getClientOriginalName());
@@ -83,7 +87,8 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
         fclose($handle);
 
         $job = new UploadJob();
-        $job->setFile($fixtureFile->getFilename())
+        $job->setSeason($seasonId)
+            ->setFile($fixtureFile->getFilename())
             ->setType(UploadJob::TYPE_FIXTURES)
             ->setRowCount($lines - 1)// Don't count the first line as they are the headers
             ->setStatus($this->statusService->getInitialStatus()->toArray())
@@ -142,22 +147,45 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
                     $row['Hall']
                 );
 
+                // Skip lines that are not for London or indoor volleyball
+                if ($row['Region'] != 'L' || $row['Discipline'] != 'I') {
+                    // Update the line counter
+                    $status->setProcessedLines(++$processedLines);
+                    $job->setStatus($status->toArray())->save();
+                    continue;
+                }
+
+                // Skip lines that are for divisions not in the system for the selected season
+                $division = Division::findByName($job->getSeason(), $row['Code']);
+                if (is_null($division)) {
+                    // Update the line counter
+                    $status->setProcessedLines(++$processedLines);
+                    $job->setStatus($status->toArray())->save();
+                    continue;
+                }
+
                 // Start validation
                 $isValid = true;
                 if (!$this->isValidTeam($row['Home'])) {
+                    $mappings = $this->mappingService->findTeamMappings($division->getId(), $row['Home']);
+                    $this->statusService->setUnknownHomeTeam($status, $mappings);
+
                     $allRowsProcessed = false;
                     $isValid = false;
-                    $this->statusService->setUnknownHomeTeam($status);
                 }
                 if (!$this->isValidTeam($row['Away'])) {
+                    $mappings = $this->mappingService->findTeamMappings($division->getId(), $row['Away']);
+                    $this->statusService->setUnknownHomeTeam($status, $mappings);
+
                     $allRowsProcessed = false;
                     $isValid = false;
-                    $this->statusService->setUnknownHomeTeam($status);
                 }
                 if (!$this->isValidVenue($row['Hall'])) {
+                    $mappings = $this->mappingService->findVenueMappings($row['Hall']);
+                    $this->statusService->setUnknownHomeTeam($status, $mappings);
+
                     $allRowsProcessed = false;
                     $isValid = false;
-                    $this->statusService->setUnknownVenue($status);
                 }
 
                 // Is something is not valid stop the process

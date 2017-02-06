@@ -45,7 +45,7 @@ class LoadController extends Controller
         ]);
 
         // Create upload job
-        $job = $this->uploadService->createJob($request->file('upload_file'));
+        $job = $this->uploadService->createJob($request->input('season_id'), $request->file('upload_file'));
 
         // Start the uploading
         $this->uploadService->processJob($job);

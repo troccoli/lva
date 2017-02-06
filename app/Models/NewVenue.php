@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App\Models
  */
-class NewVenues extends Model
+class NewVenue extends Model
 {
     /**
      * The database table used by the model.
@@ -29,7 +29,7 @@ class NewVenues extends Model
      *
      * @var array
      */
-    protected $fillable = ['upload_job_id', 'venue', 'venue_id'];
+    protected $fillable = ['upload_job_id', 'venue'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
@@ -45,5 +45,29 @@ class NewVenues extends Model
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param int $jobId
+     *
+     * @return NewVenue
+     */
+    public function setUploadJob($jobId)
+    {
+        $this->upload_job_id = $jobId;
+
+        return $this;
+    }
+
+    /**
+     * @param string $venue
+     *
+     * @return NewVenue
+     */
+    public function setVenue($venue)
+    {
+        $this->venue = $venue;
+
+        return $this;
     }
 }

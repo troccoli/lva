@@ -31,9 +31,9 @@ class Division extends Model
      *
      * @return Division|null
      */
-    public static function findByName($division)
+    public static function findByName($seasonId, $division)
     {
-        return self::where('division', $division)->first();
+        return self::where('season_id', $seasonId)->where('division', $division)->first();
     }
 
     /**

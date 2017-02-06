@@ -9,6 +9,12 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\v1\MapTeamRequest;
+use App\Http\Requests\Api\v1\MapVenueRequest;
+use App\Http\Requests\Api\v1\NewVenueRequest;
+use App\Models\MappedTeam;
+use App\Models\MappedVenue;
+use App\Models\NewVenue;
 use App\Models\UploadJob;
 use App\Models\UploadJobStatus;
 use App\Services\StatusService;
@@ -98,42 +104,41 @@ class UploadApiController extends Controller
         ]);
     }
 
-    public function mapTeam()
+    public function mapTeam(MapTeamRequest $request)
     {
-        $uploadJob = $this->checkForJob();
-        if (!$uploadJob instanceof UploadJob) {
-            return response($uploadJob);
-        }
-
-        // @todo implement mapping a team
+        $mappedTeam = new MappedTeam();
+        $mappedTeam
+            ->setUploadJob($request->input('job'))
+            ->setTeam($request->input('name'))
+            ->setMappedTeam($request->input('newName'))
+            ->save();
 
         return response()->json([
             'success' => true,
         ]);
     }
 
-    public function addVenue()
+    public function addVenue(NewVenueRequest $request)
     {
-        $uploadJob = $this->checkForJob();
-        if (!$uploadJob instanceof UploadJob) {
-            return response($uploadJob);
-        }
-
-        // @todo implement adding a venue
+        $newVenue = new NewVenue();
+        $newVenue
+            ->setUploadJob($request->input('job'))
+            ->setVenue($request->input('name'))
+            ->save();
 
         return response()->json([
             'success' => true,
         ]);
     }
 
-    public function mapVenue()
+    public function mapVenue(MapVenueRequest $request)
     {
-        $uploadJob = $this->checkForJob();
-        if (!$uploadJob instanceof UploadJob) {
-            return response($uploadJob);
-        }
-
-        // @todo implemenr mapping a venue
+        $mappedVenue = new MappedVenue();
+        $mappedVenue
+            ->setUploadJob($request->input('job'))
+            ->setVenue($request->input('name'))
+            ->setMappedVenue($request->input('newName'))
+            ->save();
 
         return response()->json([
             'success' => false,

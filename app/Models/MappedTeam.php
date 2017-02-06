@@ -55,4 +55,39 @@ class MappedTeam extends Model
         return $this->id;
     }
 
+    /**
+     * @param int $jobId
+     *
+     * @return MappedTeam
+     */
+    public function setUploadJob($jobId)
+    {
+        $this->upload_job_id = $jobId;
+
+        return $this;
+    }
+
+    /**
+     * @param string $team
+     *
+     * @return MappedTeam
+     */
+    public function setTeam($team)
+    {
+        $this->team = $team;
+
+        return $this;
+    }
+
+    /**
+     * @param string $team
+     *
+     * @return MappedTeam
+     */
+    public function setMappedTeam($team)
+    {
+        $this->team_id = Team::findByName($team);
+
+        return $this;
+    }
 }

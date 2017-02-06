@@ -54,4 +54,40 @@ class MappedVenue extends Model
     {
         return $this->id;
     }
+
+    /**
+     * @param int $jobId
+     *
+     * @return MappedVenue
+     */
+    public function setUploadJob($jobId)
+    {
+        $this->upload_job_id = $jobId;
+
+        return $this;
+    }
+
+    /**
+     * @param string $venue
+     *
+     * @return MappedVenue
+     */
+    public function setVenue($venue)
+    {
+        $this->venue = $venue;
+
+        return $this;
+    }
+
+    /**
+     * @param string $venue
+     *
+     * @return MappedVenue
+     */
+    public function setMappedVenue($venue)
+    {
+        $this->venue_id = Venue::findByName($venue);
+
+        return $this;
+    }
 }

@@ -14,7 +14,7 @@ class UploadJob extends Model
     const TYPE_FIXTURES = 'fixtures';
 
     protected $table = 'upload_jobs';
-    protected $fillable = ['file', 'row_count', 'type', 'status'];
+    protected $fillable = ['season_id', 'file', 'row_count', 'type', 'status'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -37,7 +37,7 @@ class UploadJob extends Model
      */
     public function newVenues()
     {
-        return $this->hasMany(NewVenues::class);
+        return $this->hasMany(NewVenue::class);
     }
 
     /**
@@ -54,6 +54,26 @@ class UploadJob extends Model
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSeason()
+    {
+        return $this->season_id;
+    }
+
+    /**
+     * @param int $seasonId
+     *
+     * @return UploadJob
+     */
+    public function setSeason($seasonId)
+    {
+        $this->season_id = $seasonId;
+
+        return $this;
     }
 
     /**

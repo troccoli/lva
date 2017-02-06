@@ -22,6 +22,20 @@ use Carbon\Carbon;
  */
 class StatusService
 {
+    /** @var MappingService */
+    private $mappingService;
+
+    /**
+     * StatusService constructor.
+     *
+     * @param MappingService $mappingService
+     */
+    public function __construct(MappingService $mappingService)
+    {
+        $this->mappingService = $mappingService;
+    }
+
+
     /**
      * @param array $statusArray
      *
@@ -64,8 +78,7 @@ class StatusService
         Carbon $warmUpTime,
         Carbon $startTime,
         $venue
-    )
-    {
+    ) {
         $status
             ->setProcessingLineDivision($division)
             ->setProcessingLineMatchNumber($matchNumber)
@@ -166,30 +179,30 @@ class StatusService
         return UploadJobStatus::STATUS_NOT_STARTED;
     }
 
-    public function setUnknownHomeTeam(UploadJobStatus $status)
+    /**
+     * @param UploadJobStatus $status
+     * @param array           $mappings
+     */
+    public function setUnknownHomeTeam(UploadJobStatus $status, $mappings)
     {
-        // Get the possible mapping
-        $mappings = [];
-
-        // Add the unknown
         $status->setUnknown(UploadJobStatus::UNKNOWN_HOME_TEAM, $mappings);
     }
 
-    public function setUnknownAwayTeam(UploadJobStatus $status)
+    /**
+     * @param UploadJobStatus $status
+     * @param array           $mappings
+     */
+    public function setUnknownAwayTeam(UploadJobStatus $status, $mappings)
     {
-        // Get the possible mapping
-        $mappings = [];
-
-        // Add the unknown
         $status->setUnknown(UploadJobStatus::UNKNOWN_AWAY_TEAM, $mappings);
     }
 
-    public function setUnknownVenue(UploadJobStatus $status)
+    /**
+     * @param UploadJobStatus $status
+     * @param array           $mappings
+     */
+    public function setUnknownVenue(UploadJobStatus $status, $mappings)
     {
-        // Get the possible mapping
-        $mappings = [];
-
-        // Add the unknown
         $status->setUnknown(UploadJobStatus::UNKNOWN_VENUE, $mappings);
     }
 }
