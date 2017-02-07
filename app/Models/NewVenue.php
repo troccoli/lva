@@ -64,7 +64,7 @@ class NewVenue extends Model
      *
      * @return NewVenue
      */
-    public function setVenue($venue)
+    public function setName($venue)
     {
         $this->venue = $venue;
 

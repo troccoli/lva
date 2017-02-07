@@ -30,7 +30,7 @@ class MappedVenue extends Model
      *
      * @var array
      */
-    protected $fillable = ['upload_job_id', 'venue', 'venue_id'];
+    protected $fillable = ['upload_job_id', 'mapped_venue', 'venue_id'];
 
     /**
      * @param $jobId
@@ -83,7 +83,7 @@ class MappedVenue extends Model
      */
     public function getName()
     {
-        return $this->venue;
+        return $this->mapped_venue;
     }
 
     /**
@@ -91,9 +91,9 @@ class MappedVenue extends Model
      *
      * @return MappedVenue
      */
-    public function setVenue($venue)
+    public function setName($venue)
     {
-        $this->venue = $venue;
+        $this->mapped_venue = $venue;
 
         return $this;
     }

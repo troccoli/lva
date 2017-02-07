@@ -30,7 +30,7 @@ class MappedTeam extends Model
      *
      * @var array
      */
-    protected $fillable = ['upload_job_id', 'team', 'team_id'];
+    protected $fillable = ['upload_job_id', 'mapped_team', 'team_id'];
 
     /**
      * @param $jobId
@@ -83,7 +83,7 @@ class MappedTeam extends Model
      */
     public function getName()
     {
-        return $this->team;
+        return $this->mapped_team;
     }
 
     /**
@@ -91,9 +91,9 @@ class MappedTeam extends Model
      *
      * @return MappedTeam
      */
-    public function setTeam($team)
+    public function setName($team)
     {
-        $this->team = $team;
+        $this->mapped_team = $team;
 
         return $this;
     }

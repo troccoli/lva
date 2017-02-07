@@ -109,7 +109,7 @@ class UploadApiController extends Controller
         $mappedTeam = new MappedTeam();
         $mappedTeam
             ->setUploadJob($request->input('job'))
-            ->setTeam($request->input('name'))
+            ->setName($request->input('name'))
             ->setMappedTeam($request->input('newName'))
             ->save();
 
@@ -123,7 +123,7 @@ class UploadApiController extends Controller
         $newVenue = new NewVenue();
         $newVenue
             ->setUploadJob($request->input('job'))
-            ->setVenue($request->input('name'))
+            ->setName($request->input('name'))
             ->save();
 
         return response()->json([
@@ -136,7 +136,7 @@ class UploadApiController extends Controller
         $mappedVenue = new MappedVenue();
         $mappedVenue
             ->setUploadJob($request->input('job'))
-            ->setVenue($request->input('name'))
+            ->setName($request->input('name'))
             ->setMappedVenue($request->input('newName'))
             ->save();
 
