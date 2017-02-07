@@ -3,6 +3,10 @@ branches:
     - master
     - dev
     - lva-22-interactive-loading
+notifications:
+  email:
+    on_success: always
+    on_failure: always
 language: php
 php:
   - 5.6.30
