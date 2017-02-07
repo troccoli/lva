@@ -9,6 +9,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Class MappedVenue
@@ -30,6 +31,16 @@ class MappedVenue extends Model
      * @var array
      */
     protected $fillable = ['upload_job_id', 'venue', 'venue_id'];
+
+    /**
+     * @param $jobId
+     *
+     * @return Collection
+     */
+    public static function findByJob($jobId)
+    {
+        return MappedTeam::where('upload_job_id', $jobId)->get();
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
@@ -65,6 +76,14 @@ class MappedVenue extends Model
         $this->upload_job_id = $jobId;
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getName()
+    {
+        return $this->venue;
     }
 
     /**

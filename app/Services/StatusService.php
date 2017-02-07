@@ -144,7 +144,7 @@ class StatusService
                     $formattedStatus['Unknowns']['Venue'] = [
                         'Mapping' => $mappings,
                         'ApiUrls' => [
-                            'Add' => route('loading-add-venue'),
+                            //'Add' => route('loading-add-venue'),
                             'Map' => route('loading-map-venue'),
                         ],
                     ];

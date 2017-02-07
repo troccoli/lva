@@ -17,12 +17,14 @@ use App\Models\UploadJobData;
 use App\Models\UploadJobStatus;
 use App\Models\Venue;
 use App\Models\VenueSynonym;
+use App\Repositories\TeamsRepository;
 use App\Services\Contracts\InteractiveUploadContract;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\UploadedFile;
 
 use App\Models\UploadJob;
+use Repositories\VenuesRepository;
 
 class InteractiveFixturesUploadService implements InteractiveUploadContract
 {
@@ -32,7 +34,14 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
     private $statusService;
     /** @var UploadDataService */
     private $uploadDataService;
+    /** @var MappingService */
     private $mappingService;
+
+    /** @var TeamsRepository */
+    private $teamsRepository;
+    /** @var VenuesRepository */
+    private $venuesRepository;
+
 
     /** @var Collection */
     private $mappedTeams;
@@ -47,11 +56,16 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
     public function __construct(
         StatusService $statusService,
         UploadDataService $uploadDataService,
-        MappingService $mappingService
+        MappingService $mappingService,
+        TeamsRepository $teamsRepository,
+        VenuesRepository $venuesRepository
     ) {
         $this->statusService = $statusService;
         $this->uploadDataService = $uploadDataService;
         $this->mappingService = $mappingService;
+
+        $this->teamsRepository = $teamsRepository;
+        $this->venuesRepository = $venuesRepository;
     }
 
 
@@ -164,37 +178,75 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
                     continue;
                 }
 
-                // Start validation
+                /** @var Team|null $homeTeam */
+                $homeTeam = $this->teamsRepository->findByName($row['Home']);
+                /** @var Team|null $awayTeam */
+                $awayTeam = $this->teamsRepository->findByName($row['Away']);
+                /** @var Venue|null $venue */
+                $venue = $this->venuesRepository->findByName($row['Hall']);
+
                 $isValid = true;
-                if (!$this->isValidTeam($row['Home'])) {
-                    $mappings = $this->mappingService->findTeamMappings($division->getId(), $row['Home']);
-                    $this->statusService->setUnknownHomeTeam($status, $mappings);
 
-                    $allRowsProcessed = false;
-                    $isValid = false;
+                if (is_null($homeTeam)) {
+                    // We can't find an existing team matching this one, so checked the
+                    // one mapped during this job
+                    $homeTeam = $this->teamsRepository->findByNameWithinMapped($job, $row['Home']);
+                    if (is_null($homeTeam)) {
+                        // Nope, can't find it, so ask the user what to do
+                        $mappings = $this->mappingService->findTeamMappings($division->getId(), $row['Home']);
+                        $this->statusService->setUnknownHomeTeam($status, $mappings);
+
+                        $allRowsProcessed = false;
+                        $isValid = false;
+                    }
                 }
-                if (!$this->isValidTeam($row['Away'])) {
-                    $mappings = $this->mappingService->findTeamMappings($division->getId(), $row['Away']);
-                    $this->statusService->setUnknownHomeTeam($status, $mappings);
+                if (is_null($awayTeam)) {
+                    // We can't find an existing team matching this one, so checked the
+                    // one mapped during this job
+                    $awayTeam = $this->teamsRepository->findByNameWithinMapped($job, $row['Away']);
+                    if (is_null($awayTeam)) {
+                        // Nope, can't find it, so ask the user what to do
+                        $mappings = $this->mappingService->findTeamMappings($division->getId(), $row['Away']);
+                        $this->statusService->setUnknownAwayTeam($status, $mappings);
 
-                    $allRowsProcessed = false;
-                    $isValid = false;
+                        $allRowsProcessed = false;
+                        $isValid = false;
+                    }
                 }
-                if (!$this->isValidVenue($row['Hall'])) {
-                    $mappings = $this->mappingService->findVenueMappings($row['Hall']);
-                    $this->statusService->setUnknownHomeTeam($status, $mappings);
+                if (is_null($venue)) {
+                    // We can't find an existing venue matching this one, so checked the
+                    // one mapped during this job
+                    $venue = $this->venuesRepository->findByNameWithinMapped($job, $row['Hall']);
+                    if (is_null($venue)) {
+                        // Nope, can't find it, so ask the user what to do
+                        $mappings = $this->mappingService->findVenueMappings($row['Hall']);
+                        $this->statusService->setUnknownHomeTeam($status, $mappings);
 
-                    $allRowsProcessed = false;
-                    $isValid = false;
+                        $allRowsProcessed = false;
+                        $isValid = false;
+                    }
                 }
 
                 // Is something is not valid stop the process
                 if (!$isValid) {
                     break;
-                }
+                } else {
+                    /** @var Fixture $fixture */
+                    $fixture = new Fixture();
+                    $fixture
+                        ->setDivision($division->getId())
+                        ->setMatchNumber($row['Match'])
+                        ->setMatchDate(Carbon::createFromFormat('d/m/Y', $row['Date']))
+                        ->setWarmUpTime(Carbon::createFromFormat('H:i:s', $row['WUTime']))
+                        ->setStartTime(Carbon::createFromFormat('H:i:s', $row['StartTime']))
+                        ->setHomeTeam($homeTeam->getId())
+                        ->setAwayTeam($awayTeam->getId())
+                        ->setVenue($venue->getId());
 
-                // Everything is ok, so store the fixture to be inserted later
-                $this->insertFixture($job->getId(), $row);
+                    $this->uploadDataService->add($job->getId(), Fixture::class, $fixture);
+
+                    unset($fixture);
+                }
 
                 // Update the line counter
                 $status->setProcessedLines(++$processedLines);
@@ -278,15 +330,61 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
     }
 
     /**
-     * @param int   $jobId
+     * @param string $team
+     *
+     * @return Team|null
+     */
+    private function findTeamByName($team)
+    {
+        /** @var Team $model */
+        $model = Team::findByName($team);
+        if ($model) {
+            return $model;
+        }
+
+        /** @var TeamSynonym $modelSynonym */
+        $modelSynonym = TeamSynonym::findBySynonym($team);
+        if ($modelSynonym) {
+            $model = $modelSynonym->team;
+            return $model;
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $venue
+     *
+     * @return Venue|null
+     */
+    private function findVenueByName($venue)
+    {
+        /** @var Venue $model */
+        $model = Venue::findByName($venue);
+        if ($model) {
+            return $model;
+        }
+
+        /** @var VenueSynonym $modelSynonym */
+        $modelSynonym = VenueSynonym::findBySynonym($venue);
+        if ($modelSynonym) {
+            $model = $modelSynonym->venue;
+            return $model;
+        }
+
+        return null;
+    }
+
+    /**
+     * @param UploadJob   $job
      * @param array $data
      */
-    private function insertFixture($jobId, $data)
+    private function insertFixture($job, $data)
     {
         /** @var Fixture $fixture */
         $fixture = new Fixture();
         $fixture
-            ->setDivision(Division::findByName($data['Code'])->getId())
+            ->setDivision(Division::findByName($job->getSeason(), $data['Code'])->getId())
             ->setMatchNumber($data['Match'])
             ->setMatchDate(Carbon::createFromFormat('d/m/Y', $data['Date']))
             ->setWarmUpTime(Carbon::createFromFormat('H:i:s', $data['WUTime']))
@@ -295,7 +393,7 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
             ->setAwayTeam(Team::findByName($data['Away'])->getId())
             ->setVenue(Venue::findByName($data['Hall'])->getId());
 
-        $this->uploadDataService->add($jobId, Fixture::class, $fixture);
+        $this->uploadDataService->add($job->getId(), Fixture::class, $fixture);
 
         unset($fixture);
     }
