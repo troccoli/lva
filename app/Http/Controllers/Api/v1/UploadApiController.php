@@ -6,18 +6,18 @@
  * Time: 18:33
  */
 
-namespace App\Http\Controllers\Api\v1;
+namespace LVA\Http\Controllers\Api\v1;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\v1\MapTeamRequest;
-use App\Http\Requests\Api\v1\MapVenueRequest;
-use App\Http\Requests\Api\v1\NewVenueRequest;
-use App\Models\MappedTeam;
-use App\Models\MappedVenue;
-use App\Models\NewVenue;
-use App\Models\UploadJob;
-use App\Models\UploadJobStatus;
-use App\Services\StatusService;
+use LVA\Http\Controllers\Controller;
+use LVA\Http\Requests\Api\v1\MapTeamRequest;
+use LVA\Http\Requests\Api\v1\MapVenueRequest;
+use LVA\Http\Requests\Api\v1\NewVenueRequest;
+use LVA\Models\MappedTeam;
+use LVA\Models\MappedVenue;
+use LVA\Models\NewVenue;
+use LVA\Models\UploadJob;
+use LVA\Models\UploadJobStatus;
+use LVA\Services\StatusService;
 use Illuminate\Support\Facades\Input;
 
 class UploadApiController extends Controller

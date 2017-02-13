@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\Admin\DataManagement;
+namespace LVA\Http\Controllers\Admin\DataManagement;
 
-use App\Http\Requests\StoreRoleRequest as StoreRequest;
-use App\Http\Requests\UpdateRoleRequest as UpdateRequest;
-use App\Http\Controllers\Controller;
+use LVA\Http\Requests\StoreRoleRequest as StoreRequest;
+use LVA\Http\Requests\UpdateRoleRequest as UpdateRequest;
+use LVA\Http\Controllers\Controller;
 
 use Laracasts\Flash\Flash;
-use App\Models\Role;
+use LVA\Models\Role;
 
 /**
  * Class RolesController
  *
- * @package App\Http\Controllers\Admin\DataManagement
+ * @package LVA\Http\Controllers\Admin\DataManagement
  */
 class RolesController extends Controller
 {

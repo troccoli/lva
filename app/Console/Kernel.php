@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Console;
+namespace LVA\Console;
 
-use App\Console\Commands\LoadFixtures;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 

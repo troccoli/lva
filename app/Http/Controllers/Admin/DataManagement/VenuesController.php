@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\Admin\DataManagement;
+namespace LVA\Http\Controllers\Admin\DataManagement;
 
-use App\Http\Requests\StoreVenueRequest as StoreRequest;
-use App\Http\Requests\UpdateVenueRequest as UpdateRequest;
-use App\Http\Controllers\Controller;
+use LVA\Http\Requests\StoreVenueRequest as StoreRequest;
+use LVA\Http\Requests\UpdateVenueRequest as UpdateRequest;
+use LVA\Http\Controllers\Controller;
 
 use Laracasts\Flash\Flash;
-use App\Models\Venue;
+use LVA\Models\Venue;
 
 /**
  * Class VenuesController
  *
- * @package App\Http\Controllers\Admin\DataManagement
+ * @package LVA\Http\Controllers\Admin\DataManagement
  */
 class VenuesController extends Controller
 {

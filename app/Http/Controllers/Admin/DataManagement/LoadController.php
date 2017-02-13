@@ -6,14 +6,14 @@
  * Time: 19:33
  */
 
-namespace App\Http\Controllers\Admin\DataManagement;
+namespace LVA\Http\Controllers\Admin\DataManagement;
 
-use App\Http\Controllers\Controller;
+use LVA\Http\Controllers\Controller;
 
-use App\Models\UploadJob;
-use App\Services\InteractiveFixturesUploadService as FileUploadService;
+use LVA\Models\UploadJob;
+use LVA\Services\InteractiveFixturesUploadService as FileUploadService;
 use Illuminate\Http\Request;
-use App\Models\Season;
+use LVA\Models\Season;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;

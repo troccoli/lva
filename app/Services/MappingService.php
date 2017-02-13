@@ -1,13 +1,13 @@
 <?php
 
 
-namespace App\Services;
+namespace LVA\Services;
 
 
 /**
  * Class MappingService
  *
- * @package App\Services
+ * @package LVA\Services
  */
 class MappingService
 {

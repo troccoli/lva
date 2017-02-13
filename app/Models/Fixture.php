@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace LVA\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Class Fixture
  *
- * @package App\Models
+ * @package LVA\Models
  */
 class Fixture extends Model
 {

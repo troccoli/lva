@@ -9,9 +9,9 @@
 namespace Admin\DataManagement;
 
 use Tests\TestCase;
-use App\Models\AvailableAppointment;
-use App\Models\Fixture;
-use App\Models\Role;
+use LVA\Models\AvailableAppointment;
+use LVA\Models\Fixture;
+use LVA\Models\Role;
 
 class AvailableAppointmentsTableTest extends TestCase
 {

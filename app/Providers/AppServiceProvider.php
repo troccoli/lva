@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Providers;
+namespace LVA\Providers;
 
-use App\Validators\CustomValidators;
+use LVA\Validators\CustomValidators;
 use Illuminate\Support\ServiceProvider;
 use Validator;
 

@@ -6,9 +6,9 @@
  * Time: 17:02
  */
 
-namespace App\Services;
+namespace LVA\Services;
 
-use App\Models\UploadJobData;
+use LVA\Models\UploadJobData;
 use Illuminate\Database\Eloquent\Model;
 
 class UploadDataService

@@ -8,10 +8,10 @@
 
 namespace Admin\DataManagement;
 
-use App\Models\Division;
+use LVA\Models\Division;
 use PhpParser\Node\Expr\AssignOp\Div;
 use Tests\TestCase;
-use App\Models\Season;
+use LVA\Models\Season;
 
 class SeasonsTableTest extends TestCase
 {

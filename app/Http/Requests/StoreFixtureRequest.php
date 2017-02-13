@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests;
+namespace LVA\Http\Requests;
 
 use Illuminate\Support\Facades\Auth;
 
 /**
  * Class StoreFixtureRequest
  *
- * @package App\Http\Requests
+ * @package LVA\Http\Requests
  */
 class StoreFixtureRequest extends Request
 {

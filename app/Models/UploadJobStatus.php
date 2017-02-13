@@ -6,7 +6,7 @@
  * Time: 12:13
  */
 
-namespace App\Models;
+namespace LVA\Models;
 
 
 /**
@@ -16,7 +16,7 @@ namespace App\Models;
  *       to be store in the DB. It's just a convenient way to encapsulate all
  *       the data and functionality needed for the status
  *
- * @package App\Models
+ * @package LVA\Models
  */
 class UploadJobStatus
 {

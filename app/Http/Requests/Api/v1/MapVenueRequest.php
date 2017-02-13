@@ -1,15 +1,15 @@
 <?php
 
 
-namespace App\Http\Requests\Api\v1;
+namespace LVA\Http\Requests\Api\v1;
 
 
-use App\Http\Requests\Request;
+use LVA\Http\Requests\Request;
 
 /**
  * Class MapVenueRequest
  *
- * @package App\Http\Requests\Api\v1
+ * @package LVA\Http\Requests\Api\v1
  */
 class MapVenueRequest extends Request
 {

@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\Admin\DataManagement;
+namespace LVA\Http\Controllers\Admin\DataManagement;
 
-use App\Http\Requests\StoreClubRequest as StoreRequest;
-use App\Http\Requests\UpdateClubRequest as UpdateRequest;
-use App\Http\Controllers\Controller;
+use LVA\Http\Requests\StoreClubRequest as StoreRequest;
+use LVA\Http\Requests\UpdateClubRequest as UpdateRequest;
+use LVA\Http\Controllers\Controller;
 
 use Laracasts\Flash\Flash;
-use App\Models\Club;
+use LVA\Models\Club;
 
 /**
  * Class ClubsController
  *
- * @package App\Http\Controllers\Admin\DataManagement
+ * @package LVA\Http\Controllers\Admin\DataManagement
  */
 class ClubsController extends Controller
 {

@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\Admin\DataManagement;
+namespace LVA\Http\Controllers\Admin\DataManagement;
 
-use App\Http\Requests\StoreDivisionRequest as StoreRequest;
-use App\Http\Requests\UpdateDivisionRequest as UpdateRequest;
-use App\Http\Controllers\Controller;
+use LVA\Http\Requests\StoreDivisionRequest as StoreRequest;
+use LVA\Http\Requests\UpdateDivisionRequest as UpdateRequest;
+use LVA\Http\Controllers\Controller;
 
 use Laracasts\Flash\Flash; 
-use App\Models\Division;
-use App\Models\Season;
+use LVA\Models\Division;
+use LVA\Models\Season;
 
 /**
  * Class DivisionsController
  *
- * @package App\Http\Controllers\Admin\DataManagement
+ * @package LVA\Http\Controllers\Admin\DataManagement
  */
 class DivisionsController extends Controller
 {

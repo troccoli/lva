@@ -8,9 +8,9 @@
 
 namespace Admin\DataManagement;
 
-use App\Models\Fixture;
+use LVA\Models\Fixture;
 use Tests\TestCase;
-use App\Models\Venue;
+use LVA\Models\Venue;
 
 class VenuesTableTest extends TestCase
 {

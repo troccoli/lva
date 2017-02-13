@@ -6,14 +6,14 @@
  * Time: 14:51
  */
 
-namespace App\Models;
+namespace LVA\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class TeamSynonym
  *
- * @package App\Models
+ * @package LVA\Models
  */
 class TeamSynonym extends Model
 {

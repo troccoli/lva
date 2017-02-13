@@ -4,7 +4,7 @@ namespace Tests;
 
 use Illuminate\Contracts\Console\Kernel;
 use Artisan;
-use App\User;
+use LVA\User;
 
 class TestCase extends \Illuminate\Foundation\Testing\TestCase
 {

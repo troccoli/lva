@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Models;
+namespace LVA\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Role
  *
- * @package App\Models
+ * @package LVA\Models
  */
 class Role extends Model
 {

@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Models;
+namespace LVA\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Team
  *
- * @package App\Models
+ * @package LVA\Models
  */
 class Team extends Model
 {

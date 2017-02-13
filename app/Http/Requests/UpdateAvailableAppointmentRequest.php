@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace LVA\Http\Requests;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Contracts\Validation\Validator;
@@ -8,7 +8,7 @@ use Illuminate\Contracts\Validation\Validator;
 /**
  * Class UpdateAvailableAppointmentRequest
  *
- * @package App\Http\Requests
+ * @package LVA\Http\Requests
  */
 class UpdateAvailableAppointmentRequest extends Request
 {

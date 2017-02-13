@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\Admin\DataManagement;
+namespace LVA\Http\Controllers\Admin\DataManagement;
 
-use App\Http\Requests\StoreSeasonRequest as StoreRequest;
-use App\Http\Requests\UpdateSeasonRequest as UpdateRequest;
-use App\Http\Controllers\Controller;
+use LVA\Http\Requests\StoreSeasonRequest as StoreRequest;
+use LVA\Http\Requests\UpdateSeasonRequest as UpdateRequest;
+use LVA\Http\Controllers\Controller;
 
 use Laracasts\Flash\Flash;
-use App\Models\Season;
+use LVA\Models\Season;
 
 /**
  * Class SeasonsController
  *
- * @package App\Http\Controllers\Admin\DataManagement
+ * @package LVA\Http\Controllers\Admin\DataManagement
  */
 class SeasonsController extends Controller
 {

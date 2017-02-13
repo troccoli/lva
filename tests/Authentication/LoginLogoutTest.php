@@ -2,7 +2,6 @@
 
 namespace Authentication;
 
-use App;
 use Tests\TestCase;
 
 class LoginLogoutTest extends TestCase

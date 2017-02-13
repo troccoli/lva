@@ -6,9 +6,9 @@
  * Time: 15:02
  */
 
-namespace App\Services;
+namespace LVA\Services;
 
-use App\Models\UploadJobStatus;
+use LVA\Models\UploadJobStatus;
 use Carbon\Carbon;
 
 /**
@@ -18,7 +18,7 @@ use Carbon\Carbon;
  * This means that the status will be saved in the DB and that the status codes
  * are the ones defined in the UploadJobs model class.
  *
- * @package App\Services
+ * @package LVA\Services
  */
 class StatusService
 {

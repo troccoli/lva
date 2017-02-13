@@ -8,10 +8,10 @@
 
 namespace Admin\DataManagement;
 
-use App\Models\Fixture;
+use LVA\Models\Fixture;
 use Tests\TestCase;
-use App\Models\Division;
-use App\Models\Season;
+use LVA\Models\Division;
+use LVA\Models\Season;
 
 class DivisionsTableTest extends TestCase
 {

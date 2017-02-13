@@ -6,14 +6,14 @@
  * Time: 16:09
  */
 
-namespace App\Models;
+namespace LVA\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class NewVenues
  *
- * @package App\Models
+ * @package LVA\Models
  */
 class NewVenue extends Model
 {

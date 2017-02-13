@@ -1,21 +1,21 @@
 <?php
 
-namespace App\Http\Controllers\Admin\DataManagement;
+namespace LVA\Http\Controllers\Admin\DataManagement;
 
-use App\Http\Requests\StoreFixtureRequest as StoreRequest;
-use App\Http\Requests\UpdateFixtureRequest as UpdateRequest;
-use App\Http\Controllers\Controller;
+use LVA\Http\Requests\StoreFixtureRequest as StoreRequest;
+use LVA\Http\Requests\UpdateFixtureRequest as UpdateRequest;
+use LVA\Http\Controllers\Controller;
 
 use Laracasts\Flash\Flash;
-use App\Models\Division;
-use App\Models\Fixture;
-use App\Models\Team;
-use App\Models\Venue;
+use LVA\Models\Division;
+use LVA\Models\Fixture;
+use LVA\Models\Team;
+use LVA\Models\Venue;
 
 /**
  * Class FixturesController
  *
- * @package App\Http\Controllers\Admin\DataManagement
+ * @package LVA\Http\Controllers\Admin\DataManagement
  */
 class FixturesController extends Controller
 {

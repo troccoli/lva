@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\Admin\DataManagement;
+namespace LVA\Http\Controllers\Admin\DataManagement;
 
-use App\Http\Requests\StoreTeamRequest as StoreRequest;
-use App\Http\Requests\UpdateTeamRequest as UpdateRequest;
-use App\Http\Controllers\Controller;
+use LVA\Http\Requests\StoreTeamRequest as StoreRequest;
+use LVA\Http\Requests\UpdateTeamRequest as UpdateRequest;
+use LVA\Http\Controllers\Controller;
 
 use Laracasts\Flash\Flash;
-use App\Models\Club;
-use App\Models\Team;
+use LVA\Models\Club;
+use LVA\Models\Team;
 
 /**
  * Class TeamsController
  *
- * @package App\Http\Controllers\Admin\DataManagement
+ * @package LVA\Http\Controllers\Admin\DataManagement
  */
 class TeamsController extends Controller
 {

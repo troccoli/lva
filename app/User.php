@@ -1,12 +1,12 @@
 <?php
 
-namespace App;
+namespace LVA;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
  * Class User
- * @package App
+ * @package LVA
  */
 class User extends Authenticatable
 {

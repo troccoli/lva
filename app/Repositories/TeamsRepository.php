@@ -1,18 +1,18 @@
 <?php
 
 
-namespace App\Repositories;
+namespace LVA\Repositories;
 
 
-use App\Models\MappedTeam;
-use App\Models\Team;
-use App\Models\TeamSynonym;
-use App\Models\UploadJob;
+use LVA\Models\MappedTeam;
+use LVA\Models\Team;
+use LVA\Models\TeamSynonym;
+use LVA\Models\UploadJob;
 
 /**
  * Class TeamRepository
  *
- * @package App\Repositories
+ * @package LVA\Repositories
  */
 class TeamsRepository
 {

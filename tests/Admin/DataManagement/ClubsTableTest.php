@@ -8,9 +8,9 @@
 
 namespace Admin\DataManagement;
 
-use App\Models\Team;
+use LVA\Models\Team;
 use Tests\TestCase;
-use App\Models\Club;
+use LVA\Models\Club;
 
 class ClubsTableTest extends TestCase
 {

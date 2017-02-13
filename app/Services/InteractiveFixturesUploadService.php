@@ -6,24 +6,24 @@
  * Time: 15:32
  */
 
-namespace App\Services;
+namespace LVA\Services;
 
-use App\Models\Division;
-use App\Models\Fixture;
-use App\Models\Season;
-use App\Models\Team;
-use App\Models\TeamSynonym;
-use App\Models\UploadJobData;
-use App\Models\UploadJobStatus;
-use App\Models\Venue;
-use App\Models\VenueSynonym;
-use App\Repositories\TeamsRepository;
-use App\Services\Contracts\InteractiveUploadContract;
+use LVA\Models\Division;
+use LVA\Models\Fixture;
+use LVA\Models\Season;
+use LVA\Models\Team;
+use LVA\Models\TeamSynonym;
+use LVA\Models\UploadJobData;
+use LVA\Models\UploadJobStatus;
+use LVA\Models\Venue;
+use LVA\Models\VenueSynonym;
+use LVA\Repositories\TeamsRepository;
+use LVA\Services\Contracts\InteractiveUploadContract;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\UploadedFile;
 
-use App\Models\UploadJob;
+use LVA\Models\UploadJob;
 use Repositories\VenuesRepository;
 
 class InteractiveFixturesUploadService implements InteractiveUploadContract

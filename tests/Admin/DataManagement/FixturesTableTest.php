@@ -8,9 +8,9 @@
 
 namespace Admin\DataManagement;
 
-use App\Models\AvailableAppointment;
+use LVA\Models\AvailableAppointment;
 use Tests\TestCase;
-use App\Models\Fixture;
+use LVA\Models\Fixture;
 
 class FixturesTableTest extends TestCase
 {

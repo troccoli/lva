@@ -8,10 +8,10 @@
 
 namespace Admin\DataManagement;
 
-use App\Models\Fixture;
+use LVA\Models\Fixture;
 use Tests\TestCase;
-use App\Models\Team;
-use App\Models\Club;
+use LVA\Models\Team;
+use LVA\Models\Club;
 
 class TeamsTableTest extends TestCase
 {

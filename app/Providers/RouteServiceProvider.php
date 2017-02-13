@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Providers;
+namespace LVA\Providers;
 
-use App\Models\UploadJob;
+use LVA\Models\UploadJob;
 use Illuminate\Routing\Router;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
@@ -15,7 +15,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    protected $namespace = 'App\Http\Controllers';
+    protected $namespace = 'LVA\Http\Controllers';
 
     /**
      * Define your route model bindings, pattern filters, etc.

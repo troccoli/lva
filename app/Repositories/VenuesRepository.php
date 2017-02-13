@@ -3,10 +3,10 @@
 
 namespace Repositories;
 
-use App\Models\MappedVenue;
-use App\Models\Venue;
-use App\Models\VenueSynonym;
-use App\Models\UploadJob;
+use LVA\Models\MappedVenue;
+use LVA\Models\Venue;
+use LVA\Models\VenueSynonym;
+use LVA\Models\UploadJob;
 
 /**
  * Class VenueRepository

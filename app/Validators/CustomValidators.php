@@ -6,9 +6,9 @@
  * Time: 12:49
  */
 
-namespace App\Validators;
+namespace LVA\Validators;
 
-use App\Services\InteractiveFixturesUploadService;
+use LVA\Services\InteractiveFixturesUploadService;
 use Illuminate\Http\UploadedFile;
 
 class CustomValidators

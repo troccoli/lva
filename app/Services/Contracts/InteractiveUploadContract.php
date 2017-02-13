@@ -6,9 +6,9 @@
  * Time: 16:22
  */
 
-namespace App\Services\Contracts;
+namespace LVA\Services\Contracts;
 
-use App\Models\UploadJob;
+use LVA\Models\UploadJob;
 use Illuminate\Http\UploadedFile;
 
 interface InteractiveUploadContract

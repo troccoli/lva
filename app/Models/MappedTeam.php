@@ -6,7 +6,7 @@
  * Time: 15:28
  */
 
-namespace App\Models;
+namespace LVA\Models;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Class MappedTeam
  *
- * @package App\Models
+ * @package LVA\Models
  */
 class MappedTeam extends Model
 {

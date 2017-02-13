@@ -6,7 +6,7 @@
  * Time: 16:05
  */
 
-namespace App\Models;
+namespace LVA\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Collection;
 /**
  * Class MappedVenue
  *
- * @package App\Models
+ * @package LVA\Models
  */
 class MappedVenue extends Model
 {
