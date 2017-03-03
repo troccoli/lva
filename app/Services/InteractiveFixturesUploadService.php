@@ -18,13 +18,13 @@ use LVA\Models\UploadJobStatus;
 use LVA\Models\Venue;
 use LVA\Models\VenueSynonym;
 use LVA\Repositories\TeamsRepository;
+use LVA\Repositories\VenuesRepository;
 use LVA\Services\Contracts\InteractiveUploadContract;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\UploadedFile;
 
 use LVA\Models\UploadJob;
-use Repositories\VenuesRepository;
 
 class InteractiveFixturesUploadService implements InteractiveUploadContract
 {

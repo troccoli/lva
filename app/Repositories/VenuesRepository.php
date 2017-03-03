@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Repositories;
+namespace LVA\Repositories;
 
 use LVA\Models\MappedVenue;
 use LVA\Models\Venue;
@@ -11,7 +11,7 @@ use LVA\Models\UploadJob;
 /**
  * Class VenueRepository
  *
- * @package Repositories
+ * @package LVA\Repositories
  */
 class VenuesRepository
 {
