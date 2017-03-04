@@ -10,13 +10,10 @@ namespace LVA\Services;
 
 use LVA\Models\Division;
 use LVA\Models\Fixture;
-use LVA\Models\Season;
 use LVA\Models\Team;
-use LVA\Models\TeamSynonym;
 use LVA\Models\UploadJobData;
 use LVA\Models\UploadJobStatus;
 use LVA\Models\Venue;
-use LVA\Models\VenueSynonym;
 use LVA\Repositories\TeamsRepository;
 use LVA\Repositories\VenuesRepository;
 use LVA\Services\Contracts\InteractiveUploadContract;
@@ -30,8 +27,6 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
 {
     const UPLOAD_DIR = '/app/files/';
 
-    /** @var StatusService */
-    private $statusService;
     /** @var UploadDataService */
     private $uploadDataService;
     /** @var MappingService */
@@ -54,24 +49,18 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
      * @inheritDoc
      */
     public function __construct(
-        StatusService $statusService,
         UploadDataService $uploadDataService,
         MappingService $mappingService,
         TeamsRepository $teamsRepository,
         VenuesRepository $venuesRepository
-    ) {
-        $this->statusService = $statusService;
+    )
+    {
         $this->uploadDataService = $uploadDataService;
         $this->mappingService = $mappingService;
 
         $this->teamsRepository = $teamsRepository;
         $this->venuesRepository = $venuesRepository;
     }
-
-
-    /************************************
-     * INTERFACE IMPLEMENTATION METHODS *
-     ************************************/
 
     /**
      * @param resource $handle
@@ -80,10 +69,12 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
      */
     public static function readOneLine(&$handle)
     {
-        return array_map(function ($field) {
-            return str_replace(['"', "\n", "\r"], '', $field);
-        }, explode(',', fgets($handle)));
+        return explode(',', str_replace(['"', "\n", "\r"], '', fgets($handle)));
     }
+
+    /************************************
+     * INTERFACE IMPLEMENTATION METHODS *
+     ************************************/
 
     /**
      * @inheritdoc
@@ -105,15 +96,11 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
             ->setFile($fixtureFile->getFilename())
             ->setType(UploadJob::TYPE_FIXTURES)
             ->setRowCount($lines - 1)// Don't count the first line as they are the headers
-            ->setStatus($this->statusService->getInitialStatus()->toArray())
+            ->setStatus((new UploadJobStatus())->toArray())
             ->save();
 
         return $job;
     }
-
-    /*******************
-     * PRIVATE METHODS *
-     *******************/
 
     /**
      * @inheritDoc
@@ -125,7 +112,7 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
         $this->newVenues = $job->newVenues;
 
         /** @var UploadJobStatus $status */
-        $status = $this->statusService->loadStatus($job->getStatus());
+        $status = UploadJobStatus::loadStatus($job->getStatus());
 
         if ($status->isNotStarted()) {
             $status->moveForward()->setTotalLines($job->getRowCount());
@@ -150,16 +137,15 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
                 $row = array_combine($headers, self::readOneLine($csvFile));
 
                 // Store the current line
-                $this->statusService->setProcessingLine($status,
-                    $row['Code'],
-                    $row['Match'],
-                    $row['Home'],
-                    $row['Away'],
-                    Carbon::createFromFormat('d/m/Y', $row['Date']),
-                    Carbon::createFromFormat('H:i:s', $row['WUTime']),
-                    Carbon::createFromFormat('H:i:s', $row['StartTime']),
-                    $row['Hall']
-                );
+                $status
+                    ->setProcessingLineDivision($row['Code'])
+                    ->setProcessingLineMatchNumber($row['Match'])
+                    ->setProcessingLineHomeTeam($row['Home'])
+                    ->setProcessingLineAwayTeam($row['Away'])
+                    ->setProcessingLineDate($row['Date'])
+                    ->setProcessingLineWarmUpTime($row['WUTime'])
+                    ->setProcessingLineStartTime($row['StartTime'])
+                    ->setProcessingLineVenue($row['Hall']);
 
                 // Skip lines that are not for London or indoor volleyball
                 if ($row['Region'] != 'L' || $row['Discipline'] != 'I') {
@@ -194,7 +180,7 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
                     if (is_null($homeTeam)) {
                         // Nope, can't find it, so ask the user what to do
                         $mappings = $this->mappingService->findTeamMappings($division->getId(), $row['Home']);
-                        $this->statusService->setUnknownHomeTeam($status, $mappings);
+                        $status->setUnknown(UploadJobStatus::UNKNOWN_HOME_TEAM, $mappings);
 
                         $allRowsProcessed = false;
                         $isValid = false;
@@ -207,7 +193,7 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
                     if (is_null($awayTeam)) {
                         // Nope, can't find it, so ask the user what to do
                         $mappings = $this->mappingService->findTeamMappings($division->getId(), $row['Away']);
-                        $this->statusService->setUnknownAwayTeam($status, $mappings);
+                        $status->setUnknown(UploadJobStatus::UNKNOWN_AWAY_TEAM, $mappings);
 
                         $allRowsProcessed = false;
                         $isValid = false;
@@ -220,7 +206,7 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
                     if (is_null($venue)) {
                         // Nope, can't find it, so ask the user what to do
                         $mappings = $this->mappingService->findVenueMappings($row['Hall']);
-                        $this->statusService->setUnknownHomeTeam($status, $mappings);
+                        $status->setUnknown(UploadJobStatus::UNKNOWN_VENUE, $mappings);
 
                         $allRowsProcessed = false;
                         $isValid = false;
@@ -272,11 +258,16 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
         }
     }
 
+
+    /*******************
+     * PRIVATE METHODS *
+     *******************/
+
     /**
      * @param resource $file
      * @param int      $numberOfLines
      */
-    private function getIntoPosition($file, $numberOfLines)
+    private function getIntoPosition(&$file, $numberOfLines)
     {
         $counter = 0;
         while ($counter < $numberOfLines && !feof($file)) {
@@ -286,98 +277,8 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
     }
 
     /**
-     * @param string $team
-     *
-     * @return bool
-     */
-    private function isValidTeam($team)
-    {
-        /** @var Team $model */
-        $model = Team::findByName($team);
-        if (is_null($model)) {
-            $model = TeamSynonym::findBySynonym($team);
-        }
-        if (is_null($model)) {
-            if (!in_array($team, $this->mappedTeams->pluck('team')->all())) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * @param string $venue
-     *
-     * @return bool
-     */
-    private function isValidVenue($venue)
-    {
-        /** @var Venue $model */
-        $model = Venue::findByName($venue);
-        if (is_null($model)) {
-            $model = VenueSynonym::findBySynonym($venue);
-        }
-        if (is_null($model)) {
-            if (!in_array($venue, $this->mappedVenues->pluck('venue')->all()) &&
-                !in_array($venue, $this->newVenues->pluck('venue')->all())
-            ) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * @param string $team
-     *
-     * @return Team|null
-     */
-    private function findTeamByName($team)
-    {
-        /** @var Team $model */
-        $model = Team::findByName($team);
-        if ($model) {
-            return $model;
-        }
-
-        /** @var TeamSynonym $modelSynonym */
-        $modelSynonym = TeamSynonym::findBySynonym($team);
-        if ($modelSynonym) {
-            $model = $modelSynonym->team;
-            return $model;
-        }
-
-        return null;
-    }
-
-    /**
-     * @param string $venue
-     *
-     * @return Venue|null
-     */
-    private function findVenueByName($venue)
-    {
-        /** @var Venue $model */
-        $model = Venue::findByName($venue);
-        if ($model) {
-            return $model;
-        }
-
-        /** @var VenueSynonym $modelSynonym */
-        $modelSynonym = VenueSynonym::findBySynonym($venue);
-        if ($modelSynonym) {
-            $model = $modelSynonym->venue;
-            return $model;
-        }
-
-        return null;
-    }
-
-    /**
-     * @param UploadJob   $job
-     * @param array $data
+     * @param UploadJob $job
+     * @param array     $data
      */
     private function insertFixture($job, $data)
     {

@@ -167,5 +167,14 @@
     $('#load-fixture-modal').modal({show: false});
     $('#load-fixture-modal').on('hidden.bs.modal', function () {
         setTimeout(poll, 1000);
+        // Restart the uploading
+        $.get({
+            url  : '/api/v1/uploads/resume',
+            data : {
+                job      : jobId,
+                api_token: apiToken
+            },
+            async: true
+        });
     });
 })(jQuery);

@@ -8,6 +8,8 @@
 
 namespace LVA\Models;
 
+use Carbon\Carbon;
+
 
 /**
  * Class UploadJobStatus
@@ -52,6 +54,14 @@ class UploadJobStatus
         $this->unknowns = null;
     }
 
+    public static function loadStatus($statusArray)
+    {
+        $status = new static();
+        $status->load($statusArray);
+
+        return $status;
+    }
+
     /**
      * @return string
      */
@@ -94,6 +104,12 @@ class UploadJobStatus
         if (array_has($data, 'processed_rows')) {
             $this->processed_rows = $data['processed_rows'];
         }
+        if (array_has($data, 'processing_line')) {
+            $this->processing_line = $data['processing_line'];
+        }
+        if (array_has($data, 'unknowns')) {
+            $this->unknowns = $data['unknowns'];
+        }
 
         return $this;
     }
@@ -104,12 +120,74 @@ class UploadJobStatus
     public function toArray()
     {
         return [
-            'status_code'     => $this->status_code,
-            'total_lines'     => $this->total_lines,
-            'processed_lines' => $this->processed_lines,
-            'total_rows'      => $this->total_rows,
-            'processed_rows'  => $this->processed_rows,
+            'status_code'     => $this->getStatusCode(),
+            'total_lines'     => $this->getTotalLines(),
+            'processed_lines' => $this->getProcessedLines(),
+            'total_rows'      => $this->getTotalRows(),
+            'processed_rows'  => $this->getProcessedRows(),
+            'processing_line' => $this->processing_line,
+            'unknowns'        => $this->getUnknowns(),
         ];
+    }
+
+    /**
+     * @return array
+     */
+    public function toApiJson()
+    {
+        $formattedStatus = [
+            'StatusCode'    => $this->getStatusCode(),
+            'StatusMessage' => $this->getStatusCodeMessage(),
+        ];
+
+        if ($this->isValidating()) {
+            $formattedStatus['Progress'] = floor($this->getProcessedLines() * 100 / $this->getTotalLines());
+        } elseif ($this->isInserting()) {
+            $formattedStatus['Progress'] = floor($this->getProcessedRows() * 100 / $this->getTotalRows());
+        }
+
+        $formattedStatus['Fixture'] = [
+            'Division'    => $this->getProcessingLineDivision(),
+            'MatchNumber' => $this->getProcessingLineMatchNumber(),
+            'HomeTeam'    => $this->getProcessingLineHomeTeam(),
+            'AwayTeam'    => $this->getProcessingLineAwayTeam(),
+            'Date'        => $this->getProcessingLineDate(),
+            'WarmUpTime'  => $this->getProcessingLineWarmUpTime(),
+            'StartTime'   => $this->getProcessingLineStartTime(),
+            'Venue'       => $this->getProcessingLineVenue(),
+        ];
+
+        foreach ($this->getUnknowns() as $unknownType => $mappings) {
+            switch ($unknownType) {
+                case UploadJobStatus::UNKNOWN_HOME_TEAM:
+                    $formattedStatus['Unknowns']['HomeTeam'] = [
+                        'Mapping' => $mappings,
+                        'ApiUrls' => [
+                            'Map' => route('loading-map-team'),
+                        ],
+                    ];
+                    break;
+                case UploadJobStatus::UNKNOWN_AWAY_TEAM:
+                    $formattedStatus['Unknowns']['AwayTeam'] = [
+                        'Mapping' => $mappings,
+                        'ApiUrls' => [
+                            'Map' => route('loading-map-team'),
+                        ],
+                    ];
+                    break;
+                case UploadJobStatus::UNKNOWN_VENUE:
+                    $formattedStatus['Unknowns']['Venue'] = [
+                        'Mapping' => $mappings,
+                        'ApiUrls' => [
+                            //'Add' => route('loading-add-venue'),
+                            'Map' => route('loading-map-venue'),
+                        ],
+                    ];
+                    break;
+            }
+        }
+
+        return $formattedStatus;
     }
 
     /**
@@ -145,6 +223,14 @@ class UploadJobStatus
     }
 
     /**
+     * @return bool
+     */
+    public function hasUnknownData()
+    {
+        return $this->status_code === self::STATUS_UNKNOWN_DATA;
+    }
+
+    /**
      * @return array
      */
     public function getUnknowns()
@@ -162,6 +248,7 @@ class UploadJobStatus
      */
     public function setUnknown($unknownType, $mappings)
     {
+        $this->status_code = self::STATUS_UNKNOWN_DATA;
         $this->unknowns[$unknownType] = $mappings;
     }
 
@@ -353,7 +440,7 @@ class UploadJobStatus
      */
     public function setProcessingLineDate($date)
     {
-        $this->processing_line['date'] = $date;
+        $this->processing_line['date'] = Carbon::createFromFormat('d/m/Y', $date)->format('D, d/m/Y');
 
         return $this;
     }
@@ -374,7 +461,7 @@ class UploadJobStatus
      */
     public function setProcessingLineWarmUpTime($time)
     {
-        $this->processing_line['warm_up_time'] = $time;
+        $this->processing_line['warm_up_time'] = Carbon::createFromFormat('H:i:s', $time)->format('H:i');
 
         return $this;
     }
@@ -395,7 +482,7 @@ class UploadJobStatus
      */
     public function setProcessingLineStartTime($time)
     {
-        $this->processing_line['start_time'] = $time;
+        $this->processing_line['start_time'] = Carbon::createFromFormat('H:i:s', $time)->format('H:i');
 
         return $this;
     }
@@ -440,6 +527,18 @@ class UploadJobStatus
                 break;
             default:
                 throw new \RuntimeException("Invalid status code {$this->status_code}.");
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return UploadJobStatus
+     */
+    public function resume()
+    {
+        if ($this->status_code === self::STATUS_UNKNOWN_DATA) {
+            $this->status_code = self::STATUS_VALIDATING_RECORDS;
         }
 
         return $this;

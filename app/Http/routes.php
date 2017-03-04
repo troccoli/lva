@@ -28,6 +28,7 @@ Route::group(['prefix' => 'api/v1', 'middleware' => 'auth:api', 'namespace' => '
     Route::post('maps/team', ['as' => 'loading-map-team', 'uses' => 'UploadApiController@mapTeam']);
     Route::post('venues', ['as' => 'loading-add-venue', 'uses' => 'UploadApiController@addVenue']);
     Route::post('maps/venue', ['as' => 'loading-map-venue', 'uses' => 'UploadApiController@mapVenue']);
+    Route::get('uploads/resume', ['as' => 'resume-upload', 'uses' => 'UploadApiController@resumeUpload']);
 });
 
 Route::group(['middleware' => 'web'], function () {

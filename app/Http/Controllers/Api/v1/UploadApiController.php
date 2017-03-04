@@ -17,22 +17,36 @@ use LVA\Models\MappedVenue;
 use LVA\Models\NewVenue;
 use LVA\Models\UploadJob;
 use LVA\Models\UploadJobStatus;
-use LVA\Services\StatusService;
+use LVA\Services\InteractiveFixturesUploadService;
 use Illuminate\Support\Facades\Input;
 
 class UploadApiController extends Controller
 {
-    /** @var StatusService */
-    private $statusService;
+    /** @var InteractiveFixturesUploadService */
+    private $uploadService;
 
     /**
      * @inheritDoc
      */
-    public function __construct(StatusService $statusService)
+    public function __construct(InteractiveFixturesUploadService $uploadService)
     {
-        $this->statusService = $statusService;
+        $this->uploadService = $uploadService;
     }
 
+    public function resumeUpload()
+    {
+        $uploadJob = $this->checkForJob();
+        if (!$uploadJob instanceof UploadJob) {
+            return response()->json($uploadJob);
+        }
+
+        $status = new UploadJobStatus();
+        $status->load($uploadJob->getStatus())->resume();
+
+        $uploadJob->setStatus($status->toArray())->save();
+
+        $this->uploadService->processJob($uploadJob);
+    }
 
     public function getUploadStatus()
     {
@@ -42,65 +56,13 @@ class UploadApiController extends Controller
         }
 
         $status = new UploadJobStatus();
-        $status->load([
-            'status_code' => UploadJobStatus::STATUS_UNKNOWN_DATA,
-        ]);
-        $f = [
-            'StatusCode'    => $status->getStatusCode(),
-            'StatusMessage' => $status->getStatusCodeMessage(),
-            'Progress'      => rand(10, 99),
-            'Fixture'       => [
-                'Division'    => 'M1A',
-                'MatchNumber' => '05',
-                'HomeTeam'    => 'K.S. Osmeka Men 2',
-                'AwayTeam'    => 'Flaming Six Blackjacks',
-                'Date'        => date('D d/m/y'),
-                'WarmUpTime'  => '15:00',
-                'StartTime'   => '15:20',
-                'Venue'       => 'Battersea Sports Centre',
-            ],
-            'Unknowns'      => [
-                'HomeTeam' => [
-                    'Mapping' => [
-                        ['value' => 1, 'text' => 'KS Osemka Men 2'],
-                        ['value' => 3, 'text' => 'KS Osemka Men 3'],
-                        ['value' => 4, 'text' => 'KS Osemka Men 4'],
-                        ['value' => 2, 'text' => 'k.s. Osemka Men 2'],
-                    ],
-                    'ApiUrls' => [
-                        'Map' => '/api/v1/maps/team',
-                    ],
-                ],
-                'AwayTeam' => [
-                    'Mapping' => [
-                        ['value' => 1, 'text' => 'KS Osemka Men 2'],
-                        ['value' => 3, 'text' => 'KS Osemka Men 3'],
-                        ['value' => 4, 'text' => 'KS Osemka Men 4'],
-                        ['value' => 2, 'text' => 'k.s. Osemka Men 2'],
-                    ],
-                    'ApiUrls' => [
-                        'Map' => '/api/v1/maps/team',
-                    ],
-                ],
-                'Venue'    => [
-                    'Mapping' => [
-                        ['value' => 10, 'text' => 'Sobell S.C.'],
-                        ['value' => 22, 'text' => 'SportsDock'],
-                    ],
-                    'ApiUrls' => [
-                        'Add' => route('loading-add-venue'),
-                        'Map' => route('loading-map-venue'),
-                    ],
-                ],
-
-            ],
-        ];
+        $status->load($uploadJob->getStatus());
 
         return response()->json([
             'Timestamp' => time(),
             'Error'     => false,
             'Message'   => 'Job found',
-            'Status'    => $f,
+            'Status'    => $status->toApiJson(),
         ]);
     }
 

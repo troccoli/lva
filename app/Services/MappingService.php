@@ -1,7 +1,8 @@
 <?php
 
-
 namespace LVA\Services;
+
+use LVA\Models\Team;
 
 
 /**
@@ -19,6 +20,15 @@ class MappingService
      */
     public function findTeamMappings($divisionId, $team)
     {
+        $mappings = [];
+        foreach (Team::all() as $team) {
+            $mappings[] = [
+                'value' => $team->id,
+                'text'  => $team->team,
+            ];
+        }
+
+        return $mappings;
     }
 
     /**
@@ -28,6 +38,6 @@ class MappingService
      */
     public function findVenueMappings($venue)
     {
-
+        return [];
     }
 }
