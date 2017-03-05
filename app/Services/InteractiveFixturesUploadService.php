@@ -124,6 +124,23 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
             while (!feof($csvFile)) {
                 $row = array_combine($headers, self::readOneLine($csvFile));
 
+                $validator = \Validator::make($row, [
+                    'Code'      => 'required',
+                    'Match'     => 'required|integer|min:1',
+                    'Home'      => 'required',
+                    'Away'      => 'required',
+                    'Date'      => 'required|date_format:d/m/Y',
+                    'WUTime'    => 'required|date_format:H:i:00',
+                    'StartTime' => 'required|date_format:H:i:00',
+                    'Hall'      => 'required',
+                ]);
+
+                if ($validator->fails()) {
+                    $status->setErrors($validator->errors()->all());
+                    $allRowsProcessed = false;
+                    break;
+                }
+
                 // Store the current line
                 $status
                     ->setProcessingLineDivision($row['Code'])

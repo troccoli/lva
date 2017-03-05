@@ -156,6 +156,8 @@
                     $('#continue-button').addClass('disabled').blur();
                     $('#load-fixture-modal').modal('show');
 
+                } else if (status.StatusCode == 20) {
+                    console.log(status.Errors);
                 } else if (status.StatusCode != 99) {
                     setTimeout(poll, 1000);
                 }

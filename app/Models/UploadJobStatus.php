@@ -26,6 +26,7 @@ class UploadJobStatus
     const STATUS_INSERTING_RECORDS = 2;
     const STATUS_NOT_STARTED = 0;
     const STATUS_UNKNOWN_DATA = 10;
+    const STATUS_UNRECOVERABLE_ERROR = 20;
     const STATUS_DONE = 99;
 
     const UNKNOWN_HOME_TEAM = 1;
@@ -39,6 +40,7 @@ class UploadJobStatus
     private $processed_rows;
     private $processing_line;
     private $unknowns;
+    private $errors;
 
     /**
      * @inheritDoc
@@ -52,6 +54,7 @@ class UploadJobStatus
         $this->processed_rows = 0;
         $this->processing_line = [];
         $this->unknowns = null;
+        $this->errors = [];
     }
 
     public static function loadStatus($statusArray)
@@ -76,6 +79,8 @@ class UploadJobStatus
                 return 'Inserting records';
             case self::STATUS_UNKNOWN_DATA:
                 return 'Unknown data';
+            case self::STATUS_UNRECOVERABLE_ERROR:
+                return 'Unrecoverable error';
             case self::STATUS_DONE:
                 return 'Done';
             default:
@@ -110,6 +115,9 @@ class UploadJobStatus
         if (array_has($data, 'unknowns')) {
             $this->unknowns = $data['unknowns'];
         }
+        if (array_has($data, 'errors')) {
+            $this->errors = $data['errors'];
+        }
 
         return $this;
     }
@@ -127,6 +135,7 @@ class UploadJobStatus
             'processed_rows'  => $this->getProcessedRows(),
             'processing_line' => $this->processing_line,
             'unknowns'        => $this->getUnknowns(),
+            'errors'          => $this->getErrors(),
         ];
     }
 
@@ -146,44 +155,48 @@ class UploadJobStatus
             $formattedStatus['Progress'] = floor($this->getProcessedRows() * 100 / $this->getTotalRows());
         }
 
-        $formattedStatus['Fixture'] = [
-            'Division'    => $this->getProcessingLineDivision(),
-            'MatchNumber' => $this->getProcessingLineMatchNumber(),
-            'HomeTeam'    => $this->getProcessingLineHomeTeam(),
-            'AwayTeam'    => $this->getProcessingLineAwayTeam(),
-            'Date'        => $this->getProcessingLineDate(),
-            'WarmUpTime'  => $this->getProcessingLineWarmUpTime(),
-            'StartTime'   => $this->getProcessingLineStartTime(),
-            'Venue'       => $this->getProcessingLineVenue(),
-        ];
+        if ($this->hasErrors()) {
+            $formattedStatus['Errors'] = $this->getErrors();
+        } else {
+            $formattedStatus['Fixture'] = [
+                'Division'    => $this->getProcessingLineDivision(),
+                'MatchNumber' => $this->getProcessingLineMatchNumber(),
+                'HomeTeam'    => $this->getProcessingLineHomeTeam(),
+                'AwayTeam'    => $this->getProcessingLineAwayTeam(),
+                'Date'        => $this->getProcessingLineDate(),
+                'WarmUpTime'  => $this->getProcessingLineWarmUpTime(),
+                'StartTime'   => $this->getProcessingLineStartTime(),
+                'Venue'       => $this->getProcessingLineVenue(),
+            ];
 
-        foreach ($this->getUnknowns() as $unknownType => $mappings) {
-            switch ($unknownType) {
-                case UploadJobStatus::UNKNOWN_HOME_TEAM:
-                    $formattedStatus['Unknowns']['HomeTeam'] = [
-                        'Mapping' => $mappings,
-                        'ApiUrls' => [
-                            'Map' => route('loading-map-team'),
-                        ],
-                    ];
-                    break;
-                case UploadJobStatus::UNKNOWN_AWAY_TEAM:
-                    $formattedStatus['Unknowns']['AwayTeam'] = [
-                        'Mapping' => $mappings,
-                        'ApiUrls' => [
-                            'Map' => route('loading-map-team'),
-                        ],
-                    ];
-                    break;
-                case UploadJobStatus::UNKNOWN_VENUE:
-                    $formattedStatus['Unknowns']['Venue'] = [
-                        'Mapping' => $mappings,
-                        'ApiUrls' => [
-                            //'Add' => route('loading-add-venue'),
-                            'Map' => route('loading-map-venue'),
-                        ],
-                    ];
-                    break;
+            foreach ($this->getUnknowns() as $unknownType => $mappings) {
+                switch ($unknownType) {
+                    case UploadJobStatus::UNKNOWN_HOME_TEAM:
+                        $formattedStatus['Unknowns']['HomeTeam'] = [
+                            'Mapping' => $mappings,
+                            'ApiUrls' => [
+                                'Map' => route('loading-map-team'),
+                            ],
+                        ];
+                        break;
+                    case UploadJobStatus::UNKNOWN_AWAY_TEAM:
+                        $formattedStatus['Unknowns']['AwayTeam'] = [
+                            'Mapping' => $mappings,
+                            'ApiUrls' => [
+                                'Map' => route('loading-map-team'),
+                            ],
+                        ];
+                        break;
+                    case UploadJobStatus::UNKNOWN_VENUE:
+                        $formattedStatus['Unknowns']['Venue'] = [
+                            'Mapping' => $mappings,
+                            'ApiUrls' => [
+                                //'Add' => route('loading-add-venue'),
+                                'Map' => route('loading-map-venue'),
+                            ],
+                        ];
+                        break;
+                }
             }
         }
 
@@ -250,6 +263,35 @@ class UploadJobStatus
     {
         $this->status_code = self::STATUS_UNKNOWN_DATA;
         $this->unknowns[$unknownType] = $mappings;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasErrors()
+    {
+        return $this->getStatusCode() === self::STATUS_UNRECOVERABLE_ERROR;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getErrors()
+    {
+        if (empty($this->errors)) {
+            return [];
+        }
+
+        return $this->errors;
+    }
+
+    /**
+     * @param string[] $errors
+     */
+    public function setErrors($errors)
+    {
+        $this->status_code = self::STATUS_UNRECOVERABLE_ERROR;
+        $this->errors = $errors;
     }
 
     /**
