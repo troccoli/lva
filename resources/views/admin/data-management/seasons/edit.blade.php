@@ -13,6 +13,7 @@
             'url' => ['admin/data-management/seasons', $season->id],
             'class' => 'form-horizontal'
         ]) !!}
+        {!! Form::hidden('id', $season->id) !!}
 
         <div class="form-group {{ $errors->has('season') ? 'has-error' : ''}}">
             {!! Form::label('season', 'Season: ', ['class' => 'col-sm-3 control-label']) !!}

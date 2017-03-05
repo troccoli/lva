@@ -78,8 +78,8 @@ $factory->define(\LVA\Models\Fixture::class, function (\Faker\Generator $faker) 
         },
         'match_number' => $faker->unique()->numberBetween(1, 100),
         'match_date'   => $faker->unique()->date('Y-m-d'),
-        'warm_up_time' => $faker->unique()->time('H:i:s'),
-        'start_time'   => $faker->unique()->time('H:i:s'),
+        'warm_up_time' => $faker->unique()->time('H:i:00'),
+        'start_time'   => $faker->unique()->time('H:i:00'),
     ];
 });
 

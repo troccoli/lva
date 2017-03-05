@@ -30,7 +30,7 @@ class UpdateTeamRequest extends Request
     {
         return [
             'club_id' => 'required|exists:clubs,id',
-            'team'    => 'required|unique:teams,team,NULL,id,club_id,' . $this->input('club_id')
+            'team'    => 'required|unique:teams,team,' . $this->input('id') . ',id,club_id,' . $this->input('club_id'),
         ];
     }
 }

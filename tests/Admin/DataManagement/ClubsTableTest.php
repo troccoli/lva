@@ -83,6 +83,20 @@ class ClubsTableTest extends TestCase
         /** @var Club $club */
         $club = factory(Club::class)->create();
 
+        // Don't change anything
+        $this->seeInDatabase('clubs', [
+            'id'   => $club->id,
+            'club' => $club->club,
+        ])
+            ->visit(route(self::BASE_ROUTE . '.edit', [$club->id]))
+            ->press('Update')
+            ->seePageIs(route(self::BASE_ROUTE . '.index'))
+            ->seeInElement('#flash-notification .alert.alert-success', 'Club updated!')
+            ->seeInDatabase('clubs', [
+                'id'   => $club->id,
+                'club' => $club->club,
+            ]);
+
         /** @var Club $newClub */
         $newClub = factory(Club::class)->make();
 

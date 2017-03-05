@@ -20,7 +20,6 @@
             'url' => ['admin/data-management/available-appointments', $availableAppointment->id],
             'class' => 'form-horizontal'
         ]) !!}
-
         {!! Form::hidden('id', $availableAppointment->id) !!}
 
         <div class="form-group {{ $errors->has('fixture_id') ? 'has-error' : ''}}">

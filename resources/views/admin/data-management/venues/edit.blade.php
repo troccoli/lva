@@ -13,6 +13,7 @@
             'url' => ['admin/data-management/venues', $venue->id],
             'class' => 'form-horizontal'
         ]) !!}
+        {!! Form::hidden('id', $venue->id) !!}
 
         <div class="form-group {{ $errors->has('venue') ? 'has-error' : ''}}">
             {!! Form::label('venue', 'Venue: ', ['class' => 'col-sm-3 control-label']) !!}

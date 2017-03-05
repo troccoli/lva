@@ -13,6 +13,7 @@
             'url' => ['admin/data-management/fixtures', $fixture->id],
             'class' => 'form-horizontal'
         ]) !!}
+        {!! Form::hidden('id', $fixture->id) !!}
 
         <div class="form-group {{ $errors->has('division_id') ? 'has-error' : ''}}">
             {!! Form::label('division_id', 'Division Id: ', ['class' => 'col-sm-3 control-label']) !!}

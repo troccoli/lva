@@ -88,6 +88,22 @@ class DivisionsTableTest extends TestCase
         /** @var Division $division */
         $division = factory(Division::class)->create();
 
+        // Don't change anything
+        $this->seeInDatabase('divisions', [
+            'id'        => $division->id,
+            'season_id' => $division->season_id,
+            'division'  => $division->division,
+        ])
+            ->visit(route(self::BASE_ROUTE . '.edit', [$division->id]))
+            ->press('Update')
+            ->seePageIs(route(self::BASE_ROUTE . '.index'))
+            ->seeInElement('#flash-notification .alert.alert-success', 'Division updated!')
+            ->seeInDatabase('divisions', [
+                'id'        => $division->id,
+                'season_id' => $division->season_id,
+                'division'  => $division->division,
+            ]);
+
         /** @var Division $newDivision */
         $newDivision = factory(Division::class)->make();
 

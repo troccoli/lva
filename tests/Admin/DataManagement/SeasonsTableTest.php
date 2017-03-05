@@ -84,6 +84,20 @@ class SeasonsTableTest extends TestCase
         /** @var Season $season */
         $season = factory(Season::class)->create();
 
+        // Don't change anything
+        $this->seeInDatabase('seasons', [
+            'id'     => $season->id,
+            'season' => $season->season,
+        ])
+            ->visit(route(self::BASE_ROUTE . '.edit', [$season->id]))
+            ->press('Update')
+            ->seePageIs(route(self::BASE_ROUTE . '.index'))
+            ->seeInElement('#flash-notification .alert.alert-success', 'Season updated!')
+            ->seeInDatabase('seasons', [
+                'id'     => $season->id,
+                'season' => $season->season,
+            ]);
+
         /** @var Season $newSeason */
         $newSeason = factory(Season::class)->make();
 

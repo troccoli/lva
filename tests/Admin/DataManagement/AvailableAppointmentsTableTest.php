@@ -115,6 +115,22 @@ class AvailableAppointmentsTableTest extends TestCase
         /** @var AvailableAppointment $appointment */
         $appointment = factory(AvailableAppointment::class)->create();
 
+        // Don't change anything
+        $this->seeInDatabase('available_appointments', [
+            'id'         => $appointment->id,
+            'fixture_id' => $appointment->fixture_id,
+            'role_id'    => $appointment->role_id,
+        ])
+            ->visit(route(self::BASE_ROUTE . '.edit', [$appointment->id]))
+            ->press('Update')
+            ->seePageIs(route(self::BASE_ROUTE . '.index'))
+            ->seeInElement('#flash-notification .alert.alert-success', 'Appointment updated!')
+            ->seeInDatabase('available_appointments', [
+                'id'         => $appointment->id,
+                'fixture_id' => $appointment->fixture_id,
+                'role_id'    => $appointment->id,
+            ]);
+
         /** @var Fixture $newFixture */
         $newFixture = factory(Fixture::class)->create();
         /** @var Role $newRole */

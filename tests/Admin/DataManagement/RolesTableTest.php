@@ -83,12 +83,25 @@ class RolesTableTest extends TestCase
         /** @var Role $role */
         $role = factory(Role::class)->create();
 
+        // Don't change anything
+        $this->seeInDatabase('roles', [
+            'id'   => $role->id,
+            'role' => $role->role,
+        ])
+            ->visit(route(self::BASE_ROUTE . '.edit', [$role->id]))
+            ->press('Update')
+            ->seePageIs(route(self::BASE_ROUTE . '.index'))
+            ->seeInElement('#flash-notification .alert.alert-success', 'Role updated!')
+            ->seeInDatabase('roles', [
+                'id'   => $role->id,
+                'role' => $role->role,
+            ]);
+
         /** @var Role $newRole */
         $newRole = factory(Role::class)->make();
 
-
         $this->seeInDatabase('roles', [
-            'id'   => 1,
+            'id'   => $role->id,
             'role' => $role->role,
         ])
             ->visit(route(self::BASE_ROUTE . '.edit', [$role->id]))
@@ -97,7 +110,7 @@ class RolesTableTest extends TestCase
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-success', 'Role updated!')
             ->seeInDatabase('roles', [
-                'id'   => 1,
+                'id'   => $role->id,
                 'role' => $newRole->role,
             ]);
         $role->role = $newRole->role;

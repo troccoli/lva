@@ -88,6 +88,22 @@ class TeamsTableTest extends TestCase
         /** @var Team $team */
         $team = factory(Team::class)->create();
 
+        // Don't change anything
+        $this->seeInDatabase('teams', [
+            'id'      => $team->id,
+            'club_id' => $team->club_id,
+            'team'    => $team->team,
+        ])
+            ->visit(route(self::BASE_ROUTE . '.edit', [$team->id]))
+            ->press('Update')
+            ->seePageIs(route(self::BASE_ROUTE . '.index'))
+            ->seeInElement('#flash-notification .alert.alert-success', 'Team updated!')
+            ->seeInDatabase('teams', [
+                'id'      => $team->id,
+                'club_id' => $team->club_id,
+                'team'    => $team->team,
+            ]);
+
         /** @var Team $newTeam */
         $newTeam = factory(Team::class)->make();
 

@@ -131,6 +131,34 @@ class FixturesTableTest extends TestCase
         /** @var Fixture $fixture */
         $fixture = factory(Fixture::class)->create();
 
+        // Don't change anything
+        $this->seeInDatabase('fixtures', [
+            'id'           => $fixture->id,
+            'division_id'  => $fixture->division_id,
+            'home_team_id' => $fixture->home_team_id,
+            'away_team_id' => $fixture->away_team_id,
+            'venue_id'     => $fixture->venue_id,
+            'match_number' => $fixture->match_number,
+            'match_date'   => $fixture->match_date->format('Y-m-d'),
+            'warm_up_time' => $fixture->warm_up_time,
+            'start_time'   => $fixture->start_time,
+        ]);
+        $this->visit(route(self::BASE_ROUTE . '.edit', [$fixture->id]))
+            ->press('Update')
+            ->seePageIs(route(self::BASE_ROUTE . '.index'))
+            ->seeInElement('#flash-notification .alert.alert-success', 'Fixture updated!')
+            ->seeInDatabase('fixtures', [
+                'id'           => $fixture->id,
+                'division_id'  => $fixture->division_id,
+                'home_team_id' => $fixture->home_team_id,
+                'away_team_id' => $fixture->away_team_id,
+                'venue_id'     => $fixture->venue_id,
+                'match_number' => $fixture->match_number,
+                'match_date'   => $fixture->match_date->format('Y-m-d'),
+                'warm_up_time' => $fixture->warm_up_time,
+                'start_time'   => $fixture->start_time,
+            ]);
+
         /** @var Fixture $newFixture */
         $newFixture = factory(Fixture::class)->make(['id' => $fixture->id]);
 

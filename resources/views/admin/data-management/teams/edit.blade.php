@@ -13,6 +13,7 @@
             'url' => ['admin/data-management/teams', $team->id],
             'class' => 'form-horizontal'
         ]) !!}
+        {!! Form::hidden('id', $team->id) !!}
 
         <div class="form-group {{ $errors->has('club_id') ? 'has-error' : ''}}">
             {!! Form::label('club_id', 'Club Id: ', ['class' => 'col-sm-3 control-label']) !!}

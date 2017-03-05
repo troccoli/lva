@@ -83,6 +83,20 @@ class VenuesTableTest extends TestCase
         /** @var Venue $venue */
         $venue = factory(Venue::class)->create();
 
+        // Don't change anything
+        $this->seeInDatabase('venues', [
+            'id'    => $venue->id,
+            'venue' => $venue->venue,
+        ])
+            ->visit(route(self::BASE_ROUTE . '.edit', [$venue->id]))
+            ->press('Update')
+            ->seePageIs(route(self::BASE_ROUTE . '.index'))
+            ->seeInElement('#flash-notification .alert.alert-success', 'Venue updated!')
+            ->seeInDatabase('venues', [
+                'id'    => $venue->id,
+                'venue' => $venue->venue,
+            ]);
+
         /** @var Venue $newVenue */
         $newVenue = factory(Venue::class)->make();
 

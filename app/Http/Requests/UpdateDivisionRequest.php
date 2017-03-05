@@ -30,7 +30,7 @@ class UpdateDivisionRequest extends Request
     {
         return [
             'season_id' => 'required|exists:seasons,id',
-            'division'  => 'required|unique:divisions,division,NULL,id,season_id,' . $this->input('season_id'),
+            'division'  => 'required|unique:divisions,division,' . $this->input('id') . ',id,season_id,' . $this->input('season_id'),
         ];
     }
 }
