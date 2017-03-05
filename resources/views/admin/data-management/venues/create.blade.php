@@ -13,7 +13,7 @@
         <div class="form-group {{ $errors->has('venue') ? 'has-error' : ''}}">
             {!! Form::label('venue', 'Venue: ', ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-6">
-                {!! Form::text('venue', null, ['class' => 'form-control']) !!}
+                {!! Form::text('venue', null, ['class' => 'form-control', 'required' => true]) !!}
                 {!! $errors->first('venue', '<p class="help-block">:message</p>') !!}
             </div>
         </div>
