@@ -69,18 +69,18 @@ class VenuesRepository
         return null;
     }
 
-    public function findByNameWithinMapped(UploadJob $job, $team)
+    public function findByNameWithinMapped(UploadJob $job, $venue)
     {
         $jobId = $job->getId();
         if (is_null($this->mappedModelsByName[$jobId])) {
-            /** @var MappedVenue $mappedTeam */
-            foreach (MappedVenue::findByJob($jobId) as $mappedTeam) {
-                $this->mappedModelsByName[$jobId][$mappedTeam->getName()] = $mappedTeam->team;
+            /** @var MappedVenue $mappedVenue */
+            foreach (MappedVenue::findByJob($jobId) as $mappedVenue) {
+                $this->mappedModelsByName[$jobId][$mappedVenue->getName()] = $mappedVenue->venue;
             }
         }
 
-        if (isset($this->mappedModelsByName[$jobId][$team])) {
-            return $this->mappedModelsByName[$jobId][$team];
+        if (isset($this->mappedModelsByName[$jobId][$venue])) {
+            return $this->mappedModelsByName[$jobId][$venue];
         } else {
             return null;
         }

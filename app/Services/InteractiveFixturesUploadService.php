@@ -37,14 +37,6 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
     /** @var VenuesRepository */
     private $venuesRepository;
 
-
-    /** @var Collection */
-    private $mappedTeams;
-    /** @var Collection */
-    private $mappedVenues;
-    /** @var Collection */
-    private $newVenues;
-
     /**
      * @inheritDoc
      */
@@ -107,10 +99,6 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
      */
     public function processJob(UploadJob $job)
     {
-        $this->mappedTeams = $job->mappedTeams;
-        $this->mappedVenues = $job->mappedVenues;
-        $this->newVenues = $job->newVenues;
-
         /** @var UploadJobStatus $status */
         $status = UploadJobStatus::loadStatus($job->getStatus());
 

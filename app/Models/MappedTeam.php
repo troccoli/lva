@@ -39,23 +39,23 @@ class MappedTeam extends Model
      */
     public static function findByJob($jobId)
     {
-        return MappedTeam::where('upload_job_id', $jobId)->get();
+        return self::where('upload_job_id', $jobId)->get();
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function uploadJob()
     {
-        return $this->hasOne(UploadJob::class);
+        return $this->belongsTo(UploadJob::class);
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function team()
     {
-        return $this->hasOne(Team::class);
+        return $this->belongsTo(Team::class);
     }
 
     /**
@@ -105,7 +105,7 @@ class MappedTeam extends Model
      */
     public function setMappedTeam($team)
     {
-        $this->team_id = Team::findByName($team);
+        $this->team_id = Team::findByName($team)->getId();
 
         return $this;
     }

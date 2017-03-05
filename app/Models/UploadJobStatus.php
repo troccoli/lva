@@ -539,6 +539,7 @@ class UploadJobStatus
     {
         if ($this->status_code === self::STATUS_UNKNOWN_DATA) {
             $this->status_code = self::STATUS_VALIDATING_RECORDS;
+            $this->unknowns = null;
         }
 
         return $this;

@@ -39,23 +39,23 @@ class MappedVenue extends Model
      */
     public static function findByJob($jobId)
     {
-        return MappedTeam::where('upload_job_id', $jobId)->get();
+        return self::where('upload_job_id', $jobId)->get();
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function uploadJob()
     {
-        return $this->hasOne(UploadJob::class);
+        return $this->belongsTo(UploadJob::class);
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function venue()
     {
-        return $this->hasOne(Venue::class);
+        return $this->belongsTo(Venue::class);
     }
 
     /**
@@ -105,7 +105,7 @@ class MappedVenue extends Model
      */
     public function setMappedVenue($venue)
     {
-        $this->venue_id = Venue::findByName($venue);
+        $this->venue_id = Venue::findByName($venue)->getId();
 
         return $this;
     }

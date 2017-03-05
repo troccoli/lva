@@ -3,6 +3,7 @@
 namespace LVA\Services;
 
 use LVA\Models\Team;
+use LVA\Models\Venue;
 
 
 /**
@@ -38,6 +39,14 @@ class MappingService
      */
     public function findVenueMappings($venue)
     {
-        return [];
+        $mappings = [];
+        foreach (Venue::all() as $venue) {
+            $mappings[] = [
+                'value' => $venue->id,
+                'text'  => $venue->venue,
+            ];
+        }
+
+        return $mappings;
     }
 }

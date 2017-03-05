@@ -153,7 +153,7 @@
                         $('#load-fixture-modal').find('#unknowns').append(newUnknown);
                     });
 
-                    $('#continue-button').addClass('disabled');
+                    $('#continue-button').addClass('disabled').blur();
                     $('#load-fixture-modal').modal('show');
 
                 } else if (status.StatusCode != 99) {

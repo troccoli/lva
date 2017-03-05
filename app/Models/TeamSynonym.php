@@ -47,11 +47,11 @@ class TeamSynonym extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function team()
     {
-        return $this->hasOne(Team::class);
+        return $this->belongsTo(Team::class);
     }
 
     /**
@@ -60,5 +60,29 @@ class TeamSynonym extends Model
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param string $synonym
+     *
+     * @return TeamSynonym
+     */
+    public function setSynonym($synonym)
+    {
+        $this->synonym = $synonym;
+
+        return $this;
+    }
+
+    /**
+     * @param int $teamId
+     *
+     * @return TeamSynonym
+     */
+    public function setTeamId($teamId)
+    {
+        $this->team_id = $teamId;
+
+        return $this;
     }
 }

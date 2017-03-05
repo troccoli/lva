@@ -15,22 +15,28 @@ use LVA\Http\Requests\Api\v1\NewVenueRequest;
 use LVA\Models\MappedTeam;
 use LVA\Models\MappedVenue;
 use LVA\Models\NewVenue;
+use LVA\Models\TeamSynonym;
 use LVA\Models\UploadJob;
 use LVA\Models\UploadJobStatus;
+use LVA\Models\VenueSynonym;
 use LVA\Services\InteractiveFixturesUploadService;
 use Illuminate\Support\Facades\Input;
+use LVA\Services\UploadDataService;
 
 class UploadApiController extends Controller
 {
     /** @var InteractiveFixturesUploadService */
     private $uploadService;
+    /** @var UploadDataService */
+    private $uploadDataService;
 
     /**
      * @inheritDoc
      */
-    public function __construct(InteractiveFixturesUploadService $uploadService)
+    public function __construct(InteractiveFixturesUploadService $uploadService, UploadDataService $uploadDataService)
     {
         $this->uploadService = $uploadService;
+        $this->uploadDataService = $uploadDataService;
     }
 
     public function resumeUpload()
@@ -75,6 +81,13 @@ class UploadApiController extends Controller
             ->setMappedTeam($request->input('newName'))
             ->save();
 
+        $synonym = new TeamSynonym();
+        $synonym
+            ->setSynonym($mappedTeam->getName())
+            ->setTeamId($mappedTeam->getId());
+
+        $this->uploadDataService->add($request->input('job'), TeamSynonym::class, $synonym);
+
         return response()->json([
             'success' => true,
         ]);
@@ -102,8 +115,15 @@ class UploadApiController extends Controller
             ->setMappedVenue($request->input('newName'))
             ->save();
 
+        $synonym = new VenueSynonym();
+        $synonym
+            ->setSynonym($mappedVenue->getName())
+            ->setTeamId($mappedVenue->getId());
+
+        $this->uploadDataService->add($request->input('job'), VenueSynonym::class, $synonym);
+
         return response()->json([
-            'success' => false,
+            'success' => true,
         ]);
     }
 

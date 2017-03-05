@@ -32,7 +32,7 @@ class MapVenueRequest extends Request
     public function rules()
     {
         return [
-            'job'     => 'required|exists:upload_jobs',
+            'job'     => 'required|exists:upload_jobs,id',
             'name'    => 'required',
             'newName' => 'required',
         ];

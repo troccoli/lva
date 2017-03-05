@@ -41,11 +41,11 @@ class VenueSynonym extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function venue()
     {
-        return $this->hasOne(Venue::class);
+        return $this->belongsTo(Venue::class);
     }
 
     /**
@@ -54,5 +54,29 @@ class VenueSynonym extends Model
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param string $synonym
+     *
+     * @return VenueSynonym
+     */
+    public function setSynonym($synonym)
+    {
+        $this->synonym = $synonym;
+
+        return $this;
+    }
+
+    /**
+     * @param int $venueId
+     *
+     * @return VenueSynonym
+     */
+    public function setTeamId($venueId)
+    {
+        $this->venue_id = $venueId;
+
+        return $this;
     }
 }
