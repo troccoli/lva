@@ -21,7 +21,7 @@
         <div class="form-group {{ $errors->has('team') ? 'has-error' : ''}}">
             {!! Form::label('team', 'Team: ', ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-6">
-                {!! Form::text('team', null, ['class' => 'form-control', 'required' => true]) !!}
+                {!! Form::text('team', null, ['class' => 'form-control', 'required' => true, 'autofocus' => true]) !!}
                 {!! $errors->first('team', '<p class="help-block">:message</p>') !!}
             </div>
         </div>

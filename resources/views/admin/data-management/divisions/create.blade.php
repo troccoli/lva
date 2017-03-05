@@ -21,7 +21,7 @@
         <div class="form-group {{ $errors->has('division') ? 'has-error' : ''}}">
             {!! Form::label('division', 'Division: ', ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-6">
-                {!! Form::text('division', null, ['class' => 'form-control', 'required' => true]) !!}
+                {!! Form::text('division', null, ['class' => 'form-control', 'required' => true, 'autofocus' => true]) !!}
                 {!! $errors->first('division', '<p class="help-block">:message</p>') !!}
             </div>
         </div>

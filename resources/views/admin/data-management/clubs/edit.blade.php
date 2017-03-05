@@ -17,7 +17,7 @@
         <div class="form-group {{ $errors->has('club') ? 'has-error' : ''}}">
             {!! Form::label('club', 'Club: ', ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-6">
-                {!! Form::text('club', null, ['class' => 'form-control', 'required' => true]) !!}
+                {!! Form::text('club', null, ['class' => 'form-control', 'required' => true, 'autofocus' => true]) !!}
                 {!! $errors->first('club', '<p class="help-block">:message</p>') !!}
             </div>
         </div>

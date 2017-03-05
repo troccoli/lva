@@ -25,7 +25,7 @@
         <div class="form-group {{ $errors->has('match_number') ? 'has-error' : ''}}">
             {!! Form::label('match_number', 'Match Number: ', ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-6">
-                {!! Form::number('match_number', null, ['class' => 'form-control', 'required' => true]) !!}
+                {!! Form::number('match_number', null, ['class' => 'form-control', 'required' => true, 'autofocus' => true]) !!}
                 {!! $errors->first('match_number', '<p class="help-block">:message</p>') !!}
             </div>
         </div>
