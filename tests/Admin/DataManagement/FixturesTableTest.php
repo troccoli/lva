@@ -67,7 +67,6 @@ class FixturesTableTest extends TestCase
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-success', 'Fixture added!')
             ->seeInDatabase('fixtures', [
-                'id'           => 1,
                 'division_id'  => $fixture->division_id,
                 'home_team_id' => $fixture->home_team_id,
                 'away_team_id' => $fixture->away_team_id,

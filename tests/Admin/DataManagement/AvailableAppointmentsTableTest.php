@@ -128,7 +128,7 @@ class AvailableAppointmentsTableTest extends TestCase
             ->seeInDatabase('available_appointments', [
                 'id'         => $appointment->id,
                 'fixture_id' => $appointment->fixture_id,
-                'role_id'    => $appointment->id,
+                'role_id'    => $appointment->role_id,
             ]);
 
         /** @var Fixture $newFixture */

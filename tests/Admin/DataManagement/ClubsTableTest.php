@@ -60,7 +60,6 @@ class ClubsTableTest extends TestCase
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-success', 'Club added!')
             ->seeInDatabase('clubs', [
-                'id'   => 1,
                 'club' => $club->club,
             ]);
 
@@ -71,7 +70,6 @@ class ClubsTableTest extends TestCase
             ->seePageIs(route(self::BASE_ROUTE . '.create'))
             ->seeInElement('.alert.alert-danger', 'The club already exists.')
             ->seeInDatabase('clubs', [
-                'id'   => 1,
                 'club' => $club->club,
             ]);
     }

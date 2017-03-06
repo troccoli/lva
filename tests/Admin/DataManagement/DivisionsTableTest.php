@@ -62,7 +62,6 @@ class DivisionsTableTest extends TestCase
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-success', 'Division added!')
             ->seeInDatabase('divisions', [
-                'id'        => 1,
                 'season_id' => $division->season_id,
                 'division'  => $division->division,
             ]);
@@ -75,7 +74,6 @@ class DivisionsTableTest extends TestCase
             ->seePageIs(route(self::BASE_ROUTE . '.create'))
             ->seeInElement('.alert.alert-danger', 'The division already exists in the same season.')
             ->seeInDatabase('divisions', [
-                'id'        => 1,
                 'season_id' => $division->season_id,
                 'division'  => $division->division,
             ]);

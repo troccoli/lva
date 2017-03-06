@@ -17,6 +17,7 @@ $factory->define(LVA\User::class, function (Faker\Generator $faker) {
         'email'          => $faker->unique()->email,
         'password'       => bcrypt($faker->unique()->password()),
         'remember_token' => $faker->unique()->md5,
+        'api_token'      => $faker->unique()->md5,
     ];
 });
 

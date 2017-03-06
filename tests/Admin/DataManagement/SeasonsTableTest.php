@@ -61,7 +61,6 @@ class SeasonsTableTest extends TestCase
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-success', 'Season added!')
             ->seeInDatabase('seasons', [
-                'id'     => 1,
                 'season' => $season->season,
             ]);
 
@@ -72,7 +71,6 @@ class SeasonsTableTest extends TestCase
             ->seePageIs(route(self::BASE_ROUTE . '.create'))
             ->seeInElement('.alert.alert-danger', 'The season already exists.')
             ->seeInDatabase('seasons', [
-                'id'     => 1,
                 'season' => $season->season,
             ]);
     }

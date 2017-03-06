@@ -4,11 +4,16 @@ namespace Tests;
 
 use Illuminate\Contracts\Console\Kernel;
 use Artisan;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use LVA\User;
 
 class TestCase extends \Illuminate\Foundation\Testing\TestCase
 {
+    use DatabaseTransactions;
+
     protected $users = [];
+
+    protected static $refreshDatabase = true;
 
     /**
      * The base URL to use while testing the application.
@@ -34,7 +39,10 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase
     protected function setUp()
     {
         parent::setUp();
-        Artisan::call('migrate:refresh');
+        if (self::$refreshDatabase) {
+            Artisan::call('migrate:refresh');
+            self::$refreshDatabase = false;
+        }
     }
 
     /**

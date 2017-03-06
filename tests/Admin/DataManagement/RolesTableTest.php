@@ -60,7 +60,6 @@ class RolesTableTest extends TestCase
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-success', 'Role added!')
             ->seeInDatabase('roles', [
-                'id'   => 1,
                 'role' => $role->role,
             ]);
 
@@ -71,7 +70,6 @@ class RolesTableTest extends TestCase
             ->seePageIs(route(self::BASE_ROUTE . '.create'))
             ->seeInElement('.alert.alert-danger', 'The role already exists.')
             ->seeInDatabase('roles', [
-                'id'   => 1,
                 'role' => $role->role,
             ]);
     }
