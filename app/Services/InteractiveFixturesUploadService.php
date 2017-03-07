@@ -18,10 +18,9 @@ use LVA\Repositories\TeamsRepository;
 use LVA\Repositories\VenuesRepository;
 use LVA\Services\Contracts\InteractiveUploadContract;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\UploadedFile;
-
 use LVA\Models\UploadJob;
+use Illuminate\Support\Facades\Validator;
 
 class InteractiveFixturesUploadService implements InteractiveUploadContract
 {
@@ -124,7 +123,7 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
             while (!feof($csvFile)) {
                 $row = array_combine($headers, self::readOneLine($csvFile));
 
-                $validator = \Validator::make($row, [
+                $validator = Validator::make($row, [
                     'Code'      => 'required',
                     'Match'     => 'required|integer|min:1',
                     'Home'      => 'required',
@@ -136,10 +135,12 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
                 ]);
 
                 if ($validator->fails()) {
-                    $status->setErrors($validator->errors()->all());
+                    $status->setErrors($validator->errors()->all(), $processedLines + 2);
                     $allRowsProcessed = false;
                     break;
                 }
+
+                unset($validator);
 
                 // Store the current line
                 $status

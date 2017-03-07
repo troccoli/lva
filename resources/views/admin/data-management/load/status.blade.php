@@ -20,6 +20,12 @@
             </div>
         </div>
         <p id="message"></p>
+        <div id="unrecoverable-errors" class="alert alert-danger hidden" role="alert">
+            <p>It looks like something went really wrong. I'm afraid I cannot recover from this.</p>
+            <p>Please look carefully at the errors, fix them and start over.</p>
+            <p>The errors are on line <span id="error-line-number"></span></p>
+            <ul></ul>
+        </div>
     </div>
 
     @include('_partial.load-fixture-modal')

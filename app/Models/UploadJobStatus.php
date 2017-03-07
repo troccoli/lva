@@ -41,6 +41,7 @@ class UploadJobStatus
     private $processing_line;
     private $unknowns;
     private $errors;
+    private $error_line;
 
     /**
      * @inheritDoc
@@ -55,6 +56,7 @@ class UploadJobStatus
         $this->processing_line = [];
         $this->unknowns = null;
         $this->errors = [];
+        $this->error_line = null;
     }
 
     public static function loadStatus($statusArray)
@@ -118,6 +120,9 @@ class UploadJobStatus
         if (array_has($data, 'errors')) {
             $this->errors = $data['errors'];
         }
+        if (array_has($data, 'error_line')) {
+            $this->error_line = $data['error_line'];
+        }
 
         return $this;
     }
@@ -136,6 +141,7 @@ class UploadJobStatus
             'processing_line' => $this->processing_line,
             'unknowns'        => $this->getUnknowns(),
             'errors'          => $this->getErrors(),
+            'error_line'    => $this->getErrorLine(),
         ];
     }
 
@@ -157,6 +163,8 @@ class UploadJobStatus
 
         if ($this->hasErrors()) {
             $formattedStatus['Errors'] = $this->getErrors();
+            $formattedStatus['ErrorLine'] = $this->getErrorLine();
+
         } else {
             $formattedStatus['Fixture'] = [
                 'Division'    => $this->getProcessingLineDivision(),
@@ -287,11 +295,21 @@ class UploadJobStatus
 
     /**
      * @param string[] $errors
+     * @param int      $errorLine
      */
-    public function setErrors($errors)
+    public function setErrors($errors, $errorLine)
     {
         $this->status_code = self::STATUS_UNRECOVERABLE_ERROR;
         $this->errors = $errors;
+        $this->error_line = $errorLine;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getErrorLine()
+    {
+        return $this->error_line;
     }
 
     /**

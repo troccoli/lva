@@ -157,7 +157,13 @@
                     $('#load-fixture-modal').modal('show');
 
                 } else if (status.StatusCode == 20) {
-                    console.log(status.Errors);
+                    var alert = $('#unrecoverable-errors');
+                    alert.find('#error-line-number').text(status.ErrorLine);
+                    $.each(status.Errors, function (key, error) {
+                        alert.find('ul').append($('<li>' + error + '</li>'))
+                    });
+                    alert.show();
+                    $('.progress-bar').removeClass('progress-bar-striped active');
                 } else if (status.StatusCode != 99) {
                     setTimeout(poll, 1000);
                 }
