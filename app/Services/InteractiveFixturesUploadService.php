@@ -260,10 +260,20 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
         }
 
         if ($status->isDone()) {
-            // @todo Clean up
+            $this->cleanUp($job);
         }
     }
 
+    /**
+     * @param UploadJob $job
+     */
+    public function cleanUp(UploadJob $job)
+    {
+        $job->mappedTeams()->delete();
+        $job->mappedVenues()->delete();
+        $job->uploadData()->delete();
+        $job->delete();
+    }
 
     /*******************
      * PRIVATE METHODS *

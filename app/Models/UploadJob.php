@@ -2,6 +2,8 @@
 
 namespace LVA\Models;
 
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -46,6 +48,16 @@ class UploadJob extends Model
     public function uploadData()
     {
         return $this->hasMany(UploadJobData::class);
+    }
+
+    /**
+     * @param Builder $query
+     *
+     * @return Builder
+     */
+    public function scopeStale(Builder $query)
+    {
+        return $query->where('updated_at', '<',  Carbon::now()->subWeek());
     }
 
     /**
