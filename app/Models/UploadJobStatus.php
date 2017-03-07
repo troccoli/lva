@@ -155,10 +155,10 @@ class UploadJobStatus
             'StatusMessage' => $this->getStatusCodeMessage(),
         ];
 
-        if ($this->isValidating()) {
-            $formattedStatus['Progress'] = floor($this->getProcessedLines() * 100 / $this->getTotalLines());
-        } elseif ($this->isInserting()) {
+        if ($this->isInserting()) {
             $formattedStatus['Progress'] = floor($this->getProcessedRows() * 100 / $this->getTotalRows());
+        } else {
+            $formattedStatus['Progress'] = floor($this->getProcessedLines() * 100 / $this->getTotalLines());
         }
 
         if ($this->hasErrors()) {

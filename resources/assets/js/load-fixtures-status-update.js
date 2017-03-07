@@ -162,7 +162,7 @@
                     $.each(status.Errors, function (key, error) {
                         alert.find('ul').append($('<li>' + error + '</li>'))
                     });
-                    alert.show();
+                    alert.removeClass('hidden');
                     $('.progress-bar').removeClass('progress-bar-striped active');
                 } else if (status.StatusCode != 99) {
                     setTimeout(poll, 1000);
