@@ -94,3 +94,36 @@ $factory->define(\LVA\Models\AvailableAppointment::class, function (\Faker\Gener
         },
     ];
 });
+
+$factory->define(\LVA\Models\UploadJobStatus::class, function (\Faker\Generator $faker) {
+    $totalLines = $faker->numberBetween(10, 200);
+    $processedLines = $faker->numberBetween(0, $totalLines);
+    $totalRows = $faker->numberBetween($totalLines, $totalLines * 2);
+    $processedRows = $faker->numberBetween(0, $totalRows);
+
+    return [
+        "status_code"     => 1,
+        "total_lines"     => $totalLines,
+        "processed_lines" => $processedLines,
+        "total_rows"      => $totalRows,
+        "processed_rows"  => $processedRows,
+        "processing_line" => [],
+        "unknowns"        => null,
+        "errors"          => [],
+        "error_line"      => null,
+    ];
+});
+
+$factory->define(\LVA\Models\UploadJob::class, function (\Faker\Generator $faker) {
+    return [
+        'file'      => $faker->word . str_random(5) . '.csv',
+        'type'      => 'fixtures',
+        'status'    => function () {
+            return json_encode(factory(\LVA\Models\UploadJobStatus::class)->make());
+        },
+        'season_id' => function () {
+            return factory(\LVA\Models\Season::class)->create()->id;
+        },
+        'row_count' => $faker->numberBetween(1, 100),
+    ];
+});

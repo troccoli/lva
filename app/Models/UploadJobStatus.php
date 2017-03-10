@@ -141,7 +141,7 @@ class UploadJobStatus
             'processing_line' => $this->processing_line,
             'unknowns'        => $this->getUnknowns(),
             'errors'          => $this->getErrors(),
-            'error_line'    => $this->getErrorLine(),
+            'error_line'      => $this->getErrorLine(),
         ];
     }
 

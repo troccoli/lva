@@ -67,7 +67,6 @@ class AvailableAppointmentsTableTest extends TestCase
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-success', 'Appointment added!')
             ->seeInDatabase('available_appointments', [
-                'id'         => 1,
                 'fixture_id' => $appointment->fixture_id,
                 'role_id'    => $appointment->role_id,
             ]);
@@ -80,7 +79,6 @@ class AvailableAppointmentsTableTest extends TestCase
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-success', 'Appointment added!')
             ->seeInDatabase('available_appointments', [
-                'id'         => 2,
                 'fixture_id' => $appointment->fixture_id,
                 'role_id'    => $newRole->id,
             ]);
@@ -93,7 +91,6 @@ class AvailableAppointmentsTableTest extends TestCase
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-success', 'Appointment added!')
             ->seeInDatabase('available_appointments', [
-                'id'         => 3,
                 'fixture_id' => $newFixture->id,
                 'role_id'    => $appointment->role_id,
             ]);
