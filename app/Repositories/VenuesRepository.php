@@ -58,10 +58,8 @@ class VenuesRepository
             $this->modelsByName[$name] = $model;
             return $model;
         } else {
-            /** @var VenueSynonym $modelSynonym */
-            $modelSynonym = VenueSynonym::findBySynonym($name);
-            if ($modelSynonym) {
-                $$model = $modelSynonym->team;
+            $model = VenueSynonym::findBySynonym($name);
+            if ($model) {
                 $this->modelsByName[$name] = $model;
                 return $model;
             }

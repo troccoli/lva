@@ -39,7 +39,7 @@ class UploadJobData extends Model
      */
     public static function findByJobId($jobId)
     {
-        return self::where('upload_job_id', $jobId)->get();
+        return self::where('upload_job_id', $jobId)->orderBy('id', 'asc')->get();
     }
 
     /**

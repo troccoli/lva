@@ -11,8 +11,8 @@
                 <tr>
                     <th></th>
                     <th>Date</th>
-                    <th>Warm-up time</th>
-                    <th>Start time</th>
+                    <th>Warm-up</th>
+                    <th>Start</th>
                     <th>Home</th>
                     <th>Away</th>
                     <th>Venue</th>

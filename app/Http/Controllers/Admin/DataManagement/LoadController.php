@@ -47,9 +47,6 @@ class LoadController extends Controller
         // Create upload job
         $job = $this->uploadService->createJob($request->input('season_id'), $request->file('upload_file'));
 
-        // Start the uploading
-        $this->uploadService->processJob($job);
-
         // Redirect to the status page
         return Redirect::route('uploadStatus', ['job_id' => $job->getId()]);
     }

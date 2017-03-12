@@ -6,12 +6,28 @@
 
     var apiToken = $('#api_token').val(),
         jobId = $('#job_id').val(),
+        modal = $('#load-fixture-modal'),
         lastTimestamp = 0,
+
+        updateProgressBar = function updateProgressBar(bar, progress) {
+            bar.removeClass('hidden');
+            bar.find('.progress-bar')
+                .css('width', progress + '%')
+                .attr('aria-valuenow', progress)
+                .find('.sr-only').html(progress + '% Complete');
+
+            if (progress == 100) {
+                bar.find('.progress-bar')
+                    .removeClass('progress-bar-striped active')
+                    .addClass('progress-bar-success');
+            }
+        },
 
         disableRow = function disableRow(row) {
             row.off('click', '.add-button').off('click', '.map-button');
             row.find('button').addClass('disabled').blur();
             row.find('select').prop('disabled', true);
+            row.css('opacity', 0.5);
 
             if ($('#unknowns').find('button').not('.disabled').length == 0) {
                 $('#continue-button').removeClass('disabled');
@@ -126,7 +142,7 @@
                 dataType: 'json'
             }).done(function (data) {
                 if (lastTimestamp == data.Timestamp) {
-                    setTimeout(poll, 1000);
+                    setTimeout(poll, 500);
                     console.log('Same timestamp - nothing to do');
                     return;
                 }
@@ -137,52 +153,71 @@
                     return;
                 }
                 var status = data.Status;
-                $('.progress-bar')
-                    .css('width', status.Progress + '%')
-                    .attr('aria-valuenow', status.Progress)
-                    .find('.sr-only').html(status.Progress + '% Complete');
 
-                if (status.StatusCode == 10) {
-                    $('#load-fixture-modal').find('.modal-title').text(status.StatusMessage);
+                if (status.StatusCode >= 10) {
+                    var validatingProgress = status.StatusCode < 20 ? status.Progress : 100;
+                    updateProgressBar($('#validating-progress'), validatingProgress);
+                }
+                if (status.StatusCode >= 20) {
+                    var insertingProgress = status.StatusCode < 30 ? status.Progress : 100;
+                    updateProgressBar($('#inserting-progress'), insertingProgress);
+                }
 
-                    populateCurrentFixture($('#load-fixture-modal'), status.Fixture);
+                if (status.StatusCode == 11) {
+                    modal.find('.modal-title').text(status.StatusMessage);
 
-                    $('#load-fixture-modal').find('#unknowns').empty();
+                    populateCurrentFixture(modal, status.Fixture);
+
+                    modal.find('#unknowns').empty();
                     $.each(status.Unknowns, function (field, map) {
                         var newUnknown = createUnknownRow('unknown-data-template', status.Fixture[field], map);
                         $('#load-fixture-modal').find('#unknowns').append(newUnknown);
                     });
 
                     $('#continue-button').addClass('disabled').blur();
-                    $('#load-fixture-modal').modal('show');
+                    modal.modal('show');
 
-                } else if (status.StatusCode == 20) {
+                } else if (status.StatusCode == 19 || status.StatusCode == 29) {
                     var alert = $('#unrecoverable-errors');
-                    alert.find('#error-line-number').text(status.ErrorLine);
+                    if (status.ErrorLine) {
+                        var errorLine = alert.find('#error-line-number');
+
+                        errorLine.find('span').text(status.ErrorLine);
+                        errorLine.removeClass('hidden');
+                    }
                     $.each(status.Errors, function (key, error) {
                         alert.find('ul').append($('<li>' + error + '</li>'))
                     });
                     alert.removeClass('hidden');
-                    $('.progress-bar').removeClass('progress-bar-striped active');
+                    if (status.StatusCode == 19) {
+                        $('#validating-progress .progress-bar').removeClass('progress-bar-striped active').addClass('progress-bar-danger');
+                    } else if (status.StatusCode == 29) {
+                        $('#inserting-progress .progress-bar').removeClass('progress-bar-striped active').addClass('progress-bar-danger');
+                    }
                 } else if (status.StatusCode != 99) {
-                    setTimeout(poll, 1000);
+                    setTimeout(poll, 500);
                 }
 
             });
+        },
+
+        restart = function restart() {
+            // Restart the uploading
+            $.get({
+                url  : '/api/v1/uploads/resume',
+                data : {
+                    job      : jobId,
+                    api_token: apiToken
+                },
+                async: true
+            });
         };
 
+    restart();
     poll();
-    $('#load-fixture-modal').modal({show: false});
-    $('#load-fixture-modal').on('hidden.bs.modal', function () {
-        setTimeout(poll, 1000);
-        // Restart the uploading
-        $.get({
-            url  : '/api/v1/uploads/resume',
-            data : {
-                job      : jobId,
-                api_token: apiToken
-            },
-            async: true
-        });
+    modal.modal({show: false});
+    modal.on('hidden.bs.modal', function () {
+        setTimeout(poll, 500);
+        restart();
     });
 })(jQuery);

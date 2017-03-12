@@ -11,10 +11,22 @@
         <div class="row">
             <div class="col-xs-12">
                 <h3>Processing <strong>{{$job->file}}</strong></h3>
-                <div class="progress">
-                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0"
-                         aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
-                        <span class="sr-only">0% Complete</span>
+                <div id="validating-progress" class="hidden">
+                    <h4>Validating records</h4>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0"
+                             aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+                            <span class="sr-only">0% Complete</span>
+                        </div>
+                    </div>
+                </div>
+                <div id="inserting-progress" class="hidden">
+                    <h4>Inserting records</h4>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0"
+                             aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+                            <span class="sr-only">0% Complete</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -23,7 +35,7 @@
         <div id="unrecoverable-errors" class="alert alert-danger hidden" role="alert">
             <p>It looks like something went really wrong. I'm afraid I cannot recover from this.</p>
             <p>Please look carefully at the errors, fix them and start over.</p>
-            <p>The errors are on line <span id="error-line-number"></span></p>
+            <p id="error-line-number" class="hidden">The errors are on line <span></span></p>
             <ul></ul>
         </div>
     </div>

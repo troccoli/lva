@@ -8,6 +8,9 @@
 
 namespace LVA\Services;
 
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use LVA\Models\Division;
 use LVA\Models\Fixture;
 use LVA\Models\Team;
@@ -60,7 +63,16 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
      */
     public static function readOneLine(&$handle)
     {
-        return explode(',', str_replace(['"', "\n", "\r"], '', fgets($handle)));
+        $line = [];
+        foreach (explode(',', str_replace(['"', "\n", "\r"], '', fgets($handle))) as $field) {
+            if (is_numeric($field)) {
+                $line[] = (int)$field;
+            } else {
+                $line[] = $field;
+            }
+        }
+
+        return $line;
     }
 
     /************************************
@@ -72,8 +84,15 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
      */
     public function createJob($seasonId, UploadedFile $file)
     {
+        $job = new UploadJob();
+        $job->setSeason($seasonId)
+            ->setFile($file->getClientOriginalName())
+            ->setType(UploadJob::TYPE_FIXTURES)
+            ->setStatus((new UploadJobStatus())->toArray())
+            ->save();
+
         /** @var UploadedFile $fixtureFile */
-        $fixtureFile = $file->move(storage_path() . self::UPLOAD_DIR, $file->getClientOriginalName());
+        $fixtureFile = $file->move(storage_path() . self::UPLOAD_DIR, $job->getId() . '.csv');
 
         $handle = fopen($fixtureFile->getRealPath(), 'rb');
         $lines = 0;
@@ -82,13 +101,8 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
         }
         fclose($handle);
 
-        $job = new UploadJob();
-        $job->setSeason($seasonId)
-            ->setFile($fixtureFile->getFilename())
-            ->setType(UploadJob::TYPE_FIXTURES)
-            ->setRowCount($lines - 1)// Don't count the first line as they are the headers
-            ->setStatus((new UploadJobStatus())->toArray())
-            ->save();
+        $job->setRowCount($lines - 1)// Don't count the first line as they are the headers
+        ->save();
 
         return $job;
     }
@@ -101,7 +115,7 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
         /** @var UploadJobStatus $status */
         $status = UploadJobStatus::loadStatus($job->getStatus());
 
-        if ($status->isNotStarted()) {
+        if ($status->hasNotStarted()) {
             $status->moveForward()->setTotalLines($job->getRowCount());
             $job->setStatus($status->toArray())->save();
         }
@@ -110,7 +124,7 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
             $processedLines = $status->getProcessedLines();
 
             /** @var resource $csvFile */
-            $csvFile = fopen(storage_path() . self::UPLOAD_DIR . $job->getFile(), 'r');
+            $csvFile = fopen(storage_path() . self::UPLOAD_DIR . $job->getId() . '.csv', 'r');
 
             // Get the headers
             $headers = self::readOneLine($csvFile);
@@ -119,9 +133,13 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
             $this->getIntoPosition($csvFile, $processedLines);
 
             // Start processing
-            $allRowsProcessed = true;
+            $allLinesProcessed = true;
             while (!feof($csvFile)) {
-                $row = array_combine($headers, self::readOneLine($csvFile));
+                $line = self::readOneLine($csvFile);
+                if (empty($line) || count($headers) != count($line)) {
+                    continue;
+                }
+                $row = array_combine($headers, $line);
 
                 $validator = Validator::make($row, [
                     'Code'      => 'required',
@@ -135,8 +153,8 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
                 ]);
 
                 if ($validator->fails()) {
-                    $status->setErrors($validator->errors()->all(), $processedLines + 2);
-                    $allRowsProcessed = false;
+                    $status->setValidationErrors($validator->errors()->all(), $processedLines + 2);
+                    $allLinesProcessed = false;
                     break;
                 }
 
@@ -188,7 +206,7 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
                         $mappings = $this->mappingService->findTeamMappings($division->getId(), $row['Home']);
                         $status->setUnknown(UploadJobStatus::UNKNOWN_HOME_TEAM, $mappings);
 
-                        $allRowsProcessed = false;
+                        $allLinesProcessed = false;
                         $isValid = false;
                     }
                 }
@@ -201,7 +219,7 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
                         $mappings = $this->mappingService->findTeamMappings($division->getId(), $row['Away']);
                         $status->setUnknown(UploadJobStatus::UNKNOWN_AWAY_TEAM, $mappings);
 
-                        $allRowsProcessed = false;
+                        $allLinesProcessed = false;
                         $isValid = false;
                     }
                 }
@@ -214,7 +232,7 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
                         $mappings = $this->mappingService->findVenueMappings($row['Hall']);
                         $status->setUnknown(UploadJobStatus::UNKNOWN_VENUE, $mappings);
 
-                        $allRowsProcessed = false;
+                        $allLinesProcessed = false;
                         $isValid = false;
                     }
                 }
@@ -246,8 +264,8 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
             }
             fclose($csvFile);
 
-            // If we exited the loop because we have processed all line then advance to next stage
-            if ($allRowsProcessed) {
+            // If we exited the loop because we have processed all the lines then advance to the next stage
+            if ($allLinesProcessed) {
                 $status->moveForward()->setTotalRows(UploadJobData::findByJobId($job->getId())->count());
             }
 
@@ -256,7 +274,49 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
         }
 
         if ($status->isInserting()) {
-            // @todo insert into DB
+            /** @var Collection $rows */
+            $rows = $this->uploadDataService->getUnprocessed($job->getId());
+
+            // Pass 1:
+            // Run all the SQL in a transaction so see if they are all valid
+            $valid = true;
+            DB::beginTransaction();
+            try {
+                /** @var UploadJobData $row */
+                foreach ($rows as $row) {
+                    /** @var Model $model */
+                    $model = unserialize($row->model_data);
+                    $model->save();
+                    //$model->save(json_decode($row->model_data, true));
+                    unset($model);
+                }
+            } catch (\Exception $e) {
+                $valid = false;
+            }
+            DB::rollBack();
+
+            // Pass 2:
+            // If all SQL is valid run them updating the status and progress
+            if (!$valid) {
+                $status->setInsertingError($e->getMessage());
+                $job->setStatus($status->toArray())->save();
+            } else {
+                $processedRows = 0;
+                /** @var UploadJobData $row */
+                foreach ($rows as $row) {
+                    /** @var Model $model */
+                    $model = unserialize($row->model_data);
+                    $model->save();
+                    unset($model);
+
+                    // Update the row counter
+                    $status->setProcessedRows(++$processedRows);
+                    $job->setStatus($status->toArray())->save();
+                }
+
+                $status->moveForward();
+                $job->setStatus($status->toArray())->save();
+            }
         }
 
         if ($status->isDone()) {
@@ -272,7 +332,10 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
         $job->mappedTeams()->delete();
         $job->mappedVenues()->delete();
         $job->uploadData()->delete();
-        $job->delete();
+        unlink(storage_path() . self::UPLOAD_DIR . $job->getId() . '.csv');
+        if (!UploadJobStatus::loadStatus($job->getStatus())->isDone()) {
+            $job->delete();
+        }
     }
 
     /*******************

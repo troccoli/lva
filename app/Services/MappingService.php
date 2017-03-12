@@ -22,7 +22,7 @@ class MappingService
     public function findTeamMappings($divisionId, $team)
     {
         $mappings = [];
-        foreach (Team::all() as $team) {
+        foreach (Team::orderby('team', 'asc')->get() as $team) {
             $mappings[] = [
                 'value' => $team->id,
                 'text'  => $team->team,
@@ -40,7 +40,7 @@ class MappingService
     public function findVenueMappings($venue)
     {
         $mappings = [];
-        foreach (Venue::all() as $venue) {
+        foreach (Venue::orderBy('venue', 'asc')->get() as $venue) {
             $mappings[] = [
                 'value' => $venue->id,
                 'text'  => $venue->venue,

@@ -59,10 +59,8 @@ class TeamsRepository
             $this->modelsByName[$name] = $model;
             return $model;
         } else {
-            /** @var TeamSynonym $modelSynonym */
-            $modelSynonym = TeamSynonym::findBySynonym($name);
-            if ($modelSynonym) {
-                $$model = $modelSynonym->team;
+            $model = TeamSynonym::findBySynonym($name);
+            if ($model) {
                 $this->modelsByName[$name] = $model;
                 return $model;
             }

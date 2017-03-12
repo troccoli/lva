@@ -8,6 +8,7 @@
 
 namespace LVA\Services;
 
+use Illuminate\Database\Eloquent\Collection;
 use LVA\Models\UploadJobData;
 use Illuminate\Database\Eloquent\Model;
 
@@ -25,7 +26,21 @@ class UploadDataService
         $jobData
             ->setJobId($jobId)
             ->setModel($modelClass)
-            ->setData($model->toJson())
+            ->setData(serialize($model))
             ->save();
+    }
+
+    /**
+     * @param int $jobId
+     * @param int $processedRows
+     *
+     * @return Collection
+     */
+    public function getUnprocessed($jobId, $processedRows = 0)
+    {
+        /** @var Collection $rows */
+        $rows = UploadJobData::findByJobId($jobId);
+
+        return $rows->slice($processedRows);
     }
 }
