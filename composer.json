@@ -33,7 +33,9 @@
     "symfony/dom-crawler": "2.8.*|3.0.*",
     "barryvdh/laravel-ide-helper": "^2.1",
     "appzcoder/crud-generator": "^1.0",
-    "doctrine/dbal": "~2.3"
+    "doctrine/dbal": "~2.3",
+    "league/factory-muffin": "^3.0",
+    "league/factory-muffin-faker": "^2.0"
   },
   "autoload": {
     "classmap": [
