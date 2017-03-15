@@ -12,7 +12,7 @@ use LVA\Models\AvailableAppointment;
 use Tests\TestCase;
 use LVA\Models\Role;
 
-class RolesTableTest extends TestCase
+class RoleResourceTest extends TestCase
 {
     const BASE_ROUTE = 'admin.data-management.roles';
 

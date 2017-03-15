@@ -72,7 +72,7 @@ class Venue extends Model
      */
     public function getName()
     {
-        return $this->venue();
+        return $this->venue;
     }
 
     /**

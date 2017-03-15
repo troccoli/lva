@@ -105,7 +105,7 @@ class MappedTeam extends Model
      */
     public function setMappedTeam($team)
     {
-        $this->team_id = Team::findByName($team)->getId();
+        $this->team()->associate(Team::findByName($team));
 
         return $this;
     }

@@ -32,6 +32,7 @@ class VenueSynonym extends Model
      */
     public static function findBySynonym($synonym)
     {
+        /** @var VenueSynonym $synonym */
         $synonym = self::where('synonym', $synonym)->first();
         if ($synonym) {
             return $synonym->venue;
@@ -57,6 +58,14 @@ class VenueSynonym extends Model
     }
 
     /**
+     * @return string
+     */
+    public function getSynonym()
+    {
+        return $this->synonym;
+    }
+
+    /**
      * @param string $synonym
      *
      * @return VenueSynonym
@@ -69,13 +78,13 @@ class VenueSynonym extends Model
     }
 
     /**
-     * @param int $venueId
+     * @param string $venue
      *
      * @return VenueSynonym
      */
-    public function setTeamId($venueId)
+    public function setVenue($venue)
     {
-        $this->venue_id = $venueId;
+        $this->venue()->associate(Venue::findByName($venue));
 
         return $this;
     }

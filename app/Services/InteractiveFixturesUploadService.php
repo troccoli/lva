@@ -113,7 +113,7 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
     public function processJob(UploadJob $job)
     {
         /** @var UploadJobStatus $status */
-        $status = UploadJobStatus::loadStatus($job->getStatus());
+        $status = UploadJobStatus::factory($job->getStatus());
 
         if ($status->hasNotStarted()) {
             $status->moveForward()->setTotalLines($job->getRowCount());
@@ -333,7 +333,7 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
         $job->mappedVenues()->delete();
         $job->uploadData()->delete();
         unlink(storage_path() . self::UPLOAD_DIR . $job->getId() . '.csv');
-        if (!UploadJobStatus::loadStatus($job->getStatus())->isDone()) {
+        if (!UploadJobStatus::factory($job->getStatus())->isDone()) {
             $job->delete();
         }
     }
@@ -353,28 +353,5 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
             fgets($file);
             $counter++;
         }
-    }
-
-    /**
-     * @param UploadJob $job
-     * @param array     $data
-     */
-    private function insertFixture($job, $data)
-    {
-        /** @var Fixture $fixture */
-        $fixture = new Fixture();
-        $fixture
-            ->setDivision(Division::findByName($job->getSeason(), $data['Code'])->getId())
-            ->setMatchNumber($data['Match'])
-            ->setMatchDate(Carbon::createFromFormat('d/m/Y', $data['Date']))
-            ->setWarmUpTime(Carbon::createFromFormat('H:i:s', $data['WUTime']))
-            ->setStartTime(Carbon::createFromFormat('H:i:s', $data['StartTime']))
-            ->setHomeTeam(Team::findByName($data['Home'])->getId())
-            ->setAwayTeam(Team::findByName($data['Away'])->getId())
-            ->setVenue(Venue::findByName($data['Hall'])->getId());
-
-        $this->uploadDataService->add($job->getId(), Fixture::class, $fixture);
-
-        unset($fixture);
     }
 }

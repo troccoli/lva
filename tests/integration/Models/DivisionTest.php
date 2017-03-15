@@ -4,7 +4,7 @@ namespace Tests\Models;
 
 use LVA\Models\Fixture;
 use LVA\Models\Season;
-use Tests\TestCase;
+use Tests\Integration\IntegrationTestCase;
 use LVA\Models\Division;
 
 /**
@@ -12,7 +12,7 @@ use LVA\Models\Division;
  *
  * @package Tests\Models
  */
-class DivisionTest extends TestCase
+class DivisionTest extends IntegrationTestCase
 {
     /**
      * @test
@@ -53,7 +53,8 @@ class DivisionTest extends TestCase
         /** @var Division $division */
         $division = factory(Division::class)->create(['season_id' => $season->getId()]);
 
-        $this->assertEquals($division->getId(), Division::findByName($season->getId(), $division->getName())->getId());
+        // I have to use the toArray() method as I'm only interested in the table's fields and not any internal ones
+        $this->assertEquals($division->toArray(), Division::findByName($season->getId(), $division->getName())->toArray());
         $this->assertNull(Division::findByName(0, $division->getName()));
         $this->assertNull(Division::findByName($season->getId(), $division->getName() . '--'));
     }

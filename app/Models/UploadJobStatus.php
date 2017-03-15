@@ -24,28 +24,28 @@ class UploadJobStatus
 {
     const STATUS_NOT_STARTED = 0;
     const STATUS_VALIDATING_RECORDS = 10;
+    const STATUS_UNKNOWN_DATA = 11;
     const STATUS_UNRECOVERABLE_VALIDATION_ERROR = 19;
     const STATUS_INSERTING_RECORDS = 20;
     const STATUS_UNRECOVERABLE_INSERT_ERROR = 29;
-    const STATUS_UNKNOWN_DATA = 11;
     const STATUS_DONE = 99;
 
     const UNKNOWN_HOME_TEAM = 1;
     const UNKNOWN_AWAY_TEAM = 2;
     const UNKNOWN_VENUE = 3;
 
-    private $status_code;
-    private $total_lines;
-    private $processed_lines;
-    private $total_rows;
-    private $processed_rows;
-    private $processing_line;
-    private $unknowns;
-    private $errors;
-    private $error_line;
+    public $status_code;
+    public $total_lines;
+    public $processed_lines;
+    public $total_rows;
+    public $processed_rows;
+    public $processing_line;
+    public $unknowns;
+    public $errors;
+    public $error_line;
 
     /**
-     * @inheritDoc
+     * UploadJobStatus constructor.
      */
     public function __construct()
     {
@@ -55,12 +55,17 @@ class UploadJobStatus
         $this->total_rows = 0;
         $this->processed_rows = 0;
         $this->processing_line = [];
-        $this->unknowns = null;
+        $this->unknowns = [];
         $this->errors = [];
         $this->error_line = null;
     }
 
-    public static function loadStatus($statusArray)
+    /**
+     * @param array $statusArray
+     *
+     * @return UploadJobStatus
+     */
+    public static function factory($statusArray)
     {
         $status = new static();
         $status->load($statusArray);
@@ -101,30 +106,14 @@ class UploadJobStatus
     {
         $this->status_code = $data['status_code'];
 
-        if (array_has($data, 'total_lines')) {
-            $this->total_lines = $data['total_lines'];
-        }
-        if (array_has($data, 'processed_lines')) {
-            $this->processed_lines = $data['processed_lines'];
-        }
-        if (array_has($data, 'total_rows')) {
-            $this->total_rows = $data['total_rows'];
-        }
-        if (array_has($data, 'processed_rows')) {
-            $this->processed_rows = $data['processed_rows'];
-        }
-        if (array_has($data, 'processing_line')) {
-            $this->processing_line = $data['processing_line'];
-        }
-        if (array_has($data, 'unknowns')) {
-            $this->unknowns = $data['unknowns'];
-        }
-        if (array_has($data, 'errors')) {
-            $this->errors = $data['errors'];
-        }
-        if (array_has($data, 'error_line')) {
-            $this->error_line = $data['error_line'];
-        }
+        $this->total_lines = array_has($data, 'total_lines') ? $data['total_lines'] : 0;
+        $this->processed_lines = array_has($data, 'processed_lines') ? $data['processed_lines'] : 0;
+        $this->total_rows = array_has($data, 'total_rows') ? $data['total_rows'] : 0;
+        $this->processed_rows = array_has($data, 'processed_rows') ? $data['processed_rows'] : 0;
+        $this->processing_line = array_has($data, 'processing_line') ? $data['processing_line'] : [];
+        $this->unknowns = array_has($data, 'unknowns') ? $data['unknowns'] : [];
+        $this->errors = array_has($data, 'errors') ? $data['errors'] : [];
+        $this->error_line = array_has($data, 'error_line') ? $data['error_line'] : null;
 
         return $this;
     }
@@ -150,14 +139,14 @@ class UploadJobStatus
     /**
      * @return array
      */
-    public function toApiJson()
+    public function toApiArray()
     {
         $formattedStatus = [
             'StatusCode'    => $this->getStatusCode(),
             'StatusMessage' => $this->getStatusCodeMessage(),
         ];
 
-        if ($this->hasStarted()) {
+        if ($this->hasStarted() && !$this->isDone()) {
             if ($this->isInserting()) {
                 $formattedStatus['Progress'] = floor($this->getProcessedRows() * 100 / $this->getTotalRows());
             } else {
@@ -267,7 +256,7 @@ class UploadJobStatus
      */
     public function canResume()
     {
-        return !$this->isWorking() && !$this->isDone();
+        return $this->hasNotStarted() || $this->hasUnknownData();
     }
 
     /**
@@ -277,6 +266,7 @@ class UploadJobStatus
     {
         return $this->isValidating() || $this->isInserting();
     }
+
     /**
      * @return array
      */
@@ -304,7 +294,8 @@ class UploadJobStatus
      */
     public function hasErrors()
     {
-        return in_array($this->getStatusCode(), [self::STATUS_UNRECOVERABLE_VALIDATION_ERROR, self::STATUS_UNRECOVERABLE_INSERT_ERROR]);
+        return in_array($this->getStatusCode(),
+            [self::STATUS_UNRECOVERABLE_VALIDATION_ERROR, self::STATUS_UNRECOVERABLE_INSERT_ERROR]);
     }
 
     /**
@@ -437,8 +428,7 @@ class UploadJobStatus
      */
     public function getProcessingLineDivision()
     {
-        return $this->processing_line['division'];
-
+        return isset($this->processing_line['division']) ? $this->processing_line['division'] : '';
     }
 
     /**
@@ -458,8 +448,7 @@ class UploadJobStatus
      */
     public function getProcessingLineMatchNumber()
     {
-        return $this->processing_line['match_number'];
-
+        return isset($this->processing_line['match_number']) ? $this->processing_line['match_number'] : '';
     }
 
     /**
@@ -479,8 +468,7 @@ class UploadJobStatus
      */
     public function getProcessingLineHomeTeam()
     {
-        return $this->processing_line['home_team'];
-
+        return isset($this->processing_line['home_team']) ? $this->processing_line['home_team'] : '';
     }
 
     /**
@@ -500,8 +488,7 @@ class UploadJobStatus
      */
     public function getProcessingLineAwayTeam()
     {
-        return $this->processing_line['away_team'];
-
+        return isset($this->processing_line['away_team']) ? $this->processing_line['away_team'] : '';
     }
 
     /**
@@ -521,8 +508,7 @@ class UploadJobStatus
      */
     public function getProcessingLineDate()
     {
-        return $this->processing_line['date'];
-
+        return isset($this->processing_line['date']) ? $this->processing_line['date'] : '';
     }
 
     /**
@@ -542,8 +528,7 @@ class UploadJobStatus
      */
     public function getProcessingLineWarmUpTime()
     {
-        return $this->processing_line['warm_up_time'];
-
+        return isset($this->processing_line['warm_up_time']) ? $this->processing_line['warm_up_time'] : '';
     }
 
     /**
@@ -563,8 +548,7 @@ class UploadJobStatus
      */
     public function getProcessingLineStartTime()
     {
-        return $this->processing_line['start_time'];
-
+        return isset($this->processing_line['start_time']) ? $this->processing_line['start_time'] : '';
     }
 
     /**
@@ -584,8 +568,7 @@ class UploadJobStatus
      */
     public function getProcessingLineVenue()
     {
-        return $this->processing_line['venue'];
-
+        return isset($this->processing_line['venue']) ? $this->processing_line['venue'] : '';
     }
 
     /**

@@ -105,7 +105,7 @@ class MappedVenue extends Model
      */
     public function setMappedVenue($venue)
     {
-        $this->venue_id = Venue::findByName($venue)->getId();
+        $this->venue()->associate(Venue::findByName($venue));
 
         return $this;
     }

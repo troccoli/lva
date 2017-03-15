@@ -12,7 +12,7 @@ use LVA\Models\Fixture;
 use Tests\TestCase;
 use LVA\Models\Venue;
 
-class VenuesTableTest extends TestCase
+class VenueResourceTest extends TestCase
 {
     const BASE_ROUTE = 'admin.data-management.venues';
 

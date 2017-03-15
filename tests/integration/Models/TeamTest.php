@@ -4,15 +4,17 @@ namespace Tests\Models;
 
 use LVA\Models\Club;
 use LVA\Models\Fixture;
-use Tests\TestCase;
+use LVA\Models\MappedTeam;
+use LVA\Models\TeamSynonym;
 use LVA\Models\Team;
+use Tests\Integration\IntegrationTestCase;
 
 /**
  * Class TeamTest
  *
  * @package Tests\Models
  */
-class TeamTest extends TestCase
+class TeamTest extends IntegrationTestCase
 {
     /**
      * @test
@@ -22,9 +24,10 @@ class TeamTest extends TestCase
         /** @var Team[] $teams */
         $teams = factory(Team::class)->times(2)->create();
 
-        $this->assertEquals($teams[0]->getId(), Team::findByName($teams[0]->team)->getId());
+        // I have to use the toArray() method as I'm only interested in the table's fields and not any internal ones
+        $this->assertEquals($teams[0]->toArray(), Team::findByName($teams[0]->team)->toArray());
         $this->assertNull(Team::findByName($teams[0]->team . '--'));
-        $this->assertEquals($teams[1]->getId(), Team::findByName($teams[1]->team)->getId());
+        $this->assertEquals($teams[1]->toArray(), Team::findByName($teams[1]->team)->toArray());
         $this->assertNull(Team::findByName($teams[1]->team . '--'));
     }
 
@@ -80,7 +83,14 @@ class TeamTest extends TestCase
      */
     public function it_has_many_synonyms()
     {
-        $this->markTestIncomplete('Need to create the factory for team synonyms.');
+        /** @var Team[] $teams */
+        $teams = factory(Team::class)->times(2)->create();
+
+        $synonyms = mt_rand(2,20);
+        factory(TeamSynonym::class)->times($synonyms)->create(['team_id' => $teams[0]->getId()]);
+
+        $this->assertCount($synonyms, $teams[0]->synonyms);
+        $this->assertCount(0, $teams[1]->synonyms);
     }
 
     /**
@@ -88,7 +98,14 @@ class TeamTest extends TestCase
      */
     public function it_has_many_mapped_teams()
     {
-        $this->markTestIncomplete('Need to create the factory for the mapped teams.');
+        /** @var Team[] $teams */
+        $teams = factory(Team::class)->times(2)->create();
+
+        $mapped = mt_rand(2,20);
+        factory(MappedTeam::class)->times($mapped)->create(['team_id' => $teams[0]->getId()]);
+
+        $this->assertCount($mapped, $teams[0]->mapped);
+        $this->assertCount(0, $teams[1]->mapped);
     }
 
     /**
@@ -105,6 +122,17 @@ class TeamTest extends TestCase
     /**
      * @test
      */
+    public function it_gets_the_name()
+    {
+        /** @var Team $team */
+        $team = factory(Team::class)->create();
+
+        $this->assertEquals($team->team, $team->getName());
+    }
+
+    /**
+     * @test
+     */
     public function it_is_a_string()
     {
         /** @var Team $team */
@@ -112,5 +140,4 @@ class TeamTest extends TestCase
 
         $this->assertEquals($team->team, (string)$team);
     }
-
 }

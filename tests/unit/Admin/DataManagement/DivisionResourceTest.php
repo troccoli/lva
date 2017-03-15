@@ -13,7 +13,7 @@ use Tests\TestCase;
 use LVA\Models\Division;
 use LVA\Models\Season;
 
-class DivisionsTableTest extends TestCase
+class DivisionResourceTest extends TestCase
 {
     const BASE_ROUTE = 'admin.data-management.divisions';
 

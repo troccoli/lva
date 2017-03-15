@@ -38,6 +38,7 @@ class TeamSynonym extends Model
      */
     public static function findBySynonym($synonym)
     {
+        /** @var TeamSynonym $synonym */
         $synonym = self::where('synonym', $synonym)->first();
         if ($synonym) {
             return $synonym->team;
@@ -63,6 +64,14 @@ class TeamSynonym extends Model
     }
 
     /**
+     * @return string
+     */
+    public function getSynonym()
+    {
+        return $this->synonym;
+    }
+
+    /**
      * @param string $synonym
      *
      * @return TeamSynonym
@@ -75,13 +84,13 @@ class TeamSynonym extends Model
     }
 
     /**
-     * @param int $teamId
+     * @param string $team
      *
      * @return TeamSynonym
      */
-    public function setTeamId($teamId)
+    public function setTeam($team)
     {
-        $this->team_id = $teamId;
+        $this->team()->associate(Team::findByName($team));
 
         return $this;
     }

@@ -3,15 +3,15 @@
 namespace Tests\Models;
 
 use LVA\Models\AvailableAppointment;
-use Tests\TestCase;
 use LVA\Models\Role;
+use Tests\Integration\IntegrationTestCase;
 
 /**
  * Class RoleTest
  *
  * @package Tests\Models
  */
-class RoleTest extends TestCase
+class RoleTest extends IntegrationTestCase
 {
     /**
      * @test

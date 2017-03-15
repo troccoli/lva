@@ -86,6 +86,14 @@ class Team extends Model
     /**
      * @return string
      */
+    public function getName()
+    {
+        return $this->team;
+    }
+
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->team;

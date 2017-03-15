@@ -57,7 +57,7 @@ class UploadJob extends Model
      */
     public function scopeStale(Builder $query)
     {
-        return $query->where('updated_at', '<',  Carbon::now()->subWeek());
+        return $query->where('updated_at', '<=',  Carbon::now()->subWeek());
     }
 
     /**

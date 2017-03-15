@@ -3,15 +3,17 @@
 namespace Tests\Models;
 
 use LVA\Models\Fixture;
-use Tests\TestCase;
+use LVA\Models\MappedVenue;
+use LVA\Models\VenueSynonym;
 use LVA\Models\Venue;
+use Tests\Integration\IntegrationTestCase;
 
 /**
  * Class VenueTest
  *
  * @package Tests\Models
  */
-class VenueTest extends TestCase
+class VenueTest extends IntegrationTestCase
 {
     /**
      * @test
@@ -21,9 +23,10 @@ class VenueTest extends TestCase
         /** @var Venue[] $venues */
         $venues = factory(Venue::class)->times(2)->create();
 
-        $this->assertEquals($venues[0]->getId(), Venue::findByName($venues[0]->venue)->getId());
+        // I have to use the toArray() method as I'm only interested in the table's fields and not any internal ones
+        $this->assertEquals($venues[0]->toArray(), Venue::findByName($venues[0]->venue)->toArray());
         $this->assertNull(Venue::findByName($venues[0]->venue . '--'));
-        $this->assertEquals($venues[1]->getId(), Venue::findByName($venues[1]->venue)->getId());
+        $this->assertEquals($venues[1]->toArray(), Venue::findByName($venues[1]->venue)->toArray());
         $this->assertNull(Venue::findByName($venues[1]->venue . '--'));
     }
 
@@ -50,7 +53,14 @@ class VenueTest extends TestCase
      */
     public function it_has_many_synonyms()
     {
-        $this->markTestIncomplete('Need to create the factory for the mapped teams.');
+        /** @var Venue[] $venues */
+        $venues = factory(Venue::class)->times(2)->create();
+
+        $synonyms = mt_rand(2,20);
+        factory(VenueSynonym::class)->times($synonyms)->create(['venue_id' => $venues[0]->getId()]);
+
+        $this->assertCount($synonyms, $venues[0]->synonyms);
+        $this->assertCount(0, $venues[1]->synonyms);
     }
 
     /**
@@ -58,6 +68,46 @@ class VenueTest extends TestCase
      */
     public function it_has_many_mapped_venues()
     {
-        $this->markTestIncomplete('Need to create the factory for the mapped teams.');
+        /** @var Venue[] $venues */
+        $venues = factory(Venue::class)->times(2)->create();
+
+        $mapped = mt_rand(2,20);
+        factory(MappedVenue::class)->times($mapped)->create(['venue_id' => $venues[0]->getId()]);
+
+        $this->assertCount($mapped, $venues[0]->mapped);
+        $this->assertCount(0, $venues[1]->mapped);
     }
+    /**
+     * @test
+     */
+    public function it_gets_the_id()
+    {
+        /** @var Venue $venue */
+        $venue = factory(Venue::class)->create();
+
+        $this->assertEquals($venue->id, $venue->getId());
+    }
+
+    /**
+     * @test
+     */
+    public function it_gets_the_name()
+    {
+        /** @var Venue $venue */
+        $venue = factory(Venue::class)->create();
+
+        $this->assertEquals($venue->venue, $venue->getName());
+    }
+
+    /**
+     * @test
+     */
+    public function it_is_a_string()
+    {
+        /** @var Venue $venue */
+        $venue = factory(Venue::class)->create();
+
+        $this->assertEquals($venue->venue, (string)$venue);
+    }
+
 }

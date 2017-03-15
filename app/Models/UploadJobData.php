@@ -43,11 +43,11 @@ class UploadJobData extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function uploadJob()
     {
-        return $this->hasOne(UploadJob::class);
+        return $this->belongsTo(UploadJob::class);
     }
 
     /**
@@ -63,9 +63,9 @@ class UploadJobData extends Model
      *
      * @return UploadJobData
      */
-    public function setJobId($jobId)
+    public function setJob($jobId)
     {
-        $this->upload_job_id = $jobId;
+        $this->uploadJob()->associate(UploadJob::find($jobId));
 
         return $this;
     }

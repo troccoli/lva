@@ -9,6 +9,7 @@
 namespace LVA\Services;
 
 use Illuminate\Database\Eloquent\Collection;
+use LVA\Models\UploadJob;
 use LVA\Models\UploadJobData;
 use Illuminate\Database\Eloquent\Model;
 
@@ -24,7 +25,7 @@ class UploadDataService
         $jobData = new UploadJobData();
 
         $jobData
-            ->setJobId($jobId)
+            ->setJob($jobId)
             ->setModel($modelClass)
             ->setData(serialize($model))
             ->save();

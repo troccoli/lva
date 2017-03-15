@@ -2,34 +2,36 @@
 
 namespace Tests\Models;
 
-use Faker\Factory;
+use Carbon\Carbon;
+use LVA\Models\MappedTeam;
+use LVA\Models\MappedVenue;
+use LVA\Models\NewVenue;
 use LVA\Models\Season;
+use LVA\Models\UploadJobData;
 use LVA\Models\UploadJobStatus;
-use Tests\TestCase;
 use LVA\Models\UploadJob;
+use Tests\Integration\IntegrationTestCase;
 
 /**
  * Class UploadJobTest
  *
  * @package Tests\Models
  */
-class UploadJobTest extends TestCase
+class UploadJobTest extends IntegrationTestCase
 {
-    /** @var \Faker\Generator */
-    private $faker;
-
-    protected function setUp()
-    {
-        parent::setUp();
-        $this->faker = Factory::create();
-    }
-
     /**
      * @test
      */
     public function it_has_many_mapped_teams()
     {
-        $this->markTestIncomplete('Need to create the factory for the MappedTeam.');
+        /** @var UploadJob[] $jobs */
+        $jobs = factory(UploadJob::class)->times(2)->create();
+
+        $teams = mt_rand(2, 10);
+        factory(MappedTeam::class)->times($teams)->create(['upload_job_id' => $jobs[0]->getId()]);
+
+        $this->assertCount($teams, $jobs[0]->mappedTeams);
+        $this->assertCount(0, $jobs[1]->mappedTeams);
     }
 
     /**
@@ -37,8 +39,14 @@ class UploadJobTest extends TestCase
      */
     public function it_has_many_mapped_venues()
     {
-        $this->markTestIncomplete('Need to create the factory for MappedVenue.');
+        /** @var UploadJob[] $jobs */
+        $jobs = factory(UploadJob::class)->times(2)->create();
 
+        $venues = mt_rand(2, 10);
+        factory(MappedVenue::class)->times($venues)->create(['upload_job_id' => $jobs[0]->getId()]);
+
+        $this->assertCount($venues, $jobs[0]->mappedVenues);
+        $this->assertCount(0, $jobs[1]->mappedVenues);
     }
 
     /**
@@ -46,7 +54,14 @@ class UploadJobTest extends TestCase
      */
     public function it_has_many_new_venues()
     {
-        $this->markTestIncomplete('Need to create the factory for NewVenue.');
+        /** @var UploadJob[] $jobs */
+        $jobs = factory(UploadJob::class)->times(2)->create();
+
+        $venues = mt_rand(2, 10);
+        factory(NewVenue::class)->times($venues)->create(['upload_job_id' => $jobs[0]->getId()]);
+
+        $this->assertCount($venues, $jobs[0]->newVenues);
+        $this->assertCount(0, $jobs[1]->newVenues);
     }
 
     /**
@@ -54,7 +69,14 @@ class UploadJobTest extends TestCase
      */
     public function it_has_many_data()
     {
-        $this->markTestIncomplete('Need to create the factory for UploadJobsData.');
+        /** @var UploadJob[] $jobs */
+        $jobs = factory(UploadJob::class)->times(2)->create();
+
+        $data = mt_rand(2, 10);
+        factory(UploadJobData::class)->times($data)->create(['upload_job_id' => $jobs[0]->getId()]);
+
+        $this->assertCount($data, $jobs[0]->uploadData);
+        $this->assertCount(0, $jobs[1]->uploadData);
     }
 
     /**
@@ -62,7 +84,12 @@ class UploadJobTest extends TestCase
      */
     public function it_returns_stale_jobs()
     {
-        $this->markTestIncomplete();
+        $staleDate = Carbon::now()->subWeek();
+
+        $jobs = mt_rand(2, 20);
+        factory(UploadJob::class)->times($jobs)->create(['created_at' => $staleDate, 'updated_at' => $staleDate]);
+
+        $this->assertCount($jobs, UploadJob::stale()->get());
     }
 
     /**
@@ -125,8 +152,7 @@ class UploadJobTest extends TestCase
      */
     public function it_sets_the_file()
     {
-        $faker = Factory::create();
-        $file = $faker->file('/', '/tmp', false);
+        $file = $this->faker->file('/', '/tmp', false);
 
         /** @var UploadJob $job */
         $job = factory(UploadJob::class)->create();
@@ -142,7 +168,7 @@ class UploadJobTest extends TestCase
      */
     public function it_gets_the_job_type()
     {
-        $type = $this->faker->word;
+        $type = str_random(10);
 
         // DO NOT USE create() as the DB only accept 'fixture' as a type
         /** @var UploadJob $job */
@@ -156,7 +182,7 @@ class UploadJobTest extends TestCase
      */
     public function it_sets_the_job_type()
     {
-        $type = $this->faker->word;
+        $type = str_random(10);
 
         // DO NOT USE create() as the DB only accept 'fixture' as a type
         /** @var UploadJob $job */
@@ -173,10 +199,8 @@ class UploadJobTest extends TestCase
      */
     public function it_gets_the_status()
     {
-        $this->markTestIncomplete('To be fixed.');
-        // The UploadJobStatus does not have an Eloquent model, so we cannot use create()
         /** @var UploadJobStatus $status */
-        $status = factory(UploadJobStatus::class)->make();
+        $status = $this->uploadJobTestFactory();
 
         /** @var UploadJob $job */
         $job = factory(UploadJob::class)->create(['status' => json_encode($status->toArray())]);
@@ -189,10 +213,8 @@ class UploadJobTest extends TestCase
      */
     public function it_sets_the_status()
     {
-        $this->markTestIncomplete('To be fixed.');
-        // The UploadJobStatus does not have an Eloquent model, so we cannot use create()
         /** @var UploadJobStatus $status */
-        $status = factory(UploadJobStatus::class)->make();
+        $status = $this->uploadJobTestFactory();
 
         /** @var UploadJob $job */
         $job = factory(UploadJob::class)->create();
@@ -208,14 +230,11 @@ class UploadJobTest extends TestCase
      */
     public function it_store_the_status_as_json()
     {
-        $this->markTestIncomplete('To be fixed.');
         /** @var UploadJob $job */
         $job = factory(UploadJob::class)->create();
 
-        dd($job);
         $status = \DB::table($job->getTable())->where('id', $job->getId())->first(['status']);
 
-        dd($status->status);
         $this->assertJson($status->status);
     }
 
@@ -224,6 +243,10 @@ class UploadJobTest extends TestCase
      */
     public function it_gets_the_total_row_number()
     {
+        /** @var UploadJob $job */
+        $job = factory(UploadJob::class)->create();
+
+        $this->assertEquals($job->row_count, $job->getRowCount());
     }
 
     /**
@@ -231,7 +254,14 @@ class UploadJobTest extends TestCase
      */
     public function it_sets_the_total_row_number()
     {
+        /** @var UploadJob $job */
+        $job = factory(UploadJob::class)->create();
+
+        $rows = $job->getRowCount() + mt_rand(1, 10);
+
+        $this->assertNotEquals($rows, $job->getRowCount());
+
+        $job->setRowCount($rows);
+        $this->assertEquals($rows, $job->getRowCount());
     }
-
-
 }

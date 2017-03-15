@@ -47,7 +47,7 @@ class UploadApiController extends Controller
         }
 
         /** @var UploadJobStatus $status */
-        $status = UploadJobStatus::loadStatus($uploadJob->getStatus());
+        $status = UploadJobStatus::factory($uploadJob->getStatus());
 
         if ($status->canResume()) {
             $status->resume();
@@ -66,13 +66,13 @@ class UploadApiController extends Controller
         }
 
         /** @var UploadJobStatus $status */
-        $status = UploadJobStatus::loadStatus($uploadJob->getStatus());
+        $status = UploadJobStatus::factory($uploadJob->getStatus());
 
         return response()->json([
             'Timestamp' => time(),
             'Error'     => false,
             'Message'   => 'Job found',
-            'Status'    => $status->toApiJson(),
+            'Status'    => $status->toApiArray(),
         ]);
     }
 
@@ -88,7 +88,7 @@ class UploadApiController extends Controller
         $synonym = new TeamSynonym();
         $synonym
             ->setSynonym($mappedTeam->getName())
-            ->setTeamId($mappedTeam->team->getId());
+            ->setTeam($request->input('newName'));
 
         $this->uploadDataService->add($request->input('job'), TeamSynonym::class, $synonym);
 
@@ -122,7 +122,7 @@ class UploadApiController extends Controller
         $synonym = new VenueSynonym();
         $synonym
             ->setSynonym($mappedVenue->getName())
-            ->setTeamId($mappedVenue->venue->getId());
+            ->setVenue($request->input('newName'));
 
         $this->uploadDataService->add($request->input('job'), VenueSynonym::class, $synonym);
 

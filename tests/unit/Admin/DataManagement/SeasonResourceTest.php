@@ -13,7 +13,7 @@ use PhpParser\Node\Expr\AssignOp\Div;
 use Tests\TestCase;
 use LVA\Models\Season;
 
-class SeasonsTableTest extends TestCase
+class SeasonResourceTest extends TestCase
 {
     const BASE_ROUTE = 'admin.data-management.seasons';
 

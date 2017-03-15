@@ -13,7 +13,7 @@ use LVA\Models\AvailableAppointment;
 use LVA\Models\Fixture;
 use LVA\Models\Role;
 
-class AvailableAppointmentsTableTest extends TestCase
+class AvailableAppointmentResourceTest extends TestCase
 {
     const BASE_ROUTE = 'admin.data-management.available-appointments';
 

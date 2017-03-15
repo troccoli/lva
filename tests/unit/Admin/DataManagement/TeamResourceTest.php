@@ -13,7 +13,7 @@ use Tests\TestCase;
 use LVA\Models\Team;
 use LVA\Models\Club;
 
-class TeamsTableTest extends TestCase
+class TeamResourceTest extends TestCase
 {
     const BASE_ROUTE = 'admin.data-management.teams';
 

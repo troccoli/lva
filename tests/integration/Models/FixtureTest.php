@@ -7,7 +7,7 @@ use LVA\Models\AvailableAppointment;
 use LVA\Models\Division;
 use LVA\Models\Team;
 use LVA\Models\Venue;
-use Tests\TestCase;
+use Tests\Integration\IntegrationTestCase;
 use LVA\Models\Fixture;
 
 /**
@@ -15,7 +15,7 @@ use LVA\Models\Fixture;
  *
  * @package Tests\Models
  */
-class FixtureTest extends TestCase
+class FixtureTest extends IntegrationTestCase
 {
     /**
      * @test
@@ -135,10 +135,10 @@ class FixtureTest extends TestCase
         /** @var Carbon $newDate */
         $newDate = $fixture->match_date->addDay();
 
-        $this->assertNotEquals($newDate, $fixture->match_date);
+        $this->assertNotEquals($newDate->format('Y-m-d'), $fixture->match_date->format('Y-m-d'));
 
         $fixture->setMatchDate($newDate);
-        $this->assertEquals($newDate, $fixture->match_date);
+        $this->assertEquals($newDate->format('Y-m-d'), $fixture->match_date->format('Y-m-d'));
     }
 
     /**
@@ -152,10 +152,10 @@ class FixtureTest extends TestCase
         /** @var Carbon $newWarmUpTime */
         $newWarmUpTime = $fixture->warm_up_time->addHour();
 
-        $this->assertNotEquals($newWarmUpTime, $fixture->warm_up_time);
+        $this->assertNotEquals($newWarmUpTime->format('H:i'), $fixture->warm_up_time->format('H:i'));
 
         $fixture->setWarmUpTime($newWarmUpTime);
-        $this->assertEquals($newWarmUpTime, $fixture->warm_up_time);
+        $this->assertEquals($newWarmUpTime->format('H:i'), $fixture->warm_up_time->format('H:i'));
     }
 
     /**
@@ -169,10 +169,10 @@ class FixtureTest extends TestCase
         /** @var Carbon $newStartTime */
         $newStartTime = $fixture->start_time->addHour();
 
-        $this->assertNotEquals($newStartTime, $fixture->start_time);
+        $this->assertNotEquals($newStartTime->format('H:i'), $fixture->start_time->format('H:i'));
 
         $fixture->setStartTime($newStartTime);
-        $this->assertEquals($newStartTime, $fixture->start_time);
+        $this->assertEquals($newStartTime->format('H:i'), $fixture->start_time->format('H:i'));
     }
 
     /**

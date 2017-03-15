@@ -3,15 +3,15 @@
 namespace Tests\Models;
 
 use LVA\Models\Division;
-use Tests\TestCase;
 use LVA\Models\Season;
+use Tests\Integration\IntegrationTestCase;
 
 /**
  * Class SeasonTest
  *
  * @package Tests\Models
  */
-class SeasonTest extends TestCase
+class SeasonTest extends IntegrationTestCase
 {
     /**
      * @test

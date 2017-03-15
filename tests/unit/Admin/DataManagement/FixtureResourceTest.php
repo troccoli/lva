@@ -12,7 +12,7 @@ use LVA\Models\AvailableAppointment;
 use Tests\TestCase;
 use LVA\Models\Fixture;
 
-class FixturesTableTest extends TestCase
+class FixtureResourceTest extends TestCase
 {
     const BASE_ROUTE = 'admin.data-management.fixtures';
 
