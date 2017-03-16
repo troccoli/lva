@@ -13,6 +13,7 @@
             'url' => ['admin/data-management/clubs', $club->id],
             'class' => 'form-horizontal'
         ]) !!}
+        {!! Form::hidden('id', $club->id) !!}
 
         @include('admin.data-management.clubs._form', ['submitText' => 'Update'])
 

@@ -13,6 +13,7 @@
             'url' => ['admin/data-management/fixtures', $fixture->id],
             'class' => 'form-horizontal'
         ]) !!}
+        {!! Form::hidden('id', $fixture->id) !!}
 
         @include('admin.data-management.fixtures._form', ['submitText' => 'Update'])
 

@@ -13,6 +13,7 @@
             'url' => ['admin/data-management/divisions', $division->id],
             'class' => 'form-horizontal'
         ]) !!}
+        {!! Form::hidden('id', $division->id) !!}
 
         @include('admin.data-management.divisions._form', ['submitText' => 'Update'])
 

@@ -13,6 +13,7 @@
             'url' => ['admin/data-management/roles', $role->id],
             'class' => 'form-horizontal'
         ]) !!}
+        {!! Form::hidden('id', $role->id) !!}
 
         @include('admin.data-management.roles._form', ['submitText' => 'Update'])
 

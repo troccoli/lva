@@ -1,7 +1,7 @@
 <div class="form-group {{ $errors->has('club_id') ? 'has-error' : ''}}">
     {!! Form::label('club_id', 'Club Id: ', ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-6">
-        {!! Form::select('club_id', array_column($clubs->toArray(), 'club', 'id'), $team->club->id, ['class' => 'form-control']) !!}
+        {!! Form::select('club_id', array_column($clubs->toArray(), 'club', 'id'), null, ['class' => 'form-control']) !!}
         {!! $errors->first('club_id', '<p class="help-block">:message</p>') !!}
     </div>
 </div>
