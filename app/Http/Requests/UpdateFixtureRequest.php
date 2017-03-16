@@ -35,7 +35,9 @@ class UpdateFixtureRequest extends Request
                 'unique:fixtures,division_id,' . $this->input('id') . ',id' .
                 ',home_team_id,' . $this->input('home_team_id') .
                 ',away_team_id,' . $this->input('away_team_id'),
-            'match_number' => 'required|unique:fixtures,match_number,' . $this->input('id') . ',id,division_id,' . $this->input('division_id'),
+            'match_number' =>
+                'required|' .
+                'unique:fixtures,match_number,' . $this->input('id') . ',id,division_id,' . $this->input('division_id'),
             'match_date'   => 'required',
             'warm_up_time' => 'required',
             'start_time'   => 'required',

@@ -2,8 +2,7 @@
 
 namespace LVA\Http\Controllers\Admin\DataManagement;
 
-use LVA\Http\Requests\StoreRoleRequest as StoreRequest;
-use LVA\Http\Requests\UpdateRoleRequest as UpdateRequest;
+use Illuminate\Http\Request;
 use LVA\Http\Controllers\Controller;
 
 use Laracasts\Flash\Flash;
@@ -41,12 +40,14 @@ class RolesController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param StoreRequest $request
+     * @param Request $request
      *
      * @return mixed
      */
-    public function store(StoreRequest $request)
+    public function store(Request $request)
     {
+        $this->validate($request, ['role' => 'required|unique:roles']);
+
         Role::create($request->all());
 
         Flash::success('Role added!');
@@ -85,13 +86,15 @@ class RolesController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param UpdateRequest $request
+     * @param Request $request
      * @param int           $id
      *
      * @return mixed
      */
-    public function update(UpdateRequest $request, $id)
+    public function update(Request $request, $id)
     {
+        $this->validate($request, ['role' => 'required|unique:roles,role,' . $id]);
+
         /** @var Role $role */
         $role = Role::findOrFail($id);
         $role->update($request->all());

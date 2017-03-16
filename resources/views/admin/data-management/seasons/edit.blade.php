@@ -13,7 +13,6 @@
             'url' => ['admin/data-management/seasons', $season->id],
             'class' => 'form-horizontal'
         ]) !!}
-        {!! Form::hidden('id', $season->id) !!}
 
         @include('admin.data-management.seasons._form', ['submitText' => 'Update'])
 

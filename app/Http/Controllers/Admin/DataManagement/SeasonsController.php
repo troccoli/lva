@@ -2,12 +2,12 @@
 
 namespace LVA\Http\Controllers\Admin\DataManagement;
 
-use LVA\Http\Requests\StoreSeasonRequest as StoreRequest;
-use LVA\Http\Requests\UpdateSeasonRequest as UpdateRequest;
+use Illuminate\Http\Request;
 use LVA\Http\Controllers\Controller;
 
 use Laracasts\Flash\Flash;
 use LVA\Models\Season;
+
 
 /**
  * Class SeasonsController
@@ -41,12 +41,14 @@ class SeasonsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param StoreRequest $request
+     * @param Request $request
      *
      * @return mixed
      */
-    public function store(StoreRequest $request)
+    public function store(Request $request)
     {
+        $this->validate($request, ['season' => 'required|unique:seasons']);
+
         Season::create($request->all());
 
         Flash::success('Season added!');
@@ -85,13 +87,15 @@ class SeasonsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param UpdateRequest $request
-     * @param int           $id
+     * @param Request $request
+     * @param int     $id
      *
      * @return mixed
      */
-    public function update(UpdateRequest $request, $id)
+    public function update(Request $request, $id)
     {
+        $this->validate($request, ['season' => 'required|unique:seasons,season,' . $id]);
+
         /** @var Season $season */
         $season = Season::findOrFail($id);
         $season->update($request->all());

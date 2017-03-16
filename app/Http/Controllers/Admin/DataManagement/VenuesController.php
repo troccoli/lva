@@ -2,8 +2,7 @@
 
 namespace LVA\Http\Controllers\Admin\DataManagement;
 
-use LVA\Http\Requests\StoreVenueRequest as StoreRequest;
-use LVA\Http\Requests\UpdateVenueRequest as UpdateRequest;
+use Illuminate\Http\Request;
 use LVA\Http\Controllers\Controller;
 
 use Laracasts\Flash\Flash;
@@ -41,12 +40,14 @@ class VenuesController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param StoreRequest $request
+     * @param Request $request
      *
      * @return mixed
      */
-    public function store(StoreRequest $request)
+    public function store(Request $request)
     {
+        $this->validate($request, ['venue' => 'required|unique:venues']);
+
         Venue::create($request->all());
 
         Flash::success('Venue added!');
@@ -85,13 +86,15 @@ class VenuesController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param UpdateRequest $request
-     * @param int           $id
+     * @param Request $request
+     * @param int     $id
      *
      * @return mixed
      */
-    public function update(UpdateRequest $request, $id)
+    public function update(Request $request, $id)
     {
+        $this->validate($request, ['venue' => 'required|unique:venues,venue,' . $id]);
+
         /** @var Venue $venue */
         $venue = Venue::findOrFail($id);
         $venue->update($request->all());

@@ -2,8 +2,7 @@
 
 namespace LVA\Http\Controllers\Admin\DataManagement;
 
-use LVA\Http\Requests\StoreTeamRequest as StoreRequest;
-use LVA\Http\Requests\UpdateTeamRequest as UpdateRequest;
+use Illuminate\Http\Request;
 use LVA\Http\Controllers\Controller;
 
 use Laracasts\Flash\Flash;
@@ -42,12 +41,17 @@ class TeamsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param StoreRequest $request
+     * @param Request $request
      *
      * @return mixed
      */
-    public function store(StoreRequest $request)
+    public function store(Request $request)
     {
+        $this->validate($request, [
+            'club_id' => 'required|exists:clubs,id',
+            'team'    => 'required|unique:teams,team,NULL,id,club_id,' . $request->input('club_id'),
+        ]);
+
         Team::create($request->all());
 
         Flash::success('Team added!');
@@ -87,13 +91,18 @@ class TeamsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param UpdateRequest $request
-     * @param int           $id
+     * @param Request $request
+     * @param int     $id
      *
      * @return mixed
      */
-    public function update(UpdateRequest $request, $id)
+    public function update(Request $request, $id)
     {
+        $this->validate($request, [
+            'club_id' => 'required|exists:clubs,id',
+            'team'    => 'required|unique:teams,team,' . $id . ',id,club_id,' . $request->input('club_id'),
+        ]);
+
         /** @var Team $team */
         $team = Team::findOrFail($id);
         $team->update($request->all());

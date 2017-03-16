@@ -2,11 +2,10 @@
 
 namespace LVA\Http\Controllers\Admin\DataManagement;
 
-use LVA\Http\Requests\StoreDivisionRequest as StoreRequest;
-use LVA\Http\Requests\UpdateDivisionRequest as UpdateRequest;
+use Illuminate\Http\Request;
 use LVA\Http\Controllers\Controller;
 
-use Laracasts\Flash\Flash; 
+use Laracasts\Flash\Flash;
 use LVA\Models\Division;
 use LVA\Models\Season;
 
@@ -42,12 +41,17 @@ class DivisionsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param StoreRequest $request
+     * @param Request $request
      *
      * @return mixed
      */
-    public function store(StoreRequest $request)
+    public function store(Request $request)
     {
+        $this->validate($request, [
+            'season_id' => 'required|exists:seasons,id',
+            'division'  => 'required|unique:divisions,division,NULL,id,season_id,' . $request->input('season_id'),
+        ]);
+
         Division::create($request->all());
 
         Flash::success('Division added!');
@@ -87,13 +91,18 @@ class DivisionsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param UpdateRequest $request
-     * @param int           $id
+     * @param Request $request
+     * @param int     $id
      *
      * @return mixed
      */
-    public function update(UpdateRequest $request, $id)
+    public function update(Request $request, $id)
     {
+        $this->validate($request, [
+            'season_id' => 'required|exists:seasons,id',
+            'division'  => 'required|unique:divisions,division,' . $id . ',id,season_id,' . $request->input('season_id'),
+        ]);
+
         /** @var Division $division */
         $division = Division::findOrFail($id);
         $division->update($request->all());

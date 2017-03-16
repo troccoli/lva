@@ -13,7 +13,6 @@
             'url' => ['admin/data-management/venues', $venue->id],
             'class' => 'form-horizontal'
         ]) !!}
-        {!! Form::hidden('id', $venue->id) !!}
 
         @include('admin.data-management.venues._form', ['submitText' => 'Update']);
 

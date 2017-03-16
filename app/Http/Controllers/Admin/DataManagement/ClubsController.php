@@ -2,8 +2,7 @@
 
 namespace LVA\Http\Controllers\Admin\DataManagement;
 
-use LVA\Http\Requests\StoreClubRequest as StoreRequest;
-use LVA\Http\Requests\UpdateClubRequest as UpdateRequest;
+use Illuminate\Http\Request;
 use LVA\Http\Controllers\Controller;
 
 use Laracasts\Flash\Flash;
@@ -42,12 +41,14 @@ class ClubsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param StoreRequest $request
+     * @param Request $request
      *
      * @return mixed
      */
-    public function store(StoreRequest $request)
+    public function store(Request $request)
     {
+        $this->validate($request, ['club' => 'required|unique:clubs']);
+
         Club::create($request->all());
 
         Flash::success('Club added!');
@@ -86,13 +87,15 @@ class ClubsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param UpdateRequest $request
-     * @param int           $id
+     * @param Request $request
+     * @param int     $id
      *
      * @return mixed
      */
-    public function update(UpdateRequest $request, $id)
+    public function update(Request $request, $id)
     {
+        $this->validate($request, ['club' => 'required|unique:clubs,club,' . $id]);
+
         /** @var Club $club */
         $club = Club::findOrFail($id);
         $club->update($request->all());
