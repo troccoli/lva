@@ -6,15 +6,15 @@ use Carbon\Carbon;
 use LVA\Models\Division;
 use LVA\Models\Team;
 use LVA\Models\Venue;
-use Tests\Integration\IntegrationTestCase;
 use LVA\Models\UploadJobStatus;
+use Tests\TestCase;
 
 /**
  * Class UploadJobStatusTest
  *
  * @package Tests\Models
  */
-class UploadJobStatusTest extends IntegrationTestCase
+class UploadJobStatusTest extends TestCase
 {
     /**
      * @test
@@ -40,6 +40,9 @@ class UploadJobStatusTest extends IntegrationTestCase
 
         $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_UNRECOVERABLE_VALIDATION_ERROR]);
         $this->assertEquals('Unrecoverable error', $status->getStatusCodeMessage());
+
+        $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_WAITING_CONFIRMATION_TO_INSERT]);
+        $this->assertEquals('Waiting for confirmation from user', $status->getStatusCodeMessage());
 
         $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_INSERTING_RECORDS]);
         $this->assertEquals('Inserting records', $status->getStatusCodeMessage());
@@ -172,6 +175,16 @@ class UploadJobStatusTest extends IntegrationTestCase
         $this->assertInternalType('array', $statusArray['Errors']);
         $this->assertArrayHasKey('ErrorLine', $statusArray);
 
+        $statusArray = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_WAITING_CONFIRMATION_TO_INSERT])->toApiArray();
+        $this->assertInternalType('array', $statusArray);
+        $this->assertArrayHasKey('StatusCode', $statusArray);
+        $this->assertArrayHasKey('StatusMessage', $statusArray);
+        $this->assertArrayNotHasKey('Progress', $statusArray);
+        $this->assertArrayNotHasKey('Fixture', $statusArray);
+        $this->assertArrayNotHasKey('Unknowns', $statusArray);
+        $this->assertArrayNotHasKey('Errors', $statusArray);
+        $this->assertArrayNotHasKey('ErrorLine', $statusArray);
+
         $statusArray = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_INSERTING_RECORDS])->toApiArray();
         $this->assertInternalType('array', $statusArray);
         $this->assertArrayHasKey('StatusCode', $statusArray);
@@ -221,6 +234,9 @@ class UploadJobStatusTest extends IntegrationTestCase
         $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_UNRECOVERABLE_VALIDATION_ERROR]);
         $this->assertTrue($status->hasStarted());
 
+        $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_WAITING_CONFIRMATION_TO_INSERT]);
+        $this->assertTrue($status->hasStarted());
+
         $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_INSERTING_RECORDS]);
         $this->assertTrue($status->hasStarted());
 
@@ -246,6 +262,9 @@ class UploadJobStatusTest extends IntegrationTestCase
         $this->assertFalse($status->hasNotStarted());
 
         $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_UNRECOVERABLE_VALIDATION_ERROR]);
+        $this->assertFalse($status->hasNotStarted());
+
+        $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_WAITING_CONFIRMATION_TO_INSERT]);
         $this->assertFalse($status->hasNotStarted());
 
         $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_INSERTING_RECORDS]);
@@ -275,6 +294,9 @@ class UploadJobStatusTest extends IntegrationTestCase
         $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_UNRECOVERABLE_VALIDATION_ERROR]);
         $this->assertFalse($status->isValidating());
 
+        $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_WAITING_CONFIRMATION_TO_INSERT]);
+        $this->assertFalse($status->isValidating());
+
         $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_INSERTING_RECORDS]);
         $this->assertFalse($status->isValidating());
 
@@ -283,6 +305,36 @@ class UploadJobStatusTest extends IntegrationTestCase
 
         $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_DONE]);
         $this->assertFalse($status->isValidating());
+    }
+
+    /**
+     * @test
+     */
+    public function it_checks_if_it_is_waiting_for_user_confirmation()
+    {
+        $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_NOT_STARTED]);
+        $this->assertFalse($status->isWaitingConfirmation());
+
+        $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_VALIDATING_RECORDS]);
+        $this->assertFalse($status->isWaitingConfirmation());
+
+        $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_UNKNOWN_DATA]);
+        $this->assertFalse($status->isWaitingConfirmation());
+
+        $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_UNRECOVERABLE_VALIDATION_ERROR]);
+        $this->assertFalse($status->isWaitingConfirmation());
+
+        $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_WAITING_CONFIRMATION_TO_INSERT]);
+        $this->assertTrue($status->isWaitingConfirmation());
+
+        $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_INSERTING_RECORDS]);
+        $this->assertFalse($status->isWaitingConfirmation());
+
+        $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_UNRECOVERABLE_INSERT_ERROR]);
+        $this->assertFalse($status->isWaitingConfirmation());
+
+        $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_DONE]);
+        $this->assertFalse($status->isWaitingConfirmation());
     }
 
     /**
@@ -300,6 +352,9 @@ class UploadJobStatusTest extends IntegrationTestCase
         $this->assertFalse($status->isInserting());
 
         $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_UNRECOVERABLE_VALIDATION_ERROR]);
+        $this->assertFalse($status->isInserting());
+
+        $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_WAITING_CONFIRMATION_TO_INSERT]);
         $this->assertFalse($status->isInserting());
 
         $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_INSERTING_RECORDS]);
@@ -329,6 +384,9 @@ class UploadJobStatusTest extends IntegrationTestCase
         $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_UNRECOVERABLE_VALIDATION_ERROR]);
         $this->assertFalse($status->isDone());
 
+        $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_WAITING_CONFIRMATION_TO_INSERT]);
+        $this->assertFalse($status->isDone());
+
         $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_INSERTING_RECORDS]);
         $this->assertFalse($status->isDone());
 
@@ -354,6 +412,9 @@ class UploadJobStatusTest extends IntegrationTestCase
         $this->assertTrue($status->hasUnknownData());
 
         $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_UNRECOVERABLE_VALIDATION_ERROR]);
+        $this->assertFalse($status->hasUnknownData());
+
+        $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_WAITING_CONFIRMATION_TO_INSERT]);
         $this->assertFalse($status->hasUnknownData());
 
         $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_INSERTING_RECORDS]);
@@ -383,6 +444,9 @@ class UploadJobStatusTest extends IntegrationTestCase
         $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_UNRECOVERABLE_VALIDATION_ERROR]);
         $this->assertFalse($status->canResume());
 
+        $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_WAITING_CONFIRMATION_TO_INSERT]);
+        $this->assertTrue($status->canResume());
+
         $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_INSERTING_RECORDS]);
         $this->assertFalse($status->canResume());
 
@@ -408,6 +472,9 @@ class UploadJobStatusTest extends IntegrationTestCase
         $this->assertFalse($status->isWorking());
 
         $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_UNRECOVERABLE_VALIDATION_ERROR]);
+        $this->assertFalse($status->isWorking());
+
+        $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_WAITING_CONFIRMATION_TO_INSERT]);
         $this->assertFalse($status->isWorking());
 
         $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_INSERTING_RECORDS]);
@@ -467,6 +534,9 @@ class UploadJobStatusTest extends IntegrationTestCase
 
         $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_UNRECOVERABLE_VALIDATION_ERROR]);
         $this->assertTrue($status->hasErrors());
+
+        $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_WAITING_CONFIRMATION_TO_INSERT]);
+        $this->assertFalse($status->hasErrors());
 
         $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_INSERTING_RECORDS]);
         $this->assertFalse($status->hasErrors());
@@ -872,7 +942,7 @@ class UploadJobStatusTest extends IntegrationTestCase
         $this->assertEquals(UploadJobStatus::STATUS_VALIDATING_RECORDS, $status->moveForward()->getStatusCode());
 
         $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_VALIDATING_RECORDS]);
-        $this->assertEquals(UploadJobStatus::STATUS_INSERTING_RECORDS, $status->moveForward()->getStatusCode());
+        $this->assertEquals(UploadJobStatus::STATUS_WAITING_CONFIRMATION_TO_INSERT, $status->moveForward()->getStatusCode());
 
         $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_INSERTING_RECORDS]);
         $this->assertEquals(UploadJobStatus::STATUS_DONE, $status->moveForward()->getStatusCode());
@@ -916,6 +986,17 @@ class UploadJobStatusTest extends IntegrationTestCase
 
     /**
      * @test
+     * @expectedException \RuntimeException
+     */
+    public function it_cannot_move_forward_from_waiting_for_user_confirmation()
+    {
+        $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_WAITING_CONFIRMATION_TO_INSERT]);
+        $status->moveForward();
+        $this->expectExceptionMessage("Invalid status code " . UploadJobStatus::STATUS_WAITING_CONFIRMATION_TO_INSERT . ".");
+    }
+
+    /**
+     * @test
      */
     public function it_can_resume()
     {
@@ -923,13 +1004,11 @@ class UploadJobStatusTest extends IntegrationTestCase
         $prevStatus = clone $status;
         $status->resume();
         $this->assertEquals($prevStatus, $status);
-        unset($prevStatus);
 
         $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_VALIDATING_RECORDS]);
         $prevStatus = clone $status;
         $status->resume();
         $this->assertEquals($prevStatus, $status);
-        unset($prevStatus);
 
         $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_UNKNOWN_DATA]);
         $status->resume();
@@ -940,24 +1019,24 @@ class UploadJobStatusTest extends IntegrationTestCase
         $prevStatus = clone $status;
         $status->resume();
         $this->assertEquals($prevStatus, $status);
-        unset($prevStatus);
+
+        $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_WAITING_CONFIRMATION_TO_INSERT]);
+        $status->resume();
+        $this->assertEquals(UploadJobStatus::STATUS_INSERTING_RECORDS, $status->getStatusCode());
 
         $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_INSERTING_RECORDS]);
         $prevStatus = clone $status;
         $status->resume();
         $this->assertEquals($prevStatus, $status);
-        unset($prevStatus);
 
         $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_UNRECOVERABLE_INSERT_ERROR]);
         $prevStatus = clone $status;
         $status->resume();
         $this->assertEquals($prevStatus, $status);
-        unset($prevStatus);
 
         $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_DONE]);
         $prevStatus = clone $status;
         $status->resume();
         $this->assertEquals($prevStatus, $status);
-        unset($prevStatus);
     }
 }

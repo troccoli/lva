@@ -7,14 +7,14 @@ use LVA\Models\Fixture;
 use LVA\Models\MappedTeam;
 use LVA\Models\TeamSynonym;
 use LVA\Models\Team;
-use Tests\Integration\IntegrationTestCase;
+use Tests\TestCase;
 
 /**
  * Class TeamTest
  *
  * @package Tests\Models
  */
-class TeamTest extends IntegrationTestCase
+class TeamTest extends TestCase
 {
     /**
      * @test

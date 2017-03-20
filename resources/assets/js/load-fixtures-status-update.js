@@ -6,8 +6,18 @@
 
     var apiToken = $('#api_token').val(),
         jobId = $('#job_id').val(),
-        modal = $('#load-fixture-modal'),
+        userActionModal = $('#user-action-modal'),
+        userConfirmationModal = $('#user-confirmation-modal'),
         lastTimestamp = 0,
+
+        // These variables reflects the statuses maintaned in the UploadJobStatus model class
+        statusValidating = 10,
+        statusUnknownData = 11,
+        statusErrorValidating = 19,
+        statusWaitingConfirmation = 20,
+        statusInserting = 30,
+        statusErrorInserting = 39,
+        statusDone = 99,
 
         updateProgressBar = function updateProgressBar(bar, progress) {
             bar.removeClass('hidden');
@@ -30,7 +40,7 @@
             row.css('opacity', 0.5);
 
             if ($('#unknowns').find('button').not('.disabled').length == 0) {
-                $('#continue-button').removeClass('disabled');
+                $('#resume-button').removeClass('disabled');
             }
         },
 
@@ -143,7 +153,6 @@
             }).done(function (data) {
                 if (lastTimestamp == data.Timestamp) {
                     setTimeout(poll, 500);
-                    console.log('Same timestamp - nothing to do');
                     return;
                 }
                 lastTimestamp = data.Timestamp;
@@ -154,30 +163,37 @@
                 }
                 var status = data.Status;
 
-                if (status.StatusCode >= 10) {
-                    var validatingProgress = status.StatusCode < 20 ? status.Progress : 100;
+                if (status.StatusCode >= statusValidating) {
+                    var validatingProgress = status.StatusCode < (statusValidating + 10) ? status.Progress : 100;
                     updateProgressBar($('#validating-progress'), validatingProgress);
                 }
-                if (status.StatusCode >= 20) {
-                    var insertingProgress = status.StatusCode < 30 ? status.Progress : 100;
+                if (status.StatusCode >= statusInserting) {
+                    var insertingProgress = status.StatusCode < (statusInserting + 10) ? status.Progress : 100;
                     updateProgressBar($('#inserting-progress'), insertingProgress);
                 }
 
-                if (status.StatusCode == 11) {
-                    modal.find('.modal-title').text(status.StatusMessage);
+                if (status.StatusCode == statusUnknownData) {
+                    userActionModal.find('.modal-title').text(status.StatusMessage);
 
-                    populateCurrentFixture(modal, status.Fixture);
+                    populateCurrentFixture(userActionModal, status.Fixture);
 
-                    modal.find('#unknowns').empty();
+                    userActionModal.find('#unknowns').empty();
                     $.each(status.Unknowns, function (field, map) {
                         var newUnknown = createUnknownRow('unknown-data-template', status.Fixture[field], map);
-                        $('#load-fixture-modal').find('#unknowns').append(newUnknown);
+                        userActionModal.find('#unknowns').append(newUnknown);
                     });
 
-                    $('#continue-button').addClass('disabled').blur();
-                    modal.modal('show');
+                    $('#resume-button').addClass('disabled').blur();
+                    userActionModal.modal('show');
 
-                } else if (status.StatusCode == 19 || status.StatusCode == 29) {
+                } else if (status.StatusCode == statusWaitingConfirmation) {
+                    // create confirmation pop up
+                    userConfirmationModal.modal('show');
+                    // if user click on Proceed
+                    // call to resume
+                    // else
+                    // call clean-up
+                } else if (status.StatusCode == statusErrorValidating || status.StatusCode == statusErrorInserting) {
                     var alert = $('#unrecoverable-errors');
                     if (status.ErrorLine) {
                         var errorLine = alert.find('#error-line-number');
@@ -189,19 +205,19 @@
                         alert.find('ul').append($('<li>' + error + '</li>'))
                     });
                     alert.removeClass('hidden');
-                    if (status.StatusCode == 19) {
+                    if (status.StatusCode == statusErrorValidating) {
                         $('#validating-progress .progress-bar').removeClass('progress-bar-striped active').addClass('progress-bar-danger');
-                    } else if (status.StatusCode == 29) {
+                    } else if (status.StatusCode == statusErrorInserting) {
                         $('#inserting-progress .progress-bar').removeClass('progress-bar-striped active').addClass('progress-bar-danger');
                     }
-                } else if (status.StatusCode != 99) {
+                } else if (status.StatusCode != statusDone) {
                     setTimeout(poll, 500);
                 }
 
             });
         },
 
-        restart = function restart() {
+        resume = function restart() {
             // Restart the uploading
             $.get({
                 url  : '/api/v1/uploads/resume',
@@ -211,13 +227,35 @@
                 },
                 async: true
             });
+        },
+
+        abandon = function abandon() {
+            // Abandon the uploading
+            $.get({
+                url : '/api/v1/uploads/abandon',
+                data: {
+                    job      : jobId,
+                    api_token: apiToken
+                }
+            });
+            location.href = '/admin/data-management/upload/fixtures';
         };
 
-    restart();
+    resume();
     poll();
-    modal.modal({show: false});
-    modal.on('hidden.bs.modal', function () {
+
+    $('.modal').modal({background: false, keyboard: false, show: false});
+    $('.modal').on('hidden.bs.modal', function () {
         setTimeout(poll, 500);
-        restart();
+    });
+
+    $('#resume-button').on('click', function () {
+        resume();
+    });
+    $('#abandon-button').on('click', function (event) {
+        abandon();
+    });
+    $('#continue-button').on('click', function (event) {
+        resume();
     });
 })(jQuery);

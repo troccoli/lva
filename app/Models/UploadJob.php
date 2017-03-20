@@ -37,14 +37,6 @@ class UploadJob extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function newVenues()
-    {
-        return $this->hasMany(NewVenue::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
     public function uploadData()
     {
         return $this->hasMany(UploadJobData::class);

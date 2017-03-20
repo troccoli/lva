@@ -4,14 +4,14 @@ namespace Tests\Models;
 
 use LVA\Models\Venue;
 use LVA\Models\VenueSynonym;
-use Tests\Integration\IntegrationTestCase;
+use Tests\TestCase;
 
 /**
  * Class VenueSynonymTest
  *
  * @package Tests\Models
  */
-class VenueSynonymTest extends IntegrationTestCase
+class VenueSynonymTest extends TestCase
 {
     /**
      * @test

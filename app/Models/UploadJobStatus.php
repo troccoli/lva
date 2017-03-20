@@ -10,7 +10,6 @@ namespace LVA\Models;
 
 use Carbon\Carbon;
 
-
 /**
  * Class UploadJobStatus
  *
@@ -26,8 +25,9 @@ class UploadJobStatus
     const STATUS_VALIDATING_RECORDS = 10;
     const STATUS_UNKNOWN_DATA = 11;
     const STATUS_UNRECOVERABLE_VALIDATION_ERROR = 19;
-    const STATUS_INSERTING_RECORDS = 20;
-    const STATUS_UNRECOVERABLE_INSERT_ERROR = 29;
+    const STATUS_WAITING_CONFIRMATION_TO_INSERT = 20;
+    const STATUS_INSERTING_RECORDS = 30;
+    const STATUS_UNRECOVERABLE_INSERT_ERROR = 39;
     const STATUS_DONE = 99;
 
     const UNKNOWN_HOME_TEAM = 1;
@@ -83,6 +83,8 @@ class UploadJobStatus
                 return 'Not started';
             case self::STATUS_VALIDATING_RECORDS:
                 return 'Validating records';
+            case self::STATUS_WAITING_CONFIRMATION_TO_INSERT:
+                return 'Waiting for confirmation from user';
             case self::STATUS_INSERTING_RECORDS:
                 return 'Inserting records';
             case self::STATUS_UNKNOWN_DATA:
@@ -146,7 +148,7 @@ class UploadJobStatus
             'StatusMessage' => $this->getStatusCodeMessage(),
         ];
 
-        if ($this->hasStarted() && !$this->isDone()) {
+        if ($this->hasStarted() && !$this->isWaitingConfirmation() && !$this->isDone()) {
             if ($this->isInserting()) {
                 $formattedStatus['Progress'] = floor($this->getProcessedRows() * 100 / $this->getTotalRows());
             } else {
@@ -230,6 +232,14 @@ class UploadJobStatus
     /**
      * @return bool
      */
+    public function isWaitingConfirmation()
+    {
+        return $this->status_code === self::STATUS_WAITING_CONFIRMATION_TO_INSERT;
+    }
+
+    /**
+     * @return bool
+     */
     public function isInserting()
     {
         return $this->status_code === self::STATUS_INSERTING_RECORDS;
@@ -256,7 +266,7 @@ class UploadJobStatus
      */
     public function canResume()
     {
-        return $this->hasNotStarted() || $this->hasUnknownData();
+        return $this->hasNotStarted() || $this->hasUnknownData() || $this->isWaitingConfirmation();
     }
 
     /**
@@ -593,7 +603,7 @@ class UploadJobStatus
                 $this->status_code = self::STATUS_VALIDATING_RECORDS;
                 break;
             case self::STATUS_VALIDATING_RECORDS:
-                $this->status_code = self::STATUS_INSERTING_RECORDS;
+                $this->status_code = self::STATUS_WAITING_CONFIRMATION_TO_INSERT;
                 break;
             case self::STATUS_INSERTING_RECORDS:
                 $this->status_code = self::STATUS_DONE;
@@ -615,6 +625,9 @@ class UploadJobStatus
         if ($this->status_code === self::STATUS_UNKNOWN_DATA) {
             $this->status_code = self::STATUS_VALIDATING_RECORDS;
             $this->unknowns = null;
+        } elseif ($this->status_code === self::STATUS_WAITING_CONFIRMATION_TO_INSERT) {
+            $this->status_code = self::STATUS_INSERTING_RECORDS;
+            $this->processing_line = null;
         }
 
         return $this;

@@ -8,13 +8,10 @@
 
 namespace LVA\Http\Controllers\Api\v1;
 
+use Illuminate\Http\Request;
 use LVA\Http\Controllers\Controller;
-use LVA\Http\Requests\Api\v1\MapTeamRequest;
-use LVA\Http\Requests\Api\v1\MapVenueRequest;
-use LVA\Http\Requests\Api\v1\NewVenueRequest;
 use LVA\Models\MappedTeam;
 use LVA\Models\MappedVenue;
-use LVA\Models\NewVenue;
 use LVA\Models\TeamSynonym;
 use LVA\Models\UploadJob;
 use LVA\Models\UploadJobStatus;
@@ -39,6 +36,9 @@ class UploadApiController extends Controller
         $this->uploadDataService = $uploadDataService;
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function resumeUpload()
     {
         $uploadJob = $this->checkForJob();
@@ -49,13 +49,52 @@ class UploadApiController extends Controller
         /** @var UploadJobStatus $status */
         $status = UploadJobStatus::factory($uploadJob->getStatus());
 
-        if ($status->canResume()) {
-            $status->resume();
-
-            $uploadJob->setStatus($status->toArray())->save();
-
-            $this->uploadService->processJob($uploadJob);
+        if (!$status->canResume()) {
+            return response()->json([
+                'Timestamp' => time(),
+                'Error'     => true,
+                'Message'   => 'Job cannot be resumed',
+            ]);
         }
+
+        $status->resume();
+
+        $uploadJob->setStatus($status->toArray())->save();
+
+        $this->uploadService->processJob($uploadJob);
+
+        return response()->json([
+            'Timestamp' => time(),
+            'Error'     => false,
+            'Message'   => 'Job resumed',
+        ]);
+    }
+
+    public function abandonUpload()
+    {
+        $uploadJob = $this->checkForJob();
+        if (!$uploadJob instanceof UploadJob) {
+            return response()->json($uploadJob);
+        }
+
+        /** @var UploadJobStatus $status */
+        $status = UploadJobStatus::factory($uploadJob->getStatus());
+
+        if (!$status->isWaitingConfirmation()) {
+            return response()->json([
+                'Timestamp' => time(),
+                'Error'     => true,
+                'Message'   => 'Job cannot be abandoned',
+            ]);
+        }
+
+        $this->uploadService->cleanUp($uploadJob);
+
+        return response()->json([
+            'Timestamp' => time(),
+            'Error'     => false,
+            'Message'   => 'Job abandoned',
+        ]);
     }
 
     public function getUploadStatus()
@@ -76,8 +115,14 @@ class UploadApiController extends Controller
         ]);
     }
 
-    public function mapTeam(MapTeamRequest $request)
+    public function mapTeam(Request $request)
     {
+        $this->validate($request, [
+            'job'     => 'required|exists:upload_jobs,id',
+            'name'    => 'required',
+            'newName' => 'required',
+        ]);
+
         $mappedTeam = new MappedTeam();
         $mappedTeam
             ->setUploadJob($request->input('job'))
@@ -97,21 +142,14 @@ class UploadApiController extends Controller
         ]);
     }
 
-    public function addVenue(NewVenueRequest $request)
+    public function mapVenue(Request $request)
     {
-        $newVenue = new NewVenue();
-        $newVenue
-            ->setUploadJob($request->input('job'))
-            ->setName($request->input('name'))
-            ->save();
-
-        return response()->json([
-            'success' => true,
+        $this->validate($request, [
+            'job'     => 'required|exists:upload_jobs,id',
+            'name'    => 'required',
+            'newName' => 'required',
         ]);
-    }
 
-    public function mapVenue(MapVenueRequest $request)
-    {
         $mappedVenue = new MappedVenue();
         $mappedVenue
             ->setUploadJob($request->input('job'))

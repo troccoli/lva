@@ -3,15 +3,15 @@
 namespace Tests\Models;
 
 use LVA\Models\Team;
-use Tests\Integration\IntegrationTestCase;
 use LVA\Models\Club;
+use Tests\TestCase;
 
 /**
  * Class ClubTest
  *
  * @package Tests\Models
  */
-class ClubTest extends IntegrationTestCase
+class ClubTest extends TestCase
 {
     /**
      * @test

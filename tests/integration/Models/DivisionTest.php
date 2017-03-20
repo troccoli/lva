@@ -4,15 +4,15 @@ namespace Tests\Models;
 
 use LVA\Models\Fixture;
 use LVA\Models\Season;
-use Tests\Integration\IntegrationTestCase;
 use LVA\Models\Division;
+use Tests\TestCase;
 
 /**
  * Class DivisionTest
  *
  * @package Tests\Models
  */
-class DivisionTest extends IntegrationTestCase
+class DivisionTest extends TestCase
 {
     /**
      * @test

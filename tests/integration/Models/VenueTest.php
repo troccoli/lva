@@ -6,14 +6,14 @@ use LVA\Models\Fixture;
 use LVA\Models\MappedVenue;
 use LVA\Models\VenueSynonym;
 use LVA\Models\Venue;
-use Tests\Integration\IntegrationTestCase;
+use Tests\TestCase;
 
 /**
  * Class VenueTest
  *
  * @package Tests\Models
  */
-class VenueTest extends IntegrationTestCase
+class VenueTest extends TestCase
 {
     /**
      * @test

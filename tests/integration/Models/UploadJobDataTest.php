@@ -7,14 +7,14 @@ use LVA\Models\TeamSynonym;
 use LVA\Models\UploadJob;
 use LVA\Models\VenueSynonym;
 use LVA\Models\UploadJobData;
-use Tests\Integration\IntegrationTestCase;
+use Tests\TestCase;
 
 /**
  * Class UploadJobDataTest
  *
  * @package Tests\Models
  */
-class UploadJobDataTest extends IntegrationTestCase
+class UploadJobDataTest extends TestCase
 {
     /**
      * @test

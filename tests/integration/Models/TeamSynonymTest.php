@@ -4,14 +4,14 @@ namespace Tests\Models;
 
 use LVA\Models\Team;
 use LVA\Models\TeamSynonym;
-use Tests\Integration\IntegrationTestCase;
+use Tests\TestCase;
 
 /**
  * Class TeamSynonymTest
  *
  * @package Tests\Models
  */
-class TeamSynonymTest extends IntegrationTestCase
+class TeamSynonymTest extends TestCase
 {
     /**
      * @test

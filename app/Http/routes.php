@@ -24,11 +24,11 @@ Route::singularResourceParameters();
 |
 */
 Route::group(['prefix' => 'api/v1', 'middleware' => 'auth:api', 'namespace' => 'Api\v1'], function () {
-    Route::get('uploads/status.json', ['uses' => 'UploadApiController@getUploadStatus']);
+    Route::get('uploads/status.json', ['as' => 'upload-status', 'uses' => 'UploadApiController@getUploadStatus']);
     Route::post('maps/team', ['as' => 'loading-map-team', 'uses' => 'UploadApiController@mapTeam']);
-    Route::post('venues', ['as' => 'loading-add-venue', 'uses' => 'UploadApiController@addVenue']);
     Route::post('maps/venue', ['as' => 'loading-map-venue', 'uses' => 'UploadApiController@mapVenue']);
     Route::get('uploads/resume', ['as' => 'resume-upload', 'uses' => 'UploadApiController@resumeUpload']);
+    Route::get('uploads/abandon', ['as' => 'abandon-upload', 'uses' => 'UploadApiController@abandonUpload']);
 });
 
 Route::group(['middleware' => 'web'], function () {

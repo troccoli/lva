@@ -4,8 +4,6 @@ namespace Tests\Services;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use LVA\Models\Season;
-use LVA\Services\InteractiveFixturesUploadService;
 
 /**
  * Class InteractiveFixturesUploadServiceTest
@@ -21,7 +19,6 @@ class InteractiveFixturesUploadServiceTest extends TestCase
      */
     public function it_creates_a_job()
     {
-        $season = factory(Season::class)->create();
         $this->markTestIncomplete();
     }
 

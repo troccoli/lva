@@ -5,14 +5,14 @@ namespace Tests\Models;
 use LVA\Models\UploadJob;
 use LVA\Models\Venue;
 use LVA\Models\MappedVenue;
-use Tests\Integration\IntegrationTestCase;
+use Tests\TestCase;
 
 /**
  * Class MappedVenueTest
  *
  * @package Tests\Models
  */
-class MappedVenueTest extends IntegrationTestCase
+class MappedVenueTest extends TestCase
 {
     /**
      * @test

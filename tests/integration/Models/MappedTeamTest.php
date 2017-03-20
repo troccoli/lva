@@ -4,15 +4,15 @@ namespace Tests\Models;
 
 use LVA\Models\Team;
 use LVA\Models\UploadJob;
-use Tests\Integration\IntegrationTestCase;
 use LVA\Models\MappedTeam;
+use Tests\TestCase;
 
 /**
  * Class MappedTeamTest
  *
  * @package Tests\Models
  */
-class MappedTeamTest extends IntegrationTestCase
+class MappedTeamTest extends TestCase
 {
     /**
      * @test

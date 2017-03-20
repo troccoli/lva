@@ -5,19 +5,18 @@ namespace Tests\Models;
 use Carbon\Carbon;
 use LVA\Models\MappedTeam;
 use LVA\Models\MappedVenue;
-use LVA\Models\NewVenue;
 use LVA\Models\Season;
 use LVA\Models\UploadJobData;
 use LVA\Models\UploadJobStatus;
 use LVA\Models\UploadJob;
-use Tests\Integration\IntegrationTestCase;
+use Tests\TestCase;
 
 /**
  * Class UploadJobTest
  *
  * @package Tests\Models
  */
-class UploadJobTest extends IntegrationTestCase
+class UploadJobTest extends TestCase
 {
     /**
      * @test
@@ -47,21 +46,6 @@ class UploadJobTest extends IntegrationTestCase
 
         $this->assertCount($venues, $jobs[0]->mappedVenues);
         $this->assertCount(0, $jobs[1]->mappedVenues);
-    }
-
-    /**
-     * @test
-     */
-    public function it_has_many_new_venues()
-    {
-        /** @var UploadJob[] $jobs */
-        $jobs = factory(UploadJob::class)->times(2)->create();
-
-        $venues = mt_rand(2, 10);
-        factory(NewVenue::class)->times($venues)->create(['upload_job_id' => $jobs[0]->getId()]);
-
-        $this->assertCount($venues, $jobs[0]->newVenues);
-        $this->assertCount(0, $jobs[1]->newVenues);
     }
 
     /**

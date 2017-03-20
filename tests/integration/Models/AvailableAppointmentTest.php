@@ -5,14 +5,14 @@ namespace Tests\Models;
 use LVA\Models\Fixture;
 use LVA\Models\Role;
 use LVA\Models\AvailableAppointment;
-use Tests\Integration\IntegrationTestCase;
+use Tests\TestCase;
 
 /**
  * Class AvailableAppointmentTest
  *
  * @package Tests\Models
  */
-class AvailableAppointmentTest extends IntegrationTestCase
+class AvailableAppointmentTest extends TestCase
 {
     /**
      * @test

@@ -7,15 +7,15 @@ use LVA\Models\AvailableAppointment;
 use LVA\Models\Division;
 use LVA\Models\Team;
 use LVA\Models\Venue;
-use Tests\Integration\IntegrationTestCase;
 use LVA\Models\Fixture;
+use Tests\TestCase;
 
 /**
  * Class FixtureTest
  *
  * @package Tests\Models
  */
-class FixtureTest extends IntegrationTestCase
+class FixtureTest extends TestCase
 {
     /**
      * @test
