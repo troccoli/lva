@@ -309,13 +309,15 @@ class UploadApiTest extends TestCase
     public function it_maps_a_team()
     {
         // Missing api token
-        $this->post(route('loading-map-team'))->seeStatusCode(302);
+        $data = [];
+        $this->post(route('loading-map-team'), $data)->seeStatusCode(302);
 
         /** @var User $user */
-        $user = $this->getFakeUser();
+        $user = factory(User::class)->create();
 
         // Missing job field
-        $this->json('POST', route('loading-map-team'), ['api_token' => $user->api_token])
+        $data['api_token'] = $user->api_token;
+        $this->json('POST', route('loading-map-team'), $data)
             ->seeJsonContains([
                 'job' => ['The job field is required.'],
             ])
@@ -324,7 +326,8 @@ class UploadApiTest extends TestCase
             ]);
 
         // Invalid job
-        $this->json('POST', route('loading-map-team'), ['api_token' => $user->api_token, 'job' => 1])
+        $data['job'] = 1;
+        $this->json('POST', route('loading-map-team'), $data)
             ->seeJsonContains([
                 'job' => ['The selected job is invalid.'],
             ])
@@ -336,7 +339,8 @@ class UploadApiTest extends TestCase
         $job = factory(UploadJob::class)->create();
 
         // Missing name field
-        $this->json('POST', route('loading-map-team'), ['api_token' => $user->api_token, 'job' => $job->getId()])
+        $data['job'] = $job->getId();
+        $this->json('POST', route('loading-map-team'), $data)
             ->seeJsonContains([
                 'name' => ['The name field is required.'],
             ])
@@ -346,7 +350,8 @@ class UploadApiTest extends TestCase
 
         $name = str_random();
         // Missing newName field
-        $this->json('POST', route('loading-map-team'), ['api_token' => $user->api_token, 'job' => $job->getId(), 'name' => $name])
+        $data['name'] = $name;
+        $this->json('POST', route('loading-map-team'), $data)
             ->seeJsonContains([
                 'newName' => ['The new name field is required.'],
             ])
@@ -356,7 +361,8 @@ class UploadApiTest extends TestCase
 
         /** @var Team $team */
         $team = factory(Team::class)->create();
-        $this->json('POST', route('loading-map-team'), ['api_token' => $user->api_token, 'job' => $job->getId(), 'name' => $name, 'newName' => $team->getName()])
+        $data['newName'] = $team->getName();
+        $this->json('POST', route('loading-map-team'), $data)
             ->seeJsonContains([
                 'success' => true,
             ])
@@ -373,13 +379,15 @@ class UploadApiTest extends TestCase
     public function it_maps_a_venue()
     {
         // Missing api token
-        $this->post(route('loading-map-venue'))->seeStatusCode(302);
+        $data = [];
+        $this->post(route('loading-map-venue'), $data)->seeStatusCode(302);
 
         /** @var User $user */
-        $user = $this->getFakeUser();
+        $user = factory(User::class)->create();
 
         // Missing job field
-        $this->json('POST', route('loading-map-venue'), ['api_token' => $user->api_token])
+        $data['api_token'] = $user->api_token;
+        $this->json('POST', route('loading-map-venue'), $data)
             ->seeJsonContains([
                 'job' => ['The job field is required.'],
             ])
@@ -388,7 +396,8 @@ class UploadApiTest extends TestCase
             ]);
 
         // Invalid job
-        $this->json('POST', route('loading-map-venue'), ['api_token' => $user->api_token, 'job' => 1])
+        $data['job'] = 1;
+        $this->json('POST', route('loading-map-venue'), $data)
             ->seeJsonContains([
                 'job' => ['The selected job is invalid.'],
             ])
@@ -400,7 +409,8 @@ class UploadApiTest extends TestCase
         $job = factory(UploadJob::class)->create();
 
         // Missing name field
-        $this->json('POST', route('loading-map-venue'), ['api_token' => $user->api_token, 'job' => $job->getId()])
+        $data['job'] = $job->getId();
+        $this->json('POST', route('loading-map-venue'), $data)
             ->seeJsonContains([
                 'name' => ['The name field is required.'],
             ])
@@ -410,7 +420,8 @@ class UploadApiTest extends TestCase
 
         $name = str_random();
         // Missing newName field
-        $this->json('POST', route('loading-map-venue'), ['api_token' => $user->api_token, 'job' => $job->getId(), 'name' => $name])
+        $data['name'] = $name;
+        $this->json('POST', route('loading-map-venue'), $data)
             ->seeJsonContains([
                 'newName' => ['The new name field is required.'],
             ])
@@ -420,7 +431,8 @@ class UploadApiTest extends TestCase
 
         /** @var Venue $venue */
         $venue = factory(Venue::class)->create();
-        $this->json('POST', route('loading-map-venue'), ['api_token' => $user->api_token, 'job' => $job->getId(), 'name' => $name, 'newName' => $venue->getName()])
+        $data['newName'] = $venue->getName();
+        $this->json('POST', route('loading-map-venue'), $data)
             ->seeJsonContains([
                 'success' => true,
             ])
