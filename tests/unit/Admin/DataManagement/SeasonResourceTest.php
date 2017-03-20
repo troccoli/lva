@@ -9,6 +9,7 @@
 namespace Admin\DataManagement;
 
 use LVA\Models\Division;
+use LVA\User;
 use PhpParser\Node\Expr\AssignOp\Div;
 use Tests\TestCase;
 use LVA\Models\Season;
@@ -43,13 +44,17 @@ class SeasonResourceTest extends TestCase
 
     public function testBreadcrumbs()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
         $this->breadcrumbsTests(self::BASE_ROUTE . '.index', 'Seasons');
     }
 
     public function testAddSeason()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         /** @var Season $season */
         $season = factory(Season::class)->make();
@@ -77,7 +82,9 @@ class SeasonResourceTest extends TestCase
 
     public function testEditSeason()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         /** @var Season $season */
         $season = factory(Season::class)->create();
@@ -136,7 +143,9 @@ class SeasonResourceTest extends TestCase
 
     public function testShowSeason()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         /** @var Season $season */
         $season = factory(Season::class)->create();
@@ -148,7 +157,9 @@ class SeasonResourceTest extends TestCase
 
     public function testDeleteSeason()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         /** @var Season $season */
         $season = factory(Season::class)->create();

@@ -9,6 +9,7 @@
 namespace Admin\DataManagement;
 
 use LVA\Models\Fixture;
+use LVA\User;
 use Tests\TestCase;
 use LVA\Models\Division;
 use LVA\Models\Season;
@@ -43,13 +44,17 @@ class DivisionResourceTest extends TestCase
 
     public function testBreadcrumbs()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
         $this->breadcrumbsTests(self::BASE_ROUTE . '.index', 'Divisions');
     }
 
     public function testAddDivision()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         /** @var Division $division */
         $division = factory(Division::class)->make();
@@ -81,7 +86,9 @@ class DivisionResourceTest extends TestCase
 
     public function testEditDivision()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         /** @var Division $division */
         $division = factory(Division::class)->create();
@@ -168,7 +175,9 @@ class DivisionResourceTest extends TestCase
 
     public function testShowDivision()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         /** @var Division $division */
         $division = factory(Division::class)->create();
@@ -181,7 +190,9 @@ class DivisionResourceTest extends TestCase
 
     public function testDeleteDivision()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         /** @var Division $division */
         $division = factory(Division::class)->create();

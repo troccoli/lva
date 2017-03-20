@@ -2,19 +2,11 @@
 
 namespace Authentication;
 
+use LVA\User;
 use Tests\TestCase;
 
 class LoginLogoutTest extends TestCase
 {
-    private $admin;
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->admin = $this->getFakeUser();
-    }
-
     public function testLoginLinkExists()
     {
         $this->visit(route('home'))
@@ -28,7 +20,9 @@ class LoginLogoutTest extends TestCase
 
     public function testCannotLoginWhenAlreadyLoggedIn()
     {
-        $this->be($this->admin);
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         $this->visit(route('login'))
             ->seePageIs(route('home'));
@@ -46,19 +40,27 @@ class LoginLogoutTest extends TestCase
 
     public function testSuccessfulLogin()
     {
+        $password = $this->faker->unique()->password;
+        /** @var User $user */
+        $user = factory(User::class)->create(['password' => bcrypt($password)]);
+
         $this->visit(route('login'))
-            ->type($this->admin->email, 'email')
-            ->type($this->admin->clearPassword, 'password')
+            ->type($user->email, 'email')
+            ->type($password, 'password')
             ->press('Login')
             ->seePageIs(route('home'))
-            ->seeInElement('nav .navbar-right li.dropdown a', $this->admin->name);
+            ->seeInElement('nav .navbar-right li.dropdown a', $user->name);
     }
 
     public function testWrongPassword()
     {
+        $password = $this->faker->unique()->password;
+        /** @var User $user */
+        $user = factory(User::class)->create(['password' => bcrypt($password)]);
+
         $this->visit(route('login'))
-            ->type($this->admin->email, 'email')
-            ->type($this->admin->clearPassword . 'abc', 'password')
+            ->type($user->email, 'email')
+            ->type($password . 'abc', 'password')
             ->press('Login')
             ->seeInElement('span.help-block', 'These credentials do not match our records.')
             ->seePageIs(route('login'));
@@ -67,9 +69,13 @@ class LoginLogoutTest extends TestCase
 
     public function testWrongEmail()
     {
+        $password = $this->faker->unique()->password;
+        /** @var User $user */
+        $user = factory(User::class)->create(['password' => bcrypt($password)]);
+
         $this->visit(route('login'))
-            ->type($this->admin->email . '.com', 'email')
-            ->type($this->admin->clearPassword, 'password')
+            ->type($user->email . '.com', 'email')
+            ->type($password, 'password')
             ->press('Login')
             ->seeInElement('span.help-block', 'These credentials do not match our records.')
             ->seePageIs(route('login'));
@@ -78,9 +84,13 @@ class LoginLogoutTest extends TestCase
 
     public function testWrongEmailAndPassword()
     {
+        $password = $this->faker->unique()->password;
+        /** @var User $user */
+        $user = factory(User::class)->create(['password' => bcrypt($password)]);
+
         $this->visit(route('login'))
-            ->type($this->admin->email . '.com', 'email')
-            ->type($this->admin->clearPassword . 'abc', 'password')
+            ->type($user->email . '.com', 'email')
+            ->type($password . 'abc', 'password')
             ->press('Login')
             ->seeInElement('span.help-block', 'These credentials do not match our records.')
             ->seePageIs(route('login'));
@@ -88,8 +98,12 @@ class LoginLogoutTest extends TestCase
 
     public function testMissingEmail()
     {
+        $password = $this->faker->unique()->password;
+        /** @var User $user */
+        $user = factory(User::class)->create(['password' => bcrypt($password)]);
+
         $this->visit(route('login'))
-            ->type($this->admin->clearPassword . 'abc', 'password')
+            ->type($password, 'password')
             ->press('Login')
             ->seeInElement('span.help-block', 'The email field is required.')
             ->seePageIs(route('login'));
@@ -97,8 +111,12 @@ class LoginLogoutTest extends TestCase
 
     public function testMissingPassword()
     {
+        $password = $this->faker->unique()->password;
+        /** @var User $user */
+        $user = factory(User::class)->create(['password' => bcrypt($password)]);
+
         $this->visit(route('login'))
-            ->type($this->admin->email . '.com', 'email')
+            ->type($user->email, 'email')
             ->press('Login')
             ->seeInElement('span.help-block', 'The password field is required.')
             ->seePageIs(route('login'));
@@ -115,7 +133,10 @@ class LoginLogoutTest extends TestCase
 
     public function testLogoutLinkExist()
     {
-        $this->be($this->admin);
+        /** @var User $user */
+        $user = factory(User::class)->create();
+
+        $this->be($user);
 
         $this->visit(route('home'))
             ->seeLink('Logout', route('logout'));
@@ -123,9 +144,11 @@ class LoginLogoutTest extends TestCase
 
     public function testSuccessfulLogout()
     {
-        unset($this->admin->clearPassword);
-        $this->be($this->admin);
-        
+        /** @var User $user */
+        $user = factory(User::class)->create();
+
+        $this->be($user);
+
         $this->visit(route('home'))
             ->click('Logout')
             ->seePageIs(route('home'));

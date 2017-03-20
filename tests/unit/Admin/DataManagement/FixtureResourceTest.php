@@ -9,6 +9,7 @@
 namespace Admin\DataManagement;
 
 use LVA\Models\AvailableAppointment;
+use LVA\User;
 use Tests\TestCase;
 use LVA\Models\Fixture;
 
@@ -42,13 +43,17 @@ class FixtureResourceTest extends TestCase
 
     public function testBreadcrumbs()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
         $this->breadcrumbsTests(self::BASE_ROUTE . '.index', 'Fixtures');
     }
 
     public function testAddFixture()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         /** @var Fixture $fixture */
         $fixture = factory(Fixture::class)->make();
@@ -125,7 +130,9 @@ class FixtureResourceTest extends TestCase
 
     public function testEditFixture()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         /** @var Fixture $fixture */
         $fixture = factory(Fixture::class)->create();
@@ -235,7 +242,9 @@ class FixtureResourceTest extends TestCase
 
     public function testShowFixture()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         /** @var Fixture $fixture */
         $fixture = factory(Fixture::class)->create();
@@ -254,7 +263,9 @@ class FixtureResourceTest extends TestCase
 
     public function testDeleteFixture()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         /** @var Fixture $fixture */
         $fixture = factory(Fixture::class)->create();

@@ -29,7 +29,6 @@ use LVA\User;
 class TestCase extends \Illuminate\Foundation\Testing\TestCase
 {
     protected static $refreshDatabase = true;
-    protected $users = [];
     /** @var  Generator */
     protected $faker;
     /**
@@ -118,36 +117,6 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase
         ];
 
         return UploadJobStatus::factory(array_merge($defaults, $overrides));
-    }
-
-    /**
-     * @param int|null $userId
-     *
-     * @return mixed
-     */
-    protected function getFakeUser($userId = null)
-    {
-        if (is_null($userId)) {
-            $password = str_random(10);
-            $user = factory(User::class)
-                ->create([
-                    'password' => bcrypt($password),
-                ]);
-            $user->clearPassword = $password;
-            $userId = $user->id;
-            $this->users[$userId] = $user;
-        } elseif (!isset($this->users[$userId])) {
-            $password = str_random(10);
-            $user = factory(User::class)
-                ->create([
-                    'id'       => $userId,
-                    'password' => bcrypt($password),
-                ]);
-            $user->clearPassword = $password;
-            $this->users[$userId] = $user;
-        }
-
-        return $this->users[$userId];
     }
 
     /**

@@ -2,6 +2,8 @@
 
 namespace Tests;
 
+use LVA\User;
+
 class HomePageTest extends TestCase
 {
     public function testLandingPage()
@@ -14,7 +16,7 @@ class HomePageTest extends TestCase
         $page = $this->visit(route('home'));
         $this->assertEquals(0, $page->crawler->filter('#breadcrumbs')->count());
     }
-    
+
     public function testLoginAndRegisterLinksExist()
     {
         $this->visit(route('home'))
@@ -28,18 +30,18 @@ class HomePageTest extends TestCase
         $this->visit(route('home'))
             //->seeLink('Available matches', route('availableMatches'))
             ->seeLink('Available matches')
-            //->dontSeeLink('Data management', route('admin::dataManagement'));
             ->dontSeeLink('Data management');
     }
 
     public function testPanelForAdmin()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         $this->visit(route('home'))
             //->seeLink('Available matches', route('availableMatches'))
             ->seeLink('Available matches')
-            //->seeLink('Data management', route('admin::dataManagement'));
-            ->seeLink('Data management');
+            ->seeLink('Data management', route('admin::dataManagement'));
     }
 }

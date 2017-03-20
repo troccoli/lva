@@ -9,6 +9,7 @@
 namespace Admin\DataManagement;
 
 use LVA\Models\Fixture;
+use LVA\User;
 use Tests\TestCase;
 use LVA\Models\Venue;
 
@@ -42,13 +43,17 @@ class VenueResourceTest extends TestCase
 
     public function testBreadcrumbs()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
         $this->breadcrumbsTests(self::BASE_ROUTE . '.index', 'Venues');
     }
 
     public function testAddVenue()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         /** @var Venue $venue */
         $venue = factory(Venue::class)->make();
@@ -76,7 +81,9 @@ class VenueResourceTest extends TestCase
 
     public function testEditVenue()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         /** @var Venue $venue */
         $venue = factory(Venue::class)->create();
@@ -135,7 +142,9 @@ class VenueResourceTest extends TestCase
 
     public function testShowVenue()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         /** @var Venue $venue */
         $venue = factory(Venue::class)->create();
@@ -147,7 +156,9 @@ class VenueResourceTest extends TestCase
 
     public function testDeleteVenue()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         /** @var Venue $venue */
         $venue = factory(Venue::class)->create();

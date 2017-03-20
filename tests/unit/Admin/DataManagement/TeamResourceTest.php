@@ -9,6 +9,7 @@
 namespace Admin\DataManagement;
 
 use LVA\Models\Fixture;
+use LVA\User;
 use Tests\TestCase;
 use LVA\Models\Team;
 use LVA\Models\Club;
@@ -43,13 +44,17 @@ class TeamResourceTest extends TestCase
 
     public function testBreadcrumbs()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
         $this->breadcrumbsTests(self::BASE_ROUTE . '.index', 'Teams');
     }
 
     public function testAddTeam()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         /** @var Team $team */
         $team = factory(Team::class)->make();
@@ -81,7 +86,9 @@ class TeamResourceTest extends TestCase
 
     public function testEditTeam()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         /** @var Team $team */
         $team = factory(Team::class)->create();
@@ -166,7 +173,9 @@ class TeamResourceTest extends TestCase
 
     public function testShowTeam()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         /** @var Team $team */
         $team = factory(Team::class)->create();
@@ -179,7 +188,9 @@ class TeamResourceTest extends TestCase
 
     public function testDeleteTeam()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         /** @var Team $team */
         $team = factory(Team::class)->create();

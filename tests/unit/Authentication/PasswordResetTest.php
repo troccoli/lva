@@ -8,19 +8,11 @@
 
 namespace Authentication;
 
+use LVA\User;
 use Tests\TestCase;
 
 class PasswordResetTest extends TestCase
 {
-    private $admin;
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->admin = $this->getFakeUser();
-    }
-
     public function testBreadcrumbs()
     {
         $this->breadcrumbsTests('passwordReset', 'Reset Password');
@@ -41,8 +33,11 @@ class PasswordResetTest extends TestCase
 
     public function testSuccessfulPasswordReset()
     {
+        /** @var User $user */
+        $user = factory(User::class)->create();
+
         $this->visit(route('passwordReset'))
-            ->type($this->admin->email, 'email')
+            ->type($user->email, 'email')
             ->press('Send Password Reset Link')
             ->seeInElement('.alert', 'We have e-mailed your password reset link!')
             ->seeInField('email', '');
@@ -66,8 +61,11 @@ class PasswordResetTest extends TestCase
 
     public function testNonExistingEmail()
     {
+        /** @var User $user */
+        $user = factory(User::class)->create();
+
         $this->visit(route('passwordReset'))
-            ->type($this->admin->email . '.com', 'email')
+            ->type($user->email . '.com', 'email')
             ->press('Send Password Reset Link')
             ->seeInElement('span.help-block', 'We can\'t find a user with that e-mail address.')
             ->seeInField('email', '');

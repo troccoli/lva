@@ -8,6 +8,7 @@
 
 namespace Admin\DataManagement;
 
+use LVA\User;
 use Tests\TestCase;
 use LVA\Models\AvailableAppointment;
 use LVA\Models\Fixture;
@@ -43,13 +44,17 @@ class AvailableAppointmentResourceTest extends TestCase
 
     public function testBreadcrumbs()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
         $this->breadcrumbsTests(self::BASE_ROUTE . '.index', 'Available appointments');
     }
 
     public function testAddAvailableAppointment()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         /** @var AvailableAppointment $appointment */
         $appointment = factory(AvailableAppointment::class)->make();
@@ -107,7 +112,9 @@ class AvailableAppointmentResourceTest extends TestCase
 
     public function testEditAvailableAppointment()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         /** @var AvailableAppointment $appointment */
         $appointment = factory(AvailableAppointment::class)->create();
@@ -212,7 +219,9 @@ class AvailableAppointmentResourceTest extends TestCase
 
     public function testShowAvailableAppointment()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         /** @var AvailableAppointment $appointment */
         $appointment = factory(AvailableAppointment::class)->create();
@@ -225,7 +234,9 @@ class AvailableAppointmentResourceTest extends TestCase
 
     public function testDeleteAvailableAppointment()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         /** @var AvailableAppointment $appointment */
         $appointment = factory(AvailableAppointment::class)->create();

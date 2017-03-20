@@ -9,6 +9,7 @@
 namespace Admin\DataManagement;
 
 use LVA\Models\Team;
+use LVA\User;
 use Tests\TestCase;
 use LVA\Models\Club;
 
@@ -42,13 +43,17 @@ class ClubResourceTest extends TestCase
 
     public function testBreadcrumbs()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
         $this->breadcrumbsTests(self::BASE_ROUTE . '.index', 'Clubs');
     }
 
     public function testAddClub()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         /** @var Club $club */
         $club = factory(Club::class)->make();
@@ -76,7 +81,9 @@ class ClubResourceTest extends TestCase
 
     public function testEditClub()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         /** @var Club $club */
         $club = factory(Club::class)->create();
@@ -135,7 +142,9 @@ class ClubResourceTest extends TestCase
 
     public function testShowClub()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         /** @var Club $club */
         $club = factory(Club::class)->create();
@@ -147,7 +156,9 @@ class ClubResourceTest extends TestCase
 
     public function testDeleteClub()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         /** @var Club $club */
         $club = factory(Club::class)->create();

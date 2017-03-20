@@ -8,19 +8,11 @@
 
 namespace Authentication;
 
+use LVA\User;
 use Tests\TestCase;
 
 class RegistrationTest extends TestCase
 {
-    private $admin;
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->admin = $this->getFakeUser();
-    }
-
     public function testRegistrationLinkExists()
     {
         $this->visit(route('home'))
@@ -45,7 +37,10 @@ class RegistrationTest extends TestCase
 
     public function testCannotRegisterWhenAlreadyLoggedIn()
     {
-        $this->be($this->admin);
+        /** @var User $user */
+        $user = factory(User::class)->create();
+
+        $this->be($user);
 
         $this->visit(route('register'))
             ->seePageIs(route('home'));
@@ -113,7 +108,7 @@ class RegistrationTest extends TestCase
 
     public function testAlreadyUsedEmail()
     {
-            // Register one user
+        // Register one user
         $this->visit(route('register'))
             ->type('Test user 1', 'name')
             ->type('test1@example.com', 'email')

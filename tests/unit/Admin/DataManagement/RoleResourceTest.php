@@ -9,6 +9,7 @@
 namespace Admin\DataManagement;
 
 use LVA\Models\AvailableAppointment;
+use LVA\User;
 use Tests\TestCase;
 use LVA\Models\Role;
 
@@ -42,13 +43,17 @@ class RoleResourceTest extends TestCase
 
     public function testBreadcrumbs()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
         $this->breadcrumbsTests(self::BASE_ROUTE . '.index', 'Roles');
     }
 
     public function testAddRole()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         /** @var Role $role */
         $role = factory(Role::class)->make();
@@ -76,7 +81,9 @@ class RoleResourceTest extends TestCase
 
     public function testEditRole()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         /** @var Role $role */
         $role = factory(Role::class)->create();
@@ -134,7 +141,9 @@ class RoleResourceTest extends TestCase
 
     public function testShowRole()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         /** @var Role $role */
         $role = factory(Role::class)->create();
@@ -146,7 +155,9 @@ class RoleResourceTest extends TestCase
 
     public function testDeleteRole()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         /** @var Role $role */
         $role = factory(Role::class)->create();

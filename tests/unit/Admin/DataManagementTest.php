@@ -8,6 +8,7 @@
 
 namespace Admin;
 
+use LVA\User;
 use Tests\TestCase;
 
 class DataManagementTest extends TestCase
@@ -20,14 +21,18 @@ class DataManagementTest extends TestCase
 
     public function testBreadcrumbs()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         $this->breadcrumbsTests('admin::dataManagement', 'Data Management');
     }
 
     public function testSeasonsTableButton()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         $this->visit(route('admin::dataManagement'))
             ->seeLink('Seasons', route('admin.data-management.seasons.index'));
@@ -35,7 +40,9 @@ class DataManagementTest extends TestCase
 
     public function testDivisionsTableButton()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         $this->visit(route('admin::dataManagement'))
             ->seeLink('Divisions', route('admin.data-management.divisions.index'));
@@ -43,7 +50,9 @@ class DataManagementTest extends TestCase
 
     public function testVenuesTableButton()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         $this->visit(route('admin::dataManagement'))
             ->seeLink('Venues', route('admin.data-management.venues.index'));
@@ -51,7 +60,9 @@ class DataManagementTest extends TestCase
 
     public function testClubsTableButton()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         $this->visit(route('admin::dataManagement'))
             ->seeLink('Clubs', route('admin.data-management.clubs.index'));
@@ -59,7 +70,9 @@ class DataManagementTest extends TestCase
 
     public function testTeamsTableButton()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         $this->visit(route('admin::dataManagement'))
             ->seeLink('Teams', route('admin.data-management.teams.index'));
@@ -67,7 +80,9 @@ class DataManagementTest extends TestCase
 
     public function testRolesTableButton()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         $this->visit(route('admin::dataManagement'))
             ->seeLink('Roles', route('admin.data-management.roles.index'));
@@ -75,7 +90,9 @@ class DataManagementTest extends TestCase
 
     public function testFixturesTableButton()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         $this->visit(route('admin::dataManagement'))
             ->seeLink('Fixtures', route('admin.data-management.fixtures.index'));
@@ -83,7 +100,9 @@ class DataManagementTest extends TestCase
 
     public function testAvailableAppointmentsTableButton()
     {
-        $this->be($this->getFakeUser());
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->be($user);
 
         $this->visit(route('admin::dataManagement'))
             ->seeLink('Available appointments', route('admin.data-management.available-appointments.index'));
