@@ -10,7 +10,7 @@
 
         {!! Form::open(['url' => 'admin/data-management/venues', 'class' => 'form-horizontal']) !!}
 
-        @include('admin.data-management.venues._form', ['submitText' => 'Add']);
+        @include('admin.data-management.venues._form', ['submitText' => 'Add'])
 
         {!! Form::close() !!}
     </div>
