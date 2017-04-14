@@ -23,6 +23,14 @@ Route::singularResourceParameters();
 | kernel and includes session state, CSRF protection, and more.
 |
 */
+Route::group(['prefix' => 'api/v1', 'middleware' => 'auth:api', 'namespace' => 'Api\v1'], function () {
+    Route::get('uploads/status.json', ['as' => 'upload-status', 'uses' => 'UploadApiController@getUploadStatus']);
+    Route::post('maps/team', ['as' => 'loading-map-team', 'uses' => 'UploadApiController@mapTeam']);
+    Route::post('maps/venue', ['as' => 'loading-map-venue', 'uses' => 'UploadApiController@mapVenue']);
+    Route::get('uploads/resume', ['as' => 'resume-upload', 'uses' => 'UploadApiController@resumeUpload']);
+    Route::get('uploads/abandon', ['as' => 'abandon-upload', 'uses' => 'UploadApiController@abandonUpload']);
+});
+
 Route::group(['middleware' => 'web'], function () {
 
     Route::get('/', ['as' => 'home', 'uses' => 'HomeController@showHome']);
@@ -65,6 +73,12 @@ Route::group(['middleware' => 'web'], function () {
             Route::resource('teams', 'TeamsController');
             Route::resource('fixtures', 'FixturesController');
             Route::resource('available-appointments', 'AvailableAppointmentsController');
+
+            Route::group(['prefix' => 'upload'], function () {
+                Route::get('fixtures', ['as' => 'uploadFixtures', 'uses' => 'LoadController@uploadFixtures']);
+                Route::post('fixtures', ['as' => 'uploadFixtures', 'uses' => 'LoadController@startUploadFixtures']);
+                Route::get('status/{uploadJob}', ['as' => 'uploadStatus', 'uses' => 'LoadController@uploadStatus']);
+            });
         });
     });
 });

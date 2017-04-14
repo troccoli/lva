@@ -1,22 +1,13 @@
 <?php
 
-namespace App\Models;
+namespace LVA\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Role
+ * Class Role
  *
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\AvailableAppointment[] $available_appointment
- * @mixin \Eloquent
- * @property integer $id
- * @property string $role
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Role whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Role whereRole($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Role whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Role whereUpdatedAt($value)
+ * @package LVA\Models
  */
 class Role extends Model
 {
@@ -35,11 +26,25 @@ class Role extends Model
      */
     protected $fillable = ['role'];
 
-    public function available_appointment()
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function available_appointments()
     {
-        return $this->hasMany('App\Models\AvailableAppointment');
+        return $this->hasMany(AvailableAppointment::class);
     }
 
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->role;

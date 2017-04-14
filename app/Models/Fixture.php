@@ -1,45 +1,17 @@
 <?php
 
-namespace App\Models;
+namespace LVA\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Fixture
+ * Class Fixture
  *
- * @property-read \App\Models\Division $division
- * @property-read \App\Models\Team $home_team
- * @property-read \App\Models\Team $away_team
- * @property-read \App\Models\Venue $venue
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\AvailableAppointment[] $available_appointments
- * @property-read mixed $warm_up_time
- * @property-read mixed $start_time
- * @property-read mixed $match_date
- * @mixin \Eloquent
- * @property integer $id
- * @property integer $division_id
- * @property integer $match_number
- * @property integer $home_team_id
- * @property integer $away_team_id
- * @property integer $venue_id
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Fixture whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Fixture whereDivisionId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Fixture whereMatchNumber($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Fixture whereMatchDate($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Fixture whereWarmUpTime($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Fixture whereStartTime($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Fixture whereHomeTeamId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Fixture whereAwayTeamId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Fixture whereVenueId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Fixture whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Fixture whereUpdatedAt($value)
+ * @package LVA\Models
  */
 class Fixture extends Model
 {
-
     /**
      * The database table used by the model.
      *
@@ -60,49 +32,186 @@ class Fixture extends Model
         'start_time',
         'home_team_id',
         'away_team_id',
-        'venue_id'
+        'venue_id',
     ];
-    
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function division()
     {
-        return $this->belongsTo('App\Models\Division');
+        return $this->belongsTo(Division::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function home_team()
     {
-        return $this->belongsTo('App\Models\Team');
+        return $this->belongsTo(Team::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function away_team()
     {
-        return $this->belongsTo('App\Models\Team');
+        return $this->belongsTo(Team::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function venue()
     {
-        return $this->belongsTo('App\Models\Venue');
+        return $this->belongsTo(Venue::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function available_appointments()
     {
-        return $this->hasMany('App\Models\AvailableAppointment');
+        return $this->hasMany(AvailableAppointment::class);
     }
-    
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $divisionId
+     *
+     * @return Fixture
+     */
+    public function setDivision($divisionId)
+    {
+        $this->division_id = $divisionId;
+
+        return $this;
+    }
+
+    /**
+     * @param int $macthNumber
+     *
+     * @return Fixture
+     */
+    public function setMatchNumber($macthNumber)
+    {
+        $this->match_number = $macthNumber;
+
+        return $this;
+    }
+
+    /**
+     * @param Carbon $date
+     *
+     * @return Fixture
+     */
+    public function setMatchDate(Carbon $date)
+    {
+        $this->match_date = $date->format('Y-m-d');
+
+        return $this;
+    }
+
+    /**
+     * @param Carbon $time
+     *
+     * @return Fixture
+     */
+    public function setWarmUpTime(Carbon $time)
+    {
+        $this->warm_up_time = $time->format('H:i:s');
+
+        return $this;
+    }
+
+    /**
+     * @param Carbon $time
+     *
+     * @return Fixture
+     */
+    public function setStartTime(Carbon $time)
+    {
+        $this->start_time = $time->format('H:i:s');
+
+        return $this;
+    }
+
+    /**
+     * @param int $teamId
+     *
+     * @return Fixture
+     */
+    public function setHomeTeam($teamId)
+    {
+        $this->home_team_id = $teamId;
+
+        return $this;
+    }
+
+    /**
+     * @param int $teamId
+     *
+     * @return Fixture
+     */
+    public function setAwayTeam($teamId)
+    {
+        $this->away_team_id = $teamId;
+
+        return $this;
+    }
+
+    /**
+     * @param int $venueId
+     *
+     * @return Fixture
+     */
+    public function setVenue($venueId)
+    {
+        $this->venue_id = $venueId;
+
+        return $this;
+    }
+
+    /**
+     * @param string $time
+     *
+     * @return Carbon
+     */
     public function getWarmUpTimeAttribute($time)
     {
         return Carbon::createFromFormat('H:i:s', $time);
     }
 
+    /**
+     * @param string $time
+     *
+     * @return Carbon
+     */
     public function getStartTimeAttribute($time)
     {
         return Carbon::createFromFormat('H:i:s', $time);
     }
 
+    /**
+     * @param string $date
+     *
+     * @return Carbon
+     */
     public function getMatchDateAttribute($date)
     {
         return Carbon::createFromFormat('Y-m-d', $date);
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return

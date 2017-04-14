@@ -1,25 +1,13 @@
 <?php
 
-namespace App\Models;
+namespace LVA\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Division
+ * Class Division
  *
- * @property-read \App\Models\Season $season
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Fixture[] $fixtures
- * @mixin \Eloquent
- * @property integer $id
- * @property integer $season_id
- * @property string $division
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Division whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Division whereSeasonId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Division whereDivision($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Division whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Division whereUpdatedAt($value)
+ * @package LVA\Models
  */
 class Division extends Model
 {
@@ -38,16 +26,51 @@ class Division extends Model
      */
     protected $fillable = ['season_id', 'division'];
 
-    public function season()
+    /**
+     * @param string $division
+     *
+     * @return Division|null
+     */
+    public static function findByName($seasonId, $division)
     {
-        return $this->belongsTo('App\Models\Season');
-    }
-    
-    public function fixtures()
-    {
-        return $this->hasMany('App\Models\Fixture');
+        return self::where('season_id', $seasonId)->where('division', $division)->first();
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function season()
+    {
+        return $this->belongsTo(Season::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function fixtures()
+    {
+        return $this->hasMany(Fixture::class);
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->division;
+    }
+
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->season . ' ' . $this->division;

@@ -1,6 +1,6 @@
-@extends('admin.data-management.home')
+@extends('layouts.app')
 
-@section('crud')
+@section('content')
 
     <div class="container-fluid">
         <h1>Edit club</h1>
@@ -14,19 +14,7 @@
             'class' => 'form-horizontal'
         ]) !!}
 
-        <div class="form-group {{ $errors->has('club') ? 'has-error' : ''}}">
-            {!! Form::label('club', 'Club: ', ['class' => 'col-sm-3 control-label']) !!}
-            <div class="col-sm-6">
-                {!! Form::text('club', null, ['class' => 'form-control']) !!}
-                {!! $errors->first('club', '<p class="help-block">:message</p>') !!}
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-sm-offset-3 col-sm-3">
-                {!! Form::submit('Update', ['class' => 'btn btn-primary form-control']) !!}
-            </div>
-        </div>
+        @include('admin.data-management.clubs._form', ['submitText' => 'Update'])
 
         {!! Form::close() !!}
     </div>

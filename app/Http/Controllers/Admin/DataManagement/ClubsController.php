@@ -1,13 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\Admin\DataManagement;
+namespace LVA\Http\Controllers\Admin\DataManagement;
 
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
-
-use App\Models\Club;
 use Illuminate\Http\Request;
+use LVA\Http\Controllers\Controller;
 
+use Laracasts\Flash\Flash;
+use LVA\Models\Club;
+
+/**
+ * Class ClubsController
+ *
+ * @package LVA\Http\Controllers\Admin\DataManagement
+ */
 class ClubsController extends Controller
 {
 
@@ -46,7 +51,7 @@ class ClubsController extends Controller
 
         Club::create($request->all());
 
-        \Flash::success('Club added!');
+        Flash::success('Club added!');
 
         return redirect('admin/data-management/clubs');
     }
@@ -54,7 +59,7 @@ class ClubsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      *
      * @return mixed
      */
@@ -68,7 +73,7 @@ class ClubsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      *
      * @return mixed
      */
@@ -83,7 +88,7 @@ class ClubsController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param int $id
+     * @param int     $id
      *
      * @return mixed
      */
@@ -91,10 +96,11 @@ class ClubsController extends Controller
     {
         $this->validate($request, ['club' => 'required|unique:clubs,club,' . $id]);
 
+        /** @var Club $club */
         $club = Club::findOrFail($id);
         $club->update($request->all());
 
-        \Flash::success('Club updated!');
+        Flash::success('Club updated!');
 
         return redirect('admin/data-management/clubs');
     }
@@ -102,7 +108,7 @@ class ClubsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      *
      * @return mixed
      */
@@ -111,11 +117,11 @@ class ClubsController extends Controller
         $canBeDeleted = empty(Club::find($id)->teams->toArray());
         if ($canBeDeleted) {
             Club::destroy($id);
-            \Flash::success('Club deleted!');
+            Flash::success('Club deleted!');
         } else {
-            \Flash::error('Cannot delete because they are existing teams in this club.');
+            Flash::error('Cannot delete because they are existing teams in this club.');
         }
-       
+
         return redirect('admin/data-management/clubs');
     }
 

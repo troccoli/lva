@@ -1,26 +1,16 @@
 <?php
 
-namespace App\Models;
+namespace LVA\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Season
+ * Class Season
  *
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Division[] $divisions
- * @mixin \Eloquent
- * @property integer $id
- * @property string $season
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Season whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Season whereSeason($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Season whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Season whereUpdatedAt($value)
+ * @package LVA\Models
  */
 class Season extends Model
 {
-
     /**
      * The database table used by the model.
      *
@@ -35,11 +25,25 @@ class Season extends Model
      */
     protected $fillable = ['season'];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function divisions()
     {
-        return $this->hasMany('App\Models\Division');
+        return $this->hasMany(Division::class);
     }
 
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->season;

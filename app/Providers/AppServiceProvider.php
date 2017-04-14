@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Providers;
+namespace LVA\Providers;
 
+use LVA\Validators\CustomValidators;
 use Illuminate\Support\ServiceProvider;
+use Validator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,7 +15,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Validator::extend('required_headers', CustomValidators::class . '@requiredHeaders');
+        Validator::replacer('required_headers', CustomValidators::class . '@requiredHeadersMessage');
     }
 
     /**
@@ -23,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        if($this->app->environment('local'))
+        if ($this->app->environment() == 'local')
         {
             $this->app->register('Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider');
             $this->app->register('Appzcoder\CrudGenerator\CrudGeneratorServiceProvider');

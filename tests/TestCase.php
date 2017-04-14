@@ -2,14 +2,35 @@
 
 namespace Tests;
 
+use Faker\Factory;
+use Faker\Generator;
 use Illuminate\Contracts\Console\Kernel;
-use Artisan;
-use App\User;
+use LVA\Models\UploadJobStatus;
+use LVA\User;
 
+/**
+ * Class TestCase
+ *
+ * Some notes about the testing DB
+ *
+ * I cannot use a SQLite DB as the migrations that added new columns to an existing table don't specify a default
+ * and this is not acceptable for a non nullable column in SQLite. So, I need to use a MySQL DB
+ *
+ * Using the DatabaseMigrations trait is not an option as practically dropping and recreating the DB for every test
+ * it's too time consuming
+ *
+ * For some reason the DatabaseTransactions trait doesn't work properly. Records are left in the DB and therefore
+ * some tests will fail because the factory cannot add a new, unique, role, or season, or something else. Therefore
+ * I'm left to manually start a transaction in the setUp() and roll it back in tearDown(). This seems to work quite
+ * well. And quickly.
+ *
+ * @package Tests
+ */
 class TestCase extends \Illuminate\Foundation\Testing\TestCase
 {
-    protected $seasons = [];
-
+    protected static $refreshDatabase = true;
+    /** @var  Generator */
+    protected $faker;
     /**
      * The base URL to use while testing the application.
      *
@@ -34,36 +55,68 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase
     protected function setUp()
     {
         parent::setUp();
-        Artisan::call('migrate:refresh');
+
+        $this->faker = Factory::create();
+
+        // Refresh the DB, but only once
+        if (self::$refreshDatabase) {
+            \Artisan::call('migrate:refresh');
+            self::$refreshDatabase = false;
+        }
+
+        // Manually start a transaction (see comment in the class PHPDoc
+        \DB::beginTransaction();
+    }
+
+    protected function tearDown()
+    {
+        // Manually rollback the transaction
+        \DB::rollback();
+
+        parent::tearDown();
     }
 
     /**
-     * @param int|null $userId
-     * @return mixed
+     * @param array $overrides
+     *
+     * @return UploadJobStatus
      */
-    protected function getFakeUser($userId = null)
+    protected function uploadJobTestFactory($overrides = [])
     {
-        if (is_null($userId)) {
-            $password = str_random(10);
-            $user = factory(User::class)
-                ->create([
-                    'password' => bcrypt($password),
-                ]);
-            $user->clearPassword = $password;
-            $userId = $user->id;
-            $this->seasons[$userId] = $user;
-        } elseif (!isset($this->seasons[$userId])) {
-            $password = str_random(10);
-            $user = factory(User::class)
-                ->create([
-                    'id'       => $userId,
-                    'password' => bcrypt($password),
-                ]);
-            $user->clearPassword = $password;
-            $this->seasons[$userId] = $user;
-        }
+        $totalLines = $this->faker->numberBetween(10, 200);
+        $totalRows = $this->faker->numberBetween($totalLines, $totalLines * 2);
 
-        return $this->seasons[$userId];
+        /** @var \LVA\Models\Venue[] $mapping */
+        $mapping = factory(\LVA\Models\Venue::class)->times(3)->make();
+
+        $defaults = [
+            "status_code"     => \LVA\Models\UploadJobStatus::STATUS_NOT_STARTED,
+            "total_lines"     => $totalLines,
+            "processed_lines" => $this->faker->numberBetween(0, $totalLines),
+            "total_rows"      => $totalRows,
+            "processed_rows"  => $this->faker->numberBetween(0, $totalRows),
+            'processing_line' => [
+                'division'     => factory(\LVA\Models\Division::class)->make()->getName(),
+                'match_number' => $this->faker->numberBetween(1, 20),
+                'home_team'    => factory(\LVA\Models\Team::class)->make()->getName(),
+                'away_team'    => factory(\LVA\Models\Team::class)->make()->getName(),
+                'date'         => $this->faker->date('D, d/m/Y'),
+                'warm_up_time' => $this->faker->date('H:i'),
+                'start_time'   => $this->faker->date('H:i'),
+                'venue'        => factory(\LVA\Models\Venue::class)->make()->getName(),
+            ],
+            'unknowns'        => [
+                \LVA\Models\UploadJobStatus::UNKNOWN_VENUE => [
+                    ['value' => $mapping[0]->getId(), 'text' => $mapping[0]->getName()],
+                    ['value' => $mapping[1]->getId(), 'text' => $mapping[1]->getName()],
+                    ['value' => $mapping[2]->getId(), 'text' => $mapping[2]->getName()],
+                ],
+            ],
+            "errors"          => $this->faker->unique()->sentences(),
+            "error_line"      => $this->faker->numberBetween(1, $totalLines - 1),
+        ];
+
+        return UploadJobStatus::factory(array_merge($defaults, $overrides));
     }
 
     /**

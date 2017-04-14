@@ -1,16 +1,22 @@
 <?php
 
-namespace App\Http\Controllers\Admin\DataManagement;
+namespace LVA\Http\Controllers\Admin\DataManagement;
 
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
+use LVA\Http\Requests\StoreFixtureRequest as StoreRequest;
+use LVA\Http\Requests\UpdateFixtureRequest as UpdateRequest;
+use LVA\Http\Controllers\Controller;
 
-use App\Models\Division;
-use App\Models\Fixture;
-use App\Models\Team;
-use App\Models\Venue;
-use Illuminate\Http\Request;
+use Laracasts\Flash\Flash;
+use LVA\Models\Division;
+use LVA\Models\Fixture;
+use LVA\Models\Team;
+use LVA\Models\Venue;
 
+/**
+ * Class FixturesController
+ *
+ * @package LVA\Http\Controllers\Admin\DataManagement
+ */
 class FixturesController extends Controller
 {
     /**
@@ -42,38 +48,15 @@ class FixturesController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param StoreRequest $request
      *
      * @return mixed
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
-        $this->validate($request,
-            [
-                'division_id'  =>
-                    'required|' .
-                    'exists:divisions,id|' .
-                    'unique:fixtures,division_id,NULL,id' .
-                    ',home_team_id,' . $request->get('home_team_id') .
-                    ',away_team_id,' . $request->get('away_team_id'),
-                'match_number' => 'required|unique:fixtures,match_number,NULL,id,division_id,' . $request->get('division_id'),
-                'match_date'   => 'required',
-                'warm_up_time' => 'required',
-                'start_time'   => 'required',
-                'home_team_id' => 'required|exists:teams,id',
-                'away_team_id' => 'required|exists:teams,id|different:home_team_id',
-                'venue_id'     => 'required|exists:venues,id',
-            ],
-            [
-                'away_team_id.different' => 'The away team cannot be the same as the home team.',
-                'division_id.unique'     => 'The fixture for these two teams have already been added in this division.',
-                'match_number.unique'    => 'There is already a match with the same number in this division.',
-            ]
-        );
-
         Fixture::create($request->all());
 
-        \Flash::success('Fixture added!');
+        Flash::success('Fixture added!');
 
         return redirect('admin/data-management/fixtures');
     }
@@ -112,40 +95,18 @@ class FixturesController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
-     * @param  int $id
+     * @param UpdateRequest $request
+     * @param int           $id
      *
      * @return mixed
      */
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request, $id)
     {
-        $this->validate($request,
-            [
-                'division_id'  =>
-                    'required|' .
-                    'exists:divisions,id|' .
-                    'unique:fixtures,division_id,NULL,id' .
-                    ',home_team_id,' . $request->get('home_team_id') .
-                    ',away_team_id,' . $request->get('away_team_id'),
-                'match_number' => 'required|unique:fixtures,match_number,NULL,id,division_id,' . $request->get('division_id'),
-                'match_date'   => 'required',
-                'warm_up_time' => 'required',
-                'start_time'   => 'required',
-                'home_team_id' => 'required|exists:teams,id',
-                'away_team_id' => 'required|exists:teams,id|different:home_team_id',
-                'venue_id'     => 'required|exists:venues,id',
-            ],
-            [
-                'away_team_id.different' => 'The away team cannot be the same as the home team.',
-                'division_id.unique'     => 'The fixture for these two teams have already been added in this division.',
-                'match_number.unique'    => 'There is already a match with the same number in this division.',
-            ]
-        );
-
+        /** @var Fixture $fixture */
         $fixture = Fixture::findOrFail($id);
         $fixture->update($request->all());
 
-        \Flash::success('Fixture updated!');
+        Flash::success('Fixture updated!');
 
         return redirect('admin/data-management/fixtures');
     }
@@ -162,9 +123,9 @@ class FixturesController extends Controller
         $canBeDeleted = empty(Fixture::find($id)->available_appointments->toArray());
         if ($canBeDeleted) {
             Fixture::destroy($id);
-            \Flash::success('Fixture deleted!');
+            Flash::success('Fixture deleted!');
         } else {
-            \Flash::error('Cannot delete because they are existing appointments for this fixture.');
+            Flash::error('Cannot delete because they are existing appointments for this fixture.');
         }
         return redirect('admin/data-management/fixtures');
     }

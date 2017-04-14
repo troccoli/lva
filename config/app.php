@@ -39,7 +39,7 @@ return [
     |
     */
 
-    'url' => 'http://localhost',
+    'url' => env('APP_URL', 'http://localhost'),
 
     /*
     |--------------------------------------------------------------------------
@@ -151,10 +151,10 @@ return [
         /*
          * Application Service Providers...
          */
-        App\Providers\AppServiceProvider::class,
-        App\Providers\AuthServiceProvider::class,
-        App\Providers\EventServiceProvider::class,
-        App\Providers\RouteServiceProvider::class,
+        LVA\Providers\AppServiceProvider::class,
+        LVA\Providers\AuthServiceProvider::class,
+        LVA\Providers\EventServiceProvider::class,
+        LVA\Providers\RouteServiceProvider::class,
 
         DaveJamesMiller\Breadcrumbs\ServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,

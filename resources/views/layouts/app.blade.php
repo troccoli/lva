@@ -15,6 +15,7 @@
     <!-- Styles -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="{{ url(elixir('css/app.css')) }}" rel="stylesheet"/>
+    @yield('stylesheets')
 </head>
 <body id="app-layout">
 <div class="jumbotron alert alert-danger" role="alert">
@@ -74,8 +75,10 @@
                 <ul class="nav navbar-nav navbar-right">
                     <!-- Authentication Links -->
                     @if (Auth::guest())
-                        <li><a href="{{ route('login') }}">Login</a></li>
-                        <li><a href="{{ route('register') }}">Register</a></li>
+                        <li><a href="{{ route('login') }}"><i class="fa fa-sign-in" aria-hidden="true"></i> Login</a>
+                        </li>
+                        <li><a href="{{ route('register') }}"><i class="fa fa-user-plus" aria-hidden="true"></i>
+                                Register</a></li>
                     @else
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
@@ -111,7 +114,8 @@
 </div>
 
 <!-- JavaScripts -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <script>$('#flash-overlay-modal').modal();</script>
 <script src="{{ url(elixir('js/app.js')) }}"></script>

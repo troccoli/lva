@@ -1,26 +1,16 @@
 <?php
 
-namespace App\Models;
+namespace LVA\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Venue
+ * Class Venue
  *
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Fixture[] $fixtures
- * @mixin \Eloquent
- * @property integer $id
- * @property string $venue
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Venue whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Venue whereVenue($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Venue whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Venue whereUpdatedAt($value)
+ * @package LVA\Models
  */
 class Venue extends Model
 {
-
     /**
      * The database table used by the model.
      *
@@ -35,11 +25,59 @@ class Venue extends Model
      */
     protected $fillable = ['venue'];
 
-    public function fixtures()
+    /**
+     * @param string $venue
+     *
+     * @return Venue|null
+     */
+    public static function findByName($venue)
     {
-        return $this->hasMany('App\Models\Fixture');
+        return self::where('venue', $venue)->first();
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function fixtures()
+    {
+        return $this->hasMany(Fixture::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function synonyms()
+    {
+        return $this->hasMany(VenueSynonym::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function mapped()
+    {
+        return $this->hasMany(MappedVenue::class);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getName()
+    {
+        return $this->venue;
+    }
+
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->venue;

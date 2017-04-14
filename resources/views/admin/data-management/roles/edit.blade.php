@@ -1,6 +1,6 @@
-@extends('admin.data-management.home')
+@extends('layouts.app')
 
-@section('crud')
+@section('content')
 
     <div class="container-fluid">
         <h1>Edit role</h1>
@@ -14,19 +14,7 @@
             'class' => 'form-horizontal'
         ]) !!}
 
-        <div class="form-group {{ $errors->has('role') ? 'has-error' : ''}}">
-            {!! Form::label('role', 'Role: ', ['class' => 'col-sm-3 control-label']) !!}
-            <div class="col-sm-6">
-                {!! Form::text('role', null, ['class' => 'form-control', 'required' => 'required']) !!}
-                {!! $errors->first('role', '<p class="help-block">:message</p>') !!}
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-sm-offset-3 col-sm-3">
-                {!! Form::submit('Update', ['class' => 'btn btn-primary form-control']) !!}
-            </div>
-        </div>
+        @include('admin.data-management.roles._form', ['submitText' => 'Update'])
 
         {!! Form::close() !!}
     </div>

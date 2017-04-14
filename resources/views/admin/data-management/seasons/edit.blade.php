@@ -1,6 +1,6 @@
-@extends('admin.data-management.home')
+@extends('layouts.app')
 
-@section('crud')
+@section('content')
 
     <div class="container-fluid">
         <h1>Edit season</h1>
@@ -14,19 +14,7 @@
             'class' => 'form-horizontal'
         ]) !!}
 
-        <div class="form-group {{ $errors->has('season') ? 'has-error' : ''}}">
-            {!! Form::label('season', 'Season: ', ['class' => 'col-sm-3 control-label']) !!}
-            <div class="col-sm-6">
-                {!! Form::text('season', null, ['class' => 'form-control', 'required' => 'required']) !!}
-                {!! $errors->first('season', '<p class="help-block">:message</p>') !!}
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-sm-offset-3 col-sm-3">
-                {!! Form::submit('Update', ['class' => 'btn btn-primary form-control']) !!}
-            </div>
-        </div>
+        @include('admin.data-management.seasons._form', ['submitText' => 'Update'])
 
         {!! Form::close() !!}
     </div>

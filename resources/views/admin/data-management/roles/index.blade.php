@@ -1,6 +1,6 @@
-@extends('admin.data-management.home')
+@extends('layouts.app')
 
-@section('crud')
+@section('content')
 
     <div class="container-fluid">
         <h1>Roles <a href="{{ url('admin/data-management/roles/create') }}" class="btn btn-primary pull-right btn-sm">New
@@ -20,7 +20,7 @@
                         <td>
                             <a href="{{ url('admin/data-management/roles/' . $role->id . '/edit') }}">
                                 <button type="submit" class="btn btn-primary btn-xs">Update</button>
-                            </a> /
+                            </a>
                             {!! Form::open([
                                 'method'=>'DELETE',
                                 'url' => ['admin/data-management/roles', $role->id],
@@ -40,6 +40,6 @@
 @endsection
 
 @section('javascript')
-    <script src="{{ url('js/libraries/bootstrap-confirmation.min.js') }}"></script>
+    <script src="{{ url('libraries/bootstrap-confirmation.2.4.0.min.js') }}"></script>
     <script src="{{ url(elixir('js/confirm-delete.js')) }}"></script>
 @endsection

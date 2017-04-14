@@ -1,29 +1,16 @@
 <?php
 
-namespace App\Models;
+namespace LVA\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\AvailableAppointment
+ * Class AvailableAppointment
  *
- * @property-read \App\Models\Fixture $fixture
- * @property-read \App\Models\Role $role
- * @mixin \Eloquent
- * @property integer $id
- * @property integer $fixture_id
- * @property integer $role_id
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @method static \Illuminate\Database\Query\Builder|\App\Models\AvailableAppointment whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\AvailableAppointment whereFixtureId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\AvailableAppointment whereRoleId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\AvailableAppointment whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\AvailableAppointment whereUpdatedAt($value)
+ * @package LVA\Models
  */
 class AvailableAppointment extends Model
 {
-
     /**
      * The database table used by the model.
      *
@@ -38,13 +25,27 @@ class AvailableAppointment extends Model
      */
     protected $fillable = ['fixture_id', 'role_id'];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function fixture()
     {
-        return $this->belongsTo('App\Models\Fixture');
+        return $this->belongsTo(Fixture::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function role()
     {
-        return $this->belongsTo('App\Models\Role');
+        return $this->belongsTo(Role::class);
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 }

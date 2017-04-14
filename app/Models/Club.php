@@ -1,26 +1,16 @@
 <?php
 
-namespace App\Models;
+namespace LVA\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Club
+ * Class Club
  *
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Team[] $teams
- * @mixin \Eloquent
- * @property integer $id
- * @property string $club
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Club whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Club whereClub($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Club whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Club whereUpdatedAt($value)
+ * @package LVA\Models
  */
 class Club extends Model
 {
-
     /**
      * The database table used by the model.
      *
@@ -35,11 +25,33 @@ class Club extends Model
      */
     protected $fillable = ['club'];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function teams()
     {
-        return $this->hasMany('App\Models\Team');
+        return $this->hasMany(Team::class);
     }
 
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->club;
+    }
+
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->club;

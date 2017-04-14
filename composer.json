@@ -5,13 +5,17 @@
   "license": "MIT",
   "authors": [
     {
-      "name": "Giulio Troccoli ",
+      "name": "Giulio Troccoli-Allard",
       "email": "giulio@troccoli.it"
     }
   ],
   "keywords": [
     "framework",
-    "laravel"
+    "laravel",
+    "volleyball",
+    "referee",
+    "admin",
+    "london"
   ],
   "type": "project",
   "require": {
@@ -36,7 +40,7 @@
       "database"
     ],
     "psr-4": {
-      "App\\": "app/"
+      "LVA\\": "app/"
     }
   },
   "autoload-dev": {

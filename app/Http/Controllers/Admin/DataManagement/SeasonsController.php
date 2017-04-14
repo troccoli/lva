@@ -1,13 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\Admin\DataManagement;
+namespace LVA\Http\Controllers\Admin\DataManagement;
 
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
-
-use App\Models\Season;
 use Illuminate\Http\Request;
+use LVA\Http\Controllers\Controller;
 
+use Laracasts\Flash\Flash;
+use LVA\Models\Season;
+
+
+/**
+ * Class SeasonsController
+ *
+ * @package LVA\Http\Controllers\Admin\DataManagement
+ */
 class SeasonsController extends Controller
 {
     /**
@@ -45,7 +51,7 @@ class SeasonsController extends Controller
 
         Season::create($request->all());
 
-        \Flash::success('Season added!');
+        Flash::success('Season added!');
 
         return redirect('admin/data-management/seasons');
     }
@@ -82,7 +88,7 @@ class SeasonsController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param int $id
+     * @param int     $id
      *
      * @return mixed
      */
@@ -90,10 +96,11 @@ class SeasonsController extends Controller
     {
         $this->validate($request, ['season' => 'required|unique:seasons,season,' . $id]);
 
+        /** @var Season $season */
         $season = Season::findOrFail($id);
         $season->update($request->all());
 
-        \Flash::success('Season updated!');
+        Flash::success('Season updated!');
 
         return redirect('admin/data-management/seasons');
     }
@@ -110,9 +117,9 @@ class SeasonsController extends Controller
         $canBeDeleted = empty(Season::find($id)->divisions->toArray());
         if ($canBeDeleted) {
             Season::destroy($id);
-            \Flash::success('Season deleted!');
+            Flash::success('Season deleted!');
         } else {
-            \Flash::error('Cannot delete because they are existing divisions in this season.');
+            Flash::error('Cannot delete because they are existing divisions in this season.');
         }
 
         return redirect('admin/data-management/seasons');

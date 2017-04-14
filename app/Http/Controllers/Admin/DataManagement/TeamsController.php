@@ -1,14 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\Admin\DataManagement;
+namespace LVA\Http\Controllers\Admin\DataManagement;
 
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
-
-use App\Models\Club;
-use App\Models\Team;
 use Illuminate\Http\Request;
+use LVA\Http\Controllers\Controller;
 
+use Laracasts\Flash\Flash;
+use LVA\Models\Club;
+use LVA\Models\Team;
+
+/**
+ * Class TeamsController
+ *
+ * @package LVA\Http\Controllers\Admin\DataManagement
+ */
 class TeamsController extends Controller
 {
     /**
@@ -44,12 +49,12 @@ class TeamsController extends Controller
     {
         $this->validate($request, [
             'club_id' => 'required|exists:clubs,id',
-            'team'    => 'required|unique:teams,team,NULL,id,club_id,' . $request->get('club_id'),
+            'team'    => 'required|unique:teams,team,NULL,id,club_id,' . $request->input('club_id'),
         ]);
 
         Team::create($request->all());
 
-        \Flash::success('Team added!');
+        Flash::success('Team added!');
 
         return redirect('admin/data-management/teams');
     }
@@ -87,7 +92,7 @@ class TeamsController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param int $id
+     * @param int     $id
      *
      * @return mixed
      */
@@ -95,13 +100,14 @@ class TeamsController extends Controller
     {
         $this->validate($request, [
             'club_id' => 'required|exists:clubs,id',
-            'team'    => 'required|unique:teams,team,NULL,id,club_id,' . $request->get('club_id'),
+            'team'    => 'required|unique:teams,team,' . $id . ',id,club_id,' . $request->input('club_id'),
         ]);
-        
+
+        /** @var Team $team */
         $team = Team::findOrFail($id);
         $team->update($request->all());
 
-        \Flash::success('Team updated!');
+        Flash::success('Team updated!');
 
         return redirect('admin/data-management/teams');
     }
@@ -119,9 +125,9 @@ class TeamsController extends Controller
         $canBeDeleted = empty($team->homeFixtures->toArray()) && empty($team->awayFixtures->toArray());
         if ($canBeDeleted) {
             Team::destroy($id);
-            \Flash::success('Team deleted!');
+            Flash::success('Team deleted!');
         } else {
-            \Flash::error('Cannot delete because they are existing fixtures for this team.');
+            Flash::error('Cannot delete because they are existing fixtures for this team.');
         }
 
         return redirect('admin/data-management/teams');

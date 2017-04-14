@@ -1,30 +1,16 @@
 <?php
 
-namespace App\Models;
+namespace LVA\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Team
+ * Class Team
  *
- * @property-read \App\Models\Club $club
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Fixture[] $awayFixtures
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Fixture[] $homeFixtures
- * @mixin \Eloquent
- * @property integer $id
- * @property integer $club_id
- * @property string $team
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Team whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Team whereClubId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Team whereTeam($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Team whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Team whereUpdatedAt($value)
+ * @package LVA\Models
  */
 class Team extends Model
 {
-
     /**
      * The database table used by the model.
      *
@@ -39,21 +25,75 @@ class Team extends Model
      */
     protected $fillable = ['club_id', 'team'];
 
+    /**
+     * @param string $team
+     *
+     * @return Team|null
+     */
+    public static function findByName($team)
+    {
+        return self::where('team', $team)->first();
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function club()
     {
-        return $this->belongsTo('App\Models\Club');
+        return $this->belongsTo(Club::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function awayFixtures()
     {
-        return $this->hasMany('App\Models\Fixture', 'away_team_id');
+        return $this->hasMany(Fixture::class, 'away_team_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function homeFixtures()
     {
-        return $this->hasMany('App\Models\Fixture', 'home_team_id');
+        return $this->hasMany(Fixture::class, 'home_team_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function synonyms()
+    {
+        return $this->hasMany(TeamSynonym::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function mapped()
+    {
+        return $this->hasMany(MappedTeam::class);
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->team;
+    }
+
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->team;

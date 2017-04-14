@@ -1,0 +1,17 @@
+#load-fixture-modal {
+  .modal-dialog {
+    width: 69%;
+    .unknown.row {
+      margin-bottom: 5px;
+      p {
+        margin-top: 7px;
+        margin-bottom: 0;
+      }
+    }
+    .add-button,
+    .map-button {
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+  }
+}

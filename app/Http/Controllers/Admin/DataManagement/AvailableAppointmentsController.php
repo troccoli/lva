@@ -1,16 +1,22 @@
 <?php
 
-namespace App\Http\Controllers\Admin\DataManagement;
+namespace LVA\Http\Controllers\Admin\DataManagement;
 
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
+use LVA\Http\Requests\StoreAvailableAppointmentRequest as StoreRequest;
+use LVA\Http\Requests\UpdateAvailableAppointmentRequest as UpdateRequest;
+use LVA\Http\Controllers\Controller;
 
-use App\Http\Requests\AvailableAppointmentRequest;
+use Laracasts\Flash\Flash;
 
-use App\Models\AvailableAppointment;
-use App\Models\Fixture;
-use App\Models\Role;
+use LVA\Models\AvailableAppointment;
+use LVA\Models\Fixture;
+use LVA\Models\Role;
 
+/**
+ * Class AvailableAppointmentsController
+ *
+ * @package LVA\Http\Controllers\Admin\DataManagement
+ */
 class AvailableAppointmentsController extends Controller
 {
 
@@ -42,14 +48,15 @@ class AvailableAppointmentsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param AvailableAppointmentRequest $request
+     * @param StoreRequest $request
+     *
      * @return mixed
      */
-    public function store(AvailableAppointmentRequest $request)
+    public function store(StoreRequest $request)
     {
         AvailableAppointment::create($request->all());
 
-        \Flash::success('Appointment added!');
+        Flash::success('Appointment added!');
 
         return redirect('admin/data-management/available-appointments');
     }
@@ -82,23 +89,25 @@ class AvailableAppointmentsController extends Controller
         $fixtures = Fixture::all();
         $roles = Role::all();
 
-        return view('admin.data-management.available-appointments.edit', compact('availableAppointment', 'fixtures', 'roles'));
+        return view('admin.data-management.available-appointments.edit',
+            compact('availableAppointment', 'fixtures', 'roles'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param AvailableAppointmentRequest $request
-     * @param int $id
+     * @param UpdateRequest $request
+     * @param int           $id
      *
      * @return mixed
      */
-    public function update(AvailableAppointmentRequest $request, $id)
+    public function update(UpdateRequest $request, $id)
     {
+        /** @var AvailableAppointment $availableAppointment */
         $availableAppointment = AvailableAppointment::findOrFail($id);
         $availableAppointment->update($request->all());
 
-        \Flash::success('Appointment updated!');
+        Flash::success('Appointment updated!');
 
         return redirect('admin/data-management/available-appointments');
     }
@@ -114,7 +123,7 @@ class AvailableAppointmentsController extends Controller
     {
         AvailableAppointment::destroy($id);
 
-        \Flash::success('Appointment deleted!');
+        Flash::success('Appointment deleted!');
 
         return redirect('admin/data-management/available-appointments');
     }

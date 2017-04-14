@@ -1,13 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\Admin\DataManagement;
+namespace LVA\Http\Controllers\Admin\DataManagement;
 
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
-
-use App\Models\Venue;
 use Illuminate\Http\Request;
+use LVA\Http\Controllers\Controller;
 
+use Laracasts\Flash\Flash;
+use LVA\Models\Venue;
+
+/**
+ * Class VenuesController
+ *
+ * @package LVA\Http\Controllers\Admin\DataManagement
+ */
 class VenuesController extends Controller
 {
     /**
@@ -45,7 +50,7 @@ class VenuesController extends Controller
 
         Venue::create($request->all());
 
-        \Flash::success('Venue added!');
+        Flash::success('Venue added!');
 
         return redirect('admin/data-management/venues');
     }
@@ -82,7 +87,7 @@ class VenuesController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param int $id
+     * @param int     $id
      *
      * @return mixed
      */
@@ -90,10 +95,11 @@ class VenuesController extends Controller
     {
         $this->validate($request, ['venue' => 'required|unique:venues,venue,' . $id]);
 
+        /** @var Venue $venue */
         $venue = Venue::findOrFail($id);
         $venue->update($request->all());
 
-        \Flash::success('Venue updated!');
+        Flash::success('Venue updated!');
 
         return redirect('admin/data-management/venues');
     }
@@ -110,11 +116,11 @@ class VenuesController extends Controller
         $canBeDeleted = empty(Venue::find($id)->fixtures->toArray());
         if ($canBeDeleted) {
             Venue::destroy($id);
-            \Flash::success('Venue deleted!');
+            Flash::success('Venue deleted!');
         } else {
-            \Flash::error('Cannot delete because they are existing fixtures at this venue.');
+            Flash::error('Cannot delete because they are existing fixtures at this venue.');
         }
-        
+
         return redirect('admin/data-management/venues');
     }
 

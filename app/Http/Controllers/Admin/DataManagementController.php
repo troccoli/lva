@@ -6,9 +6,9 @@
  * Time: 11:07
  */
 
-namespace App\Http\Controllers\Admin;
+namespace LVA\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use LVA\Http\Controllers\Controller;
 
 class DataManagementController extends Controller
 {

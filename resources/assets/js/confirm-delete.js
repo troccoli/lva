@@ -5,6 +5,6 @@
 (function ($) {
     $('[data-toggle=confirmation]').confirmation({
         singleton: true,
-        popout: true,
+        popout   : true
     });
 })(jQuery);
