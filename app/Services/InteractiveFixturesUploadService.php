@@ -287,7 +287,6 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
                     /** @var Model $model */
                     $model = unserialize($row->model_data);
                     $model->save();
-                    //$model->save(json_decode($row->model_data, true));
                     unset($model);
                 }
             } catch (\Exception $e) {
