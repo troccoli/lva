@@ -2,7 +2,6 @@ branches:
   only:
     - master
     - dev
-    - lva-22-interactive-loading
 notifications:
   email:
     on_success: always
