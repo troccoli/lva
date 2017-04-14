@@ -15,6 +15,7 @@ storage/
 .env
 .env.*
 !.env.example
+!.env.travis
 _ide_helper.php
 _ide_helper_models.php
 /Vagrantfile
