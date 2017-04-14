@@ -17,7 +17,7 @@ before_script:
   - npm install
   - composer install --no-interaction
   - export DISABLE_NOTIFIER=true; node_modules/gulp/bin/gulp.js
-  - cp .env.travis .env
+  - cp env.travis .env
   - php artisan key:generate
   - mysql -e 'create database lva_testing;'
 script:
