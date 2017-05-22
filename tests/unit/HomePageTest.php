@@ -17,12 +17,19 @@ class HomePageTest extends TestCase
         $this->assertEquals(0, $page->crawler->filter('#breadcrumbs')->count());
     }
 
-    public function testLoginAndRegisterLinksExist()
+    public function testLoginLinkExist()
     {
         $this->visit(route('home'))
             ->seeLink('Login', route('login'))
-            ->seeLink('Register', route('register'))
             ->dontSeeLink('Logout');
+    }
+
+    public function testRegistrationLinkDoesntExist()
+    {
+        $this->visit(route('home'))
+            ->dontSeeLink('Register');
+
+        $this->get('/register')->assertResponseStatus(404);
     }
 
     public function testPanelsForNonAdminUser()
