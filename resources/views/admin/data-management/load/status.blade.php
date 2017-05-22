@@ -73,15 +73,16 @@
                     <div id="unknowns" class="container-fluid"></div>
                     <div id="unknown-data-template" class="unknown row hidden">
                         <p class="col-xs-5"></p>
+                        <button type="button"
+                                class="col-xs-2 map-button btn btn-primary"
+                                autocomplete="off"
+                                data-apiurl="">
+                            correct to
+                        </button>
                         <div class="col-xs-5">
                             <select class="form-control"></select>
                         </div>
-                        <button type="button"
-                                class="col-xs-1 map-button btn btn-primary"
-                                autocomplete="off"
-                                data-apiurl="">
-                            Map
-                        </button>
+
                     </div>
                 </div>
                 <div class="modal-footer">
