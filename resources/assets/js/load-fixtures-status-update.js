@@ -114,16 +114,18 @@
 
         createUnknownRow = function createUnknownRow(tmplId, text, map) {
             var unknown = $('#' + tmplId).clone(true).removeClass('hidden').attr('id', ''),
-                addButton = unknown.find('.add-button'),
+                // addButton = unknown.find('.add-button'),
                 mapButton = unknown.find('.map-button');
 
             unknown.find('p').text(text);
+            /*
             if (map.ApiUrls.Add) {
                 addButton.data('apiurl', map.ApiUrls.Add);
                 addButton.on('click', AddUnknown);
             } else {
                 addButton.addClass('disabled').blur();
             }
+             */
 
             if (map.ApiUrls.Map) {
                 var select = unknown.find('select');

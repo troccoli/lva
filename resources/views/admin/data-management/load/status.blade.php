@@ -72,12 +72,6 @@
                     <h4>What would you like to do?</h4>
                     <div id="unknowns" class="container-fluid"></div>
                     <div id="unknown-data-template" class="unknown row hidden">
-                        <button type="button"
-                                class="col-xs-1 add-button btn btn-primary"
-                                autocomplete="off"
-                                data-apiurl="">
-                            Add
-                        </button>
                         <p class="col-xs-5"></p>
                         <div class="col-xs-5">
                             <select class="form-control"></select>
