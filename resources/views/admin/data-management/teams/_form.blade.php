@@ -14,6 +14,14 @@
     </div>
 </div>
 
+<div class="form-group {{ $errors->has('trigram') ? 'has-error' : ''}}">
+    {!! Form::label('trigram', 'Trigram: ', ['class' => 'col-sm-3 control-label']) !!}
+    <div class="col-sm-6">
+        {!! Form::text('trigram', null, ['class' => 'form-control', 'required' => true]) !!}
+        {!! $errors->first('trigram', '<p class="help-block">:message</p>') !!}
+    </div>
+</div>
+
 <div class="form-group">
     <div class="col-sm-offset-3 col-sm-3">
         {!! Form::submit($submitText, ['class' => 'btn btn-primary form-control']) !!}

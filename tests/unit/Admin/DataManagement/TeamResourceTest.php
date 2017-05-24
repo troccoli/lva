@@ -63,25 +63,80 @@ class TeamResourceTest extends TestCase
         $this->visit(route(self::BASE_ROUTE . '.create'))
             ->select($team->club_id, 'club_id')
             ->type($team->team, 'team')
+            ->type($team->trigram, 'trigram')
             ->press('Add')
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-success', 'Team added!')
             ->seeInDatabase('teams', [
                 'club_id' => $team->club_id,
                 'team'    => $team->team,
+                'trigram' => $team->trigram,
             ]);
 
         // Already existing team in the same club
         $this->visit(route(self::BASE_ROUTE . '.create'))
             ->select($team->club_id, 'club_id')
             ->type($team->team, 'team')
+            ->type($team->trigram, 'trigram')
             ->press('Add')
             ->seePageIs(route(self::BASE_ROUTE . '.create'))
             ->seeInElement('.alert.alert-danger', 'The team already exists in the same club.')
             ->seeInDatabase('teams', [
                 'club_id' => $team->club_id,
                 'team'    => $team->team,
+                'trigram' => $team->trigram,
             ]);
+
+        // Already assigned trigram
+        /** @var Team $team */
+        $newTeam = factory(Team::class)->make();
+        $this->visit(route(self::BASE_ROUTE . '.create'))
+            ->select($newTeam->club_id, 'club_id')
+            ->type($newTeam->team, 'team')
+            ->type($team->trigram, 'trigram')
+            ->press('Add')
+            ->seePageIs(route(self::BASE_ROUTE . '.create'))
+            ->seeInElement('.alert.alert-danger', 'The trigram has already been taken.');
+
+        // Numeric trigram
+        $trigram = $this->faker->numerify('###');
+        $this->visit(route(self::BASE_ROUTE . '.create'))
+            ->select($newTeam->club_id, 'club_id')
+            ->type($newTeam->team, 'team')
+            ->type($trigram, 'trigram')
+            ->press('Add')
+            ->seePageIs(route(self::BASE_ROUTE . '.create'))
+            ->seeInElement('.alert.alert-danger', 'The trigram may only contain letters.');
+
+        // Non numeric nor string trigram
+        $trigram = $this->faker->regexify('[!@£$%&*()_+=-;,./?><":{}]{3}');
+        $this->visit(route(self::BASE_ROUTE . '.create'))
+            ->select($newTeam->club_id, 'club_id')
+            ->type($newTeam->team, 'team')
+            ->type($trigram, 'trigram')
+            ->press('Add')
+            ->seePageIs(route(self::BASE_ROUTE . '.create'))
+            ->seeInElement('.alert.alert-danger', 'The trigram may only contain letters.');
+
+        // Too short trigram
+        $trigram = $this->faker->regexify('[A-Z]{2}');
+        $this->visit(route(self::BASE_ROUTE . '.create'))
+            ->select($newTeam->club_id, 'club_id')
+            ->type($newTeam->team, 'team')
+            ->type($trigram, 'trigram')
+            ->press('Add')
+            ->seePageIs(route(self::BASE_ROUTE . '.create'))
+            ->seeInElement('.alert.alert-danger', 'The trigram must be 3 characters.');
+
+        // Too long trigram
+        $trigram = $this->faker->regexify('[A-Z]{4}');
+        $this->visit(route(self::BASE_ROUTE . '.create'))
+            ->select($newTeam->club_id, 'club_id')
+            ->type($newTeam->team, 'team')
+            ->type($trigram, 'trigram')
+            ->press('Add')
+            ->seePageIs(route(self::BASE_ROUTE . '.create'))
+            ->seeInElement('.alert.alert-danger', 'The trigram must be 3 characters.');
     }
 
     public function testEditTeam()
@@ -98,6 +153,7 @@ class TeamResourceTest extends TestCase
             'id'      => $team->id,
             'club_id' => $team->club_id,
             'team'    => $team->team,
+            'trigram' => $team->trigram,
         ])
             ->visit(route(self::BASE_ROUTE . '.edit', [$team->id]))
             ->press('Update')
@@ -107,6 +163,7 @@ class TeamResourceTest extends TestCase
                 'id'      => $team->id,
                 'club_id' => $team->club_id,
                 'team'    => $team->team,
+                'trigram' => $team->trigram,
             ]);
 
         /** @var Team $newTeam */
@@ -117,6 +174,7 @@ class TeamResourceTest extends TestCase
             'id'      => $team->id,
             'club_id' => $team->club_id,
             'team'    => $team->team,
+            'trigram' => $team->trigram,
         ])
             ->visit(route(self::BASE_ROUTE . '.edit', [$team->id]))
             ->type($newTeam->team, 'team')
@@ -127,8 +185,32 @@ class TeamResourceTest extends TestCase
                 'id'      => $team->id,
                 'club_id' => $team->club_id,
                 'team'    => $newTeam->team,
+                'trigram' => $team->trigram,
             ]);
         $team->team = $newTeam->team;
+
+        /** @var Team $newTeam */
+        $newTeam = factory(Team::class)->make();
+
+        // Change the trigram of the team
+        $this->seeInDatabase('teams', [
+            'id'      => $team->id,
+            'club_id' => $team->club_id,
+            'team'    => $team->team,
+            'trigram' => $team->trigram,
+        ])
+            ->visit(route(self::BASE_ROUTE . '.edit', [$team->id]))
+            ->type($newTeam->trigram, 'trigram')
+            ->press('Update')
+            ->seePageIs(route(self::BASE_ROUTE . '.index'))
+            ->seeInElement('#flash-notification .alert.alert-success', 'Team updated!')
+            ->seeInDatabase('teams', [
+                'id'      => $team->id,
+                'club_id' => $team->club_id,
+                'team'    => $team->team,
+                'trigram' => $newTeam->trigram,
+            ]);
+        $team->trigram = $newTeam->trigram;
         unset($newTeam);
 
         // Already existing team in the same club
@@ -139,6 +221,7 @@ class TeamResourceTest extends TestCase
             'id'      => $team->id,
             'club_id' => $team->club_id,
             'team'    => $team->team,
+            'trigram' => $team->trigram,
         ])
             ->visit(route(self::BASE_ROUTE . '.edit', [$team->id]))
             ->type($newTeam->team, 'team')
@@ -149,6 +232,7 @@ class TeamResourceTest extends TestCase
                 'id'      => $team->id,
                 'club_id' => $team->club_id,
                 'team'    => $team->team,
+                'trigram' => $team->trigram,
             ]);
 
         // Move team to a different club
@@ -158,6 +242,7 @@ class TeamResourceTest extends TestCase
             'id'      => $team->id,
             'club_id' => $team->club_id,
             'team'    => $team->team,
+            'trigram' => $team->trigram,
         ])
             ->visit(route(self::BASE_ROUTE . '.edit', [$team->id]))
             ->select($club->id, 'club_id')
@@ -168,6 +253,86 @@ class TeamResourceTest extends TestCase
                 'id'      => $team->id,
                 'club_id' => $club->id,
                 'team'    => $team->team,
+                'trigram' => $team->trigram,
+            ]);
+        $team->club_id = $club->id;
+
+        // Already assigned trigram
+        /** @var Team $newTeam */
+        $newTeam = factory(Team::class)->create();
+
+        $this->seeInDatabase('teams', [
+            'id'      => $team->id,
+            'club_id' => $team->club_id,
+            'team'    => $team->team,
+            'trigram' => $team->trigram,
+        ])
+            ->visit(route(self::BASE_ROUTE . '.edit', [$team->id]))
+            ->type($newTeam->trigram, 'trigram')
+            ->press('Update')
+            ->seePageIs(route(self::BASE_ROUTE . '.edit', [$team->id]))
+            ->seeInElement('.alert.alert-danger', 'The trigram has already been taken.')
+            ->seeInDatabase('teams', [
+                'id'      => $team->id,
+                'club_id' => $team->club_id,
+                'team'    => $team->team,
+                'trigram' => $team->trigram,
+            ]);
+
+        // Numeric trigram
+        $trigram = $this->faker->numerify('###');
+        $this->visit(route(self::BASE_ROUTE . '.edit', [$team->id]))
+            ->type($trigram, 'trigram')
+            ->press('Update')
+            ->seePageIs(route(self::BASE_ROUTE . '.edit', [$team->id]))
+            ->seeInElement('.alert.alert-danger', 'The trigram may only contain letters.')
+            ->seeInDatabase('teams', [
+                'id'      => $team->id,
+                'club_id' => $team->club_id,
+                'team'    => $team->team,
+                'trigram' => $team->trigram,
+            ]);
+
+        // Non numeric nor string trigram
+        $trigram = $this->faker->regexify('[^A-Z0-9]{3}');
+        $this->visit(route(self::BASE_ROUTE . '.edit', [$team->id]))
+            ->type($trigram, 'trigram')
+            ->press('Update')
+            ->seePageIs(route(self::BASE_ROUTE . '.edit', [$team->id]))
+            ->seeInElement('.alert.alert-danger', 'The trigram may only contain letters.')
+            ->seeInDatabase('teams', [
+                'id'      => $team->id,
+                'club_id' => $team->club_id,
+                'team'    => $team->team,
+                'trigram' => $team->trigram,
+            ]);
+
+        // Too short trigram
+        $trigram = $this->faker->regexify('[A-Z]{2}');
+        $this->visit(route(self::BASE_ROUTE . '.edit', [$team->id]))
+            ->type($trigram, 'trigram')
+            ->press('Update')
+            ->seePageIs(route(self::BASE_ROUTE . '.edit', [$team->id]))
+            ->seeInElement('.alert.alert-danger', 'The trigram must be 3 characters.')
+            ->seeInDatabase('teams', [
+                'id'      => $team->id,
+                'club_id' => $team->club_id,
+                'team'    => $team->team,
+                'trigram' => $team->trigram,
+            ]);
+
+        // Too long trigram
+        $trigram = $this->faker->regexify('[A-Z]{4}');
+        $this->visit(route(self::BASE_ROUTE . '.edit', [$team->id]))
+            ->type($trigram, 'trigram')
+            ->press('Update')
+            ->seePageIs(route(self::BASE_ROUTE . '.edit', [$team->id]))
+            ->seeInElement('.alert.alert-danger', 'The trigram must be 3 characters.')
+            ->seeInDatabase('teams', [
+                'id'      => $team->id,
+                'club_id' => $team->club_id,
+                'team'    => $team->team,
+                'trigram' => $team->trigram,
             ]);
     }
 
@@ -183,7 +348,8 @@ class TeamResourceTest extends TestCase
         $this->visit(route(self::BASE_ROUTE . '.show', [$team->id]))
             ->seeInElement('tbody tr td:nth-child(1)', $team->id)
             ->seeInElement('tbody tr td:nth-child(2)', $team->club)
-            ->seeInElement('tbody tr td:nth-child(3)', $team->team);
+            ->seeInElement('tbody tr td:nth-child(3)', $team->team)
+            ->SeeInElement('tbody tr td:nth-child(4)', $team->trigram);
     }
 
     public function testDeleteTeam()
@@ -200,6 +366,7 @@ class TeamResourceTest extends TestCase
             'id'      => $team->id,
             'club_id' => $team->club_id,
             'team'    => $team->team,
+            'trigram' => $team->trigram,
         ])
             ->makeRequest('DELETE', route(self::BASE_ROUTE . '.destroy', [$team->id]))
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
@@ -216,6 +383,7 @@ class TeamResourceTest extends TestCase
             'id'      => $team->id,
             'club_id' => $team->club_id,
             'team'    => $team->team,
+            'trigram' => $team->trigram,
         ])
             ->makeRequest('DELETE', route(self::BASE_ROUTE . '.destroy', [$team->id]))
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
@@ -224,6 +392,7 @@ class TeamResourceTest extends TestCase
                 'id'      => $team->id,
                 'club_id' => $team->club_id,
                 'team'    => $team->team,
+                'trigram' => $team->trigram,
             ]);
 
         Fixture::destroy($fixture->id);
@@ -234,6 +403,7 @@ class TeamResourceTest extends TestCase
             'id'      => $team->id,
             'club_id' => $team->club_id,
             'team'    => $team->team,
+            'trigram' => $team->trigram,
         ])
             ->makeRequest('DELETE', route(self::BASE_ROUTE . '.destroy', [$team->id]))
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
@@ -242,6 +412,7 @@ class TeamResourceTest extends TestCase
                 'id'      => $team->id,
                 'club_id' => $team->club_id,
                 'team'    => $team->team,
+                'trigram' => $team->trigram,
             ]);
     }
 }

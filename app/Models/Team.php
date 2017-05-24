@@ -23,7 +23,7 @@ class Team extends Model
      *
      * @var array
      */
-    protected $fillable = ['club_id', 'team'];
+    protected $fillable = ['club_id', 'team', 'trigram'];
 
     /**
      * @param string $team
@@ -33,6 +33,16 @@ class Team extends Model
     public static function findByName($team)
     {
         return self::where('team', $team)->first();
+    }
+
+    /**
+     * @param string $trigram
+     *
+     * @return Team|null
+     */
+    public static function findByTrigram($trigram)
+    {
+        return self::where('trigram', $trigram)->first();
     }
 
     /**
@@ -89,6 +99,22 @@ class Team extends Model
     public function getName()
     {
         return $this->team;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTrigram()
+    {
+        return $this->trigram;
+    }
+
+    /**
+     * @param string $value
+     */
+    public function setTrigramAttribute($value)
+    {
+        $this->attributes['trigram'] = strtoupper($value);
     }
 
     /**
