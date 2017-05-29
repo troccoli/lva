@@ -294,7 +294,7 @@ class TeamResourceTest extends TestCase
             ]);
 
         // Non numeric nor string trigram
-        $trigram = $this->faker->regexify('[^A-Z0-9]{3}');
+        $trigram = $this->faker->regexify('[,.><;":\|{}±!@£$%^&*()-=_+]{3}');
         $this->visit(route(self::BASE_ROUTE . '.edit', [$team->id]))
             ->type($trigram, 'trigram')
             ->press('Update')
