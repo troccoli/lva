@@ -13,7 +13,7 @@ class AddDirectionsToVenueTable extends Migration
     public function up()
     {
         Schema::table('venues', function (Blueprint $table) {
-            $table->text('directions')->default(null);
+            $table->text('directions')->default(null)->after('venue');
         });
     }
 
