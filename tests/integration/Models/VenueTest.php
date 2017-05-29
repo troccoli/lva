@@ -99,6 +99,9 @@ class VenueTest extends TestCase
         $this->assertEquals($venue->venue, $venue->getName());
     }
 
+    /**
+     * @test
+     */
     public function it_gets_the_directions()
     {
         /** @var Venue $venue */
