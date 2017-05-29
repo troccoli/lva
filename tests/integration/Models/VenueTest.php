@@ -99,6 +99,14 @@ class VenueTest extends TestCase
         $this->assertEquals($venue->venue, $venue->getName());
     }
 
+    public function it_gets_the_directions()
+    {
+        /** @var Venue $venue */
+        $venue = factory(Venue::class)->create();
+
+        $this->assertEquals($venue->directions, $venue->getDirections());
+    }
+
     /**
      * @test
      */

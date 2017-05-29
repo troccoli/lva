@@ -23,7 +23,7 @@ class Venue extends Model
      *
      * @var array
      */
-    protected $fillable = ['venue'];
+    protected $fillable = ['venue', 'directions'];
 
     /**
      * @param string $venue
@@ -73,6 +73,14 @@ class Venue extends Model
     public function getName()
     {
         return $this->venue;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDirections()
+    {
+        return $this->directions;
     }
 
     /**
