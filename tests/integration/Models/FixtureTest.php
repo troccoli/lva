@@ -262,6 +262,16 @@ class FixtureTest extends TestCase
     /**
      * @test
      */
+    public function it_gets_the_notes()
+    {
+        /** @var Fixture $fixture */
+        $fixture = factory(Fixture::class)->create();
+
+        $this->assertEquals($fixture->notes, $fixture->getNotes());
+    }
+    /**
+     * @test
+     */
     public function it_is_a_string()
     {
         /** @var Fixture $fixture */

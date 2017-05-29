@@ -17,6 +17,7 @@
                     <th>Home</th>
                     <th>Away</th>
                     <th>Venue</th>
+                    <th>Notes</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -30,6 +31,7 @@
                     <td>{{ $fixture->home_team }}</td>
                     <td>{{ $fixture->away_team }}</td>
                     <td>{{ $fixture->venue }}</td>
+                    <td>{{ $fixture->notes }}</td>
                 </tr>
                 </tbody>
             </table>
