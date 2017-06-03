@@ -4,6 +4,7 @@ $factory->define(\LVA\Models\Venue::class, function (\Faker\Generator $faker) {
     return [
         'venue'      => $faker->unique()->word,
         'directions' => $faker->paragraph,
+        'postcode'   => str_replace(' ', '', $faker->postcode),
     ];
 });
 

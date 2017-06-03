@@ -23,7 +23,7 @@ class Venue extends Model
      *
      * @var array
      */
-    protected $fillable = ['venue', 'directions'];
+    protected $fillable = ['venue', 'directions', 'postcode'];
 
     /**
      * @param string $venue
@@ -76,11 +76,19 @@ class Venue extends Model
     }
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getDirections()
     {
         return $this->directions;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPostcode()
+    {
+        return $this->postcode;
     }
 
     /**
