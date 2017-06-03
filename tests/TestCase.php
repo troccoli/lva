@@ -56,7 +56,7 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase
     {
         parent::setUp();
 
-        $this->faker = Factory::create();
+        $this->faker = Factory::create(config('app.faker_locale'));
 
         // Refresh the DB, but only once
         if (self::$refreshDatabase) {
