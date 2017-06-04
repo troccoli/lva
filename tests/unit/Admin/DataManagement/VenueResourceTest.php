@@ -94,6 +94,18 @@ class VenueResourceTest extends TestCase
             ->seeInDatabase('venues', [
                 'venue' => $venue->venue,
             ]);
+
+        /** @var Venue $venue3 */
+        $venue3 = factory(Venue::class)->make();
+        $venue3->postcode = 'AA12 3BB';
+
+        // Invalid postcode
+        $this->visit(route(self::BASE_ROUTE . '.create'))
+            ->type($venue3->venue, 'venue')
+            ->type($venue3->postcode, 'postcode')
+            ->press('Add')
+            ->seePageIs(route(self::BASE_ROUTE . '.create'))
+            ->seeInElement('.alert.alert-danger', 'The postcode must be a valid UK postcode.');
     }
 
     public function testEditVenue()
@@ -165,6 +177,25 @@ class VenueResourceTest extends TestCase
             ->press('Update')
             ->seePageIs(route(self::BASE_ROUTE . '.edit', [$venue->id]))
             ->seeInElement('.alert.alert-danger', 'The venue already exists.')
+            ->seeInDatabase('venues', [
+                'id'         => $venue->id,
+                'venue'      => $venue->venue,
+                'directions' => $venue->directions,
+                'postcode'   => $venue->postcode,
+            ]);
+
+        // Invalid postcode
+        $this->seeInDatabase('venues', [
+            'id'         => $venue->id,
+            'venue'      => $venue->venue,
+            'directions' => $venue->directions,
+            'postcode'   => $venue->postcode,
+        ])
+            ->visit(route(self::BASE_ROUTE . '.edit', [$venue->id]))
+            ->type('AA12 3BB', 'postcode')
+            ->press('Update')
+            ->seePageIs(route(self::BASE_ROUTE . '.edit', [$venue->id]))
+            ->seeInElement('.alert.alert-danger', 'The postcode must be a valid UK postcode.')
             ->seeInDatabase('venues', [
                 'id'         => $venue->id,
                 'venue'      => $venue->venue,

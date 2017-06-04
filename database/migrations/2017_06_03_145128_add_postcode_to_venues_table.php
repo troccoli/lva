@@ -13,7 +13,7 @@ class AddPostcodeToVenuesTable extends Migration
     public function up()
     {
         Schema::table('venues', function (Blueprint $table) {
-            $table->char('postcode', 7)->after('directions')->default(null);
+            $table->char('postcode', 8)->after('directions')->default(null);
         });
     }
 

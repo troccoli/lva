@@ -171,6 +171,7 @@ return [
         DaveJamesMiller\Breadcrumbs\ServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
         Laracasts\Flash\FlashServiceProvider::class,
+        Codescheme\Postcodes\PostcodeServiceProvider::class,
     ],
 
     /*
@@ -221,6 +222,7 @@ return [
         'Form'        => Collective\Html\FormFacade::class,
         'HTML'        => Collective\Html\HtmlFacade::class,
         'Flash'       => Laracasts\Flash\Flash::class,
+        'Postcode'    => Codescheme\Postcodes\Facades\Postcode::class,
     ],
 
 ];
