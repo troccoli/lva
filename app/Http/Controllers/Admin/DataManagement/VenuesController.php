@@ -46,7 +46,7 @@ class VenuesController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, ['venue' => 'required|unique:venues']);
+        $this->validate($request, ['venue' => 'required|unique:venues', 'postcode' => 'uk_postcode']);
 
         Venue::create($request->all());
 
@@ -93,7 +93,7 @@ class VenuesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, ['venue' => 'required|unique:venues,venue,' . $id]);
+        $this->validate($request, ['venue' => 'required|unique:venues,venue,' . $id, 'postcode' => 'uk_postcode']);
 
         /** @var Venue $venue */
         $venue = Venue::findOrFail($id);

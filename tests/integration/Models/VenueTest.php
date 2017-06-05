@@ -113,6 +113,17 @@ class VenueTest extends TestCase
     /**
      * @test
      */
+    public function it_gets_the_postcode()
+    {
+        /** @var Venue $venue */
+        $venue = factory(Venue::class)->create();
+
+        $this->assertEquals($venue->postcode, $venue->getPostcode());
+    }
+
+    /**
+     * @test
+     */
     public function it_is_a_string()
     {
         /** @var Venue $venue */
