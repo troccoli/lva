@@ -14,7 +14,7 @@
             'class' => 'form-horizontal'
         ]) !!}
 
-        @include('admin.data-management.venues._form', ['submitText' => 'Update']);
+        @include('admin.data-management.venues._form', ['submitText' => 'Update'])
 
         {!! Form::close() !!}
     </div>

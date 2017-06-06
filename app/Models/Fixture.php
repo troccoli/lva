@@ -33,6 +33,7 @@ class Fixture extends Model
         'home_team_id',
         'away_team_id',
         'venue_id',
+        'notes',
     ];
 
     /**
@@ -207,6 +208,14 @@ class Fixture extends Model
     public function getMatchDateAttribute($date)
     {
         return Carbon::createFromFormat('Y-m-d', $date);
+    }
+
+    /**
+     * @return string
+     */
+    public function getNotes()
+    {
+        return $this->notes;
     }
 
     /**

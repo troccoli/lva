@@ -61,11 +61,28 @@ class VenueResourceTest extends TestCase
         // Brand new venue
         $this->visit(route(self::BASE_ROUTE . '.create'))
             ->type($venue->venue, 'venue')
+            ->type($venue->directions, 'directions')
+            ->type($venue->postcode, 'postcode')
             ->press('Add')
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-success', 'Venue added!')
             ->seeInDatabase('venues', [
-                'venue' => $venue->venue,
+                'venue'      => $venue->venue,
+                'directions' => $venue->directions,
+            ]);
+
+        /** @var Venue $venue2 */
+        $venue2 = factory(Venue::class)->make();
+
+        // Brand new venue without directions or postcode
+        $this->visit(route(self::BASE_ROUTE . '.create'))
+            ->type($venue2->venue, 'venue')
+            ->press('Add')
+            ->seePageIs(route(self::BASE_ROUTE . '.index'))
+            ->seeInElement('#flash-notification .alert.alert-success', 'Venue added!')
+            ->seeInDatabase('venues', [
+                'venue'      => $venue2->venue,
+                'directions' => '',
             ]);
 
         // Already existing venue
@@ -77,6 +94,18 @@ class VenueResourceTest extends TestCase
             ->seeInDatabase('venues', [
                 'venue' => $venue->venue,
             ]);
+
+        /** @var Venue $venue3 */
+        $venue3 = factory(Venue::class)->make();
+        $venue3->postcode = 'AA12 3BB';
+
+        // Invalid postcode
+        $this->visit(route(self::BASE_ROUTE . '.create'))
+            ->type($venue3->venue, 'venue')
+            ->type($venue3->postcode, 'postcode')
+            ->press('Add')
+            ->seePageIs(route(self::BASE_ROUTE . '.create'))
+            ->seeInElement('.alert.alert-danger', 'The postcode must be a valid UK postcode.');
     }
 
     public function testEditVenue()
@@ -90,35 +119,47 @@ class VenueResourceTest extends TestCase
 
         // Don't change anything
         $this->seeInDatabase('venues', [
-            'id'    => $venue->id,
-            'venue' => $venue->venue,
+            'id'         => $venue->id,
+            'venue'      => $venue->venue,
+            'directions' => $venue->directions,
+            'postcode'   => $venue->postcode,
         ])
             ->visit(route(self::BASE_ROUTE . '.edit', [$venue->id]))
             ->press('Update')
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-success', 'Venue updated!')
             ->seeInDatabase('venues', [
-                'id'    => $venue->id,
-                'venue' => $venue->venue,
+                'id'         => $venue->id,
+                'venue'      => $venue->venue,
+                'directions' => $venue->directions,
+                'postcode'   => $venue->postcode,
             ]);
 
         /** @var Venue $newVenue */
         $newVenue = factory(Venue::class)->make();
 
         $this->seeInDatabase('venues', [
-            'id'    => $venue->id,
-            'venue' => $venue->venue,
+            'id'         => $venue->id,
+            'venue'      => $venue->venue,
+            'directions' => $venue->directions,
+            'postcode'   => $venue->postcode,
         ])
             ->visit(route(self::BASE_ROUTE . '.edit', [$venue->id]))
             ->type($newVenue->venue, 'venue')
+            ->type($newVenue->directions, 'directions')
+            ->type($newVenue->postcode, 'postcode')
             ->press('Update')
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-success', 'Venue updated!')
             ->seeInDatabase('venues', [
-                'id'    => $venue->id,
-                'venue' => $newVenue->venue,
+                'id'         => $venue->id,
+                'venue'      => $newVenue->venue,
+                'directions' => $newVenue->directions,
+                'postcode'   => $newVenue->postcode,
             ]);
         $venue->venue = $newVenue->venue;
+        $venue->directions = $newVenue->directions;
+        $venue->postcode = $newVenue->postcode;
         unset($newVenue);
 
         /** @var Venue $newVenue */
@@ -126,8 +167,10 @@ class VenueResourceTest extends TestCase
 
         // Already existing venue
         $this->seeInDatabase('venues', [
-            'id'    => $venue->id,
-            'venue' => $venue->venue,
+            'id'         => $venue->id,
+            'venue'      => $venue->venue,
+            'directions' => $venue->directions,
+            'postcode'   => $venue->postcode,
         ])
             ->visit(route(self::BASE_ROUTE . '.edit', [$venue->id]))
             ->type($newVenue->venue, 'venue')
@@ -135,8 +178,29 @@ class VenueResourceTest extends TestCase
             ->seePageIs(route(self::BASE_ROUTE . '.edit', [$venue->id]))
             ->seeInElement('.alert.alert-danger', 'The venue already exists.')
             ->seeInDatabase('venues', [
-                'id'    => $venue->id,
-                'venue' => $venue->venue,
+                'id'         => $venue->id,
+                'venue'      => $venue->venue,
+                'directions' => $venue->directions,
+                'postcode'   => $venue->postcode,
+            ]);
+
+        // Invalid postcode
+        $this->seeInDatabase('venues', [
+            'id'         => $venue->id,
+            'venue'      => $venue->venue,
+            'directions' => $venue->directions,
+            'postcode'   => $venue->postcode,
+        ])
+            ->visit(route(self::BASE_ROUTE . '.edit', [$venue->id]))
+            ->type('AA12 3BB', 'postcode')
+            ->press('Update')
+            ->seePageIs(route(self::BASE_ROUTE . '.edit', [$venue->id]))
+            ->seeInElement('.alert.alert-danger', 'The postcode must be a valid UK postcode.')
+            ->seeInDatabase('venues', [
+                'id'         => $venue->id,
+                'venue'      => $venue->venue,
+                'directions' => $venue->directions,
+                'postcode'   => $venue->postcode,
             ]);
     }
 
@@ -151,7 +215,9 @@ class VenueResourceTest extends TestCase
 
         $this->visit(route(self::BASE_ROUTE . '.show', [$venue->id]))
             ->seeInElement('tbody tr td:nth-child(1)', $venue->id)
-            ->seeInElement('tbody tr td:nth-child(2)', $venue->venue);
+            ->seeInElement('tbody tr td:nth-child(2)', $venue->venue)
+            ->seeInElement('tbody tr td:nth-child(3)', $venue->directions)
+            ->seeInElement('tbody tr td:nth-child(4)', $venue->postcode);
     }
 
     public function testDeleteVenue()
@@ -165,8 +231,10 @@ class VenueResourceTest extends TestCase
         $venueId = $venue->id;
 
         $this->seeInDatabase('venues', [
-            'id'    => $venue->id,
-            'venue' => $venue->venue,
+            'id'         => $venue->id,
+            'venue'      => $venue->venue,
+            'directions' => $venue->directions,
+            'postcode'   => $venue->postcode,
         ])
             ->makeRequest('DELETE', route(self::BASE_ROUTE . '.destroy', [$venue->id]))
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
@@ -179,15 +247,19 @@ class VenueResourceTest extends TestCase
         $fixture = factory(Fixture::class)->create(['venue_id' => $venue->id]);
 
         $this->seeInDatabase('venues', [
-            'id'    => $venue->id,
-            'venue' => $venue->venue,
+            'id'         => $venue->id,
+            'venue'      => $venue->venue,
+            'directions' => $venue->directions,
+            'postcode'   => $venue->postcode,
         ])
             ->makeRequest('DELETE', route(self::BASE_ROUTE . '.destroy', [$venue->id]))
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-danger', 'Cannot delete because they are existing fixtures at this venue.')
             ->seeInDatabase('venues', [
-                'id'    => $venue->id,
-                'venue' => $venue->venue,
+                'id'         => $venue->id,
+                'venue'      => $venue->venue,
+                'directions' => $venue->directions,
+                'postcode'   => $venue->postcode,
             ]);
     }
 }

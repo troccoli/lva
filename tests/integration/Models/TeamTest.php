@@ -34,6 +34,20 @@ class TeamTest extends TestCase
     /**
      * @test
      */
+    public function it_can_be_found_by_trigram()
+    {
+        /** @var Team[] $teams */
+        $teams = factory(Team::class)->times(2)->create();
+
+        // I have to use the toArray() method as I'm only interested in the table's fields and not any internal ones
+        $this->assertEquals($teams[0]->toArray(), Team::findByTrigram($teams[0]->trigram)->toArray());
+        $this->assertNull(Team::findByTrigram($teams[0]->trigram . '--'));
+        $this->assertEquals($teams[1]->toArray(), Team::findByTrigram($teams[1]->trigram)->toArray());
+        $this->assertNull(Team::findByTrigram($teams[1]->trigram . '--'));
+    }
+    /**
+     * @test
+     */
     public function it_belongs_to_a_club()
     {
         /** @var Team $team */
@@ -128,6 +142,29 @@ class TeamTest extends TestCase
         $team = factory(Team::class)->create();
 
         $this->assertEquals($team->team, $team->getName());
+    }
+
+    /**
+     * @test
+     */
+    public function it_gets_the_trigram()
+    {
+        /** @var Team $team */
+        $team = factory(Team::class)->create();
+
+        $this->assertEquals($team->trigram, $team->getTrigram());
+    }
+
+    /**
+     * @test
+     */
+    public function it_always_stores_uppercase_trigrams()
+    {
+        $trigram = $this->faker->lexify('???');
+        /** @var Team $team */
+        $team = factory(Team::class)->create(['trigram' => strtolower($trigram)]);
+
+        $this->assertEquals(strtoupper($trigram), $team->getTrigram());
     }
 
     /**

@@ -66,6 +66,7 @@ $factory->define(\LVA\Models\Fixture::class, function (\Faker\Generator $faker) 
         'match_date'   => $faker->unique()->date('Y-m-d'),
         'warm_up_time' => $faker->unique()->time('H:i:00'),
         'start_time'   => $faker->unique()->time('H:i:00'),
+        'notes'        => $faker->paragraph,
     ];
 });
 

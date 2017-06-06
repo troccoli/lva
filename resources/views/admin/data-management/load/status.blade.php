@@ -72,22 +72,17 @@
                     <h4>What would you like to do?</h4>
                     <div id="unknowns" class="container-fluid"></div>
                     <div id="unknown-data-template" class="unknown row hidden">
+                        <p class="col-xs-5"></p>
                         <button type="button"
-                                class="col-xs-1 add-button btn btn-primary"
+                                class="col-xs-2 map-button btn btn-primary"
                                 autocomplete="off"
                                 data-apiurl="">
-                            Add
+                            correct to
                         </button>
-                        <p class="col-xs-5"></p>
                         <div class="col-xs-5">
                             <select class="form-control"></select>
                         </div>
-                        <button type="button"
-                                class="col-xs-1 map-button btn btn-primary"
-                                autocomplete="off"
-                                data-apiurl="">
-                            Map
-                        </button>
+
                     </div>
                 </div>
                 <div class="modal-footer">

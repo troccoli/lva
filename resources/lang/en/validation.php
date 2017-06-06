@@ -109,6 +109,7 @@ return [
         ],
     ],
     'required_headers' => 'The :headers fields must all be present in the file.',
+    'uk_postcode'      => 'The :attribute must be a valid UK postcode.',
 
     /*
     |--------------------------------------------------------------------------

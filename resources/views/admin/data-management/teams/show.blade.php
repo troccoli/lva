@@ -11,6 +11,7 @@
                     <th>Id</th>
                     <th>Club</th>
                     <th>Team</th>
+                    <th>Trigram</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -18,6 +19,7 @@
                     <td>{{ $team->id }}</td>
                     <td>{{ $team->club->club }}</td>
                     <td>{{ $team->team }}</td>
+                    <td>{{ $team->trigram }}</td>
                 </tr>
                 </tbody>
             </table>

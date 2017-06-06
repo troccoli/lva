@@ -10,12 +10,16 @@
                 <tr>
                     <th>Id</th>
                     <th>Venue</th>
+                    <th>Directions</th>
+                    <th>Postcode</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
                     <td>{{ $venue->id }}</td>
                     <td>{{ $venue->venue }}</td>
+                    <td>{{ $venue->directions }}</td>
+                    <td>{{ $venue->postcode }}</td>
                 </tr>
                 </tbody>
             </table>

@@ -11,6 +11,7 @@
                 <tr>
                     <th>Club</th>
                     <th>Team</th>
+                    <th>Trigram</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -19,6 +20,9 @@
                     <tr>
                         <td>{{ $team->club->club }}</td>
                         <td><a href="{{ url('admin/data-management/teams', $team->id) }}">{{ $team->team }}</a></td>
+                        <td>
+                            {{ $team->trigram }}
+                        </td>
                         <td>
                             <a href="{{ url('admin/data-management/teams/' . $team->id . '/edit') }}">
                                 <button type="submit" class="btn btn-primary btn-xs">Update</button>

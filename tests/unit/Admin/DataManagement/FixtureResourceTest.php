@@ -68,6 +68,7 @@ class FixtureResourceTest extends TestCase
             ->type($fixture->match_date, 'match_date')
             ->type($fixture->warm_up_time, 'warm_up_time')
             ->type($fixture->start_time, 'start_time')
+            ->type($fixture->notes, 'notes')
             ->press('Add')
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-success', 'Fixture added!')
@@ -80,6 +81,35 @@ class FixtureResourceTest extends TestCase
                 'match_date'   => $fixture->match_date->format('Y-m-d'),
                 'warm_up_time' => $fixture->warm_up_time,
                 'start_time'   => $fixture->start_time,
+                'notes'        => $fixture->notes,
+            ]);
+
+        /** @var Fixture $fixture */
+        $fixture2 = factory(Fixture::class)->make();
+
+        // Brand new fixture without notes
+        $this->visit(route(self::BASE_ROUTE . '.create'))
+            ->select($fixture2->division_id, 'division_id')
+            ->select($fixture2->home_team_id, 'home_team_id')
+            ->select($fixture2->away_team_id, 'away_team_id')
+            ->select($fixture2->venue_id, 'venue_id')
+            ->type($fixture2->match_number, 'match_number')
+            ->type($fixture2->match_date, 'match_date')
+            ->type($fixture2->warm_up_time, 'warm_up_time')
+            ->type($fixture2->start_time, 'start_time')
+            ->press('Add')
+            ->seePageIs(route(self::BASE_ROUTE . '.index'))
+            ->seeInElement('#flash-notification .alert.alert-success', 'Fixture added!')
+            ->seeInDatabase('fixtures', [
+                'division_id'  => $fixture2->division_id,
+                'home_team_id' => $fixture2->home_team_id,
+                'away_team_id' => $fixture2->away_team_id,
+                'venue_id'     => $fixture2->venue_id,
+                'match_number' => $fixture2->match_number,
+                'match_date'   => $fixture2->match_date->format('Y-m-d'),
+                'warm_up_time' => $fixture2->warm_up_time,
+                'start_time'   => $fixture2->start_time,
+                'notes'        => '',
             ]);
 
         // New fixture with same home and away team
@@ -95,7 +125,7 @@ class FixtureResourceTest extends TestCase
             ->press('Add')
             ->seePageIs(route(self::BASE_ROUTE . '.create'))
             ->seeInElement('.alert.alert-danger', 'The away team cannot be the same as the home team.')
-            ->dontSeeInDatabase('fixtures', ['id' => 2]);
+            ->dontSeeInDatabase('fixtures', ['id' => 3]);
 
         // New fixture with same division, home and away teams of existing one
         $this->visit(route(self::BASE_ROUTE . '.create'))
@@ -110,7 +140,7 @@ class FixtureResourceTest extends TestCase
             ->press('Add')
             ->seePageIs(route(self::BASE_ROUTE . '.create'))
             ->seeInElement('.alert.alert-danger', 'The fixture for these two teams have already been added in this division.')
-            ->dontSeeInDatabase('fixtures', ['id' => 2]);
+            ->dontSeeInDatabase('fixtures', ['id' => 3]);
 
         // New fixture with same division and match number of existing one
         $this->visit(route(self::BASE_ROUTE . '.create'))
@@ -125,7 +155,7 @@ class FixtureResourceTest extends TestCase
             ->press('Add')
             ->seePageIs(route(self::BASE_ROUTE . '.create'))
             ->seeInElement('.alert.alert-danger', 'There is already a match with the same number in this division.')
-            ->dontSeeInDatabase('fixtures', ['id' => 2]);
+            ->dontSeeInDatabase('fixtures', ['id' => 3]);
     }
 
     public function testEditFixture()
@@ -148,6 +178,7 @@ class FixtureResourceTest extends TestCase
             'match_date'   => $fixture->match_date->format('Y-m-d'),
             'warm_up_time' => $fixture->warm_up_time,
             'start_time'   => $fixture->start_time,
+            'notes'        => $fixture->notes,
         ]);
         $this->visit(route(self::BASE_ROUTE . '.edit', [$fixture->id]))
             ->press('Update')
@@ -163,6 +194,7 @@ class FixtureResourceTest extends TestCase
                 'match_date'   => $fixture->match_date->format('Y-m-d'),
                 'warm_up_time' => $fixture->warm_up_time,
                 'start_time'   => $fixture->start_time,
+                'notes'        => $fixture->notes,
             ]);
 
         /** @var Fixture $newFixture */
@@ -178,6 +210,7 @@ class FixtureResourceTest extends TestCase
             ->type($newFixture->match_date, 'match_date')
             ->type($newFixture->warm_up_time, 'warm_up_time')
             ->type($newFixture->start_time, 'start_time')
+            ->type($newFixture->notes, 'notes')
             ->press('Update')
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
             ->seeInElement('#flash-notification .alert.alert-success', 'Fixture updated!')
@@ -191,6 +224,39 @@ class FixtureResourceTest extends TestCase
                 'match_date'   => $newFixture->match_date->format('Y-m-d'),
                 'warm_up_time' => $newFixture->warm_up_time,
                 'start_time'   => $newFixture->start_time,
+                'notes'        => $newFixture->notes,
+            ]);
+        $fixture = $newFixture;
+        unset($newFixture);
+
+        /** @var Fixture $newFixture */
+        $newFixture = factory(Fixture::class)->make(['id' => $fixture->id]);
+
+        // Remove the notes
+        $this->visit(route(self::BASE_ROUTE . '.edit', [$fixture->id]))
+            ->select($newFixture->division_id, 'division_id')
+            ->select($newFixture->home_team_id, 'home_team_id')
+            ->select($newFixture->away_team_id, 'away_team_id')
+            ->select($newFixture->venue_id, 'venue_id')
+            ->type($newFixture->match_number, 'match_number')
+            ->type($newFixture->match_date, 'match_date')
+            ->type($newFixture->warm_up_time, 'warm_up_time')
+            ->type($newFixture->start_time, 'start_time')
+            ->type('', 'notes')
+            ->press('Update')
+            ->seePageIs(route(self::BASE_ROUTE . '.index'))
+            ->seeInElement('#flash-notification .alert.alert-success', 'Fixture updated!')
+            ->seeInDatabase('fixtures', [
+                'id'           => $fixture->id,
+                'division_id'  => $newFixture->division_id,
+                'home_team_id' => $newFixture->home_team_id,
+                'away_team_id' => $newFixture->away_team_id,
+                'venue_id'     => $newFixture->venue_id,
+                'match_number' => $newFixture->match_number,
+                'match_date'   => $newFixture->match_date->format('Y-m-d'),
+                'warm_up_time' => $newFixture->warm_up_time,
+                'start_time'   => $newFixture->start_time,
+                'notes'        => '',
             ]);
         $fixture = $newFixture;
         unset($newFixture);
@@ -258,7 +324,8 @@ class FixtureResourceTest extends TestCase
             ->seeInElement('tbody tr td:nth-child(6)', $fixture->start_time->format('H:i'))
             ->seeInElement('tbody tr td:nth-child(7)', $fixture->home_team)
             ->seeInElement('tbody tr td:nth-child(8)', $fixture->away_team)
-            ->seeInElement('tbody tr td:nth-child(9)', $fixture->venue);
+            ->seeInElement('tbody tr td:nth-child(9)', $fixture->venue)
+            ->seeInElement('tbody tr td:nth-child(10)', $fixture->notes);
     }
 
     public function testDeleteFixture()
@@ -281,6 +348,7 @@ class FixtureResourceTest extends TestCase
             'match_date'   => $fixture->match_date->format('Y-m-d'),
             'warm_up_time' => $fixture->warm_up_time,
             'start_time'   => $fixture->start_time,
+            'notes'        => $fixture->notes,
         ])
             ->makeRequest('DELETE', route(self::BASE_ROUTE . '.destroy', [$fixture->id]))
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
@@ -303,6 +371,7 @@ class FixtureResourceTest extends TestCase
             'match_date'   => $fixture->match_date->format('Y-m-d'),
             'warm_up_time' => $fixture->warm_up_time,
             'start_time'   => $fixture->start_time,
+            'notes'        => $fixture->notes,
         ])
             ->makeRequest('DELETE', route(self::BASE_ROUTE . '.destroy', [$fixture->id]))
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
@@ -317,6 +386,7 @@ class FixtureResourceTest extends TestCase
                 'match_date'   => $fixture->match_date->format('Y-m-d'),
                 'warm_up_time' => $fixture->warm_up_time,
                 'start_time'   => $fixture->start_time,
+                'notes'        => $fixture->notes,
             ]);
     }
 }

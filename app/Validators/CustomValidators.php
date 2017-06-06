@@ -38,4 +38,9 @@ class CustomValidators
 
         return str_replace(':headers', $headers, $message);
     }
+
+    public function ukPostcode($attribute, $value, $parameters, $validator)
+    {
+        return \Postcode::validate($value);
+    }
 }
