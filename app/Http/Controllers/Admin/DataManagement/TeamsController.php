@@ -3,9 +3,8 @@
 namespace LVA\Http\Controllers\Admin\DataManagement;
 
 use Illuminate\Http\Request;
-use LVA\Http\Controllers\Controller;
-
 use Laracasts\Flash\Flash;
+use LVA\Http\Controllers\Controller;
 use LVA\Models\Club;
 use LVA\Models\Team;
 
@@ -57,7 +56,7 @@ class TeamsController extends Controller
 
         Flash::success('Team added!');
 
-        return redirect('admin/data-management/teams');
+        return redirect()->route('teams.index');
     }
 
     /**
@@ -111,7 +110,7 @@ class TeamsController extends Controller
 
         Flash::success('Team updated!');
 
-        return redirect('admin/data-management/teams');
+        return redirect()->route('teams.index');
     }
 
     /**
@@ -132,7 +131,7 @@ class TeamsController extends Controller
             Flash::error('Cannot delete because they are existing fixtures for this team.');
         }
 
-        return redirect('admin/data-management/teams');
+        return redirect()->route('teams.index');
     }
 
 }

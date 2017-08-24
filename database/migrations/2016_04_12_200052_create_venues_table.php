@@ -12,16 +12,13 @@ class CreateVenuesTable extends Migration
      */
     public function up()
     {
-        
-            Schema::create('venues', function(Blueprint $table) {
-                $table->engine = 'InnoDB';
-                
-                $table->increments('id');
-                $table->string('venue');
+        Schema::create('venues', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('venue');
 
-                $table->timestamps();
-            });
-            
+            $table->timestamps();
+        });
+
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 
 class CreateMappedVenuesAndTeamsTables extends Migration
 {
@@ -13,8 +13,6 @@ class CreateMappedVenuesAndTeamsTables extends Migration
     public function up()
     {
         Schema::create('mapped_venues', function (Blueprint $table) {
-            $table->engine = 'InnoDB';
-
             $table->increments('id');
             $table->unsignedInteger('upload_job_id');
             $table->string('venue');
@@ -28,8 +26,6 @@ class CreateMappedVenuesAndTeamsTables extends Migration
         });
 
         Schema::create('mapped_teams', function (Blueprint $table) {
-            $table->engine = 'InnoDB';
-
             $table->increments('id');
             $table->unsignedInteger('upload_job_id');
             $table->string('team');

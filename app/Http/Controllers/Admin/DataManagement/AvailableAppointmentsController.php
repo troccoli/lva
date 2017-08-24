@@ -2,12 +2,10 @@
 
 namespace LVA\Http\Controllers\Admin\DataManagement;
 
+use Laracasts\Flash\Flash;
+use LVA\Http\Controllers\Controller;
 use LVA\Http\Requests\StoreAvailableAppointmentRequest as StoreRequest;
 use LVA\Http\Requests\UpdateAvailableAppointmentRequest as UpdateRequest;
-use LVA\Http\Controllers\Controller;
-
-use Laracasts\Flash\Flash;
-
 use LVA\Models\AvailableAppointment;
 use LVA\Models\Fixture;
 use LVA\Models\Role;
@@ -58,7 +56,7 @@ class AvailableAppointmentsController extends Controller
 
         Flash::success('Appointment added!');
 
-        return redirect('admin/data-management/available-appointments');
+        return redirect()->route('available-appointments.index');
     }
 
     /**
@@ -109,7 +107,7 @@ class AvailableAppointmentsController extends Controller
 
         Flash::success('Appointment updated!');
 
-        return redirect('admin/data-management/available-appointments');
+        return redirect()->route('available-appointments.index');
     }
 
     /**
@@ -125,7 +123,7 @@ class AvailableAppointmentsController extends Controller
 
         Flash::success('Appointment deleted!');
 
-        return redirect('admin/data-management/available-appointments');
+        return redirect()->route('available-appointments.index');
     }
 
 }

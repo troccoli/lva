@@ -3,19 +3,22 @@
 namespace Tests\Integration\Models;
 
 use Carbon\Carbon;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use LVA\Models\Division;
 use LVA\Models\Team;
-use LVA\Models\Venue;
 use LVA\Models\UploadJobStatus;
+use LVA\Models\Venue;
 use Tests\TestCase;
 
 /**
  * Class UploadJobStatusTest
  *
- * @package Tests\Models
+ * @package Tests\Integration\Models
  */
 class UploadJobStatusTest extends TestCase
 {
+    use DatabaseTransactions;
+
     /**
      * @test
      */

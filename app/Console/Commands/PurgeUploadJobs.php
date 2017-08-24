@@ -22,6 +22,7 @@ class PurgeUploadJobs extends Command
      */
     protected $description = 'This command delete all jobs older than one week.';
 
+    /** @var InteractiveFixturesUploadService */
     private $uploadService;
 
     /**

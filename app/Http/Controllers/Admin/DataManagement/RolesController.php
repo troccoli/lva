@@ -3,9 +3,8 @@
 namespace LVA\Http\Controllers\Admin\DataManagement;
 
 use Illuminate\Http\Request;
-use LVA\Http\Controllers\Controller;
-
 use Laracasts\Flash\Flash;
+use LVA\Http\Controllers\Controller;
 use LVA\Models\Role;
 
 /**
@@ -52,7 +51,7 @@ class RolesController extends Controller
 
         Flash::success('Role added!');
 
-        return redirect('admin/data-management/roles');
+        return redirect()->route('roles.index');
     }
 
     /**
@@ -87,7 +86,7 @@ class RolesController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param int           $id
+     * @param int     $id
      *
      * @return mixed
      */
@@ -101,7 +100,7 @@ class RolesController extends Controller
 
         Flash::success('Role updated!');
 
-        return redirect('admin/data-management/roles');
+        return redirect()->route('roles.index');
     }
 
     /**
@@ -121,7 +120,7 @@ class RolesController extends Controller
             Flash::error('Cannot delete because they are existing appointments for this role.');
         }
 
-        return redirect('admin/data-management/roles');
+        return redirect()->route('roles.index');
     }
 
 }

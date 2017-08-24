@@ -3,9 +3,8 @@
 namespace LVA\Http\Controllers\Admin\DataManagement;
 
 use Illuminate\Http\Request;
-use LVA\Http\Controllers\Controller;
-
 use Laracasts\Flash\Flash;
+use LVA\Http\Controllers\Controller;
 use LVA\Models\Club;
 
 /**
@@ -53,7 +52,7 @@ class ClubsController extends Controller
 
         Flash::success('Club added!');
 
-        return redirect('admin/data-management/clubs');
+        return redirect()->route('clubs.index');
     }
 
     /**
@@ -102,7 +101,7 @@ class ClubsController extends Controller
 
         Flash::success('Club updated!');
 
-        return redirect('admin/data-management/clubs');
+        return redirect()->route('clubs.index');
     }
 
     /**
@@ -122,7 +121,7 @@ class ClubsController extends Controller
             Flash::error('Cannot delete because they are existing teams in this club.');
         }
 
-        return redirect('admin/data-management/clubs');
+        return redirect()->route('clubs.index');
     }
 
 }

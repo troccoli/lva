@@ -8,7 +8,7 @@
 
         @include('_partial.crud-errors')
 
-        {!! Form::open(['url' => 'admin/data-management/roles', 'class' => 'form-horizontal']) !!}
+        {!! Form::open(['route' => 'roles.store', 'class' => 'form-horizontal']) !!}
 
         @include('admin.data-management.roles._form', ['submitText' => 'Add'])
 

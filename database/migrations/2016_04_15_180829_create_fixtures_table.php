@@ -12,10 +12,7 @@ class CreateFixturesTable extends Migration
      */
     public function up()
     {
-
         Schema::create('fixtures', function (Blueprint $table) {
-            $table->engine = 'InnoDB';
-            
             $table->increments('id');
             $table->integer('division_id')->unsigned();
             $table->integer('match_number')->unsigned();

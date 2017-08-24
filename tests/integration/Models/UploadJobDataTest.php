@@ -1,21 +1,24 @@
 <?php
 
-namespace Tests\Models;
+namespace Tests\Integration\Models;
 
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use LVA\Models\Fixture;
 use LVA\Models\TeamSynonym;
 use LVA\Models\UploadJob;
-use LVA\Models\VenueSynonym;
 use LVA\Models\UploadJobData;
+use LVA\Models\VenueSynonym;
 use Tests\TestCase;
 
 /**
  * Class UploadJobDataTest
  *
- * @package Tests\Models
+ * @package Tests\Integration\Models
  */
 class UploadJobDataTest extends TestCase
 {
+    use DatabaseTransactions;
+
     /**
      * @test
      */

@@ -10,7 +10,7 @@
 
         {!! Form::model($fixture, [
             'method' => 'PATCH',
-            'url' => ['admin/data-management/fixtures', $fixture->id],
+            'route' => ['fixtures.update', $fixture->id],
             'class' => 'form-horizontal'
         ]) !!}
         {!! Form::hidden('id', $fixture->id) !!}

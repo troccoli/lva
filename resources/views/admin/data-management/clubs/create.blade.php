@@ -8,7 +8,7 @@
 
         @include('_partial.crud-errors')
 
-        {!! Form::open(['url' => 'admin/data-management/clubs', 'class' => 'form-horizontal']) !!}
+        {!! Form::open(['route' => 'clubs.store', 'class' => 'form-horizontal']) !!}
 
         @include('admin.data-management.clubs._form', ['submitText' => 'Add'])
 

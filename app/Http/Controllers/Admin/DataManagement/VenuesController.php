@@ -3,9 +3,8 @@
 namespace LVA\Http\Controllers\Admin\DataManagement;
 
 use Illuminate\Http\Request;
-use LVA\Http\Controllers\Controller;
-
 use Laracasts\Flash\Flash;
+use LVA\Http\Controllers\Controller;
 use LVA\Models\Venue;
 
 /**
@@ -52,7 +51,7 @@ class VenuesController extends Controller
 
         Flash::success('Venue added!');
 
-        return redirect('admin/data-management/venues');
+        return redirect()->route('venues.index');
     }
 
     /**
@@ -101,7 +100,7 @@ class VenuesController extends Controller
 
         Flash::success('Venue updated!');
 
-        return redirect('admin/data-management/venues');
+        return redirect()->route('venues.index');
     }
 
     /**
@@ -121,7 +120,7 @@ class VenuesController extends Controller
             Flash::error('Cannot delete because they are existing fixtures at this venue.');
         }
 
-        return redirect('admin/data-management/venues');
+        return redirect()->route('venues.index');
     }
 
 }

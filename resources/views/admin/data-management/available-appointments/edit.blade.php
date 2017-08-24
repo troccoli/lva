@@ -17,7 +17,7 @@
 
         {!! Form::model($availableAppointment, [
             'method' => 'PATCH',
-            'route' => ['admin.data-management.available-appointments.update', $availableAppointment->id],
+            'route' => ['available-appointments.update', $availableAppointment->id],
             'class' => 'form-horizontal'
         ]) !!}
         {!! Form::hidden('id', $availableAppointment->id) !!}
