@@ -28,7 +28,6 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         if ($this->app->environment() == 'local') {
-            $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
             $this->app->register(\Appzcoder\CrudGenerator\CrudGeneratorServiceProvider::class);
             $this->app->register(\Laracademy\Commands\MakeServiceProvider::class);
             $this->app->register(DuskServiceProvider::class);

@@ -22,20 +22,20 @@ Breadcrumbs::register('register', function($b) {
     $b->push('Register', route('register'));
 });
 
-Breadcrumbs::register('passwordReset', function($b) {
+Breadcrumbs::register('password.request', function($b) {
     $b->parent('home');
-    $b->push('Reset Password', route('passwordReset'));
+    $b->push('Reset Password', route('password.request'));
 });
 
 // Data Management
-Breadcrumbs::register('admin::dataManagement', function($b) {
+Breadcrumbs::register('data-management', function($b) {
     $b->parent('home');
-    $b->push('Data management', route('admin::dataManagement'));
+    $b->push('Data management', route('data-management'));
 });
 
 // Data Management - Seasons
 Breadcrumbs::register('seasons.index', function($b) {
-    $b->parent('admin::dataManagement');
+    $b->parent('data-management');
     $b->push('Seasons', route('seasons.index'));
 });
 Breadcrumbs::register('seasons.create', function($b) {
@@ -53,7 +53,7 @@ Breadcrumbs::register('seasons.show', function($b) {
 
 // Data Management - Clubs
 Breadcrumbs::register('clubs.index', function($b) {
-    $b->parent('admin::dataManagement');
+    $b->parent('data-management');
     $b->push('Clubs', route('clubs.index'));
 });
 Breadcrumbs::register('clubs.create', function($b) {
@@ -71,7 +71,7 @@ Breadcrumbs::register('clubs.show', function($b) {
 
 // Data Management - Venues
 Breadcrumbs::register('venues.index', function($b) {
-    $b->parent('admin::dataManagement');
+    $b->parent('data-management');
     $b->push('Venues', route('venues.index'));
 });
 Breadcrumbs::register('venues.create', function($b) {
@@ -89,7 +89,7 @@ Breadcrumbs::register('venues.show', function($b) {
 
 // Data Management - Roles
 Breadcrumbs::register('roles.index', function($b) {
-    $b->parent('admin::dataManagement');
+    $b->parent('data-management');
     $b->push('Roles', route('roles.index'));
 });
 Breadcrumbs::register('roles.create', function($b) {
@@ -107,7 +107,7 @@ Breadcrumbs::register('roles.show', function($b) {
 
 // Data Management - Divisions
 Breadcrumbs::register('divisions.index', function($b) {
-    $b->parent('admin::dataManagement');
+    $b->parent('data-management');
     $b->push('Divisions', route('divisions.index'));
 });
 Breadcrumbs::register('divisions.create', function($b) {
@@ -125,7 +125,7 @@ Breadcrumbs::register('divisions.show', function($b) {
 
 // Data Management - Teams
 Breadcrumbs::register('teams.index', function($b) {
-    $b->parent('admin::dataManagement');
+    $b->parent('data-management');
     $b->push('Teams', route('teams.index'));
 });
 Breadcrumbs::register('teams.create', function($b) {
@@ -143,7 +143,7 @@ Breadcrumbs::register('teams.show', function($b) {
 
 // Data Management - Fixtures
 Breadcrumbs::register('fixtures.index', function($b) {
-    $b->parent('admin::dataManagement');
+    $b->parent('data-management');
     $b->push('Fixtures', route('fixtures.index'));
 });
 Breadcrumbs::register('fixtures.create', function($b) {
@@ -161,7 +161,7 @@ Breadcrumbs::register('fixtures.show', function($b) {
 
 // Data Management - Available Appointments
 Breadcrumbs::register('available-appointments.index', function ($b) {
-    $b->parent('admin::dataManagement');
+    $b->parent('data-management');
     $b->push('Available appointments', route('available-appointments.index'));
 });
 Breadcrumbs::register('available-appointments.create', function ($b) {
@@ -179,7 +179,7 @@ Breadcrumbs::register('available-appointments.show', function ($b) {
 
 // Data Management - Upload Fixtures
 Breadcrumbs::register('uploadFixtures', function ($b) {
-    $b->parent('admin::dataManagement');
+    $b->parent('data-management');
     $b->push('Upload fixtures', route('uploadFixtures'));
 });
 // Data Management - Upload Fixtures - Staus

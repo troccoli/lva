@@ -9,6 +9,10 @@
          processIsolation="false"
          stopOnFailure="false">
     <testsuites>
+        <testsuite name="OldStyle">
+            <directory>./tests/OLD_STYLE</directory>
+        </testsuite>
+
         <testsuite name="Feature">
             <directory suffix=".php">./tests/Feature</directory>
         </testsuite>

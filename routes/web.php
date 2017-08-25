@@ -23,7 +23,7 @@ Route::auth();
 
 /* Admin */
 Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => 'auth'], function () {
-    Route::get('data-management', 'DataManagementController@showHome')->name('admin::dataManagement');
+    Route::get('data-management', 'DataManagementController@showHome')->name('data-management');
     Route::group(['prefix' => 'data-management', 'namespace' => 'DataManagement'], function () {
         Route::resource('seasons', 'SeasonsController');
         Route::resource('clubs', 'ClubsController');
