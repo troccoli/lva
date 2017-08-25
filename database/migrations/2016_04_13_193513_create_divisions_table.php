@@ -12,10 +12,7 @@ class CreateDivisionsTable extends Migration
      */
     public function up()
     {
-
         Schema::create('divisions', function (Blueprint $table) {
-            $table->engine = 'InnoDB';
-                
             $table->increments('id');
             $table->integer('season_id')->unsigned();
             $table->string('division');

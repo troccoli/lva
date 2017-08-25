@@ -13,8 +13,6 @@ class CreateAvailableAppointmentsTable extends Migration
     public function up()
     {
         Schema::create('available_appointments', function (Blueprint $table) {
-            $table->engine = "InnoDB";
-
             $table->increments('id');
             $table->integer('fixture_id')->unsigned();
             $table->integer('role_id')->unsigned();

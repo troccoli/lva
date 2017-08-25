@@ -14,14 +14,15 @@ language: php
 php:
   - 7.1
 install:
-  - nvm install v5.12.0
+  - nvm install v8.1.2
 before_script:
   - phpenv config-rm xdebug.ini
-  - npm install
-  - composer install --no-interaction
-  - export DISABLE_NOTIFIER=true; node_modules/gulp/bin/gulp.js
   - cp env.travis .env
+  - composer install --no-progress --no-suggest --no-interaction --optimize-autoloader
   - php artisan key:generate
+  - npm install
+  - npm rebuild node-sass
+  - npm run production
   - mysql -e 'create database lva_testing;'
 script:
   - vendor/bin/phpunit

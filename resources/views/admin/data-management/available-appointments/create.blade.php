@@ -14,7 +14,7 @@
 
         @include('_partial.crud-errors')
 
-        {!! Form::open(['route' => 'admin.data-management.available-appointments.store', 'class' => 'form-horizontal']) !!}
+        {!! Form::open(['route' => 'available-appointments.store', 'class' => 'form-horizontal']) !!}
 
         @include('admin.data-management.available-appointments._form', ['submitText' => 'Add'])
 

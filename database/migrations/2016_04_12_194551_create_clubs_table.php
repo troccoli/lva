@@ -12,16 +12,13 @@ class CreateClubsTable extends Migration
      */
     public function up()
     {
-        
-            Schema::create('clubs', function(Blueprint $table) {
-                $table->engine = 'InnoDB';
-                
-                $table->increments('id');
-                $table->string('club');
+        Schema::create('clubs', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('club');
 
-                $table->timestamps();
-            });
-            
+            $table->timestamps();
+        });
+
     }
 
     /**

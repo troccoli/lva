@@ -174,7 +174,7 @@
                     updateProgressBar($('#inserting-progress'), insertingProgress);
                 }
 
-                if (status.StatusCode == statusUnknownData) {
+                if (status.StatusCode === statusUnknownData) {
                     userActionModal.find('.modal-title').text(status.StatusMessage);
 
                     populateCurrentFixture(userActionModal, status.Fixture);
@@ -188,14 +188,14 @@
                     $('#resume-button').addClass('disabled').blur();
                     userActionModal.modal('show');
 
-                } else if (status.StatusCode == statusWaitingConfirmation) {
+                } else if (status.StatusCode === statusWaitingConfirmation) {
                     // create confirmation pop up
                     userConfirmationModal.modal('show');
                     // if user click on Proceed
                     // call to resume
                     // else
                     // call clean-up
-                } else if (status.StatusCode == statusErrorValidating || status.StatusCode == statusErrorInserting) {
+                } else if (status.StatusCode === statusErrorValidating || status.StatusCode === statusErrorInserting) {
                     var alert = $('#unrecoverable-errors');
                     if (status.ErrorLine) {
                         var errorLine = alert.find('#error-line-number');
@@ -207,12 +207,12 @@
                         alert.find('ul').append($('<li>' + error + '</li>'))
                     });
                     alert.removeClass('hidden');
-                    if (status.StatusCode == statusErrorValidating) {
+                    if (status.StatusCode === statusErrorValidating) {
                         $('#validating-progress .progress-bar').removeClass('progress-bar-striped active').addClass('progress-bar-danger');
-                    } else if (status.StatusCode == statusErrorInserting) {
+                    } else if (status.StatusCode === statusErrorInserting) {
                         $('#inserting-progress .progress-bar').removeClass('progress-bar-striped active').addClass('progress-bar-danger');
                     }
-                } else if (status.StatusCode != statusDone) {
+                } else if (status.StatusCode !== statusDone) {
                     setTimeout(poll, 500);
                 }
 

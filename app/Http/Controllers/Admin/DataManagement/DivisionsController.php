@@ -3,9 +3,8 @@
 namespace LVA\Http\Controllers\Admin\DataManagement;
 
 use Illuminate\Http\Request;
-use LVA\Http\Controllers\Controller;
-
 use Laracasts\Flash\Flash;
+use LVA\Http\Controllers\Controller;
 use LVA\Models\Division;
 use LVA\Models\Season;
 
@@ -56,7 +55,7 @@ class DivisionsController extends Controller
 
         Flash::success('Division added!');
 
-        return redirect('admin/data-management/divisions');
+        return redirect()->route('divisions.index');
     }
 
     /**
@@ -109,7 +108,7 @@ class DivisionsController extends Controller
 
         Flash::success('Division updated!');
 
-        return redirect('admin/data-management/divisions');
+        return redirect()->route('divisions.index');
     }
 
     /**
@@ -129,7 +128,7 @@ class DivisionsController extends Controller
             Flash::error('Cannot delete because they are existing fixtures in this division.');
         }
 
-        return redirect('admin/data-management/divisions');
+        return redirect()->route('divisions.index');
     }
 
 }

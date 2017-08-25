@@ -40,10 +40,11 @@ class MappingService
     public function findVenueMappings($venue)
     {
         $mappings = [];
+        /** @var Venue $venue */
         foreach (Venue::orderBy('venue', 'asc')->get() as $venue) {
             $mappings[] = [
-                'value' => $venue->id,
-                'text'  => $venue->venue,
+                'value' => $venue->getId(),
+                'text'  => $venue->getName(),
             ];
         }
 

@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 
 class AddPostcodeToVenuesTable extends Migration
 {
@@ -13,7 +13,7 @@ class AddPostcodeToVenuesTable extends Migration
     public function up()
     {
         Schema::table('venues', function (Blueprint $table) {
-            $table->char('postcode', 8)->after('directions')->default(null);
+            $table->char('postcode', 8)->after('directions')->nullable()->default(null);
         });
     }
 
