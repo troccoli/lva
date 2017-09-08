@@ -1,20 +1,20 @@
 <?php
 
-namespace Tests\Integration\Models;
+namespace Tests\Unit\Models;
 
 use Carbon\Carbon;
 use LVA\Models\Division;
 use LVA\Models\Team;
-use LVA\Models\Venue;
 use LVA\Models\UploadJobStatus;
-use Tests\OldStyleTestCase;
+use LVA\Models\Venue;
+use Tests\TestCase;
 
 /**
  * Class UploadJobStatusTest
  *
- * @package Tests\Models
+ * @package Tests\Unit\Models
  */
-class UploadJobStatusOldStyleTest extends OldStyleTestCase
+class UploadJobStatusTest extends TestCase
 {
     /**
      * @test

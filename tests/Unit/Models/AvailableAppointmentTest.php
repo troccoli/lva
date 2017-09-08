@@ -1,18 +1,18 @@
 <?php
 
-namespace Tests\Models;
+namespace Tests\Unit\Models;
 
+use LVA\Models\AvailableAppointment;
 use LVA\Models\Fixture;
 use LVA\Models\Role;
-use LVA\Models\AvailableAppointment;
-use Tests\OldStyleTestCase;
+use Tests\TestCase;
 
 /**
  * Class AvailableAppointmentTest
  *
- * @package Tests\Models
+ * @package Tests\Unit\Models
  */
-class AvailableAppointmentOldStyleTest extends OldStyleTestCase
+class AvailableAppointmentTest extends TestCase
 {
     /**
      * @test

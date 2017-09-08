@@ -1,17 +1,17 @@
 <?php
 
-namespace Tests\Models;
+namespace Tests\Unit\Models;
 
-use LVA\Models\Team;
 use LVA\Models\Club;
-use Tests\OldStyleTestCase;
+use LVA\Models\Team;
+use Tests\TestCase;
 
 /**
  * Class ClubTest
  *
- * @package Tests\Models
+ * @package Tests\Unit\Models
  */
-class ClubOldStyleTest extends OldStyleTestCase
+class ClubTest extends TestCase
 {
     /**
      * @test
@@ -19,7 +19,7 @@ class ClubOldStyleTest extends OldStyleTestCase
     public function it_has_many_teams()
     {
         // random number of teams to create
-        $teams = mt_rand(2, 10);
+        $teams = $this->faker->numberBetween(2, 10);
 
         /** @var Club[] $clubs */
         $clubs = factory(Club::class)->times(2)->create();

@@ -1,18 +1,18 @@
 <?php
 
-namespace Tests\Models;
+namespace Tests\Unit\Models;
 
+use LVA\Models\Division;
 use LVA\Models\Fixture;
 use LVA\Models\Season;
-use LVA\Models\Division;
-use Tests\OldStyleTestCase;
+use Tests\TestCase;
 
 /**
  * Class DivisionTest
  *
- * @package Tests\Models
+ * @package Tests\Unit\Models
  */
-class DivisionOldStyleTest extends OldStyleTestCase
+class DivisionTest extends TestCase
 {
     /**
      * @test
@@ -31,7 +31,7 @@ class DivisionOldStyleTest extends OldStyleTestCase
     public function it_has_many_fixtures()
     {
         // Random number of fixtures to create
-        $fixtures = mt_rand(2, 10);
+        $fixtures = $this->faker->numberBetween(2, 10);
 
         /** @var Division[] $divisions */
         $divisions = factory(Division::class)->times(2)->create();

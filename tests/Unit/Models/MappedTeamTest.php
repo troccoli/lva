@@ -1,18 +1,18 @@
 <?php
 
-namespace Tests\Models;
+namespace Tests\Unit\Models;
 
+use LVA\Models\MappedTeam;
 use LVA\Models\Team;
 use LVA\Models\UploadJob;
-use LVA\Models\MappedTeam;
-use Tests\OldStyleTestCase;
+use Tests\TestCase;
 
 /**
  * Class MappedTeamTest
  *
- * @package Tests\Models
+ * @package Tests\Unit\Models
  */
-class MappedTeamOldStyleTest extends OldStyleTestCase
+class MappedTeamTest extends TestCase
 {
     /**
      * @test
@@ -22,7 +22,7 @@ class MappedTeamOldStyleTest extends OldStyleTestCase
         /** @var UploadJob[] $jobs */
         $jobs = factory(UploadJob::class)->times(2)->create();
 
-        $teams = mt_rand(2, 20);
+        $teams = $this->faker->numberBetween(2, 20);
         factory(MappedTeam::class)->times($teams)->create(['upload_job_id' => $jobs[0]->getId()]);
 
         $this->assertCount($teams, MappedTeam::findByJob($jobs[0]->getId()));
@@ -100,7 +100,7 @@ class MappedTeamOldStyleTest extends OldStyleTestCase
 
         $this->assertEquals($mappedTeam->mapped_team, $mappedTeam->getName());
 
-        $newName = str_random();
+        $newName = $this->faker->unique()->name;
         $this->assertNotEquals($newName, $mappedTeam->getName());
         $mappedTeam->setName($newName);
         $this->assertEquals($newName, $mappedTeam->mapped_team);

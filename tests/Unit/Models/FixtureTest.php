@@ -1,21 +1,21 @@
 <?php
 
-namespace Tests\Models;
+namespace Tests\Unit\Models;
 
 use Carbon\Carbon;
 use LVA\Models\AvailableAppointment;
 use LVA\Models\Division;
+use LVA\Models\Fixture;
 use LVA\Models\Team;
 use LVA\Models\Venue;
-use LVA\Models\Fixture;
-use Tests\OldStyleTestCase;
+use Tests\TestCase;
 
 /**
  * Class FixtureTest
  *
- * @package Tests\Models
+ * @package Tests\Unit\Models
  */
-class FixtureOldStyleTest extends OldStyleTestCase
+class FixtureTest extends TestCase
 {
     /**
      * @test
@@ -68,7 +68,7 @@ class FixtureOldStyleTest extends OldStyleTestCase
     public function it_has_many_available_appointments()
     {
         // Random number of available appointments
-        $appointmens = mt_rand(2, 10);
+        $appointmens = $this->faker->numberBetween(2, 10);
 
         /** @var Fixture[] $fixtures */
         $fixtures = factory(Fixture::class)->times(2)->create();
@@ -269,6 +269,7 @@ class FixtureOldStyleTest extends OldStyleTestCase
 
         $this->assertEquals($fixture->notes, $fixture->getNotes());
     }
+
     /**
      * @test
      */

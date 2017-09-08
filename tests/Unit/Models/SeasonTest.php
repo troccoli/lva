@@ -1,17 +1,17 @@
 <?php
 
-namespace Tests\Models;
+namespace Tests\Unit\Models;
 
 use LVA\Models\Division;
 use LVA\Models\Season;
-use Tests\OldStyleTestCase;
+use Tests\TestCase;
 
 /**
  * Class SeasonTest
  *
- * @package Tests\Models
+ * @package Tests\Unit\Models
  */
-class SeasonOldStyleTest extends OldStyleTestCase
+class SeasonTest extends TestCase
 {
     /**
      * @test
@@ -19,7 +19,7 @@ class SeasonOldStyleTest extends OldStyleTestCase
     public function it_has_many_divisions()
     {
         // random number of divisions
-        $divisions = mt_rand(2, 10);
+        $divisions = $this->faker->numberBetween(2, 10);
 
         /** @var Season[] $seasons */
         $seasons = factory(Season::class)->times(2)->create();

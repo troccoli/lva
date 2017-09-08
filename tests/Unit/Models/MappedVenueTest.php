@@ -1,18 +1,18 @@
 <?php
 
-namespace Tests\Models;
+namespace Tests\Unit\Models;
 
+use LVA\Models\MappedVenue;
 use LVA\Models\UploadJob;
 use LVA\Models\Venue;
-use LVA\Models\MappedVenue;
-use Tests\OldStyleTestCase;
+use Tests\TestCase;
 
 /**
  * Class MappedVenueTest
  *
- * @package Tests\Models
+ * @package Tests\Unit\Models
  */
-class MappedVenueOldStyleTest extends OldStyleTestCase
+class MappedVenueTest extends TestCase
 {
     /**
      * @test
@@ -22,7 +22,7 @@ class MappedVenueOldStyleTest extends OldStyleTestCase
         /** @var UploadJob[] $jobs */
         $jobs = factory(UploadJob::class)->times(2)->create();
 
-        $venues = mt_rand(2, 20);
+        $venues = $this->faker->numberBetween(2, 20);
         factory(MappedVenue::class)->times($venues)->create(['upload_job_id' => $jobs[0]->getId()]);
 
         $this->assertCount($venues, MappedVenue::findByJob($jobs[0]->getId()));
@@ -100,7 +100,7 @@ class MappedVenueOldStyleTest extends OldStyleTestCase
 
         $this->assertEquals($mappedVenue->mapped_venue, $mappedVenue->getName());
 
-        $newName = str_random();
+        $newName = $this->faker->unique()->name;
         $this->assertNotEquals($newName, $mappedVenue->getName());
         $mappedVenue->setName($newName);
         $this->assertEquals($newName, $mappedVenue->mapped_venue);

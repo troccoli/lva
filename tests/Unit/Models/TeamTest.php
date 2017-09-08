@@ -1,20 +1,20 @@
 <?php
 
-namespace Tests\Models;
+namespace Tests\Unit\Models;
 
 use LVA\Models\Club;
 use LVA\Models\Fixture;
 use LVA\Models\MappedTeam;
-use LVA\Models\TeamSynonym;
 use LVA\Models\Team;
-use Tests\OldStyleTestCase;
+use LVA\Models\TeamSynonym;
+use Tests\TestCase;
 
 /**
  * Class TeamTest
  *
- * @package Tests\Models
+ * @package Tests\Unit\Models
  */
-class TeamOldStyleTest extends OldStyleTestCase
+class TeamTest extends TestCase
 {
     /**
      * @test
@@ -45,6 +45,7 @@ class TeamOldStyleTest extends OldStyleTestCase
         $this->assertEquals($teams[1]->toArray(), Team::findByTrigram($teams[1]->trigram)->toArray());
         $this->assertNull(Team::findByTrigram($teams[1]->trigram . '--'));
     }
+
     /**
      * @test
      */
@@ -62,7 +63,7 @@ class TeamOldStyleTest extends OldStyleTestCase
     public function it_has_many_fixtures_as_away_team()
     {
         // Random number of fixtures to create
-        $fixtures = mt_rand(2, 10);
+        $fixtures = $this->faker->numberBetween(2, 10);
 
         /** @var Team[] $teams */
         $teams = factory(Team::class)->times(2)->create();
@@ -80,7 +81,7 @@ class TeamOldStyleTest extends OldStyleTestCase
     public function it_has_many_fixtures_as_home_team()
     {
         // Random number of fixtures to create
-        $fixtures = mt_rand(2, 10);
+        $fixtures = $this->faker->numberBetween(2, 10);
 
         /** @var Team[] $teams */
         $teams = factory(Team::class)->times(2)->create();
@@ -100,7 +101,7 @@ class TeamOldStyleTest extends OldStyleTestCase
         /** @var Team[] $teams */
         $teams = factory(Team::class)->times(2)->create();
 
-        $synonyms = mt_rand(2,20);
+        $synonyms = $this->faker->numberBetween(2, 20);
         factory(TeamSynonym::class)->times($synonyms)->create(['team_id' => $teams[0]->getId()]);
 
         $this->assertCount($synonyms, $teams[0]->synonyms);
@@ -115,7 +116,7 @@ class TeamOldStyleTest extends OldStyleTestCase
         /** @var Team[] $teams */
         $teams = factory(Team::class)->times(2)->create();
 
-        $mapped = mt_rand(2,20);
+        $mapped = $this->faker->numberBetween(2, 20);
         factory(MappedTeam::class)->times($mapped)->create(['team_id' => $teams[0]->getId()]);
 
         $this->assertCount($mapped, $teams[0]->mapped);

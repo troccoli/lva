@@ -1,17 +1,18 @@
 <?php
 
-namespace Tests\Models;
+namespace Tests\Unit\Models;
 
 use LVA\Models\Venue;
 use LVA\Models\VenueSynonym;
 use Tests\OldStyleTestCase;
+use Tests\TestCase;
 
 /**
  * Class VenueSynonymTest
  *
  * @package Tests\Models
  */
-class VenueSynonymOldStyleTest extends OldStyleTestCase
+class VenueSynonymOldStyleTest extends TestCase
 {
     /**
      * @test
@@ -69,7 +70,7 @@ class VenueSynonymOldStyleTest extends OldStyleTestCase
 
         $this->assertEquals($venueSynonym->synonym, $venueSynonym->getSynonym());
 
-        $newSynonym = str_random();
+        $newSynonym = $this->faker->unique()->word;
         $venueSynonym->setSynonym($newSynonym);
         $this->assertEquals($newSynonym, $venueSynonym->getSynonym());
     }

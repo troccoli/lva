@@ -1,17 +1,17 @@
 <?php
 
-namespace Tests\Models;
+namespace Tests\Unit\Models;
 
 use LVA\Models\Team;
 use LVA\Models\TeamSynonym;
-use Tests\OldStyleTestCase;
+use Tests\TestCase;
 
 /**
  * Class TeamSynonymTest
  *
- * @package Tests\Models
+ * @package Tests\Unit\Models
  */
-class TeamSynonymOldStyleTest extends OldStyleTestCase
+class TeamSynonymTest extends TestCase
 {
     /**
      * @test
@@ -70,7 +70,7 @@ class TeamSynonymOldStyleTest extends OldStyleTestCase
 
         $this->assertEquals($teamSynonym->synonym, $teamSynonym->getSynonym());
 
-        $newSynonym = str_random();
+        $newSynonym = $this->faker->unique()->word;
         $teamSynonym->setSynonym($newSynonym);
         $this->assertEquals($newSynonym, $teamSynonym->getSynonym());
     }

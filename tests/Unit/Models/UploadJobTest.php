@@ -1,22 +1,22 @@
 <?php
 
-namespace Tests\Models;
+namespace Tests\Unit\Models;
 
 use Carbon\Carbon;
 use LVA\Models\MappedTeam;
 use LVA\Models\MappedVenue;
 use LVA\Models\Season;
+use LVA\Models\UploadJob;
 use LVA\Models\UploadJobData;
 use LVA\Models\UploadJobStatus;
-use LVA\Models\UploadJob;
-use Tests\OldStyleTestCase;
+use Tests\TestCase;
 
 /**
  * Class UploadJobTest
  *
- * @package Tests\Models
+ * @package Tests\Unit\Models
  */
-class UploadJobOldStyleTest extends OldStyleTestCase
+class UploadJobTest extends TestCase
 {
     /**
      * @test
@@ -26,7 +26,7 @@ class UploadJobOldStyleTest extends OldStyleTestCase
         /** @var UploadJob[] $jobs */
         $jobs = factory(UploadJob::class)->times(2)->create();
 
-        $teams = mt_rand(2, 10);
+        $teams = $this->faker->numberBetween(2, 10);
         factory(MappedTeam::class)->times($teams)->create(['upload_job_id' => $jobs[0]->getId()]);
 
         $this->assertCount($teams, $jobs[0]->mappedTeams);
@@ -41,7 +41,7 @@ class UploadJobOldStyleTest extends OldStyleTestCase
         /** @var UploadJob[] $jobs */
         $jobs = factory(UploadJob::class)->times(2)->create();
 
-        $venues = mt_rand(2, 10);
+        $venues = $this->faker->numberBetween(2, 10);
         factory(MappedVenue::class)->times($venues)->create(['upload_job_id' => $jobs[0]->getId()]);
 
         $this->assertCount($venues, $jobs[0]->mappedVenues);
@@ -56,7 +56,7 @@ class UploadJobOldStyleTest extends OldStyleTestCase
         /** @var UploadJob[] $jobs */
         $jobs = factory(UploadJob::class)->times(2)->create();
 
-        $data = mt_rand(2, 10);
+        $data = $this->faker->numberBetween(2, 10);
         factory(UploadJobData::class)->times($data)->create(['upload_job_id' => $jobs[0]->getId()]);
 
         $this->assertCount($data, $jobs[0]->uploadData);
@@ -70,7 +70,7 @@ class UploadJobOldStyleTest extends OldStyleTestCase
     {
         $staleDate = Carbon::now()->subWeek();
 
-        $jobs = mt_rand(2, 20);
+        $jobs = $this->faker->numberBetween(2, 20);
         factory(UploadJob::class)->times($jobs)->create(['created_at' => $staleDate, 'updated_at' => $staleDate]);
 
         $this->assertCount($jobs, UploadJob::stale()->get());
@@ -241,7 +241,7 @@ class UploadJobOldStyleTest extends OldStyleTestCase
         /** @var UploadJob $job */
         $job = factory(UploadJob::class)->create();
 
-        $rows = $job->getRowCount() + mt_rand(1, 10);
+        $rows = $job->getRowCount() + $this->faker->numberBetween(1, 10);
 
         $this->assertNotEquals($rows, $job->getRowCount());
 

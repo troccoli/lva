@@ -1,19 +1,20 @@
 <?php
 
-namespace Tests\Models;
+namespace Tests\Unit\Models;
 
 use LVA\Models\Fixture;
 use LVA\Models\MappedVenue;
 use LVA\Models\VenueSynonym;
 use LVA\Models\Venue;
 use Tests\OldStyleTestCase;
+use Tests\TestCase;
 
 /**
  * Class VenueTest
  *
- * @package Tests\Models
+ * @package Tests\Unit\Models
  */
-class VenueOldStyleTest extends OldStyleTestCase
+class VenueTest extends TestCase
 {
     /**
      * @test
@@ -36,7 +37,7 @@ class VenueOldStyleTest extends OldStyleTestCase
     public function it_has_many_fixtures()
     {
         // Random number of fixtures to create
-        $fixtures = mt_rand(2, 10);
+        $fixtures = $this->faker->numberBetween(2, 10);
 
         /** @var Venue[] $venues */
         $venues = factory(Venue::class)->times(2)->create();
@@ -56,7 +57,7 @@ class VenueOldStyleTest extends OldStyleTestCase
         /** @var Venue[] $venues */
         $venues = factory(Venue::class)->times(2)->create();
 
-        $synonyms = mt_rand(2,20);
+        $synonyms = $this->faker->numberBetween(2,20);
         factory(VenueSynonym::class)->times($synonyms)->create(['venue_id' => $venues[0]->getId()]);
 
         $this->assertCount($synonyms, $venues[0]->synonyms);
@@ -71,7 +72,7 @@ class VenueOldStyleTest extends OldStyleTestCase
         /** @var Venue[] $venues */
         $venues = factory(Venue::class)->times(2)->create();
 
-        $mapped = mt_rand(2,20);
+        $mapped = $this->faker->numberBetween(2,20);
         factory(MappedVenue::class)->times($mapped)->create(['venue_id' => $venues[0]->getId()]);
 
         $this->assertCount($mapped, $venues[0]->mapped);

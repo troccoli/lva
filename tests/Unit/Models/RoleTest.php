@@ -1,17 +1,17 @@
 <?php
 
-namespace Tests\Models;
+namespace Tests\Unit\Models;
 
 use LVA\Models\AvailableAppointment;
 use LVA\Models\Role;
-use Tests\OldStyleTestCase;
+use Tests\TestCase;
 
 /**
  * Class RoleTest
  *
- * @package Tests\Models
+ * @package Tests\Unit\Models
  */
-class RoleOldStyleTest extends OldStyleTestCase
+class RoleTest extends TestCase
 {
     /**
      * @test
@@ -39,7 +39,7 @@ class RoleOldStyleTest extends OldStyleTestCase
     public function it_has_many_appointments()
     {
         // random number of appointments to create
-        $appointments = mt_rand(2,10);
+        $appointments = $this->faker->numberBetween(2, 10);
 
         /** @var Role[] $roles */
         $roles = factory(Role::class)->times(2)->create();
