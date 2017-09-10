@@ -13,30 +13,9 @@ use Tests\OldStyleTestCase;
 
 class DataManagementOldStyleTest extends OldStyleTestCase
 {
-    public function testRedirectToLoginIfNotAdmin()
-    {
-        $this->visit(route('data-management'))
-            ->seePageIs(route('login'));
-    }
 
-    public function testBreadcrumbs()
-    {
-        /** @var User $user */
-        $user = factory(User::class)->create();
-        $this->be($user);
 
-        $this->breadcrumbsTests('data-management', 'Data Management');
-    }
 
-    public function testSeasonsTableButton()
-    {
-        /** @var User $user */
-        $user = factory(User::class)->create();
-        $this->be($user);
-
-        $this->visit(route('data-management'))
-            ->seeLink('Seasons', route('seasons.index'));
-    }
 
     public function testDivisionsTableButton()
     {
