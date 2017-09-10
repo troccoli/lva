@@ -1,20 +1,20 @@
 <?php
 
-namespace Tests\Models;
+namespace Tests\Unit\Models;
 
 use LVA\Models\Fixture;
 use LVA\Models\TeamSynonym;
 use LVA\Models\UploadJob;
-use LVA\Models\VenueSynonym;
 use LVA\Models\UploadJobData;
-use Tests\OldStyleTestCase;
+use LVA\Models\VenueSynonym;
+use Tests\TestCase;
 
 /**
  * Class UploadJobDataTest
  *
- * @package Tests\Models
+ * @package Tests\Unit\Models
  */
-class UploadJobDataOldStyleTest extends OldStyleTestCase
+class UploadJobDataTest extends TestCase
 {
     /**
      * @test
@@ -86,7 +86,7 @@ class UploadJobDataOldStyleTest extends OldStyleTestCase
         /** @var UploadJobData $data */
         $data = factory(UploadJobData::class)->create();
 
-        $this->assertEquals($data->model, $data->getModel());
+        $this->assertEquals($data->getAttribute('model'), $data->getModel());
     }
 
     /**

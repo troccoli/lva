@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Api\v1;
+namespace Tests\Unit\Api\v1;
 
 use LVA\Models\Team;
 use LVA\Models\UploadJob;
@@ -9,14 +9,14 @@ use LVA\Models\Venue;
 use LVA\Services\InteractiveFixturesUploadService;
 use LVA\User;
 use Prophecy\Argument;
-use Tests\OldStyleTestCase;
+use Tests\TestCase;
 
 /**
  * Class UploadApiTest
  *
- * @package Tests\Api\v1
+ * @package Tests\Unit\Api\v1
  */
-class UploadApiOldStyleTest extends OldStyleTestCase
+class UploadApiTest extends TestCase
 {
     /**
      * @test
@@ -30,21 +30,21 @@ class UploadApiOldStyleTest extends OldStyleTestCase
         });
 
         // Without an api token it redirects
-        $this->get(route('resume-upload'))->seeStatusCode(302);
+        $this->get(route('resume-upload'))->assertStatus(302);
 
         /** @var User $user */
         $user = factory(User::class)->create();
 
         // Without a job it fails
         $this->get(route('resume-upload', ['api_token' => $user->api_token]))
-            ->seeJsonContains([
+            ->assertJson([
                 'Error'   => true,
                 'Message' => 'Job parameter missing',
             ]);
 
         // Without a valid job it fails too
         $this->get(route('resume-upload', ['api_token' => $user->api_token, 'job' => 1]))
-            ->seeJsonContains([
+            ->assertJson([
                 'Error'   => true,
                 'Message' => 'Job not found',
             ]);
@@ -54,56 +54,56 @@ class UploadApiOldStyleTest extends OldStyleTestCase
 
         $job->setStatus($this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_NOT_STARTED])->toArray())->save();
         $this->get(route('resume-upload', ['api_token' => $user->api_token, 'job' => $job->getId()]))
-            ->seeJsonContains([
+            ->assertJson([
                 'Error'   => false,
                 'Message' => 'Job resumed',
             ]);
 
         $job->setStatus($this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_VALIDATING_RECORDS])->toArray())->save();
         $this->get(route('resume-upload', ['api_token' => $user->api_token, 'job' => $job->getId()]))
-            ->seeJsonContains([
+            ->assertJson([
                 'Error'   => true,
                 'Message' => 'Job cannot be resumed',
             ]);
 
         $job->setStatus($this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_UNKNOWN_DATA])->toArray())->save();
         $this->get(route('resume-upload', ['api_token' => $user->api_token, 'job' => $job->getId()]))
-            ->seeJsonContains([
+            ->assertJson([
                 'Error'   => false,
                 'Message' => 'Job resumed',
             ]);
 
         $job->setStatus($this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_UNRECOVERABLE_VALIDATION_ERROR])->toArray())->save();
         $this->get(route('resume-upload', ['api_token' => $user->api_token, 'job' => $job->getId()]))
-            ->seeJsonContains([
+            ->assertJson([
                 'Error'   => true,
                 'Message' => 'Job cannot be resumed',
             ]);
 
         $job->setStatus($this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_WAITING_CONFIRMATION_TO_INSERT])->toArray())->save();
         $this->get(route('resume-upload', ['api_token' => $user->api_token, 'job' => $job->getId()]))
-            ->seeJsonContains([
+            ->assertJson([
                 'Error'   => false,
                 'Message' => 'Job resumed',
             ]);
 
         $job->setStatus($this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_INSERTING_RECORDS])->toArray())->save();
         $this->get(route('resume-upload', ['api_token' => $user->api_token, 'job' => $job->getId()]))
-            ->seeJsonContains([
+            ->assertJson([
                 'Error'   => true,
                 'Message' => 'Job cannot be resumed',
             ]);
 
         $job->setStatus($this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_UNRECOVERABLE_INSERT_ERROR])->toArray())->save();
         $this->get(route('resume-upload', ['api_token' => $user->api_token, 'job' => $job->getId()]))
-            ->seeJsonContains([
+            ->assertJson([
                 'Error'   => true,
                 'Message' => 'Job cannot be resumed',
             ]);
 
         $job->setStatus($this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_DONE])->toArray())->save();
         $this->get(route('resume-upload', ['api_token' => $user->api_token, 'job' => $job->getId()]))
-            ->seeJsonContains([
+            ->assertJson([
                 'Error'   => true,
                 'Message' => 'Job cannot be resumed',
             ]);
@@ -121,21 +121,21 @@ class UploadApiOldStyleTest extends OldStyleTestCase
         });
 
         // Without an api token it redirects
-        $this->get(route('abandon-upload'))->seeStatusCode(302);
+        $this->get(route('abandon-upload'))->assertStatus(302);
 
         /** @var User $user */
         $user = factory(User::class)->create();
 
         // Without a job it fails
         $this->get(route('abandon-upload', ['api_token' => $user->api_token]))
-            ->seeJsonContains([
+            ->assertJson([
                 'Error'   => true,
                 'Message' => 'Job parameter missing',
             ]);
 
         // Without a valid job it fails too
         $this->get(route('abandon-upload', ['api_token' => $user->api_token, 'job' => 1]))
-            ->seeJsonContains([
+            ->assertJson([
                 'Error'   => true,
                 'Message' => 'Job not found',
             ]);
@@ -145,56 +145,56 @@ class UploadApiOldStyleTest extends OldStyleTestCase
 
         $job->setStatus($this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_NOT_STARTED])->toArray())->save();
         $this->get(route('abandon-upload', ['api_token' => $user->api_token, 'job' => $job->getId()]))
-            ->seeJsonContains([
+            ->assertJson([
                 'Error'   => true,
                 'Message' => 'Job cannot be abandoned',
             ]);
 
         $job->setStatus($this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_VALIDATING_RECORDS])->toArray())->save();
         $this->get(route('abandon-upload', ['api_token' => $user->api_token, 'job' => $job->getId()]))
-            ->seeJsonContains([
+            ->assertJson([
                 'Error'   => true,
                 'Message' => 'Job cannot be abandoned',
             ]);
 
         $job->setStatus($this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_UNKNOWN_DATA])->toArray())->save();
         $this->get(route('abandon-upload', ['api_token' => $user->api_token, 'job' => $job->getId()]))
-            ->seeJsonContains([
+            ->assertJson([
                 'Error'   => true,
                 'Message' => 'Job cannot be abandoned',
             ]);
 
         $job->setStatus($this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_UNRECOVERABLE_VALIDATION_ERROR])->toArray())->save();
         $this->get(route('abandon-upload', ['api_token' => $user->api_token, 'job' => $job->getId()]))
-            ->seeJsonContains([
+            ->assertJson([
                 'Error'   => true,
                 'Message' => 'Job cannot be abandoned',
             ]);
 
         $job->setStatus($this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_WAITING_CONFIRMATION_TO_INSERT])->toArray())->save();
         $this->get(route('abandon-upload', ['api_token' => $user->api_token, 'job' => $job->getId()]))
-            ->seeJsonContains([
+            ->assertJson([
                 'Error'   => false,
                 'Message' => 'Job abandoned',
             ]);
 
         $job->setStatus($this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_INSERTING_RECORDS])->toArray())->save();
         $this->get(route('abandon-upload', ['api_token' => $user->api_token, 'job' => $job->getId()]))
-            ->seeJsonContains([
+            ->assertJson([
                 'Error'   => true,
                 'Message' => 'Job cannot be abandoned',
             ]);
 
         $job->setStatus($this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_UNRECOVERABLE_INSERT_ERROR])->toArray())->save();
         $this->get(route('abandon-upload', ['api_token' => $user->api_token, 'job' => $job->getId()]))
-            ->seeJsonContains([
+            ->assertJson([
                 'Error'   => true,
                 'Message' => 'Job cannot be abandoned',
             ]);
 
         $job->setStatus($this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_DONE])->toArray())->save();
         $this->get(route('abandon-upload', ['api_token' => $user->api_token, 'job' => $job->getId()]))
-            ->seeJsonContains([
+            ->assertJson([
                 'Error'   => true,
                 'Message' => 'Job cannot be abandoned',
             ]);
@@ -206,21 +206,21 @@ class UploadApiOldStyleTest extends OldStyleTestCase
     public function it_gets_the_job_status()
     {
         // Without an api token it redirects
-        $this->get(route('upload-status'))->seeStatusCode(302);
+        $this->get(route('upload-status'))->assertStatus(302);
 
         /** @var User $user */
         $user = factory(User::class)->create();
 
         // Without a job it fails
         $this->get(route('upload-status', ['api_token' => $user->api_token]))
-            ->seeJsonContains([
+            ->assertJson([
                 'Error'   => true,
                 'Message' => 'Job parameter missing',
             ]);
 
         // Without a valid job it fails too
         $this->get(route('upload-status', ['api_token' => $user->api_token, 'job' => 1]))
-            ->seeJsonContains([
+            ->assertJson([
                 'Error'   => true,
                 'Message' => 'Job not found',
             ]);
@@ -233,7 +233,7 @@ class UploadApiOldStyleTest extends OldStyleTestCase
         $status->status_code = UploadJobStatus::STATUS_NOT_STARTED;
         $job->setStatus($status->toArray())->save();
         $this->get(route('upload-status', ['api_token' => $user->api_token, 'job' => $job->getId()]))
-            ->seeJsonContains([
+            ->assertJson([
                 'Error'   => false,
                 'Message' => 'Job found',
                 'Status'  => $status->toApiArray(),
@@ -242,7 +242,7 @@ class UploadApiOldStyleTest extends OldStyleTestCase
         $status->status_code = UploadJobStatus::STATUS_VALIDATING_RECORDS;
         $job->setStatus($status->toArray())->save();
         $this->get(route('upload-status', ['api_token' => $user->api_token, 'job' => $job->getId()]))
-            ->seeJsonContains([
+            ->assertJson([
                 'Error'   => false,
                 'Message' => 'Job found',
                 'Status'  => $status->toApiArray(),
@@ -251,7 +251,7 @@ class UploadApiOldStyleTest extends OldStyleTestCase
         $status->status_code = UploadJobStatus::STATUS_UNKNOWN_DATA;
         $job->setStatus($status->toArray())->save();
         $this->get(route('upload-status', ['api_token' => $user->api_token, 'job' => $job->getId()]))
-            ->seeJsonContains([
+            ->assertJson([
                 'Error'   => false,
                 'Message' => 'Job found',
                 'Status'  => $status->toApiArray(),
@@ -260,7 +260,7 @@ class UploadApiOldStyleTest extends OldStyleTestCase
         $status->status_code = UploadJobStatus::STATUS_UNRECOVERABLE_VALIDATION_ERROR;
         $job->setStatus($status->toArray())->save();
         $this->get(route('upload-status', ['api_token' => $user->api_token, 'job' => $job->getId()]))
-            ->seeJsonContains([
+            ->assertJson([
                 'Error'   => false,
                 'Message' => 'Job found',
                 'Status'  => $status->toApiArray(),
@@ -269,7 +269,7 @@ class UploadApiOldStyleTest extends OldStyleTestCase
         $status->status_code = UploadJobStatus::STATUS_WAITING_CONFIRMATION_TO_INSERT;
         $job->setStatus($status->toArray())->save();
         $this->get(route('upload-status', ['api_token' => $user->api_token, 'job' => $job->getId()]))
-            ->seeJsonContains([
+            ->assertJson([
                 'Error'   => false,
                 'Message' => 'Job found',
                 'Status'  => $status->toApiArray(),
@@ -278,7 +278,7 @@ class UploadApiOldStyleTest extends OldStyleTestCase
         $status->status_code = UploadJobStatus::STATUS_INSERTING_RECORDS;
         $job->setStatus($status->toArray())->save();
         $this->get(route('upload-status', ['api_token' => $user->api_token, 'job' => $job->getId()]))
-            ->seeJsonContains([
+            ->assertJson([
                 'Error'   => false,
                 'Message' => 'Job found',
                 'Status'  => $status->toApiArray(),
@@ -287,7 +287,7 @@ class UploadApiOldStyleTest extends OldStyleTestCase
         $status->status_code = UploadJobStatus::STATUS_UNRECOVERABLE_INSERT_ERROR;
         $job->setStatus($status->toArray())->save();
         $this->get(route('upload-status', ['api_token' => $user->api_token, 'job' => $job->getId()]))
-            ->seeJsonContains([
+            ->assertJson([
                 'Error'   => false,
                 'Message' => 'Job found',
                 'Status'  => $status->toApiArray(),
@@ -296,7 +296,7 @@ class UploadApiOldStyleTest extends OldStyleTestCase
         $status->status_code = UploadJobStatus::STATUS_DONE;
         $job->setStatus($status->toArray())->save();
         $this->get(route('upload-status', ['api_token' => $user->api_token, 'job' => $job->getId()]))
-            ->seeJsonContains([
+            ->assertJson([
                 'Error'   => false,
                 'Message' => 'Job found',
                 'Status'  => $status->toApiArray(),
@@ -310,7 +310,7 @@ class UploadApiOldStyleTest extends OldStyleTestCase
     {
         // Missing api token
         $data = [];
-        $this->post(route('loading-map-team'), $data)->seeStatusCode(302);
+        $this->post(route('loading-map-team'), $data)->assertStatus(302);
 
         /** @var User $user */
         $user = factory(User::class)->create();
@@ -318,20 +318,20 @@ class UploadApiOldStyleTest extends OldStyleTestCase
         // Missing job field
         $data['api_token'] = $user->api_token;
         $this->json('POST', route('loading-map-team'), $data)
-            ->seeJsonContains([
+            ->assertJson([
                 'job' => ['The job field is required.'],
             ])
-            ->dontSeeJson([
+            ->assertJsonMissing([
                 'success' => true,
             ]);
 
         // Invalid job
         $data['job'] = 1;
         $this->json('POST', route('loading-map-team'), $data)
-            ->seeJsonContains([
+            ->assertJson([
                 'job' => ['The selected job is invalid.'],
             ])
-            ->dontSeeJson([
+            ->assertJsonMissing([
                 'success' => true,
             ]);
 
@@ -341,10 +341,10 @@ class UploadApiOldStyleTest extends OldStyleTestCase
         // Missing name field
         $data['job'] = $job->getId();
         $this->json('POST', route('loading-map-team'), $data)
-            ->seeJsonContains([
+            ->assertJson([
                 'name' => ['The name field is required.'],
             ])
-            ->dontSeeJson([
+            ->assertJsonMissing([
                 'success' => true,
             ]);
 
@@ -352,10 +352,10 @@ class UploadApiOldStyleTest extends OldStyleTestCase
         // Missing newName field
         $data['name'] = $name;
         $this->json('POST', route('loading-map-team'), $data)
-            ->seeJsonContains([
+            ->assertJson([
                 'newName' => ['The new name field is required.'],
             ])
-            ->dontSeeJson([
+            ->assertJsonMissing([
                 'success' => true,
             ]);
 
@@ -363,14 +363,14 @@ class UploadApiOldStyleTest extends OldStyleTestCase
         $team = factory(Team::class)->create();
         $data['newName'] = $team->getName();
         $this->json('POST', route('loading-map-team'), $data)
-            ->seeJsonContains([
+            ->assertJson([
                 'success' => true,
-            ])
-            ->seeInDatabase('mapped_teams', [
-                'upload_job_id' => $job->getId(),
-                'mapped_team'   => $name,
-                'team_id'       => $team->getId(),
             ]);
+        $this->assertDatabaseHas('mapped_teams', [
+            'upload_job_id' => $job->getId(),
+            'mapped_team'   => $name,
+            'team_id'       => $team->getId(),
+        ]);
     }
 
     /**
@@ -380,7 +380,7 @@ class UploadApiOldStyleTest extends OldStyleTestCase
     {
         // Missing api token
         $data = [];
-        $this->post(route('loading-map-venue'), $data)->seeStatusCode(302);
+        $this->post(route('loading-map-venue'), $data)->assertStatus(302);
 
         /** @var User $user */
         $user = factory(User::class)->create();
@@ -388,20 +388,20 @@ class UploadApiOldStyleTest extends OldStyleTestCase
         // Missing job field
         $data['api_token'] = $user->api_token;
         $this->json('POST', route('loading-map-venue'), $data)
-            ->seeJsonContains([
+            ->assertJson([
                 'job' => ['The job field is required.'],
             ])
-            ->dontSeeJson([
+            ->assertJsonMissing([
                 'success' => true,
             ]);
 
         // Invalid job
         $data['job'] = 1;
         $this->json('POST', route('loading-map-venue'), $data)
-            ->seeJsonContains([
+            ->assertJson([
                 'job' => ['The selected job is invalid.'],
             ])
-            ->dontSeeJson([
+            ->assertJsonMissing([
                 'success' => true,
             ]);
 
@@ -411,10 +411,10 @@ class UploadApiOldStyleTest extends OldStyleTestCase
         // Missing name field
         $data['job'] = $job->getId();
         $this->json('POST', route('loading-map-venue'), $data)
-            ->seeJsonContains([
+            ->assertJson([
                 'name' => ['The name field is required.'],
             ])
-            ->dontSeeJson([
+            ->assertJsonMissing([
                 'success' => true,
             ]);
 
@@ -422,10 +422,10 @@ class UploadApiOldStyleTest extends OldStyleTestCase
         // Missing newName field
         $data['name'] = $name;
         $this->json('POST', route('loading-map-venue'), $data)
-            ->seeJsonContains([
+            ->assertJson([
                 'newName' => ['The new name field is required.'],
             ])
-            ->dontSeeJson([
+            ->assertJsonMissing([
                 'success' => true,
             ]);
 
@@ -433,13 +433,13 @@ class UploadApiOldStyleTest extends OldStyleTestCase
         $venue = factory(Venue::class)->create();
         $data['newName'] = $venue->getName();
         $this->json('POST', route('loading-map-venue'), $data)
-            ->seeJsonContains([
+            ->assertJson([
                 'success' => true,
-            ])
-            ->seeInDatabase('mapped_venues', [
-                'upload_job_id' => $job->getId(),
-                'mapped_venue'  => $name,
-                'venue_id'      => $venue->getId(),
             ]);
+        $this->assertDatabaseHas('mapped_venues', [
+            'upload_job_id' => $job->getId(),
+            'mapped_venue'  => $name,
+            'venue_id'      => $venue->getId(),
+        ]);
     }
 }

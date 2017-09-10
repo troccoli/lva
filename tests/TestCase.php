@@ -4,28 +4,11 @@ namespace Tests;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-use Illuminate\Support\Facades\DB;
 use LVA\Models\UploadJobStatus;
 
 abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication, DatabaseTransactions;
-
-    protected function setUpTraits()
-    {
-        parent::setUpTraits();
-
-        $uses = array_flip(class_uses_recursive(static::class));
-
-        if (isset($uses[DatabaseTransactions::class])) {
-            $database = $this->app->make('db');
-            $this->beforeApplicationDestroyed(function () use ($database) {
-                foreach ($this->connectionsToTransact() as $name) {
-                    $database->connection($name)->disconnect();
-                }
-            });
-        }
-    }
 
     /**
      * @param array $overrides

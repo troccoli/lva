@@ -1,16 +1,16 @@
 <?php
 
-namespace Tests\Services;
+namespace Tests\Unit\Services;
 
-use Tests\OldStyleTestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 /**
  * Class InteractiveFixturesUploadServiceTest
  *
- * @package Tests
+ * @package Tests\Unit\Services
  */
-class InteractiveFixturesUploadServiceOldStyleTest extends OldStyleTestCase
+class InteractiveFixturesUploadServiceTest extends TestCase
 {
     use DatabaseTransactions;
 

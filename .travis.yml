@@ -24,5 +24,6 @@ before_script:
   - npm rebuild node-sass
   - npm run production
   - mysql -e 'create database lva_testing;'
+  - php artisan migrate
 script:
   - vendor/bin/phpunit
