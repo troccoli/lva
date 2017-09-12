@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddApiTokenToUsersTable extends Migration
 {
@@ -13,7 +14,7 @@ class AddApiTokenToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('api_token', 60);
+            $table->string('api_token', 60)->nullable();
 
             $table->unique('api_token');
         });
@@ -27,8 +28,9 @@ class AddApiTokenToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropUnique('users_api_token_unique');
-
+            //if (! DB::connection() instanceof \Illuminate\Database\SQLiteConnection) {
+            $table->dropUnique(['api_token']);
+            //}
             $table->dropColumn('api_token');
         });
     }
