@@ -14,11 +14,8 @@ class RenameTeamFieldInMappedTeamsName extends Migration
     public function up()
     {
         Schema::table('mapped_teams', function (Blueprint $table) {
-            //if (! DB::connection() instanceof \Illuminate\Database\SQLiteConnection) {
-            $table->dropIndex(['team']);
-            //}
+            // No need to drop and re-create the index
             $table->renameColumn('team', 'mapped_team');
-            $table->index(['mapped_team']);
         });
     }
 
@@ -30,11 +27,8 @@ class RenameTeamFieldInMappedTeamsName extends Migration
     public function down()
     {
         Schema::table('mapped_teams', function (Blueprint $table) {
-            //if (! DB::connection() instanceof \Illuminate\Database\SQLiteConnection) {
-            $table->dropIndex(['mapped_team']);
-            //}
+            // No need to drop and re-create the index
             $table->renameColumn('mapped_team', 'team');
-            $table->index(['team']);
         });
     }
 }

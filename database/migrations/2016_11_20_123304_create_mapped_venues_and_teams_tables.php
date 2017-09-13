@@ -21,8 +21,8 @@ class CreateMappedVenuesAndTeamsTables extends Migration
 
             $table->timestamps();
 
-            //$table->foreign('upload_job_id')->references('id')->on('upload_jobs');
-            //$table->foreign('venue_id')->references('id')->on('venues');
+            $table->foreign('upload_job_id')->references('id')->on('upload_jobs');
+            $table->foreign('venue_id')->references('id')->on('venues');
         });
 
         Schema::create('mapped_teams', function (Blueprint $table) {
@@ -33,9 +33,8 @@ class CreateMappedVenuesAndTeamsTables extends Migration
 
             $table->timestamps();
 
-            //$table->index(['team']);
-            //$table->foreign('upload_job_id')->references('id')->on('upload_jobs');
-            //$table->foreign('team_id')->references('id')->on('teams');
+            $table->foreign('upload_job_id')->references('id')->on('upload_jobs');
+            $table->foreign('team_id')->references('id')->on('teams');
         });
 
     }
