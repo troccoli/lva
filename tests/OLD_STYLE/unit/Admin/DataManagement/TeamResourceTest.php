@@ -98,16 +98,6 @@ class TeamResourceTest extends TestCase
             ->seePageIs(route(self::BASE_ROUTE . '.create'))
             ->seeInElement('.alert.alert-danger', 'The trigram has already been taken.');
 
-        // Numeric trigram
-        $trigram = $this->faker->numerify('###');
-        $this->visit(route(self::BASE_ROUTE . '.create'))
-            ->select($newTeam->club_id, 'club_id')
-            ->type($newTeam->team, 'team')
-            ->type($trigram, 'trigram')
-            ->press('Add')
-            ->seePageIs(route(self::BASE_ROUTE . '.create'))
-            ->seeInElement('.alert.alert-danger', 'The trigram may only contain letters.');
-
         // Non numeric nor string trigram
         $trigram = $this->faker->regexify('[!@£$%&*()_+=-;,./?><":{}]{3}');
         $this->visit(route(self::BASE_ROUTE . '.create'))
@@ -116,7 +106,7 @@ class TeamResourceTest extends TestCase
             ->type($trigram, 'trigram')
             ->press('Add')
             ->seePageIs(route(self::BASE_ROUTE . '.create'))
-            ->seeInElement('.alert.alert-danger', 'The trigram may only contain letters.');
+            ->seeInElement('.alert.alert-danger', 'The trigram may only contain letters and numbers.');
 
         // Too short trigram
         $trigram = $this->faker->regexify('[A-Z]{2}');
@@ -279,27 +269,13 @@ class TeamResourceTest extends TestCase
                 'trigram' => $team->trigram,
             ]);
 
-        // Numeric trigram
-        $trigram = $this->faker->numerify('###');
-        $this->visit(route(self::BASE_ROUTE . '.edit', [$team->id]))
-            ->type($trigram, 'trigram')
-            ->press('Update')
-            ->seePageIs(route(self::BASE_ROUTE . '.edit', [$team->id]))
-            ->seeInElement('.alert.alert-danger', 'The trigram may only contain letters.')
-            ->seeInDatabase('teams', [
-                'id'      => $team->id,
-                'club_id' => $team->club_id,
-                'team'    => $team->team,
-                'trigram' => $team->trigram,
-            ]);
-
         // Non numeric nor string trigram
         $trigram = $this->faker->regexify('[,.><;":\|{}±!@£$%^&*()-=_+]{3}');
         $this->visit(route(self::BASE_ROUTE . '.edit', [$team->id]))
             ->type($trigram, 'trigram')
             ->press('Update')
             ->seePageIs(route(self::BASE_ROUTE . '.edit', [$team->id]))
-            ->seeInElement('.alert.alert-danger', 'The trigram may only contain letters.')
+            ->seeInElement('.alert.alert-danger', 'The trigram may only contain letters and numbers.')
             ->seeInDatabase('teams', [
                 'id'      => $team->id,
                 'club_id' => $team->club_id,
