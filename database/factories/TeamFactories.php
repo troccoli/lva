@@ -6,7 +6,7 @@ $factory->define(LVA\Models\Team::class, function (\Faker\Generator $faker) {
         'club_id' => function () {
             return factory(\LVA\Models\Club::class)->create()->id;
         },
-        'trigram' => $faker->unique()->regexify('[A-Z]{3}'),
+        'trigram' => $faker->unique()->regexify('[A-Z0-9]{3}'),
     ];
 });
 
