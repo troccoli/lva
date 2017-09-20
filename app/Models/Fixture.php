@@ -4,6 +4,7 @@ namespace LVA\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class Fixture
@@ -133,6 +134,18 @@ class Fixture extends Model
     }
 
     /**
+     * @param string $time
+     *
+     * @return Fixture
+     */
+    public function setWarmUpTimeAttribute($time)
+    {
+        $this->attributes['warm_up_time'] = $time . ':00';
+
+        return $this;
+    }
+
+    /**
      * @param Carbon $time
      *
      * @return Fixture
@@ -140,6 +153,18 @@ class Fixture extends Model
     public function setStartTime(Carbon $time)
     {
         $this->start_time = $time->format('H:i:s');
+
+        return $this;
+    }
+
+    /**
+     * @param string $time
+     *
+     * @return Fixture
+     */
+    public function setStartTimeAttribute($time)
+    {
+        $this->attributes['start_time'] = $time . ':00';
 
         return $this;
     }

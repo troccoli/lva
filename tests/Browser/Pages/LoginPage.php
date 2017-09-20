@@ -4,7 +4,7 @@ namespace Tests\Browser\Pages;
 
 use Laravel\Dusk\Browser;
 
-class HomePage extends Page
+class LoginPage extends Page
 {
     /**
      * Get the URL for the page.
@@ -13,7 +13,7 @@ class HomePage extends Page
      */
     public function url()
     {
-        return route('home', [], false);
+        return route('login', [], false);
     }
 
     /**
@@ -25,8 +25,8 @@ class HomePage extends Page
      */
     public function assert(Browser $browser)
     {
-        $browser->assertRouteIs('home')
-        ->assertMissing($this->breadcrumb);
+        $browser->assertPathIs($this->url())
+            ->assertSeeIn($this->breadcrumb, 'Login');
     }
 
     /**
@@ -36,6 +36,9 @@ class HomePage extends Page
      */
     public function elements()
     {
-        return [];
+        return [
+            '@email-error'    => '#email-field span.help-block',
+            '@password-error' => '#password-field span.help-block',
+        ];
     }
 }

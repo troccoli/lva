@@ -65,9 +65,9 @@ class FixtureResourceOldStyleTest extends OldStyleTestCase
             ->select($fixture->away_team_id, 'away_team_id')
             ->select($fixture->venue_id, 'venue_id')
             ->type($fixture->match_number, 'match_number')
-            ->type($fixture->match_date, 'match_date')
-            ->type($fixture->warm_up_time, 'warm_up_time')
-            ->type($fixture->start_time, 'start_time')
+            ->type($fixture->match_date->format('d/m/Y'), 'match_date')
+            ->type($fixture->warm_up_time->format('H:i'), 'warm_up_time')
+            ->type($fixture->start_time->format('H:i'), 'start_time')
             ->type($fixture->notes, 'notes')
             ->press('Add')
             ->seePageIs(route(self::BASE_ROUTE . '.index'))
@@ -79,8 +79,8 @@ class FixtureResourceOldStyleTest extends OldStyleTestCase
                 'venue_id'     => $fixture->venue_id,
                 'match_number' => $fixture->match_number,
                 'match_date'   => $fixture->match_date->format('Y-m-d'),
-                'warm_up_time' => $fixture->warm_up_time,
-                'start_time'   => $fixture->start_time,
+                'warm_up_time' => $fixture->warm_up_time->format('H:i:00'),
+                'start_time'   => $fixture->start_time->format('H:i:00'),
                 'notes'        => $fixture->notes,
             ]);
 
@@ -107,8 +107,8 @@ class FixtureResourceOldStyleTest extends OldStyleTestCase
                 'venue_id'     => $fixture2->venue_id,
                 'match_number' => $fixture2->match_number,
                 'match_date'   => $fixture2->match_date->format('Y-m-d'),
-                'warm_up_time' => $fixture2->warm_up_time,
-                'start_time'   => $fixture2->start_time,
+                'warm_up_time' => $fixture2->warm_up_time->format('H:i:00'),
+                'start_time'   => $fixture2->start_time->format('H:i:00'),
                 'notes'        => null,
             ]);
 
@@ -176,8 +176,8 @@ class FixtureResourceOldStyleTest extends OldStyleTestCase
             'venue_id'     => $fixture->venue_id,
             'match_number' => $fixture->match_number,
             'match_date'   => $fixture->match_date->format('Y-m-d'),
-            'warm_up_time' => $fixture->warm_up_time,
-            'start_time'   => $fixture->start_time,
+            'warm_up_time' => $fixture->warm_up_time->format('H:i:00'),
+            'start_time'   => $fixture->start_time->format('H:i:00'),
             'notes'        => $fixture->notes,
         ]);
         $this->visit(route(self::BASE_ROUTE . '.edit', [$fixture->id]))
@@ -192,8 +192,8 @@ class FixtureResourceOldStyleTest extends OldStyleTestCase
                 'venue_id'     => $fixture->venue_id,
                 'match_number' => $fixture->match_number,
                 'match_date'   => $fixture->match_date->format('Y-m-d'),
-                'warm_up_time' => $fixture->warm_up_time,
-                'start_time'   => $fixture->start_time,
+                'warm_up_time' => $fixture->warm_up_time->format('H:i:00'),
+                'start_time'   => $fixture->start_time->format('H:i:00'),
                 'notes'        => $fixture->notes,
             ]);
 
@@ -222,8 +222,8 @@ class FixtureResourceOldStyleTest extends OldStyleTestCase
                 'venue_id'     => $newFixture->venue_id,
                 'match_number' => $newFixture->match_number,
                 'match_date'   => $newFixture->match_date->format('Y-m-d'),
-                'warm_up_time' => $newFixture->warm_up_time,
-                'start_time'   => $newFixture->start_time,
+                'warm_up_time' => $newFixture->warm_up_time->format('H:i:00'),
+                'start_time'   => $newFixture->start_time->format('H:i:00'),
                 'notes'        => $newFixture->notes,
             ]);
         $fixture = $newFixture;
@@ -254,8 +254,8 @@ class FixtureResourceOldStyleTest extends OldStyleTestCase
                 'venue_id'     => $newFixture->venue_id,
                 'match_number' => $newFixture->match_number,
                 'match_date'   => $newFixture->match_date->format('Y-m-d'),
-                'warm_up_time' => $newFixture->warm_up_time,
-                'start_time'   => $newFixture->start_time,
+                'warm_up_time' => $newFixture->warm_up_time->format('H:i:00'),
+                'start_time'   => $newFixture->start_time->format('H:i:00'),
                 'notes'        => null,
             ]);
         $fixture = $newFixture;
@@ -346,8 +346,8 @@ class FixtureResourceOldStyleTest extends OldStyleTestCase
             'venue_id'     => $fixture->venue_id,
             'match_number' => $fixture->match_number,
             'match_date'   => $fixture->match_date->format('Y-m-d'),
-            'warm_up_time' => $fixture->warm_up_time,
-            'start_time'   => $fixture->start_time,
+            'warm_up_time' => $fixture->warm_up_time->format('H:i:00'),
+            'start_time'   => $fixture->start_time->format('H:i:00'),
             'notes'        => $fixture->notes,
         ])
             ->makeRequest('DELETE', route(self::BASE_ROUTE . '.destroy', [$fixture->id]))
@@ -369,8 +369,8 @@ class FixtureResourceOldStyleTest extends OldStyleTestCase
             'venue_id'     => $fixture->venue_id,
             'match_number' => $fixture->match_number,
             'match_date'   => $fixture->match_date->format('Y-m-d'),
-            'warm_up_time' => $fixture->warm_up_time,
-            'start_time'   => $fixture->start_time,
+            'warm_up_time' => $fixture->warm_up_time->format('H:i:00'),
+            'start_time'   => $fixture->start_time->format('H:i:00'),
             'notes'        => $fixture->notes,
         ])
             ->makeRequest('DELETE', route(self::BASE_ROUTE . '.destroy', [$fixture->id]))
@@ -384,8 +384,8 @@ class FixtureResourceOldStyleTest extends OldStyleTestCase
                 'venue_id'     => $fixture->venue_id,
                 'match_number' => $fixture->match_number,
                 'match_date'   => $fixture->match_date->format('Y-m-d'),
-                'warm_up_time' => $fixture->warm_up_time,
-                'start_time'   => $fixture->start_time,
+                'warm_up_time' => $fixture->warm_up_time->format('H:i:00'),
+                'start_time'   => $fixture->start_time->format('H:i:00'),
                 'notes'        => $fixture->notes,
             ]);
     }

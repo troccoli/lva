@@ -2,11 +2,9 @@
 
 namespace Tests\Browser\Pages;
 
-use Illuminate\Support\Facades\Auth;
 use Laravel\Dusk\Browser;
-use Laravel\Dusk\Page as BasePage;
 
-class DataManagementPage extends BasePage
+class DataManagementPage extends Page
 {
     /**
      * Get the URL for the page.
@@ -15,7 +13,7 @@ class DataManagementPage extends BasePage
      */
     public function url()
     {
-        return route('data-management');
+        return route('data-management', [], false);
     }
 
     /**
@@ -27,13 +25,8 @@ class DataManagementPage extends BasePage
      */
     public function assert(Browser $browser)
     {
-        if (Auth::guest()) {
-            $browser->assertRouteIs('login');
-        } else {
-            $browser->assertPathIs($this->url())
-                ->assertSeeIn('@breadcrumb', 'Data Management');
-        }
-
+        $browser->assertPathIs($this->url())
+            ->assertSeeIn($this->breadcrumb, 'Data management');
     }
 
     /**
@@ -43,8 +36,6 @@ class DataManagementPage extends BasePage
      */
     public function elements()
     {
-        return [
-            '@element' => '#selector',
-        ];
+        return [];
     }
 }

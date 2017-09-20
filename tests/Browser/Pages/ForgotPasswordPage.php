@@ -3,8 +3,9 @@
 namespace Tests\Browser\Pages;
 
 use Laravel\Dusk\Browser;
+use Laravel\Dusk\Page as BasePage;
 
-class HomePage extends Page
+class ForgotPasswordPage extends Page
 {
     /**
      * Get the URL for the page.
@@ -13,20 +14,19 @@ class HomePage extends Page
      */
     public function url()
     {
-        return route('home', [], false);
+        return route('password.request', [], false);
     }
 
     /**
      * Assert that the browser is on the page.
      *
-     * @param  Browser $browser
-     *
+     * @param  Browser  $browser
      * @return void
      */
     public function assert(Browser $browser)
     {
-        $browser->assertRouteIs('home')
-        ->assertMissing($this->breadcrumb);
+        $browser->assertPathIs($this->url())
+        ->assertSeeIn($this->breadcrumb, 'Reset Password');
     }
 
     /**
@@ -36,6 +36,8 @@ class HomePage extends Page
      */
     public function elements()
     {
-        return [];
+        return [
+            '@email-error' => '#email-field span.help-block',
+        ];
     }
 }

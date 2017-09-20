@@ -6,6 +6,8 @@ use Laravel\Dusk\Page as BasePage;
 
 abstract class Page extends BasePage
 {
+    protected $breadcrumb = '#breadcrumbs li.active';
+
     /**
      * Get the global element shortcuts for the site.
      *
@@ -14,7 +16,7 @@ abstract class Page extends BasePage
     public static function siteElements()
     {
         return [
-            '@breadcrumb' => 'ol.breadcrumb li.active',
+            '@breadcrumb' => '.breadcrumbs .active',
         ];
     }
 }
