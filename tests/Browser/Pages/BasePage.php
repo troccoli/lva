@@ -2,9 +2,9 @@
 
 namespace Tests\Browser\Pages;
 
-use Laravel\Dusk\Page as BasePage;
+use Laravel\Dusk\Page;
 
-abstract class Page extends BasePage
+abstract class BasePage extends Page
 {
     protected $breadcrumb = '#breadcrumbs li.active';
 
@@ -16,7 +16,9 @@ abstract class Page extends BasePage
     public static function siteElements()
     {
         return [
-            '@breadcrumb' => '.breadcrumbs .active',
+            '@breadcrumb'           => '.breadcrumbs .active',
+            '@success-notification' => '#flash-notification .alert.alert-success',
+            '@form-errors'          => 'div.alert.alert-danger',
         ];
     }
 }

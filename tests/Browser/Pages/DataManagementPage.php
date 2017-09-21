@@ -4,7 +4,7 @@ namespace Tests\Browser\Pages;
 
 use Laravel\Dusk\Browser;
 
-class DataManagementPage extends Page
+class DataManagementPage extends BasePage
 {
     /**
      * Get the URL for the page.

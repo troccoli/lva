@@ -17,38 +17,51 @@ class DataManagementTest extends DuskTestCase
 
             $page = new DataManagementPage();
             $browser->loginAs($user)
+                // Using $page->url() instead of $page allows me to use the with() method
+                // without calling the assert() method on the page, which would fail because
+                // it won't be able to find the breadcrumb (inside the panels)
+                ->visit($page->url())
+                ->with('#crud-panel', function (Browser $panel) {
+                    $panel->assertSeeLink('Seasons')
+                        ->assertSeeLink('Divisions')
+                        ->assertSeeLink('Venues')
+                        ->assertSeeLink('Clubs')
+                        ->assertSeeLink('Teams')
+                        ->assertSeeLink('Roles')
+                        ->assertSeeLink('Fixtures')
+                        ->assertSeeLink('Available appointments');
+                })
+                ->with('#start-season-panel', function (Browser $panel) {
+                    $panel->assertSeeLink('Load fixtures');
+                })
+                // Now visit the page so that its assert() method is run
                 ->visit($page)
-                ->assertSeeLink('Season')
                 ->clickLink('Season')
                 ->assertRouteIs('seasons.index')
-                ->visit($page)
-                ->assertSeeLink('Divisions')
+                ->back()
                 ->clickLink('Divisions')
                 ->assertRouteIs('divisions.index')
-                ->visit($page)
-                ->assertSeeLink('Venues')
+                ->back()
                 ->clickLink('Venues')
                 ->assertRouteIs('venues.index')
-                ->visit($page)
-                ->assertSeeLink('Clubs')
+                ->back()
                 ->clickLink('Clubs')
                 ->assertRouteIs('clubs.index')
-                ->visit($page)
-                ->assertSeeLink('Teams')
+                ->back()
                 ->clickLink('Teams')
                 ->assertRouteIs('teams.index')
-                ->visit($page)
-                ->assertSeeLink('Roles')
+                ->back()
                 ->clickLink('Roles')
                 ->assertRouteIs('roles.index')
-                ->visit($page)
-                ->assertSeeLink('Fixtures')
+                ->back()
                 ->clickLink('Fixtures')
                 ->assertRouteIs('fixtures.index')
-                ->visit($page)
-                ->assertSeeLink('Available appointments')
+                ->back()
                 ->clickLink('Available appointments')
-                ->assertRouteIs('available-appointments.index');
+                ->assertRouteIs('available-appointments.index')
+                ->back()
+                ->clickLink('Load fixtures')
+                ->assertRouteIs('uploadFixtures');
         });
     }
 }
