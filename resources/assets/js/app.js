@@ -5,7 +5,7 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-//require('./bootstrap');
+require('./bootstrap');
 
 //window.Vue = require('vue');
 
@@ -22,11 +22,11 @@
 //});
 
 (function ($) {
-    $('#app-navbar, #breadcrumbs').affix({
-        offset: {
-            top: 220
-        }
-    });
+    // $('#app-navbar, #breadcrumbs').affix({
+    //     offset: {
+    //         top: 220
+    //     }
+    // });
 
     if ($('#flash-notification .alert').length) {
         $('#flash-notification')

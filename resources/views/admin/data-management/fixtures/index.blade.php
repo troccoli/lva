@@ -56,6 +56,6 @@
 @endsection
 
 @section('javascript')
-    <script src="{{ url('libraries/bootstrap-confirmation.2.4.0.min.js') }}"></script>
+    <script src="{{ asset('libraries/bootstrap-confirmation.2.4.0.min.js') }}"></script>
     <script src="{{ mix('js/confirm-delete.js') }}"></script>
 @endsection

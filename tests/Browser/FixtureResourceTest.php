@@ -2,7 +2,9 @@
 
 namespace Tests\Browser;
 
+use Illuminate\Database\Eloquent\Collection;
 use Laravel\Dusk\Browser;
+use LVA\Models\AvailableAppointment;
 use LVA\Models\Fixture;
 use LVA\User;
 use Tests\Browser\Pages\FixturesPage;
@@ -32,6 +34,38 @@ class FixtureResourceTest extends DuskTestCase
         });
     }
 
+    public function testListFixtures()
+    {
+        $this->browse(function (Browser $browser) {
+            $browser->loginAs(factory(User::class)->create());
+
+            /** @var Collection $fixtures */
+            $fixtures = factory(Fixture::class)->times(5)->create();
+
+            $page = new FixturesPage();
+            $browser->visit($page)
+                ->assertSeeIn($page->breadcrumb, 'Fixtures')
+                ->assertSeeLink('New fixture')
+                ->with('tbody', function ($table) use ($fixtures) {
+                    foreach ($fixtures as $i => $fixture) {
+                        $child = $i + 1;
+                        $table->with("tr:nth-child($child)", function ($row) use ($fixture) {
+                            $linkText = $fixture->division . ':' . $fixture->match_number;
+                            $row->assertSeeLink($linkText)
+                                ->assertSeeIn('td:nth-child(1)', $linkText)
+                                ->assertSeeIn('td:nth-child(2)', $fixture->match_date->format('j M Y'))
+                                ->assertSeeIn('td:nth-child(3)', $fixture->warm_up_time->format('H:i'))
+                                ->assertSeeIn('td:nth-child(4)', $fixture->start_time->format('H:i'))
+                                ->assertSeeIn('td:nth-child(5)', (string)$fixture->home_team)
+                                ->assertSeeIn('td:nth-child(6)', (string)$fixture->away_team)
+                                ->assertSeeIn('td:nth-child(7)', (string)$fixture->venue)
+                            ;
+                        });
+                    }
+                });
+        });
+    }
+
     public function testAddFixture()
     {
         $this->browse(function (Browser $browser) {
@@ -43,7 +77,7 @@ class FixtureResourceTest extends DuskTestCase
                 ->clickLink('New fixture')
                 ->assertPathIs($page->createUrl())
                 // All fields missing
-                ->press('Add')
+                ->pressSubmit('Add')
                 ->assertPathIs($page->createUrl())
                 ->assertSeeIn('@division-id-error', 'The division id field is required.')
                 ->assertSeeIn('@match-number-error', 'The match number field is required.')
@@ -76,7 +110,7 @@ class FixtureResourceTest extends DuskTestCase
                 ->keys('#warm_up_time', [$fixture->warm_up_time->format('Hi')])
                 ->keys('#start_time', [$fixture->start_time->format('Hi')])
                 ->type('notes', $fixture->notes)
-                ->press('Add')
+                ->pressSubmit('Add')
                 ->assertPathIs($page->indexUrl())
                 ->assertSeeIn('@success-notification', 'Fixture added!');
 
@@ -92,7 +126,7 @@ class FixtureResourceTest extends DuskTestCase
                 ->keys('#match_date', [$fixture2->match_date->format('dmY')])
                 ->keys('#warm_up_time', [$fixture2->warm_up_time->format('Hi')])
                 ->keys('#start_time', [$fixture2->start_time->format('Hi')])
-                ->press('Add')
+                ->pressSubmit('Add')
                 ->assertPathIs($page->indexUrl())
                 ->assertSeeIn('@success-notification', 'Fixture added!');
 
@@ -108,7 +142,7 @@ class FixtureResourceTest extends DuskTestCase
                 ->keys('#match_date', [$fixture3->match_date->format('dmY')])
                 ->keys('#warm_up_time', [$fixture3->warm_up_time->format('Hi')])
                 ->keys('#start_time', [$fixture3->start_time->format('Hi')])
-                ->press('Add')
+                ->pressSubmit('Add')
                 ->assertPathIs($page->createUrl())
                 ->assertSeeIn('@away-team-id-error', 'The away team cannot be the same as the home team.');
 
@@ -122,7 +156,7 @@ class FixtureResourceTest extends DuskTestCase
                 ->keys('#match_date', [$fixture3->match_date->format('dmY')])
                 ->keys('#warm_up_time', [$fixture3->warm_up_time->format('Hi')])
                 ->keys('#start_time', [$fixture3->start_time->format('Hi')])
-                ->press('Add')
+                ->pressSubmit('Add')
                 ->assertPathIs($page->createUrl())
                 ->assertSeeIn('@division-id-error', 'The fixture for these two teams have already been added in this division.');
 
@@ -136,7 +170,7 @@ class FixtureResourceTest extends DuskTestCase
                 ->keys('#match_date', [$fixture3->match_date->format('dmY')])
                 ->keys('#warm_up_time', [$fixture3->warm_up_time->format('Hi')])
                 ->keys('#start_time', [$fixture3->start_time->format('Hi')])
-                ->press('Add')
+                ->pressSubmit('Add')
                 ->assertPathIs($page->createUrl())
                 ->assertSeeIn('@match-number-error', 'There is already a match with the same number in this division.');
         });
@@ -156,7 +190,7 @@ class FixtureResourceTest extends DuskTestCase
             $browser->visit($page)
                 ->clickLink('Update')
                 ->assertPathIs($page->editUrl($fixture->id))
-                ->press('Update')
+                ->pressSubmit('Update')
                 ->assertPathIs($page->indexUrl())
                 ->assertSeeIn('@success-notification', 'Fixture updated!');
 
@@ -174,7 +208,7 @@ class FixtureResourceTest extends DuskTestCase
                 ->keys('#warm_up_time', [$newFixture->warm_up_time->format('Hi')])
                 ->keys('#start_time', [$newFixture->start_time->format('Hi')])
                 ->type('notes', $newFixture->notes)
-                ->press('Update')
+                ->pressSubmit('Update')
                 ->assertPathIs($page->indexUrl())
                 ->assertSeeIn('@success-notification', 'Fixture updated!');
 
@@ -195,7 +229,7 @@ class FixtureResourceTest extends DuskTestCase
                 ->keys('#warm_up_time', [$newFixture->warm_up_time->format('Hi')])
                 ->keys('#start_time', [$newFixture->start_time->format('Hi')])
                 ->clear('notes')
-                ->press('Update')
+                ->pressSubmit('Update')
                 ->assertPathIs($page->indexUrl())
                 ->assertSeeIn('@success-notification', 'Fixture updated!');
 
@@ -206,7 +240,7 @@ class FixtureResourceTest extends DuskTestCase
             $browser->visit($page->editUrl($fixture->id))
                 ->select('home_team_id', $fixture->home_team_id)
                 ->select('away_team_id', $fixture->home_team_id)
-                ->press('Update')
+                ->pressSubmit('Update')
                 ->assertPathIs($page->editUrl($fixture->id))
                 ->assertSeeIn('@away-team-id-error', 'The away team cannot be the same as the home team.');
 
@@ -218,7 +252,7 @@ class FixtureResourceTest extends DuskTestCase
                 ->select('division_id', $newFixture->division_id)
                 ->select('home_team_id', $newFixture->home_team_id)
                 ->select('away_team_id', $newFixture->away_team_id)
-                ->press('Update')
+                ->pressSubmit('Update')
                 ->assertPathIs($page->editUrl($fixture->id))
                 ->assertSeeIn('@division-id-error', 'The fixture for these two teams have already been added in this division.');
 
@@ -226,9 +260,70 @@ class FixtureResourceTest extends DuskTestCase
             $browser->visit($page->editUrl($fixture->id))
                 ->select('division_id', $newFixture->division_id)
                 ->type('match_number', $newFixture->match_number)
-                ->press('Update')
+                ->pressSubmit('Update')
                 ->assertPathIs($page->editUrl($fixture->id))
                 ->assertSeeIn('@match-number-error', 'There is already a match with the same number in this division.');
+        });
+    }
+
+    public function testShowFixture()
+    {
+        $this->browse(function (Browser $browser) {
+            $browser->loginAs(factory(User::class)->create());
+
+            /** @var Fixture $fixture */
+            $fixture = factory(Fixture::class)->create();
+            $linkText = $fixture->division . ':' . $fixture->match_number;
+
+            $page = new FixturesPage();
+
+            $browser->visit($page)
+                ->clickLink($linkText)
+                ->assertPathIs($page->showUrl($fixture->id))
+                ->assertSeeIn('tbody tr td:nth-child(1)', (string)$fixture->division->season)
+                ->assertSeeIn('tbody tr td:nth-child(2)', $fixture->division->division)
+                ->assertSeeIn('tbody tr td:nth-child(3)', $fixture->match_number)
+                ->assertSeeIn('tbody tr td:nth-child(4)', $fixture->match_date->format('j M Y'))
+                ->assertSeeIn('tbody tr td:nth-child(5)', $fixture->warm_up_time->format('H:i'))
+                ->assertSeeIn('tbody tr td:nth-child(6)', $fixture->start_time->format('H:i'))
+                ->assertSeeIn('tbody tr td:nth-child(7)', (string)$fixture->home_team)
+                ->assertSeeIn('tbody tr td:nth-child(8)', (string)$fixture->away_team)
+                ->assertSeeIn('tbody tr td:nth-child(9)', (string)$fixture->venue)
+                ->assertSeeIn('tbody tr td:nth-child(10)', $fixture->notes);
+        });
+    }
+
+    public function testDeleteFixture()
+    {
+        $this->browse(function (Browser $browser) {
+            $browser->loginAs(factory(User::class)->create());
+
+            /** @var Fixture $fixture */
+            $fixture = factory(Fixture::class)->create();
+
+            $page = new FixturesPage();
+
+            $browser->visit($page->indexUrl())
+                ->press('Delete')
+                ->whenAvailable('.popover.confirmation', function ($popover) {
+                    $popover->clickLink('No');
+                })
+                ->assertDontSee('Fixture deleted!')
+                ->press('Delete')
+                ->whenAvailable('.popover.confirmation', function ($popover) {
+                    $popover->clickLink('Yes');
+                })
+                ->assertSee('Fixture deleted!');
+
+            // Delete fixture with existing appointment
+            $fixture = factory(Fixture::class)->create();
+            $appointment = factory(AvailableAppointment::class)->create(['fixture_id' => $fixture->id]);
+            $browser->visit($page->indexUrl())
+                ->press('Delete')
+                ->whenAvailable('.popover.confirmation', function ($popover) {
+                    $popover->clickLink('Yes');
+                })
+                ->assertSee('Cannot delete because they are existing appointments for this fixture.');
         });
     }
 }

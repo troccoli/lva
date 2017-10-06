@@ -42,27 +42,6 @@ class FixtureResourceOldStyleTest extends OldStyleTestCase
     }
 
 
-    public function testShowFixture()
-    {
-        /** @var User $user */
-        $user = factory(User::class)->create();
-        $this->be($user);
-
-        /** @var Fixture $fixture */
-        $fixture = factory(Fixture::class)->create();
-
-        $this->visit(route(self::BASE_ROUTE . '.show', [$fixture->id]))
-            ->seeInElement('tbody tr td:nth-child(1)', $fixture->division->season)
-            ->seeInElement('tbody tr td:nth-child(2)', $fixture->division->division)
-            ->seeInElement('tbody tr td:nth-child(3)', $fixture->match_number)
-            ->seeInElement('tbody tr td:nth-child(4)', $fixture->match_date->format('j M Y'))
-            ->seeInElement('tbody tr td:nth-child(5)', $fixture->warm_up_time->format('H:i'))
-            ->seeInElement('tbody tr td:nth-child(6)', $fixture->start_time->format('H:i'))
-            ->seeInElement('tbody tr td:nth-child(7)', $fixture->home_team)
-            ->seeInElement('tbody tr td:nth-child(8)', $fixture->away_team)
-            ->seeInElement('tbody tr td:nth-child(9)', $fixture->venue)
-            ->seeInElement('tbody tr td:nth-child(10)', $fixture->notes);
-    }
 
     public function testDeleteFixture()
     {
