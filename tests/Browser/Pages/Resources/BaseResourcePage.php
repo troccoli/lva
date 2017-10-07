@@ -7,6 +7,7 @@ use Tests\Browser\Pages\BasePage;
 abstract class BaseResourcePage extends BasePage
 {
     public $pageNavigation = 'div.pagination';
+    public $resourcesListTable = '#resources-list';
     protected $baseRoute;
 
     /**

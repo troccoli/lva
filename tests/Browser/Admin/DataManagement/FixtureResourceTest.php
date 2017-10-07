@@ -99,10 +99,13 @@ class FixtureResourceTest extends DuskTestCase
 
             $page = new FixturesPage();
 
+            // Check we can add a fixture from the landing page
             $browser->visit($page)
                 ->clickLink('New fixture')
-                ->assertPathIs($page->createUrl())
-                // All fields missing
+                ->assertPathIs($page->createUrl());
+
+            // All fields missing
+            $browser->visit($page->createUrl())
                 ->pressSubmit('Add')
                 ->assertPathIs($page->createUrl())
                 ->assertSeeIn('@division-id-error', 'The division id field is required.')
@@ -212,10 +215,15 @@ class FixtureResourceTest extends DuskTestCase
 
             $page = new FixturesPage();
 
-            // Don't change anything
+            // Check we can edit a fixture from the landing page
             $browser->visit($page)
-                ->clickLink('Update')
-                ->assertPathIs($page->editUrl($fixture->id))
+                ->with($page->resourcesListTable, function ($table) {
+                    $table->clickLink('Update');
+                })
+                ->assertPathIs($page->editUrl($fixture->id));
+
+            // Don't change anything
+            $browser->visit($page->editUrl($fixture->id))
                 ->pressSubmit('Update')
                 ->assertPathIs($page->indexUrl())
                 ->assertSeeIn('@success-notification', 'Fixture updated!');
@@ -223,7 +231,7 @@ class FixtureResourceTest extends DuskTestCase
             /** @var Fixture $newFixture */
             $newFixture = factory(Fixture::class)->make(['id' => $fixture->id]);
 
-            // Edit all  details
+            // Edit all details
             $browser->visit($page->editUrl($fixture->id))
                 ->select('division_id', $newFixture->division_id)
                 ->select('home_team_id', $newFixture->home_team_id)
@@ -304,7 +312,9 @@ class FixtureResourceTest extends DuskTestCase
             $page = new FixturesPage();
 
             $browser->visit($page)
-                ->clickLink($linkText)
+                ->with($page->resourcesListTable, function ($table) use ($linkText) {
+                    $table->clickLink($linkText);
+                })
                 ->assertPathIs($page->showUrl($fixture->id))
                 ->assertSeeIn('tbody tr td:nth-child(1)', (string)$fixture->division->season)
                 ->assertSeeIn('tbody tr td:nth-child(2)', $fixture->division->division)

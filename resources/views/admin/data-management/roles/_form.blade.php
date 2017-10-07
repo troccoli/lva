@@ -1,4 +1,4 @@
-<div class="form-group {{ $errors->has('role') ? 'has-error' : ''}}">
+<div id="role-field" class="form-group {{ $errors->has('role') ? 'has-error' : ''}}">
     {!! Form::label('role', 'Role: ', ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-6">
         {!! Form::text('role', null, ['class' => 'form-control', 'autofocus' => true]) !!}
