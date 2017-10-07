@@ -7,6 +7,7 @@ use Laravel\Dusk\Page;
 abstract class BasePage extends Page
 {
     public $breadcrumb = '#breadcrumbs li.active';
+    public $pageNavigation = 'div.pagination';
 
     /**
      * Get the global element shortcuts for the site.

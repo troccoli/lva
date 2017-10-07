@@ -1,9 +1,14 @@
 <?php
 
-namespace Tests\Browser\Pages;
+namespace Tests\Browser\Pages\Resources;
 
-trait CrudRoutes
+use Tests\Browser\Pages\BasePage;
+
+abstract class BaseResourcePage extends BasePage
 {
+    public $pageNavigation = 'div.pagination';
+    protected $baseRoute;
+
     /**
      * @return string
      */

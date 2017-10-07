@@ -1,13 +1,13 @@
 <?php
 
-namespace Tests\Browser;
+namespace Tests\Browser\Admin\DataManagement;
 
 use Illuminate\Database\Eloquent\Collection;
 use Laravel\Dusk\Browser;
 use LVA\Models\AvailableAppointment;
 use LVA\Models\Fixture;
 use LVA\User;
-use Tests\Browser\Pages\FixturesPage;
+use Tests\Browser\Pages\Resources\FixturesPage;
 use Tests\DuskTestCase;
 
 class FixtureResourceTest extends DuskTestCase
@@ -40,15 +40,18 @@ class FixtureResourceTest extends DuskTestCase
             $browser->loginAs(factory(User::class)->create());
 
             /** @var Collection $fixtures */
-            $fixtures = factory(Fixture::class)->times(5)->create();
+            $fixtures = factory(Fixture::class)->times(20)->create();
+
+            $page1 = $fixtures->slice(0, 15);
+            $page2 = $fixtures->slice(15, 5);
 
             $page = new FixturesPage();
             $browser->visit($page)
                 ->assertSeeIn($page->breadcrumb, 'Fixtures')
                 ->assertSeeLink('New fixture')
-                ->with('tbody', function ($table) use ($fixtures) {
-                    foreach ($fixtures as $i => $fixture) {
-                        $child = $i + 1;
+                ->with('tbody', function ($table) use ($page1) {
+                    $child = 1;
+                    foreach ($page1 as $fixture) {
                         $table->with("tr:nth-child($child)", function ($row) use ($fixture) {
                             $linkText = $fixture->division . ':' . $fixture->match_number;
                             $row->assertSeeLink($linkText)
@@ -61,6 +64,29 @@ class FixtureResourceTest extends DuskTestCase
                                 ->assertSeeIn('td:nth-child(7)', (string)$fixture->venue)
                             ;
                         });
+                        $child++;
+                    }
+                })
+                ->with($page->pageNavigation, function ($nav) {
+                    $nav->clickLink(2);
+                })
+                ->assertPathIs($page->indexUrl())
+                ->with('tbody', function ($table) use ($page2) {
+                    $child = 1;
+                    foreach ($page2 as $fixture) {
+                        $table->with("tr:nth-child($child)", function ($row) use ($fixture) {
+                            $linkText = $fixture->division . ':' . $fixture->match_number;
+                            $row->assertSeeLink($linkText)
+                                ->assertSeeIn('td:nth-child(1)', $linkText)
+                                ->assertSeeIn('td:nth-child(2)', $fixture->match_date->format('j M Y'))
+                                ->assertSeeIn('td:nth-child(3)', $fixture->warm_up_time->format('H:i'))
+                                ->assertSeeIn('td:nth-child(4)', $fixture->start_time->format('H:i'))
+                                ->assertSeeIn('td:nth-child(5)', (string)$fixture->home_team)
+                                ->assertSeeIn('td:nth-child(6)', (string)$fixture->away_team)
+                                ->assertSeeIn('td:nth-child(7)', (string)$fixture->venue)
+                            ;
+                        });
+                        $child++;
                     }
                 });
         });
