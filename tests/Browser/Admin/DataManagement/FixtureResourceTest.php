@@ -12,23 +12,23 @@ use Tests\DuskTestCase;
 
 class FixtureResourceTest extends DuskTestCase
 {
-    const BASE_ROUTE = 'fixtures';
-
     public function testRedirectIfNotAdmin()
     {
         $page = new FixturesPage();
 
         $this->browse(function (Browser $browser) use ($page) {
+            $fixture = factory(Fixture::class)->create();
+
             $browser->visit($page->indexUrl())
                 ->assertRouteIs('login');
 
             $browser->visit($page->createUrl())
                 ->assertRouteIs('login');
 
-            $browser->visit($page->showUrl(1))
+            $browser->visit($page->showUrl($fixture->id))
                 ->assertRouteIs('login');
 
-            $browser->visit($page->editUrl(1))
+            $browser->visit($page->editUrl($fixture->id))
                 ->assertRouteIs('login');
 
         });
