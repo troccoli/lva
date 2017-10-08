@@ -17,3 +17,4 @@ _ide_helper_models.php
 /public/js/
 /public/build/
 /public/mix-manifest.json
+/resources/assets/.sass-cache/

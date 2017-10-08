@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateDivisionsTable extends Migration
 {
@@ -14,7 +15,7 @@ class CreateDivisionsTable extends Migration
     {
         Schema::create('divisions', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('season_id')->unsigned();
+            $table->unsignedInteger('season_id');
             $table->string('division');
             $table->timestamps();
 

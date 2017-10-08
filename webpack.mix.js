@@ -18,4 +18,8 @@ mix.js('resources/assets/js/app.js', 'public/js')
     .sass('resources/assets/sass/app.scss', 'public/css')
     .sass('resources/assets/sass/data-management.scss', 'public/css')
     .sass('resources/assets/sass/load-fixtures.scss', 'public/css')
-    .version();
+    ;
+
+if (mix.inProduction()) {
+    mix.version();
+}

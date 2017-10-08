@@ -7,7 +7,7 @@
     <div class="container">
         <div class="row">
             <div class="col-xs-3">
-                <div class="panel panel-info">
+                <div id="crud-panel" class="panel panel-info">
                     <div class="panel-heading">
                         <h3 class="panel-title">
                             Direct data management
@@ -64,7 +64,7 @@
                 </div>
             </div>
             <div class="col-xs-3">
-                <div class="panel panel-info">
+                <div id="start-season-panel" class="panel panel-info">
                     <div class="panel-heading">
                         <div class="panel-title">
                             Start of season

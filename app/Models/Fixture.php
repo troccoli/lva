@@ -3,7 +3,9 @@
 namespace LVA\Models;
 
 use Carbon\Carbon;
+use Collective\Html\Eloquent\FormAccessible;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class Fixture
@@ -12,6 +14,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Fixture extends Model
 {
+    use FormAccessible;
+
     /**
      * The database table used by the model.
      *
@@ -127,7 +131,19 @@ class Fixture extends Model
      */
     public function setWarmUpTime(Carbon $time)
     {
-        $this->warm_up_time = $time->format('H:i:s');
+        $this->warm_up_time = $time->format('H:i');
+
+        return $this;
+    }
+
+    /**
+     * @param string $time
+     *
+     * @return Fixture
+     */
+    public function setWarmUpTimeAttribute($time)
+    {
+        $this->attributes['warm_up_time'] = $time . ':00';
 
         return $this;
     }
@@ -139,7 +155,19 @@ class Fixture extends Model
      */
     public function setStartTime(Carbon $time)
     {
-        $this->start_time = $time->format('H:i:s');
+        $this->start_time = $time->format('H:i');
+
+        return $this;
+    }
+
+    /**
+     * @param string $time
+     *
+     * @return Fixture
+     */
+    public function setStartTimeAttribute($time)
+    {
+        $this->attributes['start_time'] = $time . ':00';
 
         return $this;
     }
@@ -193,11 +221,31 @@ class Fixture extends Model
     /**
      * @param string $time
      *
+     * @return string
+     */
+    public function formWarmUpTimeAttribute($time)
+    {
+        return Carbon::parse($time)->format('H:i');
+    }
+
+    /**
+     * @param string $time
+     *
      * @return Carbon
      */
     public function getStartTimeAttribute($time)
     {
         return Carbon::createFromFormat('H:i:s', $time);
+    }
+
+    /**
+     * @param string $time
+     *
+     * @return string
+     */
+    public function formStartTimeAttribute($time)
+    {
+        return Carbon::parse($time)->format('H:i');
     }
 
     /**
@@ -208,6 +256,16 @@ class Fixture extends Model
     public function getMatchDateAttribute($date)
     {
         return Carbon::createFromFormat('Y-m-d', $date);
+    }
+
+    /**
+     * @param string $date
+     *
+     * @return string
+     */
+    public function formMatchDateAttribute($date)
+    {
+        return Carbon::parse($date)->format('Y-m-d');
     }
 
     /**

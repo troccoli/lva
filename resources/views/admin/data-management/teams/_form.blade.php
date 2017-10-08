@@ -1,4 +1,4 @@
-<div class="form-group {{ $errors->has('club_id') ? 'has-error' : ''}}">
+<div id="club-id-field" class="form-group {{ $errors->has('club_id') ? 'has-error' : ''}}">
     {!! Form::label('club_id', 'Club Id: ', ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-6">
         {!! Form::select('club_id', array_column($clubs->toArray(), 'club', 'id'), null, ['class' => 'form-control']) !!}
@@ -6,7 +6,7 @@
     </div>
 </div>
 
-<div class="form-group {{ $errors->has('team') ? 'has-error' : ''}}">
+<div id="team-field" class="form-group {{ $errors->has('team') ? 'has-error' : ''}}">
     {!! Form::label('team', 'Team: ', ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-6">
         {!! Form::text('team', null, ['class' => 'form-control', 'autofocus' => true]) !!}
@@ -14,7 +14,7 @@
     </div>
 </div>
 
-<div class="form-group {{ $errors->has('trigram') ? 'has-error' : ''}}">
+<div id="trigram-field" class="form-group {{ $errors->has('trigram') ? 'has-error' : ''}}">
     {!! Form::label('trigram', 'Trigram: ', ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-6">
         {!! Form::text('trigram', null, ['class' => 'form-control']) !!}

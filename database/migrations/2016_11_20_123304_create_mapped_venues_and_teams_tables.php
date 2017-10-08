@@ -1,7 +1,8 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class CreateMappedVenuesAndTeamsTables extends Migration
 {
@@ -14,29 +15,28 @@ class CreateMappedVenuesAndTeamsTables extends Migration
     {
         Schema::create('mapped_venues', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('upload_job_id');
-            $table->string('venue');
-            $table->unsignedInteger('venue_id');
+            $table->unsignedInteger('upload_job_id')->nullable();
+            $table->string('venue')->default('')->index();
+            $table->unsignedInteger('venue_id')->nullable();
 
             $table->timestamps();
 
-            $table->index('venue');
             $table->foreign('upload_job_id')->references('id')->on('upload_jobs');
             $table->foreign('venue_id')->references('id')->on('venues');
         });
 
         Schema::create('mapped_teams', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('upload_job_id');
-            $table->string('team');
-            $table->unsignedInteger('team_id');
+            $table->unsignedInteger('upload_job_id')->nullable();
+            $table->string('team')->default('')->index();
+            $table->unsignedInteger('team_id')->nullable();
 
             $table->timestamps();
 
-            $table->index('team');
             $table->foreign('upload_job_id')->references('id')->on('upload_jobs');
             $table->foreign('team_id')->references('id')->on('teams');
         });
+
     }
 
     /**

@@ -4,8 +4,9 @@
 
     <div class="container-fluid">
         <h1>Divisions <a href="{{ url('admin/data-management/divisions/create') }}"
-                         class="btn btn-primary pull-right btn-sm">New division</a></h1>
-        <div class="table">
+                         class="btn btn-primary pull-right btn-sm">New division</a>
+        </h1>
+        <div id="resources-list" class="table">
             <table class="table table-bordered table-striped table-hover">
                 <thead>
                 <tr>
