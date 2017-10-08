@@ -3,6 +3,7 @@
 namespace Tests\Browser\Admin\DataManagement;
 
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Log;
 use Laravel\Dusk\Browser;
 use LVA\Models\Club;
 use LVA\Models\Division;
@@ -131,7 +132,7 @@ class TeamResourceTest extends DuskTestCase
                 ->assertVisible('@form-errors');
 
             // Non numeric nor string trigram
-            $trigram = $this->faker->regexify('[!£$%&*()_+=-;,./?><":{}]{3}');
+            $trigram = $this->faker->regexify('[!@$%&_=-;,./><":{}]{3}');
             $browser->visit($page->createUrl())
                 ->select('club_id', $newTeam->club_id)
                 ->type('team', $newTeam->team)
@@ -242,7 +243,7 @@ class TeamResourceTest extends DuskTestCase
                 ->assertVisible('@form-errors');
 
             // Non numeric nor string trigram
-            $trigram = $this->faker->regexify('[!£$%&*()_+=-;,./?><":{}]{3}');
+            $trigram = $this->faker->regexify('[!@$%&_=-;,./><":{}]{3}');
             $browser->visit($page->editUrl($team->id))
                 ->type('trigram', $trigram)
                 ->pressSubmit('Update')

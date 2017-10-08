@@ -19,8 +19,7 @@ abstract class BasePage extends Page
         return [
             '@breadcrumb'           => '.breadcrumbs .active',
             '@success-notification' => '#flash-notification .alert.alert-success',
-            '@error-notification'   => '#flash-notification .alert.alert-danger',
-            '@form-errors'          => 'div.alert.alert-danger',
+            '@form-errors'          => '#form-errors',
             '@submit-button'        => 'input[type="submit"]',
         ];
     }
