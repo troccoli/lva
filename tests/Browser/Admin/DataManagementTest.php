@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Browser;
+namespace Tests\Browser\Admin;
 
 use Laravel\Dusk\Browser;
 use LVA\User;
@@ -9,7 +9,7 @@ use Tests\DuskTestCase;
 
 class DataManagementTest extends DuskTestCase
 {
-    public function testSeasonsTableButton()
+    public function testResourcesButtonOnLandingPage()
     {
         $this->browse(function (Browser $browser) {
             /** @var User $user */

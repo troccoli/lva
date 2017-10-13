@@ -1,14 +1,13 @@
 <?php
 
-namespace Tests\Browser\Pages;
+namespace Tests\Browser\Pages\Resources;
 
 use Laravel\Dusk\Browser;
 
-class FixturesPage extends BasePage
+class FixturesPage extends BaseResourcePage
 {
-    use CrudRoutes;
-
     protected $baseRoute = 'fixtures';
+
     /**
      * Get the URL for the page.
      *
@@ -28,9 +27,7 @@ class FixturesPage extends BasePage
      */
     public function assert(Browser $browser)
     {
-        $browser->assertPathIs($this->url())
-            ->assertSeeIn($this->breadcrumb, 'Fixtures')
-            ->assertSeeLink('New fixture');
+        $browser->assertPathIs($this->url());
     }
 
     /**

@@ -5,6 +5,7 @@ namespace Tests;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Laravel\Dusk\Browser;
 use Laravel\Dusk\TestCase as BaseTestCase;
 
 abstract class DuskTestCase extends BaseTestCase
@@ -20,6 +21,24 @@ abstract class DuskTestCase extends BaseTestCase
     public static function prepare()
     {
         static::startChromeDriver();
+    }
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        Browser::macro('scrollToElement', function ($element = null) {
+            $this->script("$('html, body').animate({ scrollTop: $('$element').offset().top }, 0);");
+
+            return $this;
+        });
+
+        Browser::macro('pressSubmit', function ($text) {
+            $this->script("$('html, body').animate({ scrollTop: $('input[type=\"submit\"]').offset().top }, 0);");
+            $this->press($text);
+
+            return $this;
+        });
     }
 
     /**

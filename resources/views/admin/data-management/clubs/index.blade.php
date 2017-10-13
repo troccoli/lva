@@ -3,9 +3,10 @@
 @section('content')
 
     <div class="container-fluid">
-        <h1>Clubs <a href="{{ url('admin/data-management/clubs/create') }}" class="btn btn-primary pull-right btn-sm">New
-                club</a></h1>
-        <div class="table">
+        <h1>Clubs <a href="{{ url('admin/data-management/clubs/create') }}"
+                     class="btn btn-primary pull-right btn-sm">New club</a>
+        </h1>
+        <div id="resources-list" class="table">
             <table class="table table-bordered table-striped table-hover">
                 <thead>
                 <tr>

@@ -5,7 +5,6 @@ namespace Tests;
 use Faker\Factory;
 use Faker\Generator;
 use Illuminate\Contracts\Console\Kernel;
-use Illuminate\Support\Facades\Artisan;
 
 trait CreatesApplication
 {
