@@ -26,6 +26,7 @@ before_script:
   - npm rebuild node-sass
   - npm run production
   - touch database/database.sqlite
+  - php artisan migrate
 
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
