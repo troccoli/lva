@@ -2,11 +2,10 @@
 
 namespace Tests\Browser;
 
+use Laravel\Dusk\Browser;
 use LVA\User;
 use Tests\Browser\Pages\HomePage;
 use Tests\DuskTestCase;
-use Laravel\Dusk\Browser;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class HomepageTest extends DuskTestCase
 {

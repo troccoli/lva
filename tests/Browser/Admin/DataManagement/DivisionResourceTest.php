@@ -31,7 +31,6 @@ class DivisionResourceTest extends DuskTestCase
 
             $browser->visit($page->editUrl($division->id))
                 ->assertRouteIs('login');
-
         });
     }
 

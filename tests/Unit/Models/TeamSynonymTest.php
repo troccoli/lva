@@ -7,9 +7,7 @@ use LVA\Models\TeamSynonym;
 use Tests\TestCase;
 
 /**
- * Class TeamSynonymTest
- *
- * @package Tests\Unit\Models
+ * Class TeamSynonymTest.
  */
 class TeamSynonymTest extends TestCase
 {
@@ -22,9 +20,9 @@ class TeamSynonymTest extends TestCase
         $teamSynonyms = factory(TeamSynonym::class)->times(2)->create();
 
         $this->assertEquals($teamSynonyms[0]->team, TeamSynonym::findBySynonym($teamSynonyms[0]->getSynonym()));
-        $this->assertNull(TeamSynonym::findBySynonym($teamSynonyms[0]->getSynonym() . '---'));
+        $this->assertNull(TeamSynonym::findBySynonym($teamSynonyms[0]->getSynonym().'---'));
         $this->assertEquals($teamSynonyms[1]->team, TeamSynonym::findBySynonym($teamSynonyms[1]->getSynonym()));
-        $this->assertNull(TeamSynonym::findBySynonym($teamSynonyms[1]->getSynonym() . '---'));
+        $this->assertNull(TeamSynonym::findBySynonym($teamSynonyms[1]->getSynonym().'---'));
     }
 
     /**

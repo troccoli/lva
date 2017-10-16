@@ -2,9 +2,6 @@
 
 namespace LVA\Http\Controllers;
 
-use LVA\Http\Requests;
-use Illuminate\Http\Request;
-
 class HomeController extends Controller
 {
     /**

@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: Giulio Troccoli-Allard <giulio@troccoli.it>
  * Date: 23/08/2016
- * Time: 19:33
+ * Time: 19:33.
  */
 
 namespace LVA\Http\Controllers\Admin\DataManagement;
@@ -20,13 +20,12 @@ class LoadController extends Controller
     private $uploadService;
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function __construct(FileUploadService $uploadService)
     {
         $this->uploadService = $uploadService;
     }
-
 
     public function uploadFixtures()
     {

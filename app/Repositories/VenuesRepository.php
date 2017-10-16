@@ -1,17 +1,14 @@
 <?php
 
-
 namespace LVA\Repositories;
 
 use LVA\Models\MappedVenue;
+use LVA\Models\UploadJob;
 use LVA\Models\Venue;
 use LVA\Models\VenueSynonym;
-use LVA\Models\UploadJob;
 
 /**
- * Class VenueRepository
- *
- * @package LVA\Repositories
+ * Class VenueRepository.
  */
 class VenuesRepository
 {
@@ -36,9 +33,9 @@ class VenuesRepository
         $model = Venue::find($id);
         if ($model) {
             $this->modelsById[$id] = $model;
+
             return $model;
         }
-        return null;
     }
 
     /**
@@ -56,15 +53,16 @@ class VenuesRepository
         $model = Venue::findByName($name);
         if ($model) {
             $this->modelsByName[$name] = $model;
+
             return $model;
         } else {
             $model = VenueSynonym::findBySynonym($name);
             if ($model) {
                 $this->modelsByName[$name] = $model;
+
                 return $model;
             }
         }
-        return null;
     }
 
     public function findByNameWithinMapped(UploadJob $job, $venue)
@@ -80,7 +78,7 @@ class VenuesRepository
         if (isset($this->mappedModelsByName[$jobId][$venue])) {
             return $this->mappedModelsByName[$jobId][$venue];
         } else {
-            return null;
+            return;
         }
     }
 }

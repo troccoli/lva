@@ -3,13 +3,13 @@
  * Created by PhpStorm.
  * User: Giulio Troccoli-Allard <giulio@troccoli.it>
  * Date: 10/09/2016
- * Time: 16:22
+ * Time: 16:22.
  */
 
 namespace LVA\Services\Contracts;
 
-use LVA\Models\UploadJob;
 use Illuminate\Http\UploadedFile;
+use LVA\Models\UploadJob;
 
 interface InteractiveUploadContract
 {

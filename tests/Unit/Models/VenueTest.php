@@ -4,15 +4,12 @@ namespace Tests\Unit\Models;
 
 use LVA\Models\Fixture;
 use LVA\Models\MappedVenue;
-use LVA\Models\VenueSynonym;
 use LVA\Models\Venue;
-use Tests\OldStyleTestCase;
+use LVA\Models\VenueSynonym;
 use Tests\TestCase;
 
 /**
- * Class VenueTest
- *
- * @package Tests\Unit\Models
+ * Class VenueTest.
  */
 class VenueTest extends TestCase
 {
@@ -26,9 +23,9 @@ class VenueTest extends TestCase
 
         // I have to use the toArray() method as I'm only interested in the table's fields and not any internal ones
         $this->assertEquals($venues[0]->toArray(), Venue::findByName($venues[0]->venue)->toArray());
-        $this->assertNull(Venue::findByName($venues[0]->venue . '--'));
+        $this->assertNull(Venue::findByName($venues[0]->venue.'--'));
         $this->assertEquals($venues[1]->toArray(), Venue::findByName($venues[1]->venue)->toArray());
-        $this->assertNull(Venue::findByName($venues[1]->venue . '--'));
+        $this->assertNull(Venue::findByName($venues[1]->venue.'--'));
     }
 
     /**
@@ -57,7 +54,7 @@ class VenueTest extends TestCase
         /** @var Venue[] $venues */
         $venues = factory(Venue::class)->times(2)->create();
 
-        $synonyms = $this->faker->numberBetween(2,20);
+        $synonyms = $this->faker->numberBetween(2, 20);
         factory(VenueSynonym::class)->times($synonyms)->create(['venue_id' => $venues[0]->getId()]);
 
         $this->assertCount($synonyms, $venues[0]->synonyms);
@@ -72,12 +69,13 @@ class VenueTest extends TestCase
         /** @var Venue[] $venues */
         $venues = factory(Venue::class)->times(2)->create();
 
-        $mapped = $this->faker->numberBetween(2,20);
+        $mapped = $this->faker->numberBetween(2, 20);
         factory(MappedVenue::class)->times($mapped)->create(['venue_id' => $venues[0]->getId()]);
 
         $this->assertCount($mapped, $venues[0]->mapped);
         $this->assertCount(0, $venues[1]->mapped);
     }
+
     /**
      * @test
      */
@@ -130,7 +128,6 @@ class VenueTest extends TestCase
         /** @var Venue $venue */
         $venue = factory(Venue::class)->create();
 
-        $this->assertEquals($venue->venue, (string)$venue);
+        $this->assertEquals($venue->venue, (string) $venue);
     }
-
 }

@@ -3,13 +3,13 @@
  * Created by PhpStorm.
  * User: Giulio Troccoli-Allard <giulio@troccoli.it>
  * Date: 11/09/2016
- * Time: 12:49
+ * Time: 12:49.
  */
 
 namespace LVA\Validators;
 
-use LVA\Services\InteractiveFixturesUploadService;
 use Illuminate\Http\UploadedFile;
+use LVA\Services\InteractiveFixturesUploadService;
 
 class CustomValidators
 {
@@ -29,11 +29,11 @@ class CustomValidators
 
     public function requiredHeadersMessage($message, $attribute, $rule, $parameters)
     {
-        $lastHeader = '"' . array_pop($parameters) . '"';
+        $lastHeader = '"'.array_pop($parameters).'"';
         if (empty($parameters)) {
             $headers = $lastHeader;
         } else {
-            $headers = '"' . implode('", "', $parameters) . '" and ' . $lastHeader;
+            $headers = '"'.implode('", "', $parameters).'" and '.$lastHeader;
         }
 
         return str_replace(':headers', $headers, $message);

@@ -14,6 +14,7 @@ class AddTrigramToTeamsTable extends Migration
     public function up()
     {
         DB::beginTransaction();
+
         try {
             Schema::table('teams', function (Blueprint $table) {
                 $table->char('trigram', 3)->after('team')->default('###');
@@ -27,7 +28,6 @@ class AddTrigramToTeamsTable extends Migration
 
             Schema::table('teams', function (Blueprint $table) {
                 $table->unique('trigram');
-
             });
 
             DB::commit();

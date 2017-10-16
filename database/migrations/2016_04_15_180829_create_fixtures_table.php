@@ -31,7 +31,6 @@ class CreateFixturesTable extends Migration
             $table->foreign('away_team_id')->references('id')->on('teams');
             $table->foreign('venue_id')->references('id')->on('venues');
         });
-
     }
 
     /**
@@ -49,5 +48,4 @@ class CreateFixturesTable extends Migration
         });
         Schema::drop('fixtures');
     }
-
 }
