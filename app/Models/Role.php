@@ -5,13 +5,10 @@ namespace LVA\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Role
- *
- * @package LVA\Models
+ * Class Role.
  */
 class Role extends Model
 {
-
     /**
      * The database table used by the model.
      *

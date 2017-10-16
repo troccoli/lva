@@ -7,9 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class UploadJob
- *
- * @package LVA\Models
+ * Class UploadJob.
  */
 class UploadJob extends Model
 {
@@ -49,7 +47,7 @@ class UploadJob extends Model
      */
     public function scopeStale(Builder $query)
     {
-        return $query->where('updated_at', '<=',  Carbon::now()->subWeek());
+        return $query->where('updated_at', '<=', Carbon::now()->subWeek());
     }
 
     /**

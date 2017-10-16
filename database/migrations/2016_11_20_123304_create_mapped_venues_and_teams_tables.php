@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateMappedVenuesAndTeamsTables extends Migration
 {
@@ -36,7 +36,6 @@ class CreateMappedVenuesAndTeamsTables extends Migration
             $table->foreign('upload_job_id')->references('id')->on('upload_jobs');
             $table->foreign('team_id')->references('id')->on('teams');
         });
-
     }
 
     /**

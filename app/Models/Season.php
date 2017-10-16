@@ -5,9 +5,7 @@ namespace LVA\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Season
- *
- * @package LVA\Models
+ * Class Season.
  */
 class Season extends Model
 {

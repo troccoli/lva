@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: Giulio Troccoli-Allard <giulio@troccoli.it>
  * Date: 20/11/2016
- * Time: 14:51
+ * Time: 14:51.
  */
 
 namespace LVA\Models;
@@ -11,9 +11,7 @@ namespace LVA\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class TeamSynonym
- *
- * @package LVA\Models
+ * Class TeamSynonym.
  */
 class TeamSynonym extends Model
 {
@@ -43,8 +41,6 @@ class TeamSynonym extends Model
         if ($synonym) {
             return $synonym->team;
         }
-
-        return null;
     }
 
     /**

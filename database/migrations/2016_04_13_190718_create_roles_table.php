@@ -19,7 +19,6 @@ class CreateRolesTable extends Migration
 
             $table->timestamps();
         });
-
     }
 
     /**
@@ -31,5 +30,4 @@ class CreateRolesTable extends Migration
     {
         Schema::drop('roles');
     }
-
 }

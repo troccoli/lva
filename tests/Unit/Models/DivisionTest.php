@@ -8,9 +8,7 @@ use LVA\Models\Season;
 use Tests\TestCase;
 
 /**
- * Class DivisionTest
- *
- * @package Tests\Unit\Models
+ * Class DivisionTest.
  */
 class DivisionTest extends TestCase
 {
@@ -56,7 +54,7 @@ class DivisionTest extends TestCase
         // I have to use the toArray() method as I'm only interested in the table's fields and not any internal ones
         $this->assertEquals($division->toArray(), Division::findByName($season->getId(), $division->getName())->toArray());
         $this->assertNull(Division::findByName(0, $division->getName()));
-        $this->assertNull(Division::findByName($season->getId(), $division->getName() . '--'));
+        $this->assertNull(Division::findByName($season->getId(), $division->getName().'--'));
     }
 
     /**
@@ -89,7 +87,6 @@ class DivisionTest extends TestCase
         /** @var Division $division */
         $division = factory(Division::class)->create();
 
-        $this->assertEquals($division->season . ' ' . $division->division, (string)$division);
-
+        $this->assertEquals($division->season.' '.$division->division, (string) $division);
     }
 }

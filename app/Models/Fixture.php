@@ -5,12 +5,9 @@ namespace LVA\Models;
 use Carbon\Carbon;
 use Collective\Html\Eloquent\FormAccessible;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
 
 /**
- * Class Fixture
- *
- * @package LVA\Models
+ * Class Fixture.
  */
 class Fixture extends Model
 {
@@ -143,7 +140,7 @@ class Fixture extends Model
      */
     public function setWarmUpTimeAttribute($time)
     {
-        $this->attributes['warm_up_time'] = $time . ':00';
+        $this->attributes['warm_up_time'] = $time.':00';
 
         return $this;
     }
@@ -167,7 +164,7 @@ class Fixture extends Model
      */
     public function setStartTimeAttribute($time)
     {
-        $this->attributes['start_time'] = $time . ':00';
+        $this->attributes['start_time'] = $time.':00';
 
         return $this;
     }
@@ -282,9 +279,9 @@ class Fixture extends Model
     public function __toString()
     {
         return
-            $this->division . ':' . $this->match_number . ' ' .
-            $this->match_date->format('d/m/y') . ' ' .
-            $this->start_time->format('H:i') . '(' . $this->warm_up_time->format('H:i') . ') ' .
-            $this->home_team . ' v ' . $this->away_team;
+            $this->division.':'.$this->match_number.' '.
+            $this->match_date->format('d/m/y').' '.
+            $this->start_time->format('H:i').'('.$this->warm_up_time->format('H:i').') '.
+            $this->home_team.' v '.$this->away_team;
     }
 }

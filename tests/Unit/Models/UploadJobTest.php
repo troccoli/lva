@@ -12,9 +12,7 @@ use LVA\Models\UploadJobStatus;
 use Tests\TestCase;
 
 /**
- * Class UploadJobTest
- *
- * @package Tests\Unit\Models
+ * Class UploadJobTest.
  */
 class UploadJobTest extends TestCase
 {

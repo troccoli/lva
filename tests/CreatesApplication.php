@@ -8,7 +8,7 @@ use Illuminate\Contracts\Console\Kernel;
 
 trait CreatesApplication
 {
-    /** @var  Generator */
+    /** @var Generator */
     protected $faker;
 
     /**
@@ -18,7 +18,7 @@ trait CreatesApplication
      */
     public function createApplication()
     {
-        $app = require __DIR__ . '/../bootstrap/app.php';
+        $app = require __DIR__.'/../bootstrap/app.php';
         $app->make(Kernel::class)->bootstrap();
 
         $this->faker = Factory::create(config('app.faker_locale'));

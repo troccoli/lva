@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: Giulio Troccoli-Allard <giulio@troccoli.it>
  * Date: 05/02/2017
- * Time: 12:13
+ * Time: 12:13.
  */
 
 namespace LVA\Models;
@@ -11,13 +11,11 @@ namespace LVA\Models;
 use Carbon\Carbon;
 
 /**
- * Class UploadJobStatus
+ * Class UploadJobStatus.
  *
  * NOTE: This model does not extend the Eloquent Model class because it is not
  *       to be store in the DB. It's just a convenient way to encapsulate all
  *       the data and functionality needed for the status
- *
- * @package LVA\Models
  */
 class UploadJobStatus
 {
@@ -158,7 +156,6 @@ class UploadJobStatus
             if ($this->hasErrors()) {
                 $formattedStatus['Errors'] = $this->getErrors();
                 $formattedStatus['ErrorLine'] = $this->getErrorLine();
-
             } elseif ($this->hasUnknownData()) {
                 $formattedStatus['Fixture'] = [
                     'Division'    => $this->getProcessingLineDivision(),
@@ -173,7 +170,7 @@ class UploadJobStatus
 
                 foreach ($this->getUnknowns() as $unknownType => $mappings) {
                     switch ($unknownType) {
-                        case UploadJobStatus::UNKNOWN_HOME_TEAM:
+                        case self::UNKNOWN_HOME_TEAM:
                             $formattedStatus['Unknowns']['HomeTeam'] = [
                                 'Mapping' => $mappings,
                                 'ApiUrls' => [
@@ -181,7 +178,7 @@ class UploadJobStatus
                                 ],
                             ];
                             break;
-                        case UploadJobStatus::UNKNOWN_AWAY_TEAM:
+                        case self::UNKNOWN_AWAY_TEAM:
                             $formattedStatus['Unknowns']['AwayTeam'] = [
                                 'Mapping' => $mappings,
                                 'ApiUrls' => [
@@ -189,7 +186,7 @@ class UploadJobStatus
                                 ],
                             ];
                             break;
-                        case UploadJobStatus::UNKNOWN_VENUE:
+                        case self::UNKNOWN_VENUE:
                             $formattedStatus['Unknowns']['Venue'] = [
                                 'Mapping' => $mappings,
                                 'ApiUrls' => [

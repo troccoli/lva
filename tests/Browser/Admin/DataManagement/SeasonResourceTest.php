@@ -30,7 +30,6 @@ class SeasonResourceTest extends DuskTestCase
 
             $browser->visit($page->editUrl($season->id))
                 ->assertRouteIs('login');
-
         });
     }
 

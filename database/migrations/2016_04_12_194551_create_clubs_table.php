@@ -19,7 +19,6 @@ class CreateClubsTable extends Migration
 
             $table->timestamps();
         });
-
     }
 
     /**
@@ -31,5 +30,4 @@ class CreateClubsTable extends Migration
     {
         Schema::drop('clubs');
     }
-
 }

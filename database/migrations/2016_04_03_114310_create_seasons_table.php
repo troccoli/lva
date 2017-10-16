@@ -14,13 +14,11 @@ class CreateSeasonsTable extends Migration
     public function up()
     {
         Schema::create('seasons', function (Blueprint $table) {
-
             $table->increments('id');
             $table->string('season');
 
             $table->timestamps();
         });
-
     }
 
     /**
@@ -32,5 +30,4 @@ class CreateSeasonsTable extends Migration
     {
         Schema::drop('seasons');
     }
-
 }

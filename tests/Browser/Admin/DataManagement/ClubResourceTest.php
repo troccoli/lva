@@ -30,7 +30,6 @@ class ClubResourceTest extends DuskTestCase
 
             $browser->visit($page->editUrl($club->id))
                 ->assertRouteIs('login');
-
         });
     }
 

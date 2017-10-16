@@ -11,13 +11,10 @@ use LVA\Models\Fixture;
 use LVA\Models\Role;
 
 /**
- * Class AvailableAppointmentsController
- *
- * @package LVA\Http\Controllers\Admin\DataManagement
+ * Class AvailableAppointmentsController.
  */
 class AvailableAppointmentsController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
@@ -62,7 +59,7 @@ class AvailableAppointmentsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int $id
+     * @param int $id
      *
      * @return mixed
      */
@@ -76,7 +73,7 @@ class AvailableAppointmentsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int $id
+     * @param int $id
      *
      * @return mixed
      */
@@ -113,7 +110,7 @@ class AvailableAppointmentsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int $id
+     * @param int $id
      *
      * @return mixed
      */
@@ -125,5 +122,4 @@ class AvailableAppointmentsController extends Controller
 
         return redirect()->route('available-appointments.index');
     }
-
 }
