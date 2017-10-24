@@ -1,38 +1,33 @@
 branches:
   only:
-    - master
-    - dev
+  - master
+  - dev
 notifications:
   email:
     on_success: always
     on_failure: always
-  slack:
-    secure: "g3wZUrB26iWVUY+DltVIF7cy6oV6zXvI8J6pomQlX+wzigpVNUSfq4r4DpCDb1H+/u48D//WkP+VRg1ktAseaThIQzECg6PMe7hUtUsiUfrqvgReYimiUycI0I+nrcTAq1CxSxCtzid75T4RUVZ8OfVaZQK6pNyHfMT3Wy9iVVfmKuDNQA8gKEyts7PbsItWlUdEIZUZUv4bLgkIYpX++pnLeRGxEr/i6GcqybfH2iwskC6NsTJwSO69Zf2C0mFqQlJxohDSnn/Umaa5++D4+UKdQ5puKf/2kywkiaMRpB8hSte6575V8av4ClDQj0R8tXFly5N7RhJmgmAQlT3d9+YtwB5bhoKph4eVXkx+AHfW15AdqwWmzatyYRnXK+jt78bAmzlVSmxOEmqvorX+PI0j4Vt5CwBVQPChqnVhwdUx3PsFu7f+Ov3bJv+mRVDzulxLfe6ysjFMKZu7Dgu+N+aZNx+s7OqsWrUHZP+Up1VDCnAHXh/dVacFq4Z/ahRYHjLGIRUSnuRkU14wE8qNwbFuLBZlr8uxhZDyI/RZR/e0AFNhmXijWtsWF6kmsgYmsmGB4LxREC3TvK0tIfzO888NVJMHy1oKlRqCzxMg+R0nHJ/LQEmzX9pejYZfdQlZrpJwfLa7/wwysPGIxZCxvkJAl43uC4ndzH332EBKu2k="
-    on_success: always
-    on_failure: always
+  slack: troccoli:qUyhfhRcvG64LTSUeMJPAQId
 language: php
 php:
-  - 7.1
+- 7.1
 install:
-  - nvm install v8.1.2
+- nvm install v8.1.2
 sudo: required
 dist: trusty
 before_script:
-  - phpenv config-rm xdebug.ini
-  - cp env.travis .env
-  - composer install --no-progress --no-suggest --no-interaction --optimize-autoloader
-  - php artisan key:generate
-  - npm install
-  - npm rebuild node-sass
-  - npm run production
-  - touch database/database.sqlite
-  - php artisan migrate
-
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
-  - ./vendor/laravel/dusk/bin/chromedriver-linux &
-  - php artisan serve > /dev/null 2>&1 &
-
+- phpenv config-rm xdebug.ini
+- cp env.travis .env
+- composer install --no-progress --no-suggest --no-interaction --optimize-autoloader
+- php artisan key:generate
+- npm install
+- npm rebuild node-sass
+- npm run production
+- touch database/database.sqlite
+- php artisan migrate
+- export DISPLAY=:99.0
+- sh -e /etc/init.d/xvfb start
+- ./vendor/laravel/dusk/bin/chromedriver-linux &
+- php artisan serve > /dev/null 2>&1 &
 script:
-  - vendor/bin/phpunit
-  - php artisan dusk
+- vendor/bin/phpunit
+- php artisan dusk
