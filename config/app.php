@@ -193,7 +193,7 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         Laracasts\Flash\FlashServiceProvider::class,
         Codescheme\Postcodes\PostcodeServiceProvider::class,
-        \Barryvdh\Debugbar\ServiceProvider::class
+        \Barryvdh\Debugbar\ServiceProvider::class,
     ],
 
     /*
@@ -248,7 +248,7 @@ return [
         'HTML'        => Collective\Html\HtmlFacade::class,
         'Flash'       => Laracasts\Flash\Flash::class,
         'Postcode'    => Codescheme\Postcodes\Facades\Postcode::class,
-        'Debugbar'    => \Barryvdh\Debugbar\Facade::class
+        'Debugbar'    => \Barryvdh\Debugbar\Facade::class,
     ],
 
 ];

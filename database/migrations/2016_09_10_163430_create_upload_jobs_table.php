@@ -21,7 +21,6 @@ class CreateUploadJobsTable extends Migration
 
             $table->timestamps();
         });
-
     }
 
     /**

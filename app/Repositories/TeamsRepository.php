@@ -1,8 +1,6 @@
 <?php
 
-
 namespace LVA\Repositories;
-
 
 use LVA\Models\MappedTeam;
 use LVA\Models\Team;
@@ -10,9 +8,7 @@ use LVA\Models\TeamSynonym;
 use LVA\Models\UploadJob;
 
 /**
- * Class TeamRepository
- *
- * @package LVA\Repositories
+ * Class TeamRepository.
  */
 class TeamsRepository
 {
@@ -37,9 +33,9 @@ class TeamsRepository
         $model = Team::find($id);
         if ($model) {
             $this->modelsById[$id] = $model;
+
             return $model;
         }
-        return null;
     }
 
     /**
@@ -57,15 +53,16 @@ class TeamsRepository
         $model = Team::findByName($name);
         if ($model) {
             $this->modelsByName[$name] = $model;
+
             return $model;
         } else {
             $model = TeamSynonym::findBySynonym($name);
             if ($model) {
                 $this->modelsByName[$name] = $model;
+
                 return $model;
             }
         }
-        return null;
     }
 
     public function findByNameWithinMapped(UploadJob $job, $team)
@@ -81,8 +78,7 @@ class TeamsRepository
         if (isset($this->mappedModelsByName[$jobId][$team])) {
             return $this->mappedModelsByName[$jobId][$team];
         } else {
-            return null;
+            return;
         }
     }
-
 }

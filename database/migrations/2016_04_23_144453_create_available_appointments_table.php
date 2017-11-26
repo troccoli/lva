@@ -35,5 +35,4 @@ class CreateAvailableAppointmentsTable extends Migration
     {
         Schema::drop('available_appointments');
     }
-
 }

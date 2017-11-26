@@ -12,9 +12,7 @@ use LVA\Models\Team;
 use LVA\Models\Venue;
 
 /**
- * Class FixturesController
- *
- * @package LVA\Http\Controllers\Admin\DataManagement
+ * Class FixturesController.
  */
 class FixturesController extends Controller
 {
@@ -113,7 +111,7 @@ class FixturesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int $id
+     * @param int $id
      *
      * @return mixed
      */
@@ -129,5 +127,4 @@ class FixturesController extends Controller
 
         return redirect()->route('fixtures.index');
     }
-
 }

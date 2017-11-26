@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: giulio
  * Date: 06/03/2016
- * Time: 11:07
+ * Time: 11:07.
  */
 
 namespace LVA\Http\Controllers\Admin;

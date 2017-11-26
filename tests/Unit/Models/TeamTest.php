@@ -10,9 +10,7 @@ use LVA\Models\TeamSynonym;
 use Tests\TestCase;
 
 /**
- * Class TeamTest
- *
- * @package Tests\Unit\Models
+ * Class TeamTest.
  */
 class TeamTest extends TestCase
 {
@@ -26,9 +24,9 @@ class TeamTest extends TestCase
 
         // I have to use the toArray() method as I'm only interested in the table's fields and not any internal ones
         $this->assertEquals($teams[0]->toArray(), Team::findByName($teams[0]->team)->toArray());
-        $this->assertNull(Team::findByName($teams[0]->team . '--'));
+        $this->assertNull(Team::findByName($teams[0]->team.'--'));
         $this->assertEquals($teams[1]->toArray(), Team::findByName($teams[1]->team)->toArray());
-        $this->assertNull(Team::findByName($teams[1]->team . '--'));
+        $this->assertNull(Team::findByName($teams[1]->team.'--'));
     }
 
     /**
@@ -41,9 +39,9 @@ class TeamTest extends TestCase
 
         // I have to use the toArray() method as I'm only interested in the table's fields and not any internal ones
         $this->assertEquals($teams[0]->toArray(), Team::findByTrigram($teams[0]->trigram)->toArray());
-        $this->assertNull(Team::findByTrigram($teams[0]->trigram . '--'));
+        $this->assertNull(Team::findByTrigram($teams[0]->trigram.'--'));
         $this->assertEquals($teams[1]->toArray(), Team::findByTrigram($teams[1]->trigram)->toArray());
-        $this->assertNull(Team::findByTrigram($teams[1]->trigram . '--'));
+        $this->assertNull(Team::findByTrigram($teams[1]->trigram.'--'));
     }
 
     /**
@@ -176,6 +174,6 @@ class TeamTest extends TestCase
         /** @var Team $team */
         $team = factory(Team::class)->create();
 
-        $this->assertEquals($team->team, (string)$team);
+        $this->assertEquals($team->team, (string) $team);
     }
 }

@@ -11,9 +11,7 @@ use LVA\Models\Venue;
 use Tests\TestCase;
 
 /**
- * Class FixtureTest
- *
- * @package Tests\Unit\Models
+ * Class FixtureTest.
  */
 class FixtureTest extends TestCase
 {
@@ -59,7 +57,6 @@ class FixtureTest extends TestCase
         $fixture = factory(Fixture::class)->create();
 
         $this->assertInstanceOf(Venue::class, $fixture->venue);
-
     }
 
     /**
@@ -278,12 +275,11 @@ class FixtureTest extends TestCase
         /** @var Fixture $fixture */
         $fixture = factory(Fixture::class)->create();
 
-        $string = $fixture->division . ':' . $fixture->match_number . ' ' .
-            $fixture->match_date->format('d/m/y') . ' ' .
-            $fixture->start_time->format('H:i') . '(' . $fixture->warm_up_time->format('H:i') . ') ' .
-            $fixture->home_team . ' v ' . $fixture->away_team;
+        $string = $fixture->division.':'.$fixture->match_number.' '.
+            $fixture->match_date->format('d/m/y').' '.
+            $fixture->start_time->format('H:i').'('.$fixture->warm_up_time->format('H:i').') '.
+            $fixture->home_team.' v '.$fixture->away_team;
 
-        $this->assertEquals($string, (string)$fixture);
+        $this->assertEquals($string, (string) $fixture);
     }
-
 }
