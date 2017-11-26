@@ -62,6 +62,7 @@ abstract class DuskTestCase extends BaseTestCase
 
     protected function newBrowser($driver)
     {
-        return parent::newBrowser($driver)->maximize();
+//        return parent::newBrowser($driver)->maximize();
+        return parent::newBrowser($driver)->resize(1920, 1080);
     }
 }
