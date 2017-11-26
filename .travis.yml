@@ -30,10 +30,9 @@ before_script:
   - touch database/database.sqlite
   - php artisan migrate
 
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
-  - ./vendor/laravel/dusk/bin/chromedriver-linux &
+  - phantomjs --webdriver=127.0.0.1:9515 &
   - php artisan serve &
+  - sleep 5
 
 script:
   - vendor/bin/phpunit
