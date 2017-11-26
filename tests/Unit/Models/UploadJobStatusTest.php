@@ -10,9 +10,7 @@ use LVA\Models\Venue;
 use Tests\TestCase;
 
 /**
- * Class UploadJobStatusTest
- *
- * @package Tests\Unit\Models
+ * Class UploadJobStatusTest.
  */
 class UploadJobStatusTest extends TestCase
 {
@@ -59,7 +57,6 @@ class UploadJobStatusTest extends TestCase
         $status = $this->uploadJobTestFactory(['status_code' => -1]);
         $this->assertEquals('Status code -1 not recognised', $status->getStatusCodeMessage());
     }
-
 
     /**
      * @test
@@ -959,7 +956,7 @@ class UploadJobStatusTest extends TestCase
     {
         $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_UNKNOWN_DATA]);
         $status->moveForward();
-        $this->expectExceptionMessage("Invalid status code " . UploadJobStatus::STATUS_UNKNOWN_DATA . ".");
+        $this->expectExceptionMessage('Invalid status code '.UploadJobStatus::STATUS_UNKNOWN_DATA.'.');
     }
 
     /**
@@ -970,7 +967,7 @@ class UploadJobStatusTest extends TestCase
     {
         $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_UNRECOVERABLE_VALIDATION_ERROR]);
         $status->moveForward();
-        $this->expectExceptionMessage("Invalid status code " . UploadJobStatus::STATUS_UNRECOVERABLE_VALIDATION_ERROR . ".");
+        $this->expectExceptionMessage('Invalid status code '.UploadJobStatus::STATUS_UNRECOVERABLE_VALIDATION_ERROR.'.');
     }
 
     /**
@@ -981,7 +978,7 @@ class UploadJobStatusTest extends TestCase
     {
         $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_UNRECOVERABLE_INSERT_ERROR]);
         $status->moveForward();
-        $this->expectExceptionMessage("Invalid status code " . UploadJobStatus::STATUS_UNRECOVERABLE_INSERT_ERROR . ".");
+        $this->expectExceptionMessage('Invalid status code '.UploadJobStatus::STATUS_UNRECOVERABLE_INSERT_ERROR.'.');
     }
 
     /**
@@ -992,7 +989,7 @@ class UploadJobStatusTest extends TestCase
     {
         $status = $this->uploadJobTestFactory(['status_code' => UploadJobStatus::STATUS_WAITING_CONFIRMATION_TO_INSERT]);
         $status->moveForward();
-        $this->expectExceptionMessage("Invalid status code " . UploadJobStatus::STATUS_WAITING_CONFIRMATION_TO_INSERT . ".");
+        $this->expectExceptionMessage('Invalid status code '.UploadJobStatus::STATUS_WAITING_CONFIRMATION_TO_INSERT.'.');
     }
 
     /**

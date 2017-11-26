@@ -3,27 +3,27 @@
  * Created by PhpStorm.
  * User: Giulio Troccoli-Allard <giulio@troccoli.it>
  * Date: 10/09/2016
- * Time: 15:32
+ * Time: 15:32.
  */
 
 namespace LVA\Services;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use LVA\Models\Division;
 use LVA\Models\Fixture;
 use LVA\Models\Team;
+use LVA\Models\UploadJob;
 use LVA\Models\UploadJobData;
 use LVA\Models\UploadJobStatus;
 use LVA\Models\Venue;
 use LVA\Repositories\TeamsRepository;
 use LVA\Repositories\VenuesRepository;
 use LVA\Services\Contracts\InteractiveUploadContract;
-use Carbon\Carbon;
-use Illuminate\Http\UploadedFile;
-use LVA\Models\UploadJob;
-use Illuminate\Support\Facades\Validator;
 
 class InteractiveFixturesUploadService implements InteractiveUploadContract
 {
@@ -40,15 +40,14 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
     private $venuesRepository;
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function __construct(
         UploadDataService $uploadDataService,
         MappingService $mappingService,
         TeamsRepository $teamsRepository,
         VenuesRepository $venuesRepository
-    )
-    {
+    ) {
         $this->uploadDataService = $uploadDataService;
         $this->mappingService = $mappingService;
 
@@ -66,7 +65,7 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
         $line = [];
         foreach (explode(',', str_replace(['"', "\n", "\r"], '', fgets($handle))) as $field) {
             if (is_numeric($field)) {
-                $line[] = (int)$field;
+                $line[] = (int) $field;
             } else {
                 $line[] = $field;
             }
@@ -80,7 +79,7 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
      ************************************/
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createJob($seasonId, UploadedFile $file)
     {
@@ -92,7 +91,7 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
             ->save();
 
         /** @var UploadedFile $fixtureFile */
-        $fixtureFile = $file->move(storage_path() . self::UPLOAD_DIR, $job->getId() . '.csv');
+        $fixtureFile = $file->move(storage_path().self::UPLOAD_DIR, $job->getId().'.csv');
 
         $handle = fopen($fixtureFile->getRealPath(), 'rb');
         $lines = 0;
@@ -108,7 +107,7 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function processJob(UploadJob $job)
     {
@@ -124,7 +123,7 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
             $processedLines = $status->getProcessedLines();
 
             /** @var resource $csvFile */
-            $csvFile = fopen(storage_path() . self::UPLOAD_DIR . $job->getId() . '.csv', 'r');
+            $csvFile = fopen(storage_path().self::UPLOAD_DIR.$job->getId().'.csv', 'r');
 
             // Get the headers
             $headers = self::readOneLine($csvFile);
@@ -281,6 +280,7 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
             // Run all the SQL in a transaction so see if they are all valid
             $valid = true;
             DB::beginTransaction();
+
             try {
                 /** @var UploadJobData $row */
                 foreach ($rows as $row) {
@@ -331,7 +331,7 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
         $job->mappedTeams()->delete();
         $job->mappedVenues()->delete();
         $job->uploadData()->delete();
-        unlink(storage_path() . self::UPLOAD_DIR . $job->getId() . '.csv');
+        unlink(storage_path().self::UPLOAD_DIR.$job->getId().'.csv');
         if (!UploadJobStatus::factory($job->getStatus())->isDone()) {
             $job->delete();
         }

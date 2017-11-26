@@ -15,9 +15,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Validator::extend('required_headers', \LVA\Validators\CustomValidators::class . '@requiredHeaders');
-        Validator::replacer('required_headers', \LVA\Validators\CustomValidators::class . '@requiredHeadersMessage');
-        Validator::extend('uk_postcode', \LVA\Validators\CustomValidators::class . '@ukPostcode');
+        Validator::extend('required_headers', \LVA\Validators\CustomValidators::class.'@requiredHeaders');
+        Validator::replacer('required_headers', \LVA\Validators\CustomValidators::class.'@requiredHeadersMessage');
+        Validator::extend('uk_postcode', \LVA\Validators\CustomValidators::class.'@ukPostcode');
     }
 
     /**

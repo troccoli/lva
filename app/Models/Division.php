@@ -5,13 +5,10 @@ namespace LVA\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Division
- *
- * @package LVA\Models
+ * Class Division.
  */
 class Division extends Model
 {
-
     /**
      * The database table used by the model.
      *
@@ -73,6 +70,6 @@ class Division extends Model
      */
     public function __toString()
     {
-        return $this->season . ' ' . $this->division;
+        return $this->season.' '.$this->division;
     }
 }

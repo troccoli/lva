@@ -2,8 +2,8 @@
 
 namespace LVA\Http\Controllers\Auth;
 
-use LVA\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use LVA\Http\Controllers\Controller;
 
 class LoginController extends Controller
 {

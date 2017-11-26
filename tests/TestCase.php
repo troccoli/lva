@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use LVA\Models\UploadJobStatus;
@@ -25,11 +24,11 @@ abstract class TestCase extends BaseTestCase
         $mapping = factory(\LVA\Models\Venue::class)->times(3)->make();
 
         $defaults = [
-            "status_code"     => \LVA\Models\UploadJobStatus::STATUS_NOT_STARTED,
-            "total_lines"     => $totalLines,
-            "processed_lines" => $this->faker->numberBetween(0, $totalLines),
-            "total_rows"      => $totalRows,
-            "processed_rows"  => $this->faker->numberBetween(0, $totalRows),
+            'status_code'     => \LVA\Models\UploadJobStatus::STATUS_NOT_STARTED,
+            'total_lines'     => $totalLines,
+            'processed_lines' => $this->faker->numberBetween(0, $totalLines),
+            'total_rows'      => $totalRows,
+            'processed_rows'  => $this->faker->numberBetween(0, $totalRows),
             'processing_line' => [
                 'division'     => factory(\LVA\Models\Division::class)->make()->getName(),
                 'match_number' => $this->faker->numberBetween(1, 20),
@@ -47,8 +46,8 @@ abstract class TestCase extends BaseTestCase
                     ['value' => $mapping[2]->getId(), 'text' => $mapping[2]->getName()],
                 ],
             ],
-            "errors"          => $this->faker->unique()->sentences(),
-            "error_line"      => $this->faker->numberBetween(1, $totalLines - 1),
+            'errors'          => $this->faker->unique()->sentences(),
+            'error_line'      => $this->faker->numberBetween(1, $totalLines - 1),
         ];
 
         return UploadJobStatus::factory(array_merge($defaults, $overrides));

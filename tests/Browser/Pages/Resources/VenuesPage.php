@@ -21,7 +21,7 @@ class VenuesPage extends BaseResourcePage
     /**
      * Assert that the browser is on the page.
      *
-     * @param  Browser $browser
+     * @param Browser $browser
      *
      * @return void
      */
@@ -38,9 +38,9 @@ class VenuesPage extends BaseResourcePage
     public function elements()
     {
         return [
-            '@venue-error'  => '#venue-field p.help-block',
+            '@venue-error'       => '#venue-field p.help-block',
             '@directions-error'  => '#directions-field p.help-block',
-            '@postcode-error'  => '#postcode-field p.help-block',
+            '@postcode-error'    => '#postcode-field p.help-block',
         ];
     }
 }

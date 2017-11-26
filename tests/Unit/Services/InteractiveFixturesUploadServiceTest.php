@@ -6,9 +6,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 /**
- * Class InteractiveFixturesUploadServiceTest
- *
- * @package Tests\Unit\Services
+ * Class InteractiveFixturesUploadServiceTest.
  */
 class InteractiveFixturesUploadServiceTest extends TestCase
 {

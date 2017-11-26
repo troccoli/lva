@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: Giulio Troccoli-Allard <giulio@troccoli.it>
  * Date: 20/11/2016
- * Time: 15:56
+ * Time: 15:56.
  */
 
 namespace LVA\Models;
@@ -12,9 +12,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class UploadJobData
- *
- * @package LVA\Models
+ * Class UploadJobData.
  */
 class UploadJobData extends Model
 {

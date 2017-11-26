@@ -12,9 +12,7 @@ use Prophecy\Argument;
 use Tests\TestCase;
 
 /**
- * Class UploadApiTest
- *
- * @package Tests\Unit\Api\v1
+ * Class UploadApiTest.
  */
 class UploadApiTest extends TestCase
 {

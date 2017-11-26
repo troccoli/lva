@@ -5,9 +5,7 @@ namespace LVA\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class AvailableAppointment
- *
- * @package LVA\Models
+ * Class AvailableAppointment.
  */
 class AvailableAppointment extends Model
 {

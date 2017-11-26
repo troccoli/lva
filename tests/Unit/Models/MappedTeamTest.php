@@ -8,9 +8,7 @@ use LVA\Models\UploadJob;
 use Tests\TestCase;
 
 /**
- * Class MappedTeamTest
- *
- * @package Tests\Unit\Models
+ * Class MappedTeamTest.
  */
 class MappedTeamTest extends TestCase
 {

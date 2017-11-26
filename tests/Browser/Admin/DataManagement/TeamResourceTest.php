@@ -3,10 +3,8 @@
 namespace Tests\Browser\Admin\DataManagement;
 
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Log;
 use Laravel\Dusk\Browser;
 use LVA\Models\Club;
-use LVA\Models\Division;
 use LVA\Models\Fixture;
 use LVA\Models\Team;
 use LVA\User;
@@ -33,7 +31,6 @@ class TeamResourceTest extends DuskTestCase
 
             $browser->visit($page->editUrl($team->id))
                 ->assertRouteIs('login');
-
         });
     }
 

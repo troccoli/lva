@@ -8,9 +8,7 @@ use LVA\Models\Venue;
 use Tests\TestCase;
 
 /**
- * Class MappedVenueTest
- *
- * @package Tests\Unit\Models
+ * Class MappedVenueTest.
  */
 class MappedVenueTest extends TestCase
 {

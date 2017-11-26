@@ -15,7 +15,7 @@ abstract class BaseResourcePage extends BasePage
      */
     public function indexUrl()
     {
-        return route($this->baseRoute . '.index', [], false);
+        return route($this->baseRoute.'.index', [], false);
     }
 
     /**
@@ -23,7 +23,7 @@ abstract class BaseResourcePage extends BasePage
      */
     public function createUrl()
     {
-        return route($this->baseRoute . '.create', [], false);
+        return route($this->baseRoute.'.create', [], false);
     }
 
     /**
@@ -33,7 +33,7 @@ abstract class BaseResourcePage extends BasePage
      */
     public function showUrl($id)
     {
-        return route($this->baseRoute . '.show', [$id], false);
+        return route($this->baseRoute.'.show', [$id], false);
     }
 
     /**
@@ -43,6 +43,6 @@ abstract class BaseResourcePage extends BasePage
      */
     public function editUrl($id)
     {
-        return route($this->baseRoute . '.edit', [$id], false);
+        return route($this->baseRoute.'.edit', [$id], false);
     }
 }

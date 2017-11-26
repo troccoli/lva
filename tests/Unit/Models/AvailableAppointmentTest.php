@@ -8,9 +8,7 @@ use LVA\Models\Role;
 use Tests\TestCase;
 
 /**
- * Class AvailableAppointmentTest
- *
- * @package Tests\Unit\Models
+ * Class AvailableAppointmentTest.
  */
 class AvailableAppointmentTest extends TestCase
 {

@@ -21,7 +21,7 @@ class TeamsPage extends BaseResourcePage
     /**
      * Assert that the browser is on the page.
      *
-     * @param  Browser $browser
+     * @param Browser $browser
      *
      * @return void
      */
@@ -39,7 +39,7 @@ class TeamsPage extends BaseResourcePage
     {
         return [
             '@club-id-error'  => '#club-id-field p.help-block',
-            '@team-error'  => '#team-field p.help-block',
+            '@team-error'     => '#team-field p.help-block',
             '@trigram-error'  => '#trigram-field p.help-block',
         ];
     }

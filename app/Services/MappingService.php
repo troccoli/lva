@@ -5,11 +5,8 @@ namespace LVA\Services;
 use LVA\Models\Team;
 use LVA\Models\Venue;
 
-
 /**
- * Class MappingService
- *
- * @package LVA\Services
+ * Class MappingService.
  */
 class MappingService
 {
