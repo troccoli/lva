@@ -4,7 +4,6 @@ namespace Tests\Browser\Admin\DataManagement;
 
 use Illuminate\Database\Eloquent\Collection;
 use Laravel\Dusk\Browser;
-use LVA\Models\Division;
 use LVA\Models\Fixture;
 use LVA\Models\Venue;
 use LVA\User;
@@ -31,7 +30,6 @@ class VenueResourceTest extends DuskTestCase
 
             $browser->visit($page->editUrl($venue->id))
                 ->assertRouteIs('login');
-
         });
     }
 

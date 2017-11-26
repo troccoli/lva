@@ -7,9 +7,7 @@ use LVA\Models\Season;
 use Tests\TestCase;
 
 /**
- * Class SeasonTest
- *
- * @package Tests\Unit\Models
+ * Class SeasonTest.
  */
 class SeasonTest extends TestCase
 {
@@ -50,7 +48,6 @@ class SeasonTest extends TestCase
         /** @var Season $season */
         $season = factory(Season::class)->create();
 
-        $this->assertEquals($season->season, (string)$season);
-
+        $this->assertEquals($season->season, (string) $season);
     }
 }

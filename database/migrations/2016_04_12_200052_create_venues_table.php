@@ -19,7 +19,6 @@ class CreateVenuesTable extends Migration
 
             $table->timestamps();
         });
-
     }
 
     /**
@@ -31,5 +30,4 @@ class CreateVenuesTable extends Migration
     {
         Schema::drop('venues');
     }
-
 }

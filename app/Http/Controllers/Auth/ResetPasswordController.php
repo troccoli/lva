@@ -2,8 +2,8 @@
 
 namespace LVA\Http\Controllers\Auth;
 
-use LVA\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
+use LVA\Http\Controllers\Controller;
 
 class ResetPasswordController extends Controller
 {

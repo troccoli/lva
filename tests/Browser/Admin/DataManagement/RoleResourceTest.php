@@ -30,7 +30,6 @@ class RoleResourceTest extends DuskTestCase
 
             $browser->visit($page->editUrl($role->id))
                 ->assertRouteIs('login');
-
         });
     }
 

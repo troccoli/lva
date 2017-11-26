@@ -9,9 +9,7 @@ use LVA\Models\Club;
 use LVA\Models\Team;
 
 /**
- * Class TeamsController
- *
- * @package LVA\Http\Controllers\Admin\DataManagement
+ * Class TeamsController.
  */
 class TeamsController extends Controller
 {
@@ -48,7 +46,7 @@ class TeamsController extends Controller
     {
         $this->validate($request, [
             'club_id' => 'required|exists:clubs,id',
-            'team'    => 'required|unique:teams,team,NULL,id,club_id,' . $request->input('club_id'),
+            'team'    => 'required|unique:teams,team,NULL,id,club_id,'.$request->input('club_id'),
             'trigram' => 'required|alpha_num|size:3|unique:teams,trigram',
         ]);
 
@@ -100,8 +98,8 @@ class TeamsController extends Controller
     {
         $this->validate($request, [
             'club_id' => 'required|exists:clubs,id',
-            'team'    => 'required|unique:teams,team,' . $id . ',id,club_id,' . $request->input('club_id'),
-            'trigram' => 'required|alpha_num|size:3|unique:teams,trigram,' . $id . ',id',
+            'team'    => 'required|unique:teams,team,'.$id.',id,club_id,'.$request->input('club_id'),
+            'trigram' => 'required|alpha_num|size:3|unique:teams,trigram,'.$id.',id',
         ]);
 
         /** @var Team $team */
@@ -133,5 +131,4 @@ class TeamsController extends Controller
 
         return redirect()->route('teams.index');
     }
-
 }

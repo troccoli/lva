@@ -2,12 +2,12 @@
 
 namespace LVA\Http\Controllers\Auth;
 
-use Illuminate\Http\Request;
-use LVA\User;
-use LVA\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use LVA\Http\Controllers\Controller;
+use LVA\User;
 
 class RegisterController extends Controller
 {
@@ -50,11 +50,10 @@ class RegisterController extends Controller
     {
     }
 
-
     /**
      * Get a validator for an incoming registration request.
      *
-     * @param  array $data
+     * @param array $data
      *
      * @return \Illuminate\Contracts\Validation\Validator
      */
@@ -70,7 +69,7 @@ class RegisterController extends Controller
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array $data
+     * @param array $data
      *
      * @return User
      */

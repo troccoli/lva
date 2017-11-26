@@ -5,9 +5,7 @@ namespace LVA\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Venue
- *
- * @package LVA\Models
+ * Class Venue.
  */
 class Venue extends Model
 {
@@ -86,13 +84,13 @@ class Venue extends Model
     public function setPostcodeAttribute($postcode)
     {
         //remove non alphanumeric characters
-        $cleanPostcode = preg_replace("/[^A-Za-z0-9]/", '', $postcode);
+        $cleanPostcode = preg_replace('/[^A-Za-z0-9]/', '', $postcode);
 
         //make uppercase
         $cleanPostcode = strtoupper($cleanPostcode);
 
         //insert space
-        $postcode = substr($cleanPostcode, 0, -3) . " " . substr($cleanPostcode, -3);
+        $postcode = substr($cleanPostcode, 0, -3).' '.substr($cleanPostcode, -3);
 
         $this->attributes['postcode'] = $postcode;
     }

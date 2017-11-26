@@ -31,7 +31,6 @@ class AvailableAppointmentResourceTest extends DuskTestCase
 
             $browser->visit($page->editUrl($availableAppointment->id))
                 ->assertRouteIs('login');
-
         });
     }
 

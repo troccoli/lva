@@ -2,13 +2,11 @@
 
 namespace LVA\Http\Requests;
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Support\Facades\Auth;
 
 /**
- * Class UpdateAvailableAppointmentRequest
- *
- * @package LVA\Http\Requests
+ * Class UpdateAvailableAppointmentRequest.
  */
 class UpdateAvailableAppointmentRequest extends Request
 {
@@ -30,8 +28,8 @@ class UpdateAvailableAppointmentRequest extends Request
     public function rules()
     {
         return [
-            'fixture_id' => 'unique:available_appointments,fixture_id,' . $this->input('id') . ',id,role_id,' . $this->input('role_id'),
-            'role_id'    => 'unique:available_appointments,role_id,' . $this->input('id') . ',id,fixture_id,' . $this->input('fixture_id'),
+            'fixture_id' => 'unique:available_appointments,fixture_id,'.$this->input('id').',id,role_id,'.$this->input('role_id'),
+            'role_id'    => 'unique:available_appointments,role_id,'.$this->input('id').',id,fixture_id,'.$this->input('fixture_id'),
         ];
     }
 

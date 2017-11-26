@@ -3,18 +3,16 @@
  * Created by PhpStorm.
  * User: Giulio Troccoli-Allard <giulio@troccoli.it>
  * Date: 20/11/2016
- * Time: 16:05
+ * Time: 16:05.
  */
 
 namespace LVA\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class MappedVenue
- *
- * @package LVA\Models
+ * Class MappedVenue.
  */
 class MappedVenue extends Model
 {

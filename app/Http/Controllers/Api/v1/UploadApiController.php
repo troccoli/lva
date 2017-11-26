@@ -3,12 +3,13 @@
  * Created by PhpStorm.
  * User: Giulio Troccoli-Allard <giulio@troccoli.it>
  * Date: 26/09/2016
- * Time: 18:33
+ * Time: 18:33.
  */
 
 namespace LVA\Http\Controllers\Api\v1;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
 use LVA\Http\Controllers\Controller;
 use LVA\Models\MappedTeam;
 use LVA\Models\MappedVenue;
@@ -17,7 +18,6 @@ use LVA\Models\UploadJob;
 use LVA\Models\UploadJobStatus;
 use LVA\Models\VenueSynonym;
 use LVA\Services\InteractiveFixturesUploadService;
-use Illuminate\Support\Facades\Input;
 use LVA\Services\UploadDataService;
 
 class UploadApiController extends Controller
@@ -28,7 +28,7 @@ class UploadApiController extends Controller
     private $uploadDataService;
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function __construct(InteractiveFixturesUploadService $uploadService, UploadDataService $uploadDataService)
     {

@@ -21,7 +21,6 @@ class CreateDivisionsTable extends Migration
 
             $table->foreign('season_id')->references('id')->on('seasons');
         });
-
     }
 
     /**
@@ -36,5 +35,4 @@ class CreateDivisionsTable extends Migration
         });
         Schema::drop('divisions');
     }
-
 }

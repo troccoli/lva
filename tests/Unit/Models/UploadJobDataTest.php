@@ -10,9 +10,7 @@ use LVA\Models\VenueSynonym;
 use Tests\TestCase;
 
 /**
- * Class UploadJobDataTest
- *
- * @package Tests\Unit\Models
+ * Class UploadJobDataTest.
  */
 class UploadJobDataTest extends TestCase
 {
