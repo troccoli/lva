@@ -22,6 +22,7 @@ install:
 before_script:
   - phpenv config-rm xdebug.ini
   - cp env.travis .env
+  - cp .env .env.dusk.local
   - composer install --no-progress --no-suggest --no-interaction --optimize-autoloader
   - php artisan key:generate
   - npm install
