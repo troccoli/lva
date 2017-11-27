@@ -19,15 +19,15 @@ php:
   - 7.1
 install:
   - nvm install v8.1.2
+  - travis_retry composer install --no-progress --no-suggest --no-interaction --optimize-autoloader
+  - npm install
+  - npm rebuild node-sass
+  - npm run production
 before_script:
   - phpenv config-rm xdebug.ini
   - cp env.travis .env
   - cp .env .env.dusk.local
-  - composer install --no-progress --no-suggest --no-interaction --optimize-autoloader
   - php artisan key:generate
-  - npm install
-  - npm rebuild node-sass
-  - npm run production
   - touch database/database.sqlite
   - php artisan migrate
 
