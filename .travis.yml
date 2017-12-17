@@ -1,7 +1,10 @@
+sudo: required
+dist: trusty
 branches:
   only:
-  - master
-  - dev
+    - master
+    - dev
+    - lva-37
 notifications:
   email:
     on_success: always
@@ -13,25 +16,26 @@ notifications:
     on_failure: always
 language: php
 php:
-- 7.1
+  - 7.1
 install:
-- nvm install v8.1.2
-sudo: required
-dist: trusty
+  - nvm install v8.1.2
+  - travis_retry composer install --no-progress --no-suggest --no-interaction --optimize-autoloader
+  - npm install
+  - npm rebuild node-sass
+  - npm run production
 before_script:
-- phpenv config-rm xdebug.ini
-- cp env.travis .env
-- composer install --no-progress --no-suggest --no-interaction --optimize-autoloader
-- php artisan key:generate
-- npm install
-- npm rebuild node-sass
-- npm run production
-- touch database/database.sqlite
-- php artisan migrate
-- export DISPLAY=:99.0
-- sh -e /etc/init.d/xvfb start
-- ./vendor/laravel/dusk/bin/chromedriver-linux &
-- php artisan serve > /dev/null 2>&1 &
+  - phpenv config-rm xdebug.ini
+  - cp env.travis .env
+  - cp .env .env.dusk.local
+  - php artisan key:generate
+  - touch database/database.sqlite
+  - php artisan migrate
+
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+  - ./vendor/laravel/dusk/bin/chromedriver-linux &
+  - php artisan serve > /dev/null 2>&1 &
+
 script:
-- vendor/bin/phpunit
-- php artisan dusk
+  - vendor/bin/phpunit
+  - php artisan dusk
