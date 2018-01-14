@@ -101,24 +101,6 @@ class FixtureResourceTest extends DuskTestCase
                 ->clickLink('New fixture')
                 ->assertPathIs($page->createUrl());
 
-            // All fields missing
-            $browser->visit($page->createUrl())
-                ->pressSubmit('Add')
-                ->assertPathIs($page->createUrl())
-                ->assertSeeIn('@division-id-error', 'The division id field is required.')
-                ->assertSeeIn('@match-number-error', 'The match number field is required.')
-                ->assertSeeIn('@match-date-error', 'The match date field is required.')
-                ->assertSeeIn('@warm-up-time-error', 'The warm up time field is required.')
-                ->assertSeeIn('@start-time-error', 'The start time field is required.')
-                ->assertSeeIn('@home-team-id-error', 'The home team id field is required.')
-                ->assertSeeIn('@away-team-id-error', 'The away team id field is required.')
-                ->assertSeeIn('@venue-id-error', 'The venue id field is required.')
-                ->assertVisible('@form-errors');
-            // @todo add a test when the division is not selected (#15)
-            // @todo add a test when the home team is not selected (#15)
-            // @todo add a test when the away team is not selected (#15)
-            // @todo add a test when the venue is not selected (#15)
-
             // Make a fixture now. This will create a division, two teams (and two clubs) and a venue
             // which is why this is done here so that the test above does not have any of those
             // pre-selected
@@ -155,6 +137,24 @@ class FixtureResourceTest extends DuskTestCase
                 ->pressSubmit('Add')
                 ->assertPathIs($page->indexUrl())
                 ->assertSeeIn('@success-notification', 'Fixture added!');
+
+            // All fields missing
+            $browser->visit($page->createUrl())
+                ->pressSubmit('Add')
+                ->assertPathIs($page->createUrl())
+                ->assertSeeIn('@division-id-error', 'The division id field is required.')
+                ->assertSeeIn('@match-number-error', 'The match number field is required.')
+                ->assertSeeIn('@match-date-error', 'The match date field is required.')
+                ->assertSeeIn('@warm-up-time-error', 'The warm up time field is required.')
+                ->assertSeeIn('@start-time-error', 'The start time field is required.')
+                ->assertSeeIn('@home-team-id-error', 'The home team id field is required.')
+                ->assertSeeIn('@away-team-id-error', 'The away team id field is required.')
+                ->assertSeeIn('@venue-id-error', 'The venue id field is required.')
+                ->assertVisible('@form-errors');
+            // @todo add a test when the division is not selected (#15)
+            // @todo add a test when the home team is not selected (#15)
+            // @todo add a test when the away team is not selected (#15)
+            // @todo add a test when the venue is not selected (#15)
 
             /** @var Fixture $fixture3 */
             $fixture3 = factory(Fixture::class)->make();
