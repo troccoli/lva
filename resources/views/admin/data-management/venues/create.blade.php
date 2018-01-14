@@ -8,7 +8,7 @@
 
         @include('_partial.crud-errors')
 
-        {!! Form::open(['url' => 'admin/data-management/venues', 'class' => 'form-horizontal']) !!}
+        {!! Form::open(['route' => 'venues.store', 'class' => 'form-horizontal']) !!}
 
         @include('admin.data-management.venues._form', ['submitText' => 'Add'])
 

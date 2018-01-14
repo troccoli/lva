@@ -1,7 +1,8 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddNoteToFixturesTable extends Migration
 {
@@ -13,7 +14,7 @@ class AddNoteToFixturesTable extends Migration
     public function up()
     {
         Schema::table('fixtures', function (Blueprint $table) {
-            $table->text('notes')->default(null)->after('venue_id');
+            $table->text('notes')->nullable()->default(null)->after('venue_id');
         });
     }
 

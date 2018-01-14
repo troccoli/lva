@@ -2,7 +2,7 @@
 
 $factory->define(\LVA\Models\UploadJob::class, function (\Faker\Generator $faker) {
     return [
-        'file'      => $faker->word . str_random(5) . '.csv',
+        'file'      => $faker->word.str_random(5).'.csv',
         'type'      => 'fixtures',
         'status'    => json_encode(['status_code' => \LVA\Models\UploadJobStatus::STATUS_NOT_STARTED]),
         'season_id' => function () {

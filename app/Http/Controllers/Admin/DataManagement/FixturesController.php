@@ -2,20 +2,17 @@
 
 namespace LVA\Http\Controllers\Admin\DataManagement;
 
+use Laracasts\Flash\Flash;
+use LVA\Http\Controllers\Controller;
 use LVA\Http\Requests\StoreFixtureRequest as StoreRequest;
 use LVA\Http\Requests\UpdateFixtureRequest as UpdateRequest;
-use LVA\Http\Controllers\Controller;
-
-use Laracasts\Flash\Flash;
 use LVA\Models\Division;
 use LVA\Models\Fixture;
 use LVA\Models\Team;
 use LVA\Models\Venue;
 
 /**
- * Class FixturesController
- *
- * @package LVA\Http\Controllers\Admin\DataManagement
+ * Class FixturesController.
  */
 class FixturesController extends Controller
 {
@@ -58,7 +55,7 @@ class FixturesController extends Controller
 
         Flash::success('Fixture added!');
 
-        return redirect('admin/data-management/fixtures');
+        return redirect()->route('fixtures.index');
     }
 
     /**
@@ -108,13 +105,13 @@ class FixturesController extends Controller
 
         Flash::success('Fixture updated!');
 
-        return redirect('admin/data-management/fixtures');
+        return redirect()->route('fixtures.index');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int $id
+     * @param int $id
      *
      * @return mixed
      */
@@ -127,7 +124,7 @@ class FixturesController extends Controller
         } else {
             Flash::error('Cannot delete because they are existing appointments for this fixture.');
         }
-        return redirect('admin/data-management/fixtures');
-    }
 
+        return redirect()->route('fixtures.index');
+    }
 }

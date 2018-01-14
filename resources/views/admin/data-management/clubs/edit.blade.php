@@ -10,7 +10,7 @@
 
         {!! Form::model($club, [
             'method' => 'PATCH',
-            'url' => ['admin/data-management/clubs', $club->id],
+            'route' => ['clubs.update', $club->id],
             'class' => 'form-horizontal'
         ]) !!}
 

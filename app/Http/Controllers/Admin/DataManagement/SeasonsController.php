@@ -3,16 +3,12 @@
 namespace LVA\Http\Controllers\Admin\DataManagement;
 
 use Illuminate\Http\Request;
-use LVA\Http\Controllers\Controller;
-
 use Laracasts\Flash\Flash;
+use LVA\Http\Controllers\Controller;
 use LVA\Models\Season;
 
-
 /**
- * Class SeasonsController
- *
- * @package LVA\Http\Controllers\Admin\DataManagement
+ * Class SeasonsController.
  */
 class SeasonsController extends Controller
 {
@@ -53,7 +49,7 @@ class SeasonsController extends Controller
 
         Flash::success('Season added!');
 
-        return redirect('admin/data-management/seasons');
+        return redirect()->route('seasons.index');
     }
 
     /**
@@ -94,7 +90,7 @@ class SeasonsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, ['season' => 'required|unique:seasons,season,' . $id]);
+        $this->validate($request, ['season' => 'required|unique:seasons,season,'.$id]);
 
         /** @var Season $season */
         $season = Season::findOrFail($id);
@@ -102,7 +98,7 @@ class SeasonsController extends Controller
 
         Flash::success('Season updated!');
 
-        return redirect('admin/data-management/seasons');
+        return redirect()->route('seasons.index');
     }
 
     /**
@@ -122,8 +118,6 @@ class SeasonsController extends Controller
             Flash::error('Cannot delete because they are existing divisions in this season.');
         }
 
-        return redirect('admin/data-management/seasons');
-
+        return redirect()->route('seasons.index');
     }
-
 }

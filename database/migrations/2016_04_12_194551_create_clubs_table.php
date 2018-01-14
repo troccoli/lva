@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateClubsTable extends Migration
 {
@@ -12,16 +13,12 @@ class CreateClubsTable extends Migration
      */
     public function up()
     {
-        
-            Schema::create('clubs', function(Blueprint $table) {
-                $table->engine = 'InnoDB';
-                
-                $table->increments('id');
-                $table->string('club');
+        Schema::create('clubs', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('club');
 
-                $table->timestamps();
-            });
-            
+            $table->timestamps();
+        });
     }
 
     /**
@@ -33,5 +30,4 @@ class CreateClubsTable extends Migration
     {
         Schema::drop('clubs');
     }
-
 }

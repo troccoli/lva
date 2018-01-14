@@ -1,7 +1,8 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddTrigramToTeamsTable extends Migration
 {
@@ -13,6 +14,7 @@ class AddTrigramToTeamsTable extends Migration
     public function up()
     {
         DB::beginTransaction();
+
         try {
             Schema::table('teams', function (Blueprint $table) {
                 $table->char('trigram', 3)->after('team')->default('###');
@@ -26,7 +28,6 @@ class AddTrigramToTeamsTable extends Migration
 
             Schema::table('teams', function (Blueprint $table) {
                 $table->unique('trigram');
-
             });
 
             DB::commit();

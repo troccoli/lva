@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateFixturesTable extends Migration
 {
@@ -12,19 +13,16 @@ class CreateFixturesTable extends Migration
      */
     public function up()
     {
-
         Schema::create('fixtures', function (Blueprint $table) {
-            $table->engine = 'InnoDB';
-            
             $table->increments('id');
-            $table->integer('division_id')->unsigned();
-            $table->integer('match_number')->unsigned();
+            $table->unsignedInteger('division_id');
+            $table->unsignedInteger('match_number');
             $table->date('match_date');
             $table->time('warm_up_time');
             $table->time('start_time');
-            $table->integer('home_team_id')->unsigned();
-            $table->integer('away_team_id')->unsigned();
-            $table->integer('venue_id')->unsigned();
+            $table->unsignedInteger('home_team_id');
+            $table->unsignedInteger('away_team_id');
+            $table->unsignedInteger('venue_id');
 
             $table->timestamps();
 
@@ -33,7 +31,6 @@ class CreateFixturesTable extends Migration
             $table->foreign('away_team_id')->references('id')->on('teams');
             $table->foreign('venue_id')->references('id')->on('venues');
         });
-
     }
 
     /**
@@ -51,5 +48,4 @@ class CreateFixturesTable extends Migration
         });
         Schema::drop('fixtures');
     }
-
 }

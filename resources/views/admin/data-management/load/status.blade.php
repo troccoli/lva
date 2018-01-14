@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('stylesheets')
-    <link href="{{ url(elixir('css/load-fixtures.css')) }}" rel="stylesheet"/>
+    <link href="{{ mix('css/load-fixtures.css') }}" rel="stylesheet"/>
 @endsection
 
 @section('content')
@@ -66,8 +66,9 @@
                         </div>
                     </div>
                     <p>
-                        The following data has not been found in the database. If it's new then add it. If not, then
-                        please check the available options and map it to one of the existing.
+                        The following data has not been found in the database.
+                        Please look at the list of alternatives for each data and correct it
+                        to the most appropriate alternative.
                     </p>
                     <h4>What would you like to do?</h4>
                     <div id="unknowns" class="container-fluid"></div>
@@ -125,5 +126,5 @@
 
 @section('javascript')
     <script src="https://cdn.jsdelivr.net/jquery.loadingoverlay/1.4.1/loadingoverlay.min.js"></script>
-    <script src="{{ url(elixir('js/load-fixtures-status-update.js')) }}"></script>
+    <script src="{{ mix('js/load-fixtures-status-update.js') }}"></script>
 @endsection

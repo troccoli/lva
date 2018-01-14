@@ -3,16 +3,13 @@
 namespace LVA\Http\Controllers\Admin\DataManagement;
 
 use Illuminate\Http\Request;
-use LVA\Http\Controllers\Controller;
-
 use Laracasts\Flash\Flash;
+use LVA\Http\Controllers\Controller;
 use LVA\Models\Club;
 use LVA\Models\Team;
 
 /**
- * Class TeamsController
- *
- * @package LVA\Http\Controllers\Admin\DataManagement
+ * Class TeamsController.
  */
 class TeamsController extends Controller
 {
@@ -49,15 +46,15 @@ class TeamsController extends Controller
     {
         $this->validate($request, [
             'club_id' => 'required|exists:clubs,id',
-            'team'    => 'required|unique:teams,team,NULL,id,club_id,' . $request->input('club_id'),
-            'trigram' => 'required|alpha|size:3|unique:teams,trigram',
+            'team'    => 'required|unique:teams,team,NULL,id,club_id,'.$request->input('club_id'),
+            'trigram' => 'required|alpha_num|size:3|unique:teams,trigram',
         ]);
 
         Team::create($request->all());
 
         Flash::success('Team added!');
 
-        return redirect('admin/data-management/teams');
+        return redirect()->route('teams.index');
     }
 
     /**
@@ -101,8 +98,8 @@ class TeamsController extends Controller
     {
         $this->validate($request, [
             'club_id' => 'required|exists:clubs,id',
-            'team'    => 'required|unique:teams,team,' . $id . ',id,club_id,' . $request->input('club_id'),
-            'trigram' => 'required|alpha|size:3|unique:teams,trigram,' . $id . ',id',
+            'team'    => 'required|unique:teams,team,'.$id.',id,club_id,'.$request->input('club_id'),
+            'trigram' => 'required|alpha_num|size:3|unique:teams,trigram,'.$id.',id',
         ]);
 
         /** @var Team $team */
@@ -111,7 +108,7 @@ class TeamsController extends Controller
 
         Flash::success('Team updated!');
 
-        return redirect('admin/data-management/teams');
+        return redirect()->route('teams.index');
     }
 
     /**
@@ -132,7 +129,6 @@ class TeamsController extends Controller
             Flash::error('Cannot delete because they are existing fixtures for this team.');
         }
 
-        return redirect('admin/data-management/teams');
+        return redirect()->route('teams.index');
     }
-
 }

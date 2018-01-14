@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateAvailableAppointmentsTable extends Migration
 {
@@ -13,11 +14,9 @@ class CreateAvailableAppointmentsTable extends Migration
     public function up()
     {
         Schema::create('available_appointments', function (Blueprint $table) {
-            $table->engine = "InnoDB";
-
             $table->increments('id');
-            $table->integer('fixture_id')->unsigned();
-            $table->integer('role_id')->unsigned();
+            $table->unsignedInteger('fixture_id');
+            $table->unsignedInteger('role_id');
             $table->timestamps();
 
             $table->unique(['fixture_id', 'role_id']);
@@ -36,5 +35,4 @@ class CreateAvailableAppointmentsTable extends Migration
     {
         Schema::drop('available_appointments');
     }
-
 }

@@ -10,7 +10,7 @@
 
         {!! Form::model($venue, [
             'method' => 'PATCH',
-            'url' => ['admin/data-management/venues', $venue->id],
+            'route' => ['venues.update', $venue->id],
             'class' => 'form-horizontal'
         ]) !!}
 

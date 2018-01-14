@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateVenuesTable extends Migration
 {
@@ -12,16 +13,12 @@ class CreateVenuesTable extends Migration
      */
     public function up()
     {
-        
-            Schema::create('venues', function(Blueprint $table) {
-                $table->engine = 'InnoDB';
-                
-                $table->increments('id');
-                $table->string('venue');
+        Schema::create('venues', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('venue');
 
-                $table->timestamps();
-            });
-            
+            $table->timestamps();
+        });
     }
 
     /**
@@ -33,5 +30,4 @@ class CreateVenuesTable extends Migration
     {
         Schema::drop('venues');
     }
-
 }

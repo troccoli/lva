@@ -5,9 +5,7 @@ namespace LVA\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Team
- *
- * @package LVA\Models
+ * Class Team.
  */
 class Team extends Model
 {

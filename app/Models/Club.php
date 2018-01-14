@@ -5,9 +5,7 @@ namespace LVA\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Club
- *
- * @package LVA\Models
+ * Class Club.
  */
 class Club extends Model
 {

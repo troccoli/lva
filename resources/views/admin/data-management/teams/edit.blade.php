@@ -10,7 +10,7 @@
 
         {!! Form::model($team, [
             'method' => 'PATCH',
-            'url' => ['admin/data-management/teams', $team->id],
+            'route' => ['teams.update', $team->id],
             'class' => 'form-horizontal'
         ]) !!}
 

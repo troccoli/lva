@@ -5,7 +5,7 @@
     <div class="container-fluid">
         <h1>Upload fixtures</h1>
         <hr/>
-        {!! Form::open(['url' => route('uploadFixtures'), 'class' => 'form-horizontal', 'files' => true]) !!}
+        {!! Form::open(['route' => 'uploadFixtures', 'class' => 'form-horizontal', 'files' => true]) !!}
 
         <div class="form-group {{ $errors->has('season_id') ? 'has-error' : ''}}">
             {!! Form::label('season_id', 'Season: ', ['class' => 'col-sm-3 control-label']) !!}
@@ -43,5 +43,5 @@
 @endsection
 
 @section('javascript')
-    <script src="{{ url(elixir('js/file-browse.js')) }}"></script>
+    <script src="{{ mix('js/file-browse.js') }}"></script>
 @endsection

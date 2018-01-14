@@ -12,12 +12,14 @@
 */
 
 $factory->define(\LVA\User::class, function (\Faker\Generator $faker) {
+    static $password;
+
     return [
         'name'           => $faker->unique()->name,
-        'email'          => $faker->unique()->email,
-        'password'       => bcrypt($faker->unique()->password()),
-        'remember_token' => $faker->unique()->md5,
-        'api_token'      => $faker->unique()->md5,
+        'email'          => $faker->unique()->safeEmail,
+        'password'       => $password ?: $password = bcrypt('secret'),
+        'remember_token' => str_random(10),
+        'api_token'      => str_random(10),
     ];
 });
 
@@ -64,8 +66,8 @@ $factory->define(\LVA\Models\Fixture::class, function (\Faker\Generator $faker) 
         },
         'match_number' => $faker->unique()->numberBetween(1, 100),
         'match_date'   => $faker->unique()->date('Y-m-d'),
-        'warm_up_time' => $faker->unique()->time('H:i:00'),
-        'start_time'   => $faker->unique()->time('H:i:00'),
+        'warm_up_time' => $faker->unique()->time('H:i'),
+        'start_time'   => $faker->unique()->time('H:i'),
         'notes'        => $faker->paragraph,
     ];
 });

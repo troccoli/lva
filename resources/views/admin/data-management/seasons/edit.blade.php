@@ -10,7 +10,7 @@
 
         {!! Form::model($season, [
             'method' => 'PATCH',
-            'url' => ['admin/data-management/seasons', $season->id],
+            'route' => ['seasons.update', $season->id],
             'class' => 'form-horizontal'
         ]) !!}
 

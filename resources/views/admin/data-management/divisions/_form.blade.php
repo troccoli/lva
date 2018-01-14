@@ -1,15 +1,15 @@
-<div class="form-group {{ $errors->has('season_id') ? 'has-error' : ''}}">
+<div id="season-id-field" class="form-group {{ $errors->has('season_id') ? 'has-error' : ''}}">
     {!! Form::label('season_id', 'Season: ', ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-6">
-        {!! Form::select('season_id', array_column($seasons->toArray(), 'season', 'id'), null, ['class' => 'form-control']) !!}
+        {!! Form::select('season_id', array_column($seasons->toArray(), 'season', 'id'), null, ['placeholder' => 'Choose a season', 'class' => 'form-control']) !!}
         {!! $errors->first('season_id', '<p class="help-block">:message</p>') !!}
     </div>
 </div>
 
-<div class="form-group {{ $errors->has('division') ? 'has-error' : ''}}">
+<div id="division-field" class="form-group {{ $errors->has('division') ? 'has-error' : ''}}">
     {!! Form::label('division', 'Division: ', ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-6">
-        {!! Form::text('division', null, ['class' => 'form-control', 'required' => true, 'autofocus' => true]) !!}
+        {!! Form::text('division', null, ['class' => 'form-control', 'autofocus' => true]) !!}
         {!! $errors->first('division', '<p class="help-block">:message</p>') !!}
     </div>
 </div>

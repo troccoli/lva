@@ -3,19 +3,15 @@
 namespace LVA\Http\Controllers\Admin\DataManagement;
 
 use Illuminate\Http\Request;
-use LVA\Http\Controllers\Controller;
-
 use Laracasts\Flash\Flash;
+use LVA\Http\Controllers\Controller;
 use LVA\Models\Club;
 
 /**
- * Class ClubsController
- *
- * @package LVA\Http\Controllers\Admin\DataManagement
+ * Class ClubsController.
  */
 class ClubsController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
@@ -53,13 +49,13 @@ class ClubsController extends Controller
 
         Flash::success('Club added!');
 
-        return redirect('admin/data-management/clubs');
+        return redirect()->route('clubs.index');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int $id
+     * @param int $id
      *
      * @return mixed
      */
@@ -73,7 +69,7 @@ class ClubsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int $id
+     * @param int $id
      *
      * @return mixed
      */
@@ -94,7 +90,7 @@ class ClubsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, ['club' => 'required|unique:clubs,club,' . $id]);
+        $this->validate($request, ['club' => 'required|unique:clubs,club,'.$id]);
 
         /** @var Club $club */
         $club = Club::findOrFail($id);
@@ -102,13 +98,13 @@ class ClubsController extends Controller
 
         Flash::success('Club updated!');
 
-        return redirect('admin/data-management/clubs');
+        return redirect()->route('clubs.index');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int $id
+     * @param int $id
      *
      * @return mixed
      */
@@ -122,7 +118,6 @@ class ClubsController extends Controller
             Flash::error('Cannot delete because they are existing teams in this club.');
         }
 
-        return redirect('admin/data-management/clubs');
+        return redirect()->route('clubs.index');
     }
-
 }

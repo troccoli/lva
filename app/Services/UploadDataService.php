@@ -3,15 +3,14 @@
  * Created by PhpStorm.
  * User: Giulio Troccoli-Allard <giulio@troccoli.it>
  * Date: 05/02/2017
- * Time: 17:02
+ * Time: 17:02.
  */
 
 namespace LVA\Services;
 
 use Illuminate\Database\Eloquent\Collection;
-use LVA\Models\UploadJob;
-use LVA\Models\UploadJobData;
 use Illuminate\Database\Eloquent\Model;
+use LVA\Models\UploadJobData;
 
 class UploadDataService
 {

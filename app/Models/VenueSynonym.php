@@ -5,9 +5,7 @@ namespace LVA\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class VenueSynonym
- *
- * @package LVA\Models
+ * Class VenueSynonym.
  */
 class VenueSynonym extends Model
 {
@@ -37,8 +35,6 @@ class VenueSynonym extends Model
         if ($synonym) {
             return $synonym->venue;
         }
-
-        return null;
     }
 
     /**

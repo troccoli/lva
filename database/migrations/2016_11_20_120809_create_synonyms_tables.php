@@ -1,7 +1,8 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateSynonymsTables extends Migration
 {
@@ -13,8 +14,6 @@ class CreateSynonymsTables extends Migration
     public function up()
     {
         Schema::create('venues_synonyms', function (Blueprint $table) {
-            $table->engine = 'InnoDB';
-
             $table->increments('id');
             $table->string('synonym');
             $table->unsignedInteger('venue_id');
@@ -28,8 +27,6 @@ class CreateSynonymsTables extends Migration
         });
 
         Schema::create('teams_synonyms', function (Blueprint $table) {
-            $table->engine = 'InnoDB';
-
             $table->increments('id');
             $table->string('synonym');
             $table->unsignedInteger('team_id');

@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
 @section('stylesheets')
-    <link href="{{ url(elixir('css/data-management.css')) }}" rel="stylesheet"/>
+    <link href="{{ mix('css/data-management.css') }}" rel="stylesheet"/>
 @endsection
 @section('content')
     <div class="container">
         <div class="row">
             <div class="col-xs-3">
-                <div class="panel panel-info">
+                <div id="crud-panel" class="panel panel-info">
                     <div class="panel-heading">
                         <h3 class="panel-title">
                             Direct data management
@@ -19,43 +19,43 @@
                         </p>
                         <ul class="nav nav-pills nav-stacked">
                             <li role="presentation">
-                                <a id="seasons-table" href="{{ route('admin.data-management.seasons.index') }}">
+                                <a id="seasons-table" href="{{ route('seasons.index') }}">
                                     <i class="fa fa-table"></i> Seasons
                                 </a>
                             </li>
                             <li role="presentation">
-                                <a id="clubs-table" href="{{ route('admin.data-management.clubs.index') }}">
+                                <a id="clubs-table" href="{{ route('clubs.index') }}">
                                     <i class="fa fa-table"></i> Clubs
                                 </a>
                             </li>
                             <li role="presentation">
-                                <a id="venues-table" href="{{ route('admin.data-management.venues.index') }}">
+                                <a id="venues-table" href="{{ route('venues.index') }}">
                                     <i class="fa fa-table"></i> Venues
                                 </a>
                             </li>
                             <li role="presentation">
-                                <a id="roles-table" href="{{ route('admin.data-management.roles.index') }}">
+                                <a id="roles-table" href="{{ route('roles.index') }}">
                                     <i class="fa fa-table"></i> Roles
                                 </a>
                             </li>
                             <li role="presentation">
-                                <a id="divisions-table" href="{{ route('admin.data-management.divisions.index') }}">
+                                <a id="divisions-table" href="{{ route('divisions.index') }}">
                                     <i class="fa fa-table"></i> Divisions
                                 </a>
                             </li>
                             <li role="presentation">
-                                <a id="teams-table" href="{{ route('admin.data-management.teams.index') }}">
+                                <a id="teams-table" href="{{ route('teams.index') }}">
                                     <i class="fa fa-table"></i> Teams
                                 </a>
                             </li>
                             <li role="presentation">
-                                <a id="fixtures-table" href="{{ route('admin.data-management.fixtures.index') }}">
+                                <a id="fixtures-table" href="{{ route('fixtures.index') }}">
                                     <i class="fa fa-table"></i> Fixtures
                                 </a>
                             </li>
                             <li role="presentation">
                                 <a id="available-appointments-table"
-                                   href="{{ route('admin.data-management.available-appointments.index') }}">
+                                   href="{{ route('available-appointments.index') }}">
                                     <i class="fa fa-table"></i> Available appointments
                                 </a>
                             </li>
@@ -64,7 +64,7 @@
                 </div>
             </div>
             <div class="col-xs-3">
-                <div class="panel panel-info">
+                <div id="start-season-panel" class="panel panel-info">
                     <div class="panel-heading">
                         <div class="panel-title">
                             Start of season

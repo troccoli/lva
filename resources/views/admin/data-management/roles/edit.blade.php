@@ -10,7 +10,7 @@
 
         {!! Form::model($role, [
             'method' => 'PATCH',
-            'url' => ['admin/data-management/roles', $role->id],
+            'route' => ['roles.update', $role->id],
             'class' => 'form-horizontal'
         ]) !!}
 

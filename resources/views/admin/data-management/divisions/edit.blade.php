@@ -10,7 +10,7 @@
 
         {!! Form::model($division, [
             'method' => 'PATCH',
-            'url' => ['admin/data-management/divisions', $division->id],
+            'route' => ['divisions.update', $division->id],
             'class' => 'form-horizontal'
         ]) !!}
 

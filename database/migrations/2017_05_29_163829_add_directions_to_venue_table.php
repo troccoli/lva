@@ -1,7 +1,8 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddDirectionsToVenueTable extends Migration
 {
@@ -13,7 +14,7 @@ class AddDirectionsToVenueTable extends Migration
     public function up()
     {
         Schema::table('venues', function (Blueprint $table) {
-            $table->text('directions')->default(null)->after('venue');
+            $table->text('directions')->nullable()->default(null)->after('venue');
         });
     }
 

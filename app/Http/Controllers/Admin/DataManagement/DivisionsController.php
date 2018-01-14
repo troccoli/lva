@@ -3,16 +3,13 @@
 namespace LVA\Http\Controllers\Admin\DataManagement;
 
 use Illuminate\Http\Request;
-use LVA\Http\Controllers\Controller;
-
 use Laracasts\Flash\Flash;
+use LVA\Http\Controllers\Controller;
 use LVA\Models\Division;
 use LVA\Models\Season;
 
 /**
- * Class DivisionsController
- *
- * @package LVA\Http\Controllers\Admin\DataManagement
+ * Class DivisionsController.
  */
 class DivisionsController extends Controller
 {
@@ -49,14 +46,14 @@ class DivisionsController extends Controller
     {
         $this->validate($request, [
             'season_id' => 'required|exists:seasons,id',
-            'division'  => 'required|unique:divisions,division,NULL,id,season_id,' . $request->input('season_id'),
+            'division'  => 'required|unique:divisions,division,NULL,id,season_id,'.$request->input('season_id'),
         ]);
 
         Division::create($request->all());
 
         Flash::success('Division added!');
 
-        return redirect('admin/data-management/divisions');
+        return redirect()->route('divisions.index');
     }
 
     /**
@@ -100,7 +97,7 @@ class DivisionsController extends Controller
     {
         $this->validate($request, [
             'season_id' => 'required|exists:seasons,id',
-            'division'  => 'required|unique:divisions,division,' . $id . ',id,season_id,' . $request->input('season_id'),
+            'division'  => 'required|unique:divisions,division,'.$id.',id,season_id,'.$request->input('season_id'),
         ]);
 
         /** @var Division $division */
@@ -109,7 +106,7 @@ class DivisionsController extends Controller
 
         Flash::success('Division updated!');
 
-        return redirect('admin/data-management/divisions');
+        return redirect()->route('divisions.index');
     }
 
     /**
@@ -129,7 +126,6 @@ class DivisionsController extends Controller
             Flash::error('Cannot delete because they are existing fixtures in this division.');
         }
 
-        return redirect('admin/data-management/divisions');
+        return redirect()->route('divisions.index');
     }
-
 }

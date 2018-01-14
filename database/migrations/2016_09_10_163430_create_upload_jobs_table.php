@@ -1,7 +1,8 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateUploadJobsTable extends Migration
 {
@@ -13,8 +14,6 @@ class CreateUploadJobsTable extends Migration
     public function up()
     {
         Schema::create('upload_jobs', function (Blueprint $table) {
-            $table->engine = 'InnoDB';
-
             $table->increments('id');
             $table->string('file');
             $table->enum('type', ['fixtures']);
@@ -22,7 +21,6 @@ class CreateUploadJobsTable extends Migration
 
             $table->timestamps();
         });
-
     }
 
     /**
