@@ -14,8 +14,6 @@ notifications:
 language: php
 php:
 - 7.1
-install:
-- nvm install v8.1.2
 sudo: required
 dist: trusty
 before_script:
