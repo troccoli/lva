@@ -52,15 +52,15 @@ class FixtureResourceTest extends DuskTestCase
                     $child = 1;
                     foreach ($page1 as $fixture) {
                         $table->with("tr:nth-child($child)", function ($row) use ($fixture) {
-                            $linkText = $fixture->division.':'.$fixture->match_number;
+                            $linkText = $fixture->division . ':' . $fixture->match_number;
                             $row->assertSeeLink($linkText)
                                 ->assertSeeIn('td:nth-child(1)', $linkText)
                                 ->assertSeeIn('td:nth-child(2)', $fixture->match_date->format('j M Y'))
                                 ->assertSeeIn('td:nth-child(3)', $fixture->warm_up_time->format('H:i'))
                                 ->assertSeeIn('td:nth-child(4)', $fixture->start_time->format('H:i'))
-                                ->assertSeeIn('td:nth-child(5)', (string) $fixture->home_team)
-                                ->assertSeeIn('td:nth-child(6)', (string) $fixture->away_team)
-                                ->assertSeeIn('td:nth-child(7)', (string) $fixture->venue);
+                                ->assertSeeIn('td:nth-child(5)', (string)$fixture->home_team)
+                                ->assertSeeIn('td:nth-child(6)', (string)$fixture->away_team)
+                                ->assertSeeIn('td:nth-child(7)', (string)$fixture->venue);
                         });
                         $child++;
                     }
@@ -73,15 +73,15 @@ class FixtureResourceTest extends DuskTestCase
                     $child = 1;
                     foreach ($page2 as $fixture) {
                         $table->with("tr:nth-child($child)", function ($row) use ($fixture) {
-                            $linkText = $fixture->division.':'.$fixture->match_number;
+                            $linkText = $fixture->division . ':' . $fixture->match_number;
                             $row->assertSeeLink($linkText)
                                 ->assertSeeIn('td:nth-child(1)', $linkText)
                                 ->assertSeeIn('td:nth-child(2)', $fixture->match_date->format('j M Y'))
                                 ->assertSeeIn('td:nth-child(3)', $fixture->warm_up_time->format('H:i'))
                                 ->assertSeeIn('td:nth-child(4)', $fixture->start_time->format('H:i'))
-                                ->assertSeeIn('td:nth-child(5)', (string) $fixture->home_team)
-                                ->assertSeeIn('td:nth-child(6)', (string) $fixture->away_team)
-                                ->assertSeeIn('td:nth-child(7)', (string) $fixture->venue);
+                                ->assertSeeIn('td:nth-child(5)', (string)$fixture->home_team)
+                                ->assertSeeIn('td:nth-child(6)', (string)$fixture->away_team)
+                                ->assertSeeIn('td:nth-child(7)', (string)$fixture->venue);
                         });
                         $child++;
                     }
@@ -89,7 +89,7 @@ class FixtureResourceTest extends DuskTestCase
         });
     }
 
-    public function testAddFixture()
+    public function testAddFixtureSuccessfully()
     {
         $this->browse(function (Browser $browser) {
             $browser->loginAs(factory(User::class)->create());
@@ -138,6 +138,16 @@ class FixtureResourceTest extends DuskTestCase
                 ->assertPathIs($page->indexUrl())
                 ->assertSeeIn('@success-notification', 'Fixture added!');
 
+        });
+    }
+
+    public function testAddFixtureWithNoData()
+    {
+        $this->browse(function (Browser $browser) {
+            $browser->loginAs(factory(User::class)->create());
+
+            $page = new FixturesPage();
+
             // All fields missing
             $browser->visit($page->createUrl())
                 ->pressSubmit('Add')
@@ -156,32 +166,56 @@ class FixtureResourceTest extends DuskTestCase
             // @todo add a test when the away team is not selected (#15)
             // @todo add a test when the venue is not selected (#15)
 
-            /** @var Fixture $fixture3 */
-            $fixture3 = factory(Fixture::class)->make();
+        });
+    }
+
+    public function testAddFixtureWithSameTeams()
+    {
+        $this->browse(function (Browser $browser) {
+            $browser->loginAs(factory(User::class)->create());
+
+            $page = new FixturesPage();
+
+            /** @var Fixture $fixture */
+            $fixture = factory(Fixture::class)->make();
             // New fixture with same home and away team
             $browser->visit($page->createUrl())
-                ->select('division_id', $fixture3->division_id)
-                ->select('home_team_id', $fixture3->home_team_id)
-                ->select('away_team_id', $fixture3->home_team_id)
-                ->select('venue_id', $fixture3->venue_id)
-                ->type('match_number', $fixture3->match_number)
-                ->keys('#match_date', [$fixture3->match_date->format('dmY')])
-                ->keys('#warm_up_time', [$fixture3->warm_up_time->format('Hi')])
-                ->keys('#start_time', [$fixture3->start_time->format('Hi')])
+                ->select('division_id', $fixture->division_id)
+                ->select('home_team_id', $fixture->home_team_id)
+                ->select('away_team_id', $fixture->home_team_id)
+                ->select('venue_id', $fixture->venue_id)
+                ->type('match_number', $fixture->match_number)
+                ->keys('#match_date', [$fixture->match_date->format('dmY')])
+                ->keys('#warm_up_time', [$fixture->warm_up_time->format('Hi')])
+                ->keys('#start_time', [$fixture->start_time->format('Hi')])
                 ->pressSubmit('Add')
                 ->assertPathIs($page->createUrl())
                 ->assertSeeIn('@away-team-id-error', 'The away team cannot be the same as the home team.');
+        });
+    }
+
+    public function testAddAlreadyExistingFixture()
+    {
+        $this->browse(function (Browser $browser) {
+            $browser->loginAs(factory(User::class)->create());
+
+            $page = new FixturesPage();
+
+            /** @var Fixture $fixture */
+            $fixture = factory(Fixture::class)->create();
+            /** @var Fixture $fixture2 */
+            $fixture2 = factory(Fixture::class)->make();
 
             // New fixture with same division, home and away teams of existing one
             $browser->visit($page->createUrl())
                 ->select('division_id', $fixture->division_id)
                 ->select('home_team_id', $fixture->home_team_id)
                 ->select('away_team_id', $fixture->away_team_id)
-                ->select('venue_id', $fixture3->venue_id)
-                ->type('match_number', $fixture3->match_number)
-                ->keys('#match_date', [$fixture3->match_date->format('dmY')])
-                ->keys('#warm_up_time', [$fixture3->warm_up_time->format('Hi')])
-                ->keys('#start_time', [$fixture3->start_time->format('Hi')])
+                ->select('venue_id', $fixture2->venue_id)
+                ->type('match_number', $fixture2->match_number)
+                ->keys('#match_date', [$fixture2->match_date->format('dmY')])
+                ->keys('#warm_up_time', [$fixture2->warm_up_time->format('Hi')])
+                ->keys('#start_time', [$fixture2->start_time->format('Hi')])
                 ->pressSubmit('Add')
                 ->assertPathIs($page->createUrl())
                 ->assertSeeIn('@division-id-error', 'The fixture for these two teams have already been added in this division.');
@@ -189,13 +223,13 @@ class FixtureResourceTest extends DuskTestCase
             // New fixture with same division and match number of existing one
             $browser->visit($page->createUrl())
                 ->select('division_id', $fixture->division_id)
-                ->select('home_team_id', $fixture3->home_team_id)
-                ->select('away_team_id', $fixture3->away_team_id)
-                ->select('venue_id', $fixture3->venue_id)
+                ->select('home_team_id', $fixture2->home_team_id)
+                ->select('away_team_id', $fixture2->away_team_id)
+                ->select('venue_id', $fixture2->venue_id)
                 ->type('match_number', $fixture->match_number)
-                ->keys('#match_date', [$fixture3->match_date->format('dmY')])
-                ->keys('#warm_up_time', [$fixture3->warm_up_time->format('Hi')])
-                ->keys('#start_time', [$fixture3->start_time->format('Hi')])
+                ->keys('#match_date', [$fixture2->match_date->format('dmY')])
+                ->keys('#warm_up_time', [$fixture2->warm_up_time->format('Hi')])
+                ->keys('#start_time', [$fixture2->start_time->format('Hi')])
                 ->pressSubmit('Add')
                 ->assertPathIs($page->createUrl())
                 ->assertSeeIn('@match-number-error', 'There is already a match with the same number in this division.');
@@ -304,7 +338,7 @@ class FixtureResourceTest extends DuskTestCase
 
             /** @var Fixture $fixture */
             $fixture = factory(Fixture::class)->create();
-            $linkText = $fixture->division.':'.$fixture->match_number;
+            $linkText = $fixture->division . ':' . $fixture->match_number;
 
             $page = new FixturesPage();
 
@@ -313,15 +347,15 @@ class FixtureResourceTest extends DuskTestCase
                     $table->clickLink($linkText);
                 })
                 ->assertPathIs($page->showUrl($fixture->id))
-                ->assertSeeIn('tbody tr td:nth-child(1)', (string) $fixture->division->season)
+                ->assertSeeIn('tbody tr td:nth-child(1)', (string)$fixture->division->season)
                 ->assertSeeIn('tbody tr td:nth-child(2)', $fixture->division->division)
                 ->assertSeeIn('tbody tr td:nth-child(3)', $fixture->match_number)
                 ->assertSeeIn('tbody tr td:nth-child(4)', $fixture->match_date->format('j M Y'))
                 ->assertSeeIn('tbody tr td:nth-child(5)', $fixture->warm_up_time->format('H:i'))
                 ->assertSeeIn('tbody tr td:nth-child(6)', $fixture->start_time->format('H:i'))
-                ->assertSeeIn('tbody tr td:nth-child(7)', (string) $fixture->home_team)
-                ->assertSeeIn('tbody tr td:nth-child(8)', (string) $fixture->away_team)
-                ->assertSeeIn('tbody tr td:nth-child(9)', (string) $fixture->venue)
+                ->assertSeeIn('tbody tr td:nth-child(7)', (string)$fixture->home_team)
+                ->assertSeeIn('tbody tr td:nth-child(8)', (string)$fixture->away_team)
+                ->assertSeeIn('tbody tr td:nth-child(9)', (string)$fixture->venue)
                 ->assertSeeIn('tbody tr td:nth-child(10)', $fixture->notes);
         });
     }
