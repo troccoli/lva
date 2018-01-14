@@ -17,7 +17,6 @@ language: php
 php:
   - 7.1
 install:
-  - nvm install v8.1.2
   - travis_retry composer install --no-progress --no-suggest --no-interaction --optimize-autoloader
   - npm install
   - npm rebuild node-sass
