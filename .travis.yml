@@ -30,8 +30,9 @@ before_script:
   - php artisan migrate
   - php artisan dusk:update
 
+  - phantomjs --webdriver=127.0.0.1:9515 &
   - php artisan serve > /dev/null 2>&1 &
-  - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://127.0.0.1:8000 &
+  - sleep 5
 
 script:
   - vendor/bin/phpunit
