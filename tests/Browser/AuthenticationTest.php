@@ -51,13 +51,13 @@ class AuthenticationTest extends DuskTestCase
                 ->assertPathIs($page->url())
                 ->assertSeeIn('@email-error', 'These credentials do not match our records.')
                 // Wrong email and password
-                ->clear('email')->type('email', $user->email.'.com')
+                ->clear('email')->type('email', $user->email . '.com')
                 ->clear('password')->type('password', 'password')
                 ->press('Login')
                 ->assertPathIs($page->url())
                 ->assertSeeIn('@email-error', 'These credentials do not match our records.')
                 // Wrong email
-                ->clear('email')->type('email', $user->email.'.com')
+                ->clear('email')->type('email', $user->email . '.com')
                 ->clear('password')->type('password', 'secret')
                 ->press('Login')
                 ->assertPathIs($page->url())
@@ -107,7 +107,7 @@ class AuthenticationTest extends DuskTestCase
                 ->assertMissing('.alert-success')
                 ->assertDontSee('We have e-mailed your password reset link!')
                 // Not recognized email
-                ->clear('email')->type('email', $user->email.'.com')
+                ->clear('email')->type('email', $user->email . '.com')
                 ->press('Send Password Reset Link')
                 ->assertPathIs($page->url())
                 ->assertSeeIn('@email-error', 'We can\'t find a user with that e-mail address.')

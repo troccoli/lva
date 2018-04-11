@@ -90,7 +90,7 @@ class SeasonsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, ['season' => 'required|unique:seasons,season,'.$id]);
+        $this->validate($request, ['season' => 'required|unique:seasons,season,' . $id]);
 
         /** @var Season $season */
         $season = Season::findOrFail($id);

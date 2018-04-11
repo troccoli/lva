@@ -52,9 +52,10 @@ class DivisionTest extends TestCase
         $division = factory(Division::class)->create(['season_id' => $season->getId()]);
 
         // I have to use the toArray() method as I'm only interested in the table's fields and not any internal ones
-        $this->assertEquals($division->toArray(), Division::findByName($season->getId(), $division->getName())->toArray());
+        $this->assertEquals($division->toArray(),
+            Division::findByName($season->getId(), $division->getName())->toArray());
         $this->assertNull(Division::findByName(0, $division->getName()));
-        $this->assertNull(Division::findByName($season->getId(), $division->getName().'--'));
+        $this->assertNull(Division::findByName($season->getId(), $division->getName() . '--'));
     }
 
     /**
@@ -87,6 +88,6 @@ class DivisionTest extends TestCase
         /** @var Division $division */
         $division = factory(Division::class)->create();
 
-        $this->assertEquals($division->season.' '.$division->division, (string) $division);
+        $this->assertEquals($division->season . ' ' . $division->division, (string)$division);
     }
 }

@@ -28,8 +28,8 @@ class StoreAvailableAppointmentRequest extends Request
     public function rules()
     {
         return [
-            'fixture_id' => 'unique:available_appointments,fixture_id,NULL,id,role_id,'.$this->input('role_id'),
-            'role_id'    => 'unique:available_appointments,role_id,NULL,id,fixture_id,'.$this->input('fixture_id'),
+            'fixture_id' => 'unique:available_appointments,fixture_id,NULL,id,role_id,' . $this->input('role_id'),
+            'role_id'    => 'unique:available_appointments,role_id,NULL,id,fixture_id,' . $this->input('fixture_id'),
         ];
     }
 
@@ -38,8 +38,10 @@ class StoreAvailableAppointmentRequest extends Request
      */
     protected function formatErrors(Validator $validator)
     {
-        return [[
-                    'Appointment already added.',
-                ]];
+        return [
+            [
+                'Appointment already added.',
+            ],
+        ];
     }
 }

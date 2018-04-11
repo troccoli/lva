@@ -52,15 +52,15 @@ class FixtureResourceTest extends DuskTestCase
                     $child = 1;
                     foreach ($page1 as $fixture) {
                         $table->with("tr:nth-child($child)", function ($row) use ($fixture) {
-                            $linkText = $fixture->division.':'.$fixture->match_number;
+                            $linkText = $fixture->division . ':' . $fixture->match_number;
                             $row->assertSeeLink($linkText)
                                 ->assertSeeIn('td:nth-child(1)', $linkText)
                                 ->assertSeeIn('td:nth-child(2)', $fixture->match_date->format('j M Y'))
                                 ->assertSeeIn('td:nth-child(3)', $fixture->warm_up_time->format('H:i'))
                                 ->assertSeeIn('td:nth-child(4)', $fixture->start_time->format('H:i'))
-                                ->assertSeeIn('td:nth-child(5)', (string) $fixture->home_team)
-                                ->assertSeeIn('td:nth-child(6)', (string) $fixture->away_team)
-                                ->assertSeeIn('td:nth-child(7)', (string) $fixture->venue);
+                                ->assertSeeIn('td:nth-child(5)', (string)$fixture->home_team)
+                                ->assertSeeIn('td:nth-child(6)', (string)$fixture->away_team)
+                                ->assertSeeIn('td:nth-child(7)', (string)$fixture->venue);
                         });
                         $child++;
                     }
@@ -73,15 +73,15 @@ class FixtureResourceTest extends DuskTestCase
                     $child = 1;
                     foreach ($page2 as $fixture) {
                         $table->with("tr:nth-child($child)", function ($row) use ($fixture) {
-                            $linkText = $fixture->division.':'.$fixture->match_number;
+                            $linkText = $fixture->division . ':' . $fixture->match_number;
                             $row->assertSeeLink($linkText)
                                 ->assertSeeIn('td:nth-child(1)', $linkText)
                                 ->assertSeeIn('td:nth-child(2)', $fixture->match_date->format('j M Y'))
                                 ->assertSeeIn('td:nth-child(3)', $fixture->warm_up_time->format('H:i'))
                                 ->assertSeeIn('td:nth-child(4)', $fixture->start_time->format('H:i'))
-                                ->assertSeeIn('td:nth-child(5)', (string) $fixture->home_team)
-                                ->assertSeeIn('td:nth-child(6)', (string) $fixture->away_team)
-                                ->assertSeeIn('td:nth-child(7)', (string) $fixture->venue);
+                                ->assertSeeIn('td:nth-child(5)', (string)$fixture->home_team)
+                                ->assertSeeIn('td:nth-child(6)', (string)$fixture->away_team)
+                                ->assertSeeIn('td:nth-child(7)', (string)$fixture->venue);
                         });
                         $child++;
                     }
@@ -216,7 +216,8 @@ class FixtureResourceTest extends DuskTestCase
                 ->keys('#start_time', [$fixture2->start_time->format('Hi')])
                 ->pressSubmit('Add')
                 ->assertPathIs($page->createUrl())
-                ->assertSeeIn('@division-id-error', 'The fixture for these two teams have already been added in this division.');
+                ->assertSeeIn('@division-id-error',
+                    'The fixture for these two teams have already been added in this division.');
 
             // New fixture with same division and match number of existing one
             $browser->visit($page->createUrl())
@@ -317,7 +318,8 @@ class FixtureResourceTest extends DuskTestCase
                 ->select('away_team_id', $newFixture->away_team_id)
                 ->pressSubmit('Update')
                 ->assertPathIs($page->editUrl($fixture->id))
-                ->assertSeeIn('@division-id-error', 'The fixture for these two teams have already been added in this division.');
+                ->assertSeeIn('@division-id-error',
+                    'The fixture for these two teams have already been added in this division.');
 
             // Use the same division and match number of an existing fixture
             $browser->visit($page->editUrl($fixture->id))
@@ -336,7 +338,7 @@ class FixtureResourceTest extends DuskTestCase
 
             /** @var Fixture $fixture */
             $fixture = factory(Fixture::class)->create();
-            $linkText = $fixture->division.':'.$fixture->match_number;
+            $linkText = $fixture->division . ':' . $fixture->match_number;
 
             $page = new FixturesPage();
 
@@ -345,15 +347,15 @@ class FixtureResourceTest extends DuskTestCase
                     $table->clickLink($linkText);
                 })
                 ->assertPathIs($page->showUrl($fixture->id))
-                ->assertSeeIn('tbody tr td:nth-child(1)', (string) $fixture->division->season)
+                ->assertSeeIn('tbody tr td:nth-child(1)', (string)$fixture->division->season)
                 ->assertSeeIn('tbody tr td:nth-child(2)', $fixture->division->division)
                 ->assertSeeIn('tbody tr td:nth-child(3)', $fixture->match_number)
                 ->assertSeeIn('tbody tr td:nth-child(4)', $fixture->match_date->format('j M Y'))
                 ->assertSeeIn('tbody tr td:nth-child(5)', $fixture->warm_up_time->format('H:i'))
                 ->assertSeeIn('tbody tr td:nth-child(6)', $fixture->start_time->format('H:i'))
-                ->assertSeeIn('tbody tr td:nth-child(7)', (string) $fixture->home_team)
-                ->assertSeeIn('tbody tr td:nth-child(8)', (string) $fixture->away_team)
-                ->assertSeeIn('tbody tr td:nth-child(9)', (string) $fixture->venue)
+                ->assertSeeIn('tbody tr td:nth-child(7)', (string)$fixture->home_team)
+                ->assertSeeIn('tbody tr td:nth-child(8)', (string)$fixture->away_team)
+                ->assertSeeIn('tbody tr td:nth-child(9)', (string)$fixture->venue)
                 ->assertSeeIn('tbody tr td:nth-child(10)', $fixture->notes);
         });
     }

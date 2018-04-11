@@ -90,7 +90,7 @@ class Venue extends Model
         $cleanPostcode = strtoupper($cleanPostcode);
 
         //insert space
-        $postcode = substr($cleanPostcode, 0, -3).' '.substr($cleanPostcode, -3);
+        $postcode = substr($cleanPostcode, 0, -3) . ' ' . substr($cleanPostcode, -3);
 
         $this->attributes['postcode'] = $postcode;
     }

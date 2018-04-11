@@ -90,7 +90,7 @@ class ClubsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, ['club' => 'required|unique:clubs,club,'.$id]);
+        $this->validate($request, ['club' => 'required|unique:clubs,club,' . $id]);
 
         /** @var Club $club */
         $club = Club::findOrFail($id);

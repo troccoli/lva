@@ -26,7 +26,7 @@ class ForgotPasswordPage extends BasePage
     public function assert(Browser $browser)
     {
         $browser->assertPathIs($this->url())
-        ->assertSeeIn($this->breadcrumb, 'Reset Password');
+            ->assertSeeIn($this->breadcrumb, 'Reset Password');
     }
 
     /**

@@ -38,9 +38,9 @@ class TeamsPage extends BaseResourcePage
     public function elements()
     {
         return [
-            '@club-id-error'  => '#club-id-field p.help-block',
-            '@team-error'     => '#team-field p.help-block',
-            '@trigram-error'  => '#trigram-field p.help-block',
+            '@club-id-error' => '#club-id-field p.help-block',
+            '@team-error'    => '#team-field p.help-block',
+            '@trigram-error' => '#trigram-field p.help-block',
         ];
     }
 }

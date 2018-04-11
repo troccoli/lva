@@ -23,9 +23,9 @@ class VenueTest extends TestCase
 
         // I have to use the toArray() method as I'm only interested in the table's fields and not any internal ones
         $this->assertEquals($venues[0]->toArray(), Venue::findByName($venues[0]->venue)->toArray());
-        $this->assertNull(Venue::findByName($venues[0]->venue.'--'));
+        $this->assertNull(Venue::findByName($venues[0]->venue . '--'));
         $this->assertEquals($venues[1]->toArray(), Venue::findByName($venues[1]->venue)->toArray());
-        $this->assertNull(Venue::findByName($venues[1]->venue.'--'));
+        $this->assertNull(Venue::findByName($venues[1]->venue . '--'));
     }
 
     /**
@@ -128,6 +128,6 @@ class VenueTest extends TestCase
         /** @var Venue $venue */
         $venue = factory(Venue::class)->create();
 
-        $this->assertEquals($venue->venue, (string) $venue);
+        $this->assertEquals($venue->venue, (string)$venue);
     }
 }

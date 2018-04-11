@@ -20,9 +20,9 @@ class VenueSynonymOldStyleTest extends TestCase
         $venueSynonyms = factory(VenueSynonym::class)->times(2)->create();
 
         $this->assertEquals($venueSynonyms[0]->venue, VenueSynonym::findBySynonym($venueSynonyms[0]->getSynonym()));
-        $this->assertNull(VenueSynonym::findBySynonym($venueSynonyms[0]->getSynonym().'---'));
+        $this->assertNull(VenueSynonym::findBySynonym($venueSynonyms[0]->getSynonym() . '---'));
         $this->assertEquals($venueSynonyms[1]->venue, VenueSynonym::findBySynonym($venueSynonyms[1]->getSynonym()));
-        $this->assertNull(VenueSynonym::findBySynonym($venueSynonyms[1]->getSynonym().'---'));
+        $this->assertNull(VenueSynonym::findBySynonym($venueSynonyms[1]->getSynonym() . '---'));
     }
 
     /**

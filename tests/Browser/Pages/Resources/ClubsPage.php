@@ -38,7 +38,7 @@ class ClubsPage extends BaseResourcePage
     public function elements()
     {
         return [
-            '@club-error'  => '#club-field p.help-block',
+            '@club-error' => '#club-field p.help-block',
         ];
     }
 }
