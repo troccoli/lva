@@ -21,7 +21,7 @@ abstract class DuskTestCase extends BaseTestCase
      */
     public static function prepare()
     {
-        //static::startChromeDriver();
+        static::startChromeDriver();
     }
 
     public function setUp()
@@ -49,9 +49,7 @@ abstract class DuskTestCase extends BaseTestCase
      */
     protected function driver()
     {
-        return RemoteWebDriver::create(
-            'http://localhost:9515', DesiredCapabilities::phantomjs()
-        );
+        return RemoteWebDriver::create('http://localhost:9515', DesiredCapabilities::chrome());
     }
 
     public function browse(\Closure $callback)
