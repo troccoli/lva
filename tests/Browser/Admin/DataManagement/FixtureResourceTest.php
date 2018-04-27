@@ -188,6 +188,7 @@ class FixtureResourceTest extends DuskTestCase
                 ->keys('#start_time', [$fixture->start_time->format('Hi')])
                 ->pressSubmit('Add')
                 ->assertPathIs($page->createUrl())
+                ->scrollToElement('#away-team-id-field')
                 ->assertSeeIn('@away-team-id-error', 'The away team cannot be the same as the home team.');
         });
     }
@@ -216,6 +217,7 @@ class FixtureResourceTest extends DuskTestCase
                 ->keys('#start_time', [$fixture2->start_time->format('Hi')])
                 ->pressSubmit('Add')
                 ->assertPathIs($page->createUrl())
+                ->scrollToElement('#division-id-field')
                 ->assertSeeIn('@division-id-error',
                     'The fixture for these two teams have already been added in this division.');
 
@@ -231,6 +233,7 @@ class FixtureResourceTest extends DuskTestCase
                 ->keys('#start_time', [$fixture2->start_time->format('Hi')])
                 ->pressSubmit('Add')
                 ->assertPathIs($page->createUrl())
+                ->scrollToElement('#match-number-field')
                 ->assertSeeIn('@match-number-error', 'There is already a match with the same number in this division.');
         });
     }
@@ -306,6 +309,7 @@ class FixtureResourceTest extends DuskTestCase
                 ->select('away_team_id', $fixture->home_team_id)
                 ->pressSubmit('Update')
                 ->assertPathIs($page->editUrl($fixture->id))
+                ->scrollToElement('#away-team-id-field')
                 ->assertSeeIn('@away-team-id-error', 'The away team cannot be the same as the home team.');
 
             /** @var Fixture $newFixture */
@@ -318,6 +322,7 @@ class FixtureResourceTest extends DuskTestCase
                 ->select('away_team_id', $newFixture->away_team_id)
                 ->pressSubmit('Update')
                 ->assertPathIs($page->editUrl($fixture->id))
+                ->scrollToElement('#division-id-field')
                 ->assertSeeIn('@division-id-error',
                     'The fixture for these two teams have already been added in this division.');
 
@@ -327,6 +332,7 @@ class FixtureResourceTest extends DuskTestCase
                 ->type('match_number', $newFixture->match_number)
                 ->pressSubmit('Update')
                 ->assertPathIs($page->editUrl($fixture->id))
+                ->scrollToElement('#match-number-field')
                 ->assertSeeIn('@match-number-error', 'There is already a match with the same number in this division.');
         });
     }
