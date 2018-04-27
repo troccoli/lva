@@ -189,7 +189,7 @@ class FixtureResourceTest extends DuskTestCase
                 ->keys('#start_time', [$fixture->start_time->format('Hi')])
                 ->pressSubmit('Add')
                 ->assertPathIs($page->createUrl());
-            Log::info($browser->driver->getPageSource());
+            echo $browser->driver->getPageSource() . "\n";
                 $browser->assertSeeIn('@away-team-id-error', 'The away team cannot be the same as the home team.');
         });
     }
