@@ -177,6 +177,7 @@ class FixtureResourceTest extends DuskTestCase
 
             /** @var Fixture $fixture */
             $fixture = factory(Fixture::class)->make();
+            var_dump($fixture);
             // New fixture with same home and away team
             $browser->visit($page->createUrl())
                 ->select('division_id', $fixture->division_id)
