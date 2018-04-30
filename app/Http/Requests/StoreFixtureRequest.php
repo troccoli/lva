@@ -55,9 +55,9 @@ class StoreFixtureRequest extends Request
         ];
     }
 
-    protected function validationData()
-    {
-        die();
-        return $this->all();
-    }
+//    protected function validationData()
+//    {
+//        die();
+//        return $this->all();
+//    }
 }
