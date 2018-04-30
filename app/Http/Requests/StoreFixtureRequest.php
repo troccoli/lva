@@ -54,4 +54,11 @@ class StoreFixtureRequest extends Request
             'match_number.unique'    => 'There is already a match with the same number in this division.',
         ];
     }
+
+    protected function validationData()
+    {
+        $s=var_dump($this->all(), true);
+        echo "\n######\n$s\n#####\n";
+        return $this->all();
+    }
 }
