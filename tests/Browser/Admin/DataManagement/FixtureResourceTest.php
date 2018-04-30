@@ -177,7 +177,6 @@ class FixtureResourceTest extends DuskTestCase
 
             /** @var Fixture $fixture */
             $fixture = factory(Fixture::class)->make();
-            var_dump($fixture);
             // New fixture with same home and away team
             $browser->visit($page->createUrl())
                 ->select('division_id', $fixture->division_id)
@@ -189,7 +188,6 @@ class FixtureResourceTest extends DuskTestCase
                 ->keys('#warm_up_time', [$fixture->warm_up_time->format('Hi')])
                 ->keys('#start_time', [$fixture->start_time->format('Hi')])
                 ->pressSubmit('Add')
-                ->pause(5000)
                 ->assertPathIs($page->createUrl());
             echo $browser->driver->getPageSource() . "\n";
                 $browser->assertSeeIn('@away-team-id-error', 'The away team cannot be the same as the home team.');

@@ -57,8 +57,7 @@ class StoreFixtureRequest extends Request
 
     protected function validationData()
     {
-        $s=var_dump($this->all(), true);
-        echo "\n######\n$s\n#####\n";
+        die();
         return $this->all();
     }
 }

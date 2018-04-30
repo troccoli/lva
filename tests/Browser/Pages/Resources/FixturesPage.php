@@ -37,7 +37,6 @@ class FixturesPage extends BaseResourcePage
      */
     public function elements()
     {
-        parent::elements();
         return [
             '@division-id-error'  => '#division-id-field p.help-block',
             '@match-number-error' => '#match-number-field p.help-block',
