@@ -67,6 +67,10 @@ jobs:
           command: php artisan serve --quiet
           background: true
       - run: sleep 1
+
+      - store_artifacts:
+          path: ./tests/Browser/screenshots
+
       - run:
           name: Run Laravel Dusk Tests
           command: php artisan dusk --filter AvailableAppointmentResourceTest
