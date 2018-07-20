@@ -217,7 +217,6 @@ class FixtureResourceTest extends DuskTestCase
                 ->keys('#warm_up_time', [$fixture2->warm_up_time->format('Hi')])
                 ->keys('#start_time', [$fixture2->start_time->format('Hi')])
                 ->pressSubmit('Add')
-                ->waitForReload()
                 ->assertPathIs($page->createUrl())
                 ->assertSeeIn('@division-id-error',
                     'The fixture for these two teams have already been added in this division.');
@@ -233,7 +232,6 @@ class FixtureResourceTest extends DuskTestCase
                 ->keys('#warm_up_time', [$fixture2->warm_up_time->format('Hi')])
                 ->keys('#start_time', [$fixture2->start_time->format('Hi')])
                 ->pressSubmit('Add')
-                ->waitForReload()
                 ->assertPathIs($page->createUrl())
                 ->assertSeeIn('@match-number-error', 'There is already a match with the same number in this division.');
         });
