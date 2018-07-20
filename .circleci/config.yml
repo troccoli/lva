@@ -47,6 +47,10 @@ jobs:
           paths:
             - node_modules
 
+      - run: phpenv config-rm xdebug.ini
+      - run: cp env.travis .env
+      - run: cp .env .env.dusk.local
+
       - run: php artisan key:generate
       - run: touch database/testing.sqlite
       - run: php artisan migrate --env=testing --database=testing --force
