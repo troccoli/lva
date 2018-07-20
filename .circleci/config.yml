@@ -64,9 +64,9 @@ jobs:
       - run: sleep 1
       - run:
           name: Run Laravel Server
-          command: php artisan serve
+          command: php artisan serve --quiet
           background: true
       - run: sleep 1
       - run:
           name: Run Laravel Dusk Tests
-          command: php artisan dusk
+          command: php artisan dusk --filter AvailableAppointmentResourceTest
