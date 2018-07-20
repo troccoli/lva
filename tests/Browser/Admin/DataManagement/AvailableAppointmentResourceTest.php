@@ -91,10 +91,9 @@ class AvailableAppointmentResourceTest extends DuskTestCase
 
             // Check we can add a venue from the landing page
             $browser->visit($page)
-                ->clickLink('New appointment')
                 ->screenshot('debug1')
+                ->clickLink('New appointment')
                 ->assertPathIs($page->createUrl())
-                ->screenshot('debug2')
             ;
 
             /** @var AvailableAppointment $availableAppointment */
