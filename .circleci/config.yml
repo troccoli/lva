@@ -61,10 +61,12 @@ jobs:
           name: Start Chrome Driver
           command: ./vendor/laravel/dusk/bin/chromedriver-linux
           background: true
+      - run: sleep 1
       - run:
           name: Run Laravel Server
           command: php artisan serve
           background: true
+      - run: sleep 1
       - run:
           name: Run Laravel Dusk Tests
           command: php artisan dusk
