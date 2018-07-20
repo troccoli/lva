@@ -53,6 +53,7 @@ jobs:
       - run: php artisan key:generate
       - run: touch database/database.sqlite
       - run: php artisan migrate --env=testing --database=testing --force
+      - run: npm run production
 
       # run tests!
       - run: ./vendor/bin/phpunit
