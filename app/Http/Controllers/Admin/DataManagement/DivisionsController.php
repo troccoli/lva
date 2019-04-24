@@ -46,7 +46,7 @@ class DivisionsController extends Controller
     {
         $this->validate($request, [
             'season_id' => 'required|exists:seasons,id',
-            'division'  => 'required|unique:divisions,division,NULL,id,season_id,'.$request->input('season_id'),
+            'division'  => 'required|unique:divisions,division,NULL,id,season_id,' . $request->input('season_id'),
         ]);
 
         Division::create($request->all());
@@ -97,7 +97,7 @@ class DivisionsController extends Controller
     {
         $this->validate($request, [
             'season_id' => 'required|exists:seasons,id',
-            'division'  => 'required|unique:divisions,division,'.$id.',id,season_id,'.$request->input('season_id'),
+            'division'  => 'required|unique:divisions,division,' . $id . ',id,season_id,' . $request->input('season_id'),
         ]);
 
         /** @var Division $division */

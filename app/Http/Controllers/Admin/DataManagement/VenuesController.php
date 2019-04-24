@@ -90,7 +90,7 @@ class VenuesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, ['venue' => 'required|unique:venues,venue,'.$id, 'postcode' => 'uk_postcode']);
+        $this->validate($request, ['venue' => 'required|unique:venues,venue,' . $id, 'postcode' => 'uk_postcode']);
 
         /** @var Venue $venue */
         $venue = Venue::findOrFail($id);

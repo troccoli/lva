@@ -27,13 +27,13 @@ class StoreFixtureRequest extends Request
     public function rules()
     {
         return [
-            'division_id'  => 'required|'.
-                'exists:divisions,id|'.
-                'unique:fixtures,division_id,NULL,id'.
-                ',home_team_id,'.$this->input('home_team_id').
-                ',away_team_id,'.$this->input('away_team_id'),
-            'match_number' => 'required|'.
-                'unique:fixtures,match_number,NULL,id,division_id,'.$this->input('division_id'),
+            'division_id'  => 'required|' .
+                'exists:divisions,id|' .
+                'unique:fixtures,division_id,NULL,id' .
+                ',home_team_id,' . $this->input('home_team_id') .
+                ',away_team_id,' . $this->input('away_team_id'),
+            'match_number' => 'required|' .
+                'unique:fixtures,match_number,NULL,id,division_id,' . $this->input('division_id'),
             'match_date'   => 'required',
             'warm_up_time' => 'required',
             'start_time'   => 'required',
@@ -54,4 +54,10 @@ class StoreFixtureRequest extends Request
             'match_number.unique'    => 'There is already a match with the same number in this division.',
         ];
     }
+
+//    protected function validationData()
+//    {
+//        die();
+//        return $this->all();
+//    }
 }

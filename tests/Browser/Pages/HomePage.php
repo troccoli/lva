@@ -26,7 +26,7 @@ class HomePage extends BasePage
     public function assert(Browser $browser)
     {
         $browser->assertRouteIs('home')
-        ->assertMissing($this->breadcrumb);
+            ->assertMissing($this->breadcrumb);
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -49,9 +50,11 @@ abstract class DuskTestCase extends BaseTestCase
      */
     protected function driver()
     {
-        return RemoteWebDriver::create(
-            'http://localhost:9515', DesiredCapabilities::chrome()
-        );
+        $capabilities = DesiredCapabilities::chrome();
+        $chromeOptions = (new ChromeOptions())->addArguments(['headless', 'disable-gpu', 'no-sandbox']);
+        $capabilities->setCapability(ChromeOptions::CAPABILITY, $chromeOptions);
+
+        return RemoteWebDriver::create('http://localhost:9515', DesiredCapabilities::chrome());
     }
 
     public function browse(\Closure $callback)

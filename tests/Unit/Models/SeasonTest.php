@@ -48,6 +48,6 @@ class SeasonTest extends TestCase
         /** @var Season $season */
         $season = factory(Season::class)->create();
 
-        $this->assertEquals($season->season, (string) $season);
+        $this->assertEquals($season->season, (string)$season);
     }
 }

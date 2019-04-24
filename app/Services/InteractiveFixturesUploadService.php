@@ -65,7 +65,7 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
         $line = [];
         foreach (explode(',', str_replace(['"', "\n", "\r"], '', fgets($handle))) as $field) {
             if (is_numeric($field)) {
-                $line[] = (int) $field;
+                $line[] = (int)$field;
             } else {
                 $line[] = $field;
             }
@@ -91,7 +91,7 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
             ->save();
 
         /** @var UploadedFile $fixtureFile */
-        $fixtureFile = $file->move(storage_path().self::UPLOAD_DIR, $job->getId().'.csv');
+        $fixtureFile = $file->move(storage_path() . self::UPLOAD_DIR, $job->getId() . '.csv');
 
         $handle = fopen($fixtureFile->getRealPath(), 'rb');
         $lines = 0;
@@ -123,7 +123,7 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
             $processedLines = $status->getProcessedLines();
 
             /** @var resource $csvFile */
-            $csvFile = fopen(storage_path().self::UPLOAD_DIR.$job->getId().'.csv', 'r');
+            $csvFile = fopen(storage_path() . self::UPLOAD_DIR . $job->getId() . '.csv', 'r');
 
             // Get the headers
             $headers = self::readOneLine($csvFile);
@@ -331,7 +331,7 @@ class InteractiveFixturesUploadService implements InteractiveUploadContract
         $job->mappedTeams()->delete();
         $job->mappedVenues()->delete();
         $job->uploadData()->delete();
-        unlink(storage_path().self::UPLOAD_DIR.$job->getId().'.csv');
+        unlink(storage_path() . self::UPLOAD_DIR . $job->getId() . '.csv');
         if (!UploadJobStatus::factory($job->getStatus())->isDone()) {
             $job->delete();
         }

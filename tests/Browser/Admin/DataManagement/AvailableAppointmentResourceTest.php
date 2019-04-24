@@ -54,10 +54,10 @@ class AvailableAppointmentResourceTest extends DuskTestCase
                     $child = 1;
                     foreach ($page1 as $availableAppointment) {
                         $table->with("tr:nth-child($child)", function ($row) use ($availableAppointment) {
-                            $linkText = (string) $availableAppointment->fixture;
+                            $linkText = (string)$availableAppointment->fixture;
                             $row->assertSeeLink($linkText)
                                 ->assertSeeIn('td:nth-child(1)', $linkText)
-                                ->assertSeeIn('td:nth-child(2)', (string) $availableAppointment->role);
+                                ->assertSeeIn('td:nth-child(2)', (string)$availableAppointment->role);
                         });
                         $child++;
                     }
@@ -71,10 +71,10 @@ class AvailableAppointmentResourceTest extends DuskTestCase
                     $child = 1;
                     foreach ($page2 as $availableAppointment) {
                         $table->with("tr:nth-child($child)", function ($row) use ($availableAppointment) {
-                            $linkText = (string) $availableAppointment->fixture;
+                            $linkText = (string)$availableAppointment->fixture;
                             $row->assertSeeLink($linkText)
                                 ->assertSeeIn('td:nth-child(1)', $linkText)
-                                ->assertSeeIn('td:nth-child(2)', (string) $availableAppointment->role);
+                                ->assertSeeIn('td:nth-child(2)', (string)$availableAppointment->role);
                         });
                         $child++;
                     }
@@ -91,8 +91,10 @@ class AvailableAppointmentResourceTest extends DuskTestCase
 
             // Check we can add a venue from the landing page
             $browser->visit($page)
+                ->screenshot('debug1')
                 ->clickLink('New appointment')
-                ->assertPathIs($page->createUrl());
+                ->assertPathIs($page->createUrl())
+            ;
 
             /** @var AvailableAppointment $availableAppointment */
             $availableAppointment = factory(AvailableAppointment::class)->make();
@@ -211,8 +213,8 @@ class AvailableAppointmentResourceTest extends DuskTestCase
                 })
                 ->assertPathIs($page->showUrl($availableAppointment->id))
                 ->assertSeeIn('tbody tr td:nth-child(1)', $availableAppointment->id)
-                ->assertSeeIn('tbody tr td:nth-child(2)', (string) $availableAppointment->fixture)
-                ->assertSeeIn('tbody tr td:nth-child(3)', (string) $availableAppointment->role);
+                ->assertSeeIn('tbody tr td:nth-child(2)', (string)$availableAppointment->fixture)
+                ->assertSeeIn('tbody tr td:nth-child(3)', (string)$availableAppointment->role);
         });
     }
 

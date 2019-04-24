@@ -29,11 +29,11 @@ class CustomValidators
 
     public function requiredHeadersMessage($message, $attribute, $rule, $parameters)
     {
-        $lastHeader = '"'.array_pop($parameters).'"';
+        $lastHeader = '"' . array_pop($parameters) . '"';
         if (empty($parameters)) {
             $headers = $lastHeader;
         } else {
-            $headers = '"'.implode('", "', $parameters).'" and '.$lastHeader;
+            $headers = '"' . implode('", "', $parameters) . '" and ' . $lastHeader;
         }
 
         return str_replace(':headers', $headers, $message);

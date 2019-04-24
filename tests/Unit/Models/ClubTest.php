@@ -59,6 +59,6 @@ class ClubTest extends TestCase
         /** @var Club $club */
         $club = factory(Club::class)->create();
 
-        $this->assertEquals($club->club, (string) $club);
+        $this->assertEquals($club->club, (string)$club);
     }
 }

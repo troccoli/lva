@@ -70,6 +70,6 @@ class Division extends Model
      */
     public function __toString()
     {
-        return $this->season.' '.$this->division;
+        return $this->season . ' ' . $this->division;
     }
 }

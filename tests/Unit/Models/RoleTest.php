@@ -28,7 +28,7 @@ class RoleTest extends TestCase
     {
         $role = factory(Role::class)->create();
 
-        $this->assertEquals($role->role, (string) $role);
+        $this->assertEquals($role->role, (string)$role);
     }
 
     /**

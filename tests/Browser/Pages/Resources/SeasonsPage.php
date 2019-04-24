@@ -38,7 +38,7 @@ class SeasonsPage extends BaseResourcePage
     public function elements()
     {
         return [
-            '@season-error'  => '#season-field p.help-block',
+            '@season-error' => '#season-field p.help-block',
         ];
     }
 }
