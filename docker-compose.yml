@@ -36,3 +36,12 @@ services:
     image: mailhog/mailhog
     ports:
       - 18025:8025
+  selenium:
+    container_name: app-selenium
+    image: selenium/standalone-chrome:3.11.0-antimony
+    depends_on:
+      - web
+    volumes:
+      - /dev/shm:/dev/shm
+    links:
+      - web:selenium.test
