@@ -1,5 +1,5 @@
 {
-  "name": "laravel/laravel",
+  "name": "troccoli/lva",
   "description": "Admin for LVA Referee Administrators.",
   "minimum-stability": "stable",
   "keywords": [
@@ -36,6 +36,7 @@
     "laravel/dusk": "^1.0",
     "mockery/mockery": "0.9.*",
     "phpunit/phpunit": "~5.7",
+    "staudenmeir/dusk-updater": "^1.0",
     "symfony/css-selector": "^3.0",
     "symfony/dom-crawler": "^3.0"
   },
