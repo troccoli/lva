@@ -212,7 +212,7 @@ class Fixture extends Model
      */
     public function getWarmUpTimeAttribute($time)
     {
-        return Carbon::createFromFormat('H:i:s', $time);
+        return Carbon::parse($time);
     }
 
     /**
@@ -232,7 +232,7 @@ class Fixture extends Model
      */
     public function getStartTimeAttribute($time)
     {
-        return Carbon::createFromFormat('H:i:s', $time);
+        return Carbon::parse($time);
     }
 
     /**
@@ -252,7 +252,7 @@ class Fixture extends Model
      */
     public function getMatchDateAttribute($date)
     {
-        return Carbon::createFromFormat('Y-m-d', $date);
+        return Carbon::parse($date);
     }
 
     /**
