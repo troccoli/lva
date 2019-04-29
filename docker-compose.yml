@@ -38,7 +38,9 @@ services:
       - 18025:8025
   selenium:
     container_name: app-selenium
-    image: selenium/standalone-chrome:3.11.0-antimony
+    image: selenium/standalone-chrome
+    environment:
+      START_XVFB: "false"
     depends_on:
       - web
     volumes:
