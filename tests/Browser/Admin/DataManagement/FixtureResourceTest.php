@@ -3,7 +3,6 @@
 namespace Tests\Browser\Admin\DataManagement;
 
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Log;
 use Laravel\Dusk\Browser;
 use LVA\Models\AvailableAppointment;
 use LVA\Models\Fixture;
@@ -116,8 +115,8 @@ class FixtureResourceTest extends DuskTestCase
                 ->select('venue_id', $fixture->venue_id)
                 ->type('match_number', $fixture->match_number)
                 ->keys('#match_date', [$fixture->match_date->format('dmY')])
-                ->keys('#warm_up_time', [$fixture->warm_up_time->format('Hi')])
-                ->keys('#start_time', [$fixture->start_time->format('Hi')])
+                ->keys('#warm_up_time', [$fixture->warm_up_time->format('hiA')])
+                ->keys('#start_time', [$fixture->start_time->format('hiA')])
                 ->type('notes', $fixture->notes)
                 ->pressSubmit('Add')
                 ->assertPathIs($page->indexUrl())
@@ -133,8 +132,8 @@ class FixtureResourceTest extends DuskTestCase
                 ->select('venue_id', $fixture2->venue_id)
                 ->type('match_number', $fixture2->match_number)
                 ->keys('#match_date', [$fixture2->match_date->format('dmY')])
-                ->keys('#warm_up_time', [$fixture2->warm_up_time->format('Hi')])
-                ->keys('#start_time', [$fixture2->start_time->format('Hi')])
+                ->keys('#warm_up_time', [$fixture2->warm_up_time->format('hiA')])
+                ->keys('#start_time', [$fixture2->start_time->format('hiA')])
                 ->pressSubmit('Add')
                 ->assertPathIs($page->indexUrl())
                 ->assertSeeIn('@success-notification', 'Fixture added!');
@@ -185,12 +184,11 @@ class FixtureResourceTest extends DuskTestCase
                 ->select('venue_id', $fixture->venue_id)
                 ->type('match_number', $fixture->match_number)
                 ->keys('#match_date', [$fixture->match_date->format('dmY')])
-                ->keys('#warm_up_time', [$fixture->warm_up_time->format('Hi')])
-                ->keys('#start_time', [$fixture->start_time->format('Hi')])
+                ->keys('#warm_up_time', [$fixture->warm_up_time->format('hiA')])
+                ->keys('#start_time', [$fixture->start_time->format('hiA')])
                 ->pressSubmit('Add')
-                ->assertPathIs($page->createUrl());
-//            echo $browser->driver->getPageSource() . "\n";
-//                $browser->assertSeeIn('@away-team-id-error', 'The away team cannot be the same as the home team.');
+                ->assertPathIs($page->createUrl())
+                ->assertSeeIn('@away-team-id-error', 'The away team cannot be the same as the home team.');
         });
     }
 
@@ -214,8 +212,8 @@ class FixtureResourceTest extends DuskTestCase
                 ->select('venue_id', $fixture2->venue_id)
                 ->type('match_number', $fixture2->match_number)
                 ->keys('#match_date', [$fixture2->match_date->format('dmY')])
-                ->keys('#warm_up_time', [$fixture2->warm_up_time->format('Hi')])
-                ->keys('#start_time', [$fixture2->start_time->format('Hi')])
+                ->keys('#warm_up_time', [$fixture2->warm_up_time->format('hiA')])
+                ->keys('#start_time', [$fixture2->start_time->format('hiA')])
                 ->pressSubmit('Add')
                 ->assertPathIs($page->createUrl())
                 ->assertSeeIn('@division-id-error',
@@ -229,8 +227,8 @@ class FixtureResourceTest extends DuskTestCase
                 ->select('venue_id', $fixture2->venue_id)
                 ->type('match_number', $fixture->match_number)
                 ->keys('#match_date', [$fixture2->match_date->format('dmY')])
-                ->keys('#warm_up_time', [$fixture2->warm_up_time->format('Hi')])
-                ->keys('#start_time', [$fixture2->start_time->format('Hi')])
+                ->keys('#warm_up_time', [$fixture2->warm_up_time->format('hiA')])
+                ->keys('#start_time', [$fixture2->start_time->format('hiA')])
                 ->pressSubmit('Add')
                 ->assertPathIs($page->createUrl())
                 ->assertSeeIn('@match-number-error', 'There is already a match with the same number in this division.');
@@ -271,8 +269,8 @@ class FixtureResourceTest extends DuskTestCase
                 ->select('venue_id', $newFixture->venue_id)
                 ->type('match_number', $newFixture->match_number)
                 ->keys('#match_date', [$newFixture->match_date->format('dmY')])
-                ->keys('#warm_up_time', [$newFixture->warm_up_time->format('Hi')])
-                ->keys('#start_time', [$newFixture->start_time->format('Hi')])
+                ->keys('#warm_up_time', [$newFixture->warm_up_time->format('hiA')])
+                ->keys('#start_time', [$newFixture->start_time->format('hiA')])
                 ->type('notes', $newFixture->notes)
                 ->pressSubmit('Update')
                 ->assertPathIs($page->indexUrl())
@@ -292,8 +290,8 @@ class FixtureResourceTest extends DuskTestCase
                 ->select('venue_id', $newFixture->venue_id)
                 ->type('match_number', $newFixture->match_number)
                 ->keys('#match_date', [$newFixture->match_date->format('dmY')])
-                ->keys('#warm_up_time', [$newFixture->warm_up_time->format('Hi')])
-                ->keys('#start_time', [$newFixture->start_time->format('Hi')])
+                ->keys('#warm_up_time', [$newFixture->warm_up_time->format('hiA')])
+                ->keys('#start_time', [$newFixture->start_time->format('hiA')])
                 ->clear('notes')
                 ->pressSubmit('Update')
                 ->assertPathIs($page->indexUrl())

@@ -30,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
             $this->app->register(\Appzcoder\CrudGenerator\CrudGeneratorServiceProvider::class);
             $this->app->register(\Laracademy\Commands\MakeServiceProvider::class);
             $this->app->register(\Laravel\Dusk\DuskServiceProvider::class);
+            $this->app->register(\Staudenmeir\DuskUpdater\DuskServiceProvider::class);
         }
 
         if ($this->app->environment() == 'testing') {
@@ -37,6 +38,7 @@ class AppServiceProvider extends ServiceProvider
                 return \Faker\Factory::create(config('app.faker_locale'));
             });
             $this->app->register(\Laravel\Dusk\DuskServiceProvider::class);
+            $this->app->register(\Staudenmeir\DuskUpdater\DuskServiceProvider::class);
         }
     }
 }
