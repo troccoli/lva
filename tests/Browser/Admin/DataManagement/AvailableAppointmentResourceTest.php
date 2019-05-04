@@ -3,6 +3,7 @@
 namespace Tests\Browser\Admin\DataManagement;
 
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Log;
 use Laravel\Dusk\Browser;
 use LVA\Models\AvailableAppointment;
 use LVA\Models\Fixture;
@@ -64,6 +65,8 @@ class AvailableAppointmentResourceTest extends DuskTestCase
                 })
                 // Check page 2
                 ->with($page->pageNavigation, function ($nav) {
+                    Log::debug($nav);
+                    Log::debug($nav->driver->getPageSource());
                     $nav->clickLink(2);
                 })
                 ->assertPathIs($page->indexUrl())
