@@ -6,73 +6,118 @@ version: 2
 jobs:
   build:
     docker:
-      # specify the version you desire here
-      - image: circleci/php:7.1-node-browsers
+      # Specify the version you desire here
+      - image: circleci/php:7.3-stretch-node-browsers
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mysql:9.4
-
-    working_directory: ~/laravel
+      # Using the RAM variation mitigates I/O contention
+      # for database intensive operations.
+      # - image: circleci/mysql:5.7-ram
+      #
+      # - image: redis:3
 
     steps:
       - checkout
 
-      - run: sudo apt install -y libsqlite3-dev zlib1g-dev
-      - run: sudo docker-php-ext-install zip
-      - run: sudo composer self-update
+      - run:
+          name: Install System Dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y zlib1g-dev libsqlite3-dev
+      - run:
+          name: Install PHP Extensions
+          command: sudo docker-php-ext-install zip
 
-      # Download and cache composer dependencies
+      - run:
+          name: Version checks
+          command: |
+            php --version
+            php --ini
+            php -m
+
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "composer.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
-      - run: composer install -n --prefer-dist
+            - composer-v1-{{ checksum "composer.lock" }}
+            - composer-v1-
+
+      - run:
+          name: Install Composer Dependencies
+          command: composer install --no-progress --no-suggest --no-interaction --optimize-autoloader
+
       - save_cache:
+          key: composer-v1-{{ checksum "composer.lock" }}
           paths:
             - vendor
-          key: v1-dependencies-{{ checksum "composer.json" }}
 
-      # Download and cache npm dependencies
-      - restore_cache: # special step to restore the dependency cache if `package.json` does not change
+      - restore_cache:
           keys:
             - node-v1-{{ checksum "package.json" }}
-            # fallback to using the latest cache if no exact match is found (See https://circleci.com/docs/2.0/caching/)
             - node-v1-
-      - run: npm install
-      - save_cache: # special step to save the dependency cache with the `package.json` cache key template
+
+      - run:
+          name: Install Node Dependencies
+          command: npm install
+
+      - save_cache:
           key: node-v1-{{ checksum "package.json" }}
           paths:
             - node_modules
 
-      - run: cp env.travis .env
-      - run: cp .env .env.dusk.local
+      - run:
+          name: Setup Environment
+          command: |
+            cp env.circleci .env
+            php artisan key:generate
+            touch ./storage/logs/laravel.log
+            touch ./database/database.sqlite
 
-      - run: php artisan key:generate
-      - run: touch database/database.sqlite
-      - run: php artisan migrate --env=testing --database=testing --force
-      - run: npm run production
+      - run:
+          name: Run Webpack
+          command: npm run production
 
-      # run tests!
-      - run: ./vendor/bin/phpunit
+      - run:
+          name: Migrate Database
+          command: php artisan migrate
+
+      - run:
+          name: Run Unit Tests
+          command: |
+            mkdir -p ./logs/phpunit
+            vendor/bin/phpunit
 
       - run:
           name: Start Chrome Driver
-          command: ./vendor/laravel/dusk/bin/chromedriver-linux
+#          command: |
+#            php artisan dusk:update
+#            vendor/laravel/dusk/bin/chromedriver-linux
+          command: vendor/laravel/dusk/bin/chromedriver-linux
           background: true
-      - run: sleep 1
+
       - run:
           name: Run Laravel Server
-          command: php artisan serve --quiet
+          command: php artisan serve
           background: true
-      - run: sleep 1
 
       - run:
           name: Run Laravel Dusk Tests
-          command: php artisan dusk --filter AvailableAppointmentResourceTest
+          command: php artisan dusk --filter testListAvailableAppointments
+          environment:
+            USE_CHROME_DRIVER: true
+
+      - store_artifacts:
+          path: ./logs/phpunit
+          destination: phpunit
+
+      - store_artifacts:
+          path: ./tests/Browser/console
+          destination: console
 
       - store_artifacts:
           path: ./tests/Browser/screenshots
+          destination: screenshots
 
+      - store_artifacts:
+          path: ./storage/logs
+          destination: laravel

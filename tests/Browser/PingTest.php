@@ -13,8 +13,7 @@ class PingTest extends DuskTestCase
     {
         $this->browse(function (Browser $browser) {
             $browser->visit('/')
-                ->dump();
-//                ->assertSee('London Volleyball Association');
+                ->assertSee('London Volleyball Association');
         });
     }
 }
