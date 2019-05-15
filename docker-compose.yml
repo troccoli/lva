@@ -1,11 +1,8 @@
 version: '3'
 services:
   web:
-    build:
-      context: .
-      dockerfile: .docker/Dockerfile
     container_name: app-web
-    image: app-docker
+    image: troccoli/laravel
     volumes:
       - ./:/var/www/vhosts/app:z
     ports:
