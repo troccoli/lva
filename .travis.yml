@@ -20,7 +20,6 @@ install:
 
 before_script:
   - phpenv config-rm xdebug.ini
-  - php artisan key:generate
   - touch database/database.sqlite
   - php artisan migrate
   - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
