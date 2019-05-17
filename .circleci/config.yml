@@ -12,12 +12,54 @@ jobs:
       - checkout
       - run: sudo apt-get install -y libsqlite3-dev
       - run: cp .env.ci .env
-      - run: composer install -n --ignore-platform-reqs
-      - run: npm install
-      - run: npm run production
-      - run: touch database/database.sqlite
-      - run: php artisan migrate
-      - run: vendor/bin/phpunit
+
+      - restore_cache:
+          keys:
+            - composer-v1-{{ checksum "composer.lock" }}
+            - composer-v1-
+      - run:
+          name: Install Composer Dependencies
+          command: composer install -n --ignore-platform-reqs
+      - save_cache:
+          key: composer-v1-{{ checksum "composer.lock" }}
+          paths:
+            - vendor
+      - run:
+          name: Setup Environment
+          command: |
+            cp .env.ci .env
+            php artisan key:generate
+            touch ./storage/logs/laravel.log
+            touch ./database/database.sqlite
+
+      - restore_cache:
+          keys:
+            - node-v1-{{ checksum "package.json" }}
+            - node-v1-
+      - run:
+          name: Install Node Dependencies
+          command: |
+            node --version
+            npm --version
+            npm install
+      - save_cache:
+          key: node-v1-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+
+      - run:
+          name: Run Webpack
+          command: npm run prod
+
+      - run:
+          name: Migrate Database
+          command: php artisan migrate --force
+      - run:
+          name: Run Unit Tests
+          command: |
+            mkdir -p ./logs/phpunit
+            vendor/bin/phpunit -d memory_limit=512M --log-junit logs/phpunit/junit.xml --testdox-html logs/phpunit/testdox.html
+
 
       - run:
           name: Start Chrome Driver
