@@ -9,30 +9,32 @@ language: php
 php:
   - 7.3
 
+addons:
+  chrome: stable
+
 branches:
   only:
   - master
+  - travis-for-laravel-5.8
 
 install:
-  - travis_retry composer install --no-progress --no-suggest --no-interaction --optimize-autoloader
+  - travis_retry composer install --no-interaction --prefer-dist --no-suggest
   - npm install
   - npm rebuild node-sass
   - npm run production
-  - docker-compose build
 
 before_script:
   - phpenv config-rm xdebug.ini
   - cp .env.ci .env
-  - cp .env .env.dusk.local
   - php artisan key:generate
   - touch database/database.sqlite
   - php artisan migrate
+  - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
+  - php artisan serve &
 
 script:
   - vendor/bin/phpunit
-  - docker-compose up -d
-  - sleep 3
-  - docker exec -it app-web php artisan dusk --filter PingTest
+  - php artisan dusk
 
 notifications:
   email:
