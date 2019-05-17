@@ -3,6 +3,7 @@
 namespace Tests\Browser\Admin\DataManagement;
 
 use Facebook\WebDriver\Remote\RemoteWebElement;
+use Facebook\WebDriver\WebDriverBy;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 use Laravel\Dusk\Browser;
@@ -68,9 +69,12 @@ class AvailableAppointmentResourceTest extends DuskTestCase
                 ->with($page->pageNavigation, function (Browser $nav) {
                     foreach ($nav->elements('a') as $a) {
                         /** @var RemoteWebElement $a */
-                        var_dump($a->getAttribute('href'));
-                        var_dump($a->getText());
+                        var_dump($a->findElement(WebDriverBy::linkText('2')));
+//                        echo $a->getAttribute('href');
+//
+//                        var_dump($a->getText());
                     }
+//                    echo $nav->resolver->format("a:contains(2)");
 //                    Log::debug($nav->driver->getPageSource());
                     $nav->clickLink(2);
                 })
