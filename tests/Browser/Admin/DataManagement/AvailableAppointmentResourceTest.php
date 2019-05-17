@@ -2,7 +2,10 @@
 
 namespace Tests\Browser\Admin\DataManagement;
 
+use Facebook\WebDriver\Remote\RemoteWebElement;
+use Facebook\WebDriver\WebDriverBy;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Log;
 use Laravel\Dusk\Browser;
 use LVA\Models\AvailableAppointment;
 use LVA\Models\Fixture;
@@ -63,7 +66,7 @@ class AvailableAppointmentResourceTest extends DuskTestCase
                     }
                 })
                 // Check page 2
-                ->with($page->pageNavigation, function ($nav) {
+                ->with($page->pageNavigation, function (Browser $nav) {
                     $nav->clickLink(2);
                 })
                 ->assertPathIs($page->indexUrl())
