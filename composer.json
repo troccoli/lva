@@ -20,6 +20,7 @@
     "require": {
         "php": "^7.1.3",
         "codescheme/postcodes": "^1.4",
+        "davejamesmiller/laravel-breadcrumbs": "^5.2",
         "fideloper/proxy": "^4.0",
         "laravel/framework": "5.8.*",
         "laravel/tinker": "^1.0"
