@@ -67,15 +67,6 @@ class AvailableAppointmentResourceTest extends DuskTestCase
                 })
                 // Check page 2
                 ->with($page->pageNavigation, function (Browser $nav) {
-                    foreach ($nav->elements('a') as $a) {
-                        /** @var RemoteWebElement $a */
-                        var_dump($a->findElement(WebDriverBy::linkText('2')));
-//                        echo $a->getAttribute('href');
-//
-//                        var_dump($a->getText());
-                    }
-//                    echo $nav->resolver->format("a:contains(2)");
-//                    Log::debug($nav->driver->getPageSource());
                     $nav->clickLink(2);
                 })
                 ->assertPathIs($page->indexUrl())

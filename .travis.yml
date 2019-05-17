@@ -23,7 +23,7 @@ install:
 
 before_script:
   - phpenv config-rm xdebug.ini
-  - cp env.travis .env
+  - cp .env.ci .env
   - cp .env .env.dusk.local
   - php artisan key:generate
   - touch database/database.sqlite

@@ -68,7 +68,7 @@ jobs:
       - run:
           name: Setup Environment
           command: |
-            cp env.circleci .env
+            cp .env.ci .env
             php artisan key:generate
             touch ./storage/logs/laravel.log
             touch ./database/database.sqlite
