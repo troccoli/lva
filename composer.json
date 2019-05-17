@@ -43,7 +43,7 @@
     },
     "autoload": {
         "psr-4": {
-            "LVA\\": "app/"
+            "App\\": "app/"
         },
         "classmap": [
             "database/seeds",
