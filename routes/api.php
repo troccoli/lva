@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Http\Request;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -11,10 +13,6 @@
 |
 */
 
-Route::group(['prefix' => 'v1', 'middleware' => 'auth:api', 'namespace' => 'v1'], function () {
-    Route::get('uploads/status.json', ['as' => 'upload-status', 'uses' => 'UploadApiController@getUploadStatus']);
-    Route::post('maps/team', ['as' => 'loading-map-team', 'uses' => 'UploadApiController@mapTeam']);
-    Route::post('maps/venue', ['as' => 'loading-map-venue', 'uses' => 'UploadApiController@mapVenue']);
-    Route::get('uploads/resume', ['as' => 'resume-upload', 'uses' => 'UploadApiController@resumeUpload']);
-    Route::get('uploads/abandon', ['as' => 'abandon-upload', 'uses' => 'UploadApiController@abandonUpload']);
+Route::middleware('auth:api')->get('/user', function (Request $request) {
+    return $request->user();
 });

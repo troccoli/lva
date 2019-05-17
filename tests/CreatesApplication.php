@@ -2,15 +2,10 @@
 
 namespace Tests;
 
-use Faker\Factory;
-use Faker\Generator;
 use Illuminate\Contracts\Console\Kernel;
 
 trait CreatesApplication
 {
-    /** @var Generator */
-    protected $faker;
-
     /**
      * Creates the application.
      *
@@ -18,10 +13,9 @@ trait CreatesApplication
      */
     public function createApplication()
     {
-        $app = require __DIR__ . '/../bootstrap/app.php';
-        $app->make(Kernel::class)->bootstrap();
+        $app = require __DIR__.'/../bootstrap/app.php';
 
-        $this->faker = Factory::create(config('app.faker_locale'));
+        $app->make(Kernel::class)->bootstrap();
 
         return $app;
     }
