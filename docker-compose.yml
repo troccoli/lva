@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+
+  web:
+    container_name: app-web
+    image: troccoli/laravel
+    volumes:
+      - ./:/var/www/vhosts/app:z
+    ports:
+      - 8080:80
+    depends_on:
+      - mysql
+    environment:
+      XDEBUG_CONFIG: "remote_host=172.17.0.1"
+      PHP_IDE_CONFIG: "serverName=app"
+
+  mysql:
+    container_name: app-mysql
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: 123
+    ports:
+      - 13306:3306
+    volumes:
+      - ./.docker/config/mysql/initdb.d:/docker-entrypoint-initdb.d:z
+      - ./.docker/database:/var/lib/mysql:z
+
+  mailhog:
+    container_name: app-mailhog
+    image: mailhog/mailhog
+    ports:
+      - 18025:8025
+
+  selenium:
+    container_name: app-selenium
+    image: selenium/standalone-chrome
+    environment:
+      START_XVFB: "false"
+    depends_on:
+      - web
+    volumes:
+      - /dev/shm:/dev/shm
+    links:
+      - web:selenium.test
