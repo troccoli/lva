@@ -1,4 +1,5 @@
-version: 2
+version: 2.0
+
 jobs:
   build:
     branches:
@@ -6,12 +7,11 @@ jobs:
         - master
         - travis-for-laravel-5.8
     docker:
-      - image: circleci/php:7.3-stretch-node-browsers
+      - image: circleci/php:7.3
 
     steps:
       - checkout
       - run: sudo apt-get install -y libsqlite3-dev
-      - run: cp .env.ci .env
 
       - restore_cache:
           keys:
@@ -74,3 +74,5 @@ jobs:
       - run:
           name: Run Laravel Dusk Tests
           command: php artisan dusk
+          environment:
+            USE_SELENIUM: false
