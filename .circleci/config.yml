@@ -7,7 +7,7 @@ jobs:
         - master
         - travis-for-laravel-5.8
     docker:
-      - image: circleci/php:7.3
+      - image: circleci/php:7.3-cli-node
 
     steps:
       - checkout
@@ -26,7 +26,7 @@ jobs:
             - composer-v2-
       - run:
           name: Install Composer Dependencies
-          command: composer install -n --ignore-platform-reqs
+          command: composer install -n --ignore-platform-reqs --no-progress --no-suggest
       - save_cache:
           key: composer-v2-{{ checksum "composer.lock" }}
           paths:
