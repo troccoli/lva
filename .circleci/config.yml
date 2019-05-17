@@ -5,12 +5,17 @@ jobs:
       only:
         - master
         - travis-for-laravel-5.8
+    docker:
+      - image: circleci/php:7.3-stretch-node-browsers
+
     steps:
       - run: sudo apt-get install -y libsqlite3-dev
-      - run: cp .env.testing .env
+      - run: cp .env.ci .env
       - run: composer install -n --ignore-platform-reqs
       - run: npm install
       - run: npm run production
+      - run: touch database/database.sqlite
+      - run: php artisan migrate
       - run: vendor/bin/phpunit
 
       - run:
