@@ -6,7 +6,7 @@ services:
     volumes:
       - ./:/var/www/vhosts/app:z
     ports:
-      - 8080:80
+      - 8888:80
     depends_on:
       - mysql
 #    links:
