@@ -39,7 +39,6 @@ abstract class DuskTestCase extends BaseTestCase
             'window-size=1920,1080',
         ]);
 
-        var_dump(app().env());
         var_dump(config('testing'));
         if (config('testing.use_selenium')) {
             return RemoteWebDriver::create(
