@@ -39,7 +39,8 @@ abstract class DuskTestCase extends BaseTestCase
             'window-size=1920,1080',
         ]);
 
-        var_dump(config());
+        var_dump(app().env());
+        var_dump(config('testing'));
         if (config('testing.use_selenium')) {
             return RemoteWebDriver::create(
                 'http://selenium:4444/wd/hub', DesiredCapabilities::chrome()->setCapability(

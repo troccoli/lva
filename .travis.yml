@@ -9,7 +9,6 @@ addons:
 branches:
   only:
   - master
-  - travis-for-laravel-5.8
 
 install:
   - cp .env.ci .env
