@@ -9,6 +9,7 @@ addons:
 branches:
   only:
   - master
+  - brand-new-rewrite-for-laravel-5.8
 
 install:
   - cp .env.ci .env
