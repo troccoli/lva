@@ -64,7 +64,9 @@ jobs:
             mkdir -p ./logs/phpunit
             vendor/bin/phpunit -d memory_limit=512M --log-junit logs/phpunit/junit.xml --testdox-html logs/phpunit/testdox.html
 
-      - run: php artisan dusk:chrome-driver 74
+      - run:
+          name: Update Chrom Driver
+          command: php artisan dusk:chrome-driver 74
 
       - run:
           name: Start Chrome Driver
