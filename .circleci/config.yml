@@ -7,7 +7,7 @@ jobs:
         - master
         - travis-for-laravel-5.8
     docker:
-      - image: circleci/7.3-stretch-node-browsers
+      - image: circleci/php:7.3-stretch-node-browsers
 
     steps:
       - run:
