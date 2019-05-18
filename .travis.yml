@@ -2,6 +2,7 @@ language: php
 
 php:
   - 7.3
+  - travis-for-laravel-5.8
 
 addons:
   chrome: stable
@@ -9,23 +10,24 @@ addons:
 branches:
   only:
   - master
+  - travis-for-laravel-5.8
 
 install:
   - cp .env.ci .env
-  - travis_retry composer install --no-interaction --prefer-dist --no-suggest
+  - travis_retry composer install -n --ignore-platform-reqs --no-progress --no-suggest
   - npm install
-  - npm rebuild node-sass
   - npm run production
 
 before_script:
   - phpenv config-rm xdebug.ini
-  - touch database/database.sqlite
-  - php artisan migrate
+  - touch ./storage/logs/laravel.log
+  - touch ./database/database.sqlite
+  - php artisan migrate --force
   - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
   - php artisan serve &
 
 script:
-  - vendor/bin/phpunit
+  - vendor/bin/phpunit -d memory_limit=512M --log-junit logs/phpunit/junit.xml --testdox-html logs/phpunit/testdox.html
   - php artisan dusk
 
 notifications:
