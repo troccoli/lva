@@ -81,5 +81,19 @@ jobs:
       - run:
           name: Run Laravel Dusk Tests
           command: php artisan dusk
-          environment:
-            USE_SELENIUM: false
+
+      - store_artifacts:
+          path: ./logs/phpunit
+          destination: phpunit
+
+      - store_artifacts:
+          path: ./tests/Browser/console
+          destination: console
+
+      - store_artifacts:
+          path: ./tests/Browser/screenshots
+          destination: screenshots
+
+      - store_artifacts:
+          path: ./storage/logs
+          destination: laravel
