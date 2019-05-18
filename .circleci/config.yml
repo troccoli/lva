@@ -64,12 +64,12 @@ jobs:
             mkdir -p ./logs/phpunit
             vendor/bin/phpunit -d memory_limit=512M --log-junit logs/phpunit/junit.xml --testdox-html logs/phpunit/testdox.html
 
-      - run:
-          name: Start Chrome Driver
-          command: |
-            php artisan dusk:chrome-driver 73
-            ./vendor/laravel/dusk/bin/chromedriver-linux
-          background: true
+#      - run:
+#          name: Start Chrome Driver
+#          command: |
+#            php artisan dusk:chrome-driver 73
+#            ./vendor/laravel/dusk/bin/chromedriver-linux
+#          background: true
 
       - run:
           name: Run Laravel Server
