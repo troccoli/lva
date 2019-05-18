@@ -10,8 +10,11 @@ jobs:
       - image: circleci/php:7.3-cli-node-browsers
 
     steps:
+      - run:
+          name: Install SQLite library
+          command: sudo apt-get install -y libsqlite3-dev
+
       - checkout
-      - run: sudo apt-get install -y libsqlite3-dev
 
       - run:
           name: Setup Environment
@@ -54,16 +57,18 @@ jobs:
       - run:
           name: Migrate Database
           command: php artisan migrate --force
+
       - run:
           name: Run Unit Tests
           command: |
             mkdir -p ./logs/phpunit
             vendor/bin/phpunit -d memory_limit=512M --log-junit logs/phpunit/junit.xml --testdox-html logs/phpunit/testdox.html
 
-
       - run:
           name: Start Chrome Driver
-          command: ./vendor/laravel/dusk/bin/chromedriver-linux
+          command: |
+            php artisan dusk:chrome-driver
+            ./vendor/laravel/dusk/bin/chromedriver-linux
           background: true
 
       - run:
