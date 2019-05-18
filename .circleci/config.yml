@@ -67,7 +67,7 @@ jobs:
       - run:
           name: Start Chrome Driver
           command: |
-            php artisan dusk:chrome-driver 73
+            php artisan dusk:chrome-driver 74
           background: true
 
       - run:
