@@ -18,3 +18,4 @@ _ide_helper_models.php
 /public/build/
 /public/mix-manifest.json
 /resources/assets/.sass-cache/
+.phpunit.result.cache
