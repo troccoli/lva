@@ -22,4 +22,10 @@ class HomepageTest extends TestCase
             ->get('/')
             ->assertOk();
     }
+
+    public function testBreadcrumbs(): void
+    {
+        $this->get('/')
+            ->assertSeeTextInOrder(['Home']);
+    }
 }

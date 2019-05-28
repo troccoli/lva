@@ -22,4 +22,11 @@ class DashboardTest extends TestCase
             ->get('/dashboard')
             ->assertOk();
     }
+
+    public function testBreadcrumbs(): void
+    {
+        $this->actingAs(factory(User::class)->create())
+            ->get('/dashboard')
+            ->assertSeeTextInOrder(['Home', 'Dashboard']);
+    }
 }

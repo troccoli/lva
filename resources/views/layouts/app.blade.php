@@ -18,6 +18,9 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <!-- Breadcrumbs - for SEO -->
+    {{ Breadcrumbs::view('breadcrumbs::json-ld') }}
 </head>
 <body>
     <div id="app">
@@ -73,6 +76,7 @@
         </nav>
 
         <main class="py-4">
+            {{ Breadcrumbs::render() }}
             @yield('content')
         </main>
     </div>
