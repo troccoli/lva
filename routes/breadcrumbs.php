@@ -10,3 +10,7 @@ Breadcrumbs::for('dashboard', function (BreadcrumbsGenerator $trail) {
     $trail->parent('home');
     $trail->push('Dashboard', '/dashboard');
 });
+Breadcrumbs::for('login', function (BreadcrumbsGenerator $trail) {
+    $trail->parent('home');
+    $trail->push('Login', '/login');
+});
