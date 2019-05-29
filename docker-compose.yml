@@ -3,20 +3,20 @@ version: '3'
 services:
 
   web:
-    container_name: app-web
+    container_name: lva-web
     image: troccoli/laravel
     volumes:
       - ./:/var/www/vhosts/app:z
     ports:
-      - 8080:80
+      - 8081:80
     depends_on:
       - mysql
     environment:
       XDEBUG_CONFIG: "remote_host=172.17.0.1"
-      PHP_IDE_CONFIG: "serverName=app"
+      PHP_IDE_CONFIG: "serverName=lva"
 
   mysql:
-    container_name: app-mysql
+    container_name: lva-mysql
     image: mysql:5.7
     environment:
       MYSQL_ROOT_PASSWORD: 123
@@ -27,13 +27,13 @@ services:
       - ./.docker/database:/var/lib/mysql:z
 
   mailhog:
-    container_name: app-mailhog
+    container_name: lva-mailhog
     image: mailhog/mailhog
     ports:
       - 18025:8025
 
   selenium:
-    container_name: app-selenium
+    container_name: lva-selenium
     image: selenium/standalone-chrome
     environment:
       START_XVFB: "false"
