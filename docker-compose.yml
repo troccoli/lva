@@ -31,6 +31,7 @@ services:
     image: mailhog/mailhog
     ports:
       - 18025:8025
+      - 11025:1025
 
   selenium:
     container_name: lva-selenium
