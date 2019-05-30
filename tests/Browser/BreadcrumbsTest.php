@@ -24,6 +24,7 @@ class BreadcrumbsTest extends DuskTestCase
         return [
             'Homepage' => ['/', ['Home']],
             'Login'    => ['/login', ['Home', 'Login']],
+            'Register' => ['/register', ['Home', 'Register']],
         ];
     }
 

@@ -14,3 +14,7 @@ Breadcrumbs::for('login', function (BreadcrumbsGenerator $trail) {
     $trail->parent('home');
     $trail->push('Login', '/login');
 });
+Breadcrumbs::for('register', function (BreadcrumbsGenerator $trail) {
+    $trail->parent('home');
+    $trail->push('Register', '/register');
+});
