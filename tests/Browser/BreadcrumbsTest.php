@@ -22,9 +22,10 @@ class BreadcrumbsTest extends DuskTestCase
     public function guestPagesBreadcrumbs(): array
     {
         return [
-            'Homepage' => ['/', ['Home']],
-            'Login'    => ['/login', ['Home', 'Login']],
-            'Register' => ['/register', ['Home', 'Register']],
+            'Homepage'       => ['/', ['Home']],
+            'Login'          => ['/login', ['Home', 'Login']],
+            'Register'       => ['/register', ['Home', 'Register']],
+            'Reset password' => ['/password/reset', ['Home', 'Reset password']],
         ];
     }
 
