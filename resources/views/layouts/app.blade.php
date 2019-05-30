@@ -18,6 +18,7 @@
 
     <!-- Styles -->
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+    @stack('stylesheets')
 
     <!-- Breadcrumbs - for SEO -->
     {{ Breadcrumbs::view('breadcrumbs::json-ld') }}
@@ -80,5 +81,6 @@
             @yield('content')
         </main>
     </div>
+    @stack('scripts')
 </body>
 </html>
