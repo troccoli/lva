@@ -1,10 +1,7 @@
 @extends('layouts.app')
 
-@push('stylesheets')
-    <link href="{{ mix('css/login.css') }}" rel="stylesheet">
-@endpush
 @section('content')
-    <div class="container">
+    <div class="container login-page">
         <div class="row">
             <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
                 <div class="card card-signin my-5">
