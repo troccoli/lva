@@ -45,7 +45,6 @@
             </div>
 
             <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">{{ __('Register') }}</button>
-            <a class="d-block text-center mt-2 small" href="{{ route('login') }}">{{ __('Login') }}</a>
         </form>
     @endcomponent
 @endsection
