@@ -13,7 +13,7 @@ class ResetPasswordTest extends DuskTestCase
         $this->browse(function (Browser $browser) {
             $browser->visit('/password/reset')
                 ->type('email', 'tom@example.org')
-                ->press('Send Password Reset Link')
+                ->press('SEND PASSWORD RESET LINK')
                 ->assertPathIs('/password/reset')
                 ->assertSee('We have e-mailed your password reset link!');
         });
@@ -25,7 +25,7 @@ class ResetPasswordTest extends DuskTestCase
             $user = factory(User::class)->create();
             $browser->visit('/password/reset')
                 ->type('email', $user->email)
-                ->press('Send Password Reset Link')
+                ->press('SEND PASSWORD RESET LINK')
                 ->assertPathIs('/password/reset')
                 ->assertSee('We have e-mailed your password reset link!');
         });

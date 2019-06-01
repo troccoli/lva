@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Closure;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\TestCase as BaseTestCase;
 use Facebook\WebDriver\Chrome\ChromeOptions;
@@ -42,5 +43,11 @@ abstract class DuskTestCase extends BaseTestCase
             'http://localhost:9515', DesiredCapabilities::chrome()->setCapability(
             ChromeOptions::CAPABILITY, $options
         ));
+    }
+
+    public function browse(Closure $callback)
+    {
+        parent::browse($callback);
+        static::$browsers->first()->driver->manage()->deleteAllCookies();
     }
 }
