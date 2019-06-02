@@ -1,10 +1,12 @@
 // Fonts
-@import url('https://fonts.googleapis.com/css?family=Nunito');
+@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Sans|Roboto:300');
 
 // Variables
+@import "~bootswatch/dist/cerulean/variables";
 @import 'variables';
 
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
+@import "~bootswatch/dist/cerulean/bootswatch";
 
 @import "auth";

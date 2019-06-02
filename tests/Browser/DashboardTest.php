@@ -22,8 +22,8 @@ class DashboardTest extends DuskTestCase
             $user = factory(User::class)->create();
             $browser->loginAs($user)
                 ->visit('/dashboard')
-                ->assertSee('London Volleyball Association')
                 ->assertSee('Dashboard')
+                ->assertSee('You are logged in!')
                 ->assertSee($user->name);
         });
     }
