@@ -22,3 +22,7 @@ Breadcrumbs::for('password.request', function (BreadcrumbsGenerator $trail) {
     $trail->parent('home');
     $trail->push('Forgotten password', '/password/reset');
 });
+Breadcrumbs::for('password.reset', function (BreadcrumbsGenerator $trail) {
+    $trail->parent('home');
+    $trail->push('Reset password', '/password/reset');
+});
