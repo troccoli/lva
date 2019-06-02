@@ -3,7 +3,7 @@
 @section('content')
     @component('components.auth')
         @slot('title')
-            {{ __('Reset password') }}
+            {{ __('Forgotten password') }}
         @endslot
 
         @if (session('status'))

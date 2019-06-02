@@ -20,5 +20,5 @@ Breadcrumbs::for('register', function (BreadcrumbsGenerator $trail) {
 });
 Breadcrumbs::for('password.request', function (BreadcrumbsGenerator $trail) {
     $trail->parent('home');
-    $trail->push('Reset password', '/password/reset');
+    $trail->push('Forgotten password', '/password/reset');
 });

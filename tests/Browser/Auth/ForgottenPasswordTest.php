@@ -6,7 +6,7 @@ use App\Models\User;
 use Tests\DuskTestCase;
 use Laravel\Dusk\Browser;
 
-class ResetPasswordTest extends DuskTestCase
+class ForgottenPasswordTest extends DuskTestCase
 {
     public function testRequestingResetForNonExistingUser(): void
     {
