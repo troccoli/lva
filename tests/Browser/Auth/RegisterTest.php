@@ -18,7 +18,7 @@ class RegisterTest extends DuskTestCase
                 ->type('password', 'password')
                 ->type('password_confirmation', 'password')
                 ->press('REGISTER')
-                ->assertPathIs('/dashboard');
+                ->assertPathIs('/email/verify');
         });
     }
 

@@ -30,4 +30,16 @@ class ForgottenPasswordTest extends DuskTestCase
                 ->assertSee('We have e-mailed your password reset link!');
         });
     }
+
+    public function testRequestingRestForUnverifiedUser(): void
+    {
+        $this->browse(function (Browser $browser) {
+            $user = factory(User::class)->state('unverified')->create();
+            $browser->visit('/password/reset')
+                ->type('email', $user->email)
+                ->press('SEND PASSWORD RESET LINK')
+                ->assertPathIs('/password/reset')
+                ->assertSee('We have e-mailed your password reset link!');
+        });
+    }
 }

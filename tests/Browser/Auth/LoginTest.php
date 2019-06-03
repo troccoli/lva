@@ -32,4 +32,17 @@ class LoginTest extends DuskTestCase
                 ->assertAuthenticatedAs($user);
         });
     }
+
+    public function testLoggingIntForUnverifiedUsers(): void
+    {
+        $this->browse(function (Browser $browser) {
+            $user = factory(User::class)->state('unverified')->create();
+            $browser->visit('/login')
+                ->type('email', $user->email)
+                ->type('password', 'password')
+                ->press('LOGIN')
+                ->assertSee('Verify your email address!')
+                ->assertPathIs('/email/verify');
+        });
+    }
 }

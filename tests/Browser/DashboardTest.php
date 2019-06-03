@@ -27,4 +27,15 @@ class DashboardTest extends DuskTestCase
                 ->assertSee($user->name);
         });
     }
+
+    public function testForUnverifiedUsers(): void
+    {
+        $this->browse(function (Browser $browser) {
+            $user = factory(User::class)->state('unverified')->create();
+            $browser->loginAs($user)
+                ->visit('/dashboard')
+                ->assertSee('Verify your email address!')
+                ->assertPathIs('/email/verify');
+        });
+    }
 }

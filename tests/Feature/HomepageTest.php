@@ -23,6 +23,13 @@ class HomepageTest extends TestCase
             ->assertOk();
     }
 
+    public function testAccessForUnverifiedUsers(): void
+    {
+        $this->actingAs(factory(User::class)->state('unverified')->create())
+            ->get('/')
+            ->assertOk();
+    }
+
     public function testBreadcrumbs(): void
     {
         $this->get('/')

@@ -26,3 +26,7 @@ Breadcrumbs::for('password.reset', function (BreadcrumbsGenerator $trail) {
     $trail->parent('home');
     $trail->push('Reset password', '/password/reset');
 });
+Breadcrumbs::for('verification.notice', function (BreadcrumbsGenerator $trail) {
+    $trail->parent('home');
+    $trail->push('Email verification');
+});

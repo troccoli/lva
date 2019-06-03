@@ -24,4 +24,14 @@ class HomepageTest extends DuskTestCase
                 ->assertSee('London Volleyball Association');
         });
     }
+
+    public function testForUnverifiedUsers(): void
+    {
+        $this->browse(function (Browser $browser) {
+            $user = factory(User::class)->state('unverified')->create();
+            $browser->loginAs($user)
+                ->visit('/')
+                ->assertSee('London Volleyball Association');
+        });
+    }
 }

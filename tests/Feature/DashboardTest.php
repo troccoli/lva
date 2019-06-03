@@ -22,4 +22,11 @@ class DashboardTest extends TestCase
             ->get('/dashboard')
             ->assertOk();
     }
+
+    public function testAccessForUnverifiedUsers(): void
+    {
+        $this->actingAs(factory(User::class)->state('unverified')->create())
+            ->get('/dashboard')
+            ->assertRedirect('/email/verify');
+    }
 }
