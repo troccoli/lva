@@ -15,7 +15,7 @@ class BreadcrumbsTest extends DuskTestCase
     {
         $this->browse(function (Browser $browser) use ($url, $crumbs) {
             $browser->visit($url)
-                ->assertSeeIn('.breadcrumb', implode("\n", $crumbs));
+                ->assertSeeIn('.breadcrumb', strtoupper(implode("\n", $crumbs)));
         });
     }
 
@@ -37,7 +37,7 @@ class BreadcrumbsTest extends DuskTestCase
         $this->browse(function (Browser $browser) use ($url, $crumbs) {
             $browser->loginAs(factory(User::class)->create())
                 ->visit($url)
-                ->assertSeeIn('.breadcrumb', implode("\n", $crumbs));
+                ->assertSeeIn('.breadcrumb', strtoupper(implode("\n", $crumbs)));
         });
     }
 
