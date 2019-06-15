@@ -35,7 +35,7 @@ services:
 
   selenium:
     container_name: lva-selenium
-    image: selenium/standalone-chrome
+    image: selenium/standalone-chrome:3.141.59-oxygen
     environment:
       START_XVFB: "false"
     depends_on:
