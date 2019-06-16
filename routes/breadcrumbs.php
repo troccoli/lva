@@ -30,3 +30,15 @@ Breadcrumbs::for('verification.notice', function (BreadcrumbsGenerator $trail) {
     $trail->parent('home');
     $trail->push('Email verification');
 });
+Breadcrumbs::for('seasons.index', function (BreadcrumbsGenerator $trail) {
+    $trail->parent('home');
+    $trail->push('Seasons', '/seasons');
+});
+Breadcrumbs::for('seasons.create', function (BreadcrumbsGenerator $trail) {
+    $trail->parent('seasons.index');
+    $trail->push('New season');
+});
+Breadcrumbs::for('seasons.edit', function (BreadcrumbsGenerator $trail) {
+    $trail->parent('seasons.index');
+    $trail->push('Edit seasons');
+});

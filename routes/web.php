@@ -10,4 +10,5 @@ Route::get('/', 'HomeController@index')->name('home');
 Route::middleware(['auth', 'verified'])
     ->group(function (): void {
         Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
+        Route::resource('seasons', 'SeasonController')->except('show');
     });
