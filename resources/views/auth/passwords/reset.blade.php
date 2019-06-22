@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
-    @component('components.auth')
+    @component('components.forms.auth')
         @slot('title')
             {{ __('Reset password') }}
         @endslot
-        <form method="POST" action="{{ route('password.update') }}" class="form-signin">
+        <form method="POST" action="{{ route('password.update') }}">
             @csrf
 
             <input type="hidden" name="token" value="{{ $token }}">
@@ -18,7 +18,7 @@
                 <label for="inputEmail">{{ __('Email address') }}</label>
 
                 @error('email')
-                <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                <span class="invalid-feedback" role="alert" dusk="email-error">{{ $message }}</span>
                 @enderror
             </div>
 
@@ -28,7 +28,7 @@
                 <label for="inputPassword">{{ __('Password') }}</label>
 
                 @error('password')
-                <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                <span class="invalid-feedback" role="alert" dusk="password-error">{{ $message }}</span>
                 @enderror
             </div>
 

@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
-    @component('components.auth')
+    @component('components.forms.auth')
         @slot('title')
             {{ __('Register') }}
         @endslot
-        <form class="form-signin" method="POST">
+        <form method="POST" action="{{ route('register') }}">
             @csrf
             <div class="form-label-group">
                 <input type="text" id="inputName" class="form-control  @error('name') is-invalid @enderror" name="name"
@@ -13,7 +13,7 @@
                 <label for="inputName">Name</label>
 
                 @error('name')
-                <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                <span class="invalid-feedback" role="alert" dusk="name-error">{{ $message }}</span>
                 @enderror
             </div>
 
@@ -24,7 +24,7 @@
                 <label for="inputEmail">{{ __('Email address') }}</label>
 
                 @error('email')
-                <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                <span class="invalid-feedback" role="alert" dusk="email-error">{{ $message }}</span>
                 @enderror
             </div>
 
@@ -34,7 +34,7 @@
                 <label for="inputPassword">{{ __('Password') }}</label>
 
                 @error('password')
-                <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                <span class="invalid-feedback" role="alert" dusk="password-error">{{ $message }}</span>
                 @enderror
             </div>
 

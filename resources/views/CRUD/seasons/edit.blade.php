@@ -2,7 +2,7 @@
 
 @section('content')
 
-    @component('components.crud.crud-form')
+    @component('components.forms.crud')
         @slot('title')
             {{ __('Edit the :season season', ['season' => $season->getName()]) }}
         @endslot

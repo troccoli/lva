@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
-    @component('components.auth')
+    @component('components.forms.auth')
         @slot('title')
             {{ __('Login') }}
         @endslot
 
-        <form class="form-signin" method="post">
+        <form method="post" action="{{ route('login') }}">
             @csrf
             <div class="form-label-group">
                 <input type="email" id="inputEmail"
@@ -15,7 +15,7 @@
                        value="{{ old('email') ?? '' }}">
                 <label for="inputEmail">{{ __('Email address') }}</label>
                 @error('email')
-                <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                <span class="invalid-feedback" role="alert" dusk="email-error">{{ $message }}</span>
                 @enderror
             </div>
 
