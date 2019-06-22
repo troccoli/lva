@@ -15,6 +15,7 @@ _ide_helper_models.php
 /storage/
 /public/css/
 /public/js/
+/public/fonts
 /public/build/
 /public/mix-manifest.json
 /resources/assets/.sass-cache/
