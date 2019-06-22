@@ -6,7 +6,6 @@ use App\Models\Season;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Laracasts\Flash\Flash;
 
 class SeasonController extends Controller
 {
@@ -33,9 +32,7 @@ class SeasonController extends Controller
 
         Season::create($request->only('year'));
 
-        Flash::success('Season added!');
-
-        return redirect()->route('seasons.index');
+        return redirect()->route('seasons.index') ->withToastSuccess(__('Season added!'));
     }
 
     public function edit(Season $season): View
@@ -56,15 +53,13 @@ class SeasonController extends Controller
 
         $season->update($request->only('year'));
 
-        Flash::success('Season updated!');
-
-        return redirect()->route('seasons.index');
+        return redirect()->route('seasons.index')->withToastSuccess(__('Season updated!'));
     }
 
     public function destroy(Season $season): RedirectResponse
     {
         $season->delete();
 
-        return redirect()->route('seasons.index');
+        return redirect()->route('seasons.index')->withToastSuccess(__('Season deleted!'));
     }
 }

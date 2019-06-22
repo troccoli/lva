@@ -21,6 +21,7 @@
 </head>
 <body>
     <div id="app">
+        @include('sweetalert::alert')
         @include('layouts.partials.navbar')
 
         <main class="py-4">
