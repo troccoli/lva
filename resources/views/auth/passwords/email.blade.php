@@ -13,18 +13,14 @@
         @endif
         <form method="POST" action="{{ route('password.email') }}">
             @csrf
-            <div class="form-label-group">
-                <input type="email" id="inputEmail" class="form-control @error('email') is-invalid @enderror"
-                       name="email" value="{{ old('email') }}" placeholder="{{ __('Email address') }}" required
-                       autofocus autocomplete="email">
-                <label for="inputEmail">{{ __('Email address') }}</label>
 
-                @error('email')
-                <span class="invalid-feedback" role="alert" dusk="email-error">{{ $message }}</span>
-                @enderror
-            </div>
-            <button class="btn btn-lg btn-primary btn-block text-uppercase"
-                    type="submit">{{ __('Send password reset link') }}</button>
+            @emailField([
+                 'label' => __('Email address'),
+                 'fieldName' => 'email',
+                 'required' => true,
+             ])
+
+            @submitButton(['label' => __('Send password reset link')])
         </form>
     @endcomponent
 @endsection
