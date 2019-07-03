@@ -13,6 +13,7 @@ class BladeServiceProvider extends ServiceProvider
 
         Blade::include('partials.form.error-field', 'errorField');
         Blade::include('partials.form.text-field', 'textField');
+        Blade::include('partials.form.hidden-field', 'hiddenField');
         Blade::include('partials.form.email-field', 'emailField');
         Blade::include('partials.form.password-field', 'passwordField');
         Blade::include('partials.form.checkbox-field', 'checkboxField');
