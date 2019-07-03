@@ -3,6 +3,7 @@
            id="{{ Str::camel('input-' . $fieldName) }}"
            class="custom-control-input"
            name="{{ $fieldName }}"
+           dusk="{{ $fieldName }}-field"
            {{ old($fieldName) ? 'checked' : '' }}>
     <label for="{{ Str::camel('input-' . $fieldName) }}" class="custom-control-label">{{ $label }}</label>
 </div>
