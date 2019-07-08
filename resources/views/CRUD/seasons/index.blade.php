@@ -24,7 +24,7 @@
                             @component('components.crud.delete-button')
                                 {{ route('seasons.destroy', [$season]) }}
                             @endcomponent
-                            <span class="pl-2">{{ $season->name }}</span>
+                            <span class="pl-2">{{ $season->getName() }}</span>
                         </td>
                     </tr>
                 @endforeach

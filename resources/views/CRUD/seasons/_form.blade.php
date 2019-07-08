@@ -2,7 +2,7 @@
 'label' => __("Season's year"),
 'fieldName' => 'year',
 'required' => true,
-'defaultValue' => $season->name ?? ''
+'defaultValue' => isset($season) ? $season->getYear() : ''
 ])
 
 @submitButton(['label' => $submitText])

@@ -24,11 +24,11 @@ class SeasonTest extends DuskTestCase
 
             $browser->visit('/seasons')
                 ->assertSeeLink('New season')
-                ->with('tbody', function ($table) use ($page1) {
+                ->with('@list', function ($table) use ($page1) {
                     $child = 1;
                     foreach ($page1 as $season) {
                         $table->with("tr:nth-child($child)", function ($row) use ($season) {
-                            $row->assertSeeIn('td:nth-child(1)', $season->name);
+                            $row->assertSeeIn('td:nth-child(1)', $season->getName());
                         });
                         $child++;
                     }
@@ -38,11 +38,11 @@ class SeasonTest extends DuskTestCase
                 })
                 ->assertPathIs('/seasons')
                 ->assertQueryStringHas('page', 2)
-                ->with('tbody', function ($table) use ($page2) {
+                ->with('@list', function ($table) use ($page2) {
                     $child = 1;
                     foreach ($page2 as $season) {
                         $table->with("tr:nth-child($child)", function ($row) use ($season) {
-                            $row->assertSeeIn('td:nth-child(1)', $season->name);
+                            $row->assertSeeIn('td:nth-child(1)', $season->getName());
                         });
                         $child++;
                     }
@@ -71,14 +71,14 @@ class SeasonTest extends DuskTestCase
             $season = factory(Season::class)->make();
             // Brand new season
             $browser->visit('/seasons/create')
-                ->type('name', $season->name)
+                ->type('name', $season->getName())
                 ->press('ADD SEASON')
                 ->assertPathIs('/seasons')
                 ->assertSee('Season added!');
 
             // Add the same season
             $browser->visit('/seasons/create')
-                ->type('name', $season->name)
+                ->type('name', $season->getName())
                 ->press('ADD SEASON')
                 ->assertPathIs('/seasons/create')
                 ->assertSeeIn('@name-error', 'The season already exists.');
@@ -98,10 +98,10 @@ class SeasonTest extends DuskTestCase
                 ->with('@list', function ($table) {
                     $table->clickLink('Update');
                 })
-                ->assertPathIs('/seasons/' . $season->id . '/edit');
+                ->assertPathIs('/seasons/' . $season->getId() . '/edit');
 
             // Don't change anything
-            $browser->visit('/seasons/' . $season->id . '/edit')
+            $browser->visit('/seasons/' . $season->getId() . '/edit')
                 ->press('SAVE CHANGES')
                 ->assertPathIs('/seasons')
                 ->assertSee('Season updated!');
@@ -110,15 +110,15 @@ class SeasonTest extends DuskTestCase
             $newSeason = factory(Season::class)->make();
 
             // Remove required fields
-            $browser->visit('/seasons/' . $season->id . '/edit')
+            $browser->visit('/seasons/' . $season->getId() . '/edit')
                 ->type('name', ' ')// This is to get around the HTML5 validation on the browser
                 ->press('SAVE CHANGES')
-                ->assertPathIs('/seasons/' . $season->id . '/edit')
+                ->assertPathIs('/seasons/' . $season->getId() . '/edit')
                 ->assertSeeIn('@name-error', 'The name is required.');
 
             // Edit all details
-            $browser->visit('/seasons/' . $season->id . '/edit')
-                ->type('name', $newSeason->name)
+            $browser->visit('/seasons/' . $season->getId() . '/edit')
+                ->type('name', $newSeason->getName())
                 ->press('SAVE CHANGES')
                 ->assertPathIs('/seasons')
                 ->assertSee('Season updated!');
@@ -126,10 +126,10 @@ class SeasonTest extends DuskTestCase
             $newSeason = factory(Season::class)->create();
 
             // Use an already existing season
-            $browser->visit('/seasons/' . $season->id . '/edit')
-                ->type('name', $newSeason->name)
+            $browser->visit('/seasons/' . $season->getId() . '/edit')
+                ->type('name', $newSeason->getName())
                 ->press('SAVE CHANGES')
-                ->assertPathIs('/seasons/' . $season->id . '/edit')
+                ->assertPathIs('/seasons/' . $season->getId() . '/edit')
                 ->assertSeeIn('@name-error', 'The season already exists.');
         });
     }
@@ -150,7 +150,7 @@ class SeasonTest extends DuskTestCase
                         ->pause(1000);
                 })
                 ->assertDontSee('Season deleted!')
-                ->assertSee($season->name);
+                ->assertSee($season->getName());
             $browser->visit('/seasons')
                 ->press('Delete')
                 ->whenAvailable('.bootbox-confirm', function (Browser $modal) {
@@ -159,11 +159,11 @@ class SeasonTest extends DuskTestCase
                         ->pause(1000);
                 })
                 ->assertSee('Season deleted!')
-                ->assertDontSee($season->name);
+                ->assertDontSee($season->getName());
 
             // Delete season with existing competition
             $season = factory(Season::class)->create();
-            factory(Competition::class)->create(['season_id' => $season->id]);
+            factory(Competition::class)->create(['season_id' => $season->getId()]);
             $browser->visit('/seasons')
                 ->press('Delete')
                 ->whenAvailable('.bootbox-confirm', function (Browser $modal) {
