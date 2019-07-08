@@ -60,6 +60,12 @@ class SeasonTest extends DuskTestCase
                 ->clickLink('New season')
                 ->assertPathIs('/seasons/create');
 
+            // Check the form
+            $browser->visit('/seasons/create')
+                ->assertInputValue('name', '')
+                ->assertVisible('@submit-button')
+                ->assertSeeIn('@submit-button', 'ADD SEASON');
+
             // All fields missing
             $browser->visit('/seasons/create')
                 ->type('name', ' ')// This is to get around the HTML5 validation on the browser
@@ -99,6 +105,12 @@ class SeasonTest extends DuskTestCase
                     $table->clickLink('Update');
                 })
                 ->assertPathIs('/seasons/' . $season->getId() . '/edit');
+
+            // Check the form
+            $browser->visit('/seasons/' . $season->getId() . '/edit')
+                ->assertInputValue('name', $season->getName())
+                ->assertVisible('@submit-button')
+                ->assertSeeIn('@submit-button', 'SAVE CHANGES');
 
             // Don't change anything
             $browser->visit('/seasons/' . $season->getId() . '/edit')
