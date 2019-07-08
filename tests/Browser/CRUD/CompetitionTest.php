@@ -40,7 +40,7 @@ class CompetitionTest extends DuskTestCase
             $competitions = factory(Competition::class)
                 ->times(3)
                 ->create(['season_id' => $season->getId()])
-                ->sort(function (Competition $c1, Competition $c2): int {
+                ->sort(function ($c1, $c2) {
                     return $c1->getName() <=> $c2->getName();
                 });
 
@@ -52,7 +52,6 @@ class CompetitionTest extends DuskTestCase
                 ->with('@list', function (Browser $table) use ($competitions): void {
                     $child = 1;
                     foreach ($competitions as $competition) {
-                        /** @var Competition $competition */
                         $table->with("tr:nth-child($child)", function (Browser $row) use ($competition): void {
                             $row->assertSeeIn('td:nth-child(1)', $competition->getName());
                         });
@@ -74,7 +73,7 @@ class CompetitionTest extends DuskTestCase
             $competitions = factory(Competition::class)
                 ->times(3)
                 ->create(['season_id' => $oldSeason->getId()])
-                ->sort(function (Competition $c1, Competition $c2): int {
+                ->sort(function (Competition $c1, Competition $c2) {
                     return $c1->getName() <=> $c2->getName();
                 });
 

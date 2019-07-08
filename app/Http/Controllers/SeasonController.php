@@ -58,6 +58,10 @@ class SeasonController extends Controller
 
     public function destroy(Season $season): RedirectResponse
     {
+        if (0 !== $season->getCompetitions()->count()) {
+            return redirect()->route('seasons.index')->withToastError('Cannot delete because there are existing competitions in this season!');
+        }
+
         $season->delete();
 
         return redirect()->route('seasons.index')->withToastSuccess(__('Season deleted!'));

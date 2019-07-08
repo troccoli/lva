@@ -2,6 +2,7 @@
 
 namespace Tests\Browser\Admin\DataManagement;
 
+use App\Models\Competition;
 use Illuminate\Database\Eloquent\Collection;
 use Laravel\Dusk\Browser;
 use App\Models\Season;
@@ -160,15 +161,18 @@ class SeasonTest extends DuskTestCase
                 ->assertSee('Season deleted!')
                 ->assertDontSee($season->name);
 
-            // Delete season with existing division
-//            $season = factory(Season::class)->create();
-//            factory(Division::class)->create(['season_id' => $season->id]);
-//            $browser->visit('/seasons')
-//                ->press('Delete')
-//                ->whenAvailable('.popover.confirmation', function ($popover) {
-//                    $popover->clickLink('Yes');
-//                })
-//                ->assertSee('Cannot delete because they are existing divisions in this season.');
+            // Delete season with existing competition
+            $season = factory(Season::class)->create();
+            factory(Competition::class)->create(['season_id' => $season->id]);
+            $browser->visit('/seasons')
+                ->press('Delete')
+                ->whenAvailable('.bootbox-confirm', function (Browser $modal) {
+                    $modal->assertSee('Are you sure?')
+                        ->press('Confirm')
+                        ->pause(1000);
+                })
+                ->assertSee('Cannot delete because there are existing competitions in this season!')
+                ->assertSeeIn('@list', $season->getName());
         });
     }
 }

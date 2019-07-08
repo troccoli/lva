@@ -2,6 +2,7 @@
 
 namespace Tests\Browser;
 
+use App\Models\Competition;
 use App\Models\Season;
 use App\Models\User;
 use Laravel\Dusk\Browser;
@@ -47,11 +48,15 @@ class BreadcrumbsTest extends DuskTestCase
     public function authPagesBreadcrumbs(): array
     {
         $season = factory(Season::class)->create();
+        $competition = factory(Competition::class)->create();
         return [
             '/dashboard' => ['Home', 'Dashboard'],
             '/seasons' => ['Home', 'Seasons'],
             '/seasons/create' => ['Home', 'Seasons', 'New season'],
             '/seasons/' . $season->id . '/edit' => ['Home', 'Seasons', 'Edit season'],
+            '/competitions' => ['Home', 'Seasons', 'Competitions'],
+//            '/competitions/create' => ['Home', 'Seasons', 'Competitions', 'New competition'],
+//            '/competitions/' . $competition->id . '/edit' => ['Home', 'Seasons', 'Competitions', 'Edit competition'],
         ];
     }
 }

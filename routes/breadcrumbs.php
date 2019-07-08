@@ -42,3 +42,15 @@ Breadcrumbs::for('seasons.edit', function (BreadcrumbsGenerator $trail) {
     $trail->parent('seasons.index');
     $trail->push('Edit seasons');
 });
+Breadcrumbs::for('competitions.index', function (BreadcrumbsGenerator $trail) {
+    $trail->parent('seasons.index');
+    $trail->push('Competitions', '/competitions');
+});
+Breadcrumbs::for('competitions.create', function (BreadcrumbsGenerator $trail) {
+    $trail->parent('competitions.index');
+    $trail->push('New competition');
+});
+Breadcrumbs::for('competitions.edit', function (BreadcrumbsGenerator $trail) {
+    $trail->parent('competitions.index');
+    $trail->push('Edit competition');
+});
