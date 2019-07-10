@@ -1,6 +1,6 @@
 <?php
 
-namespace Feature\CRUD;
+namespace Tests\Feature\CRUD;
 
 use App\Models\Season;
 use App\Models\User;

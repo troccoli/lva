@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Models;
 
 use App\Models\Competition;
 use App\Models\Season;
@@ -20,16 +20,16 @@ class CompetitionTest extends TestCase
 
     public function testItGetsTheName(): void
     {
-        /** @var Competition $competions */
-        $competions = factory(Competition::class)->create();
-        $this->assertEquals($competions->name, $competions->getName());
+        /** @var Competition $competition */
+        $competition = factory(Competition::class)->create();
+        $this->assertEquals($competition->name, $competition->getName());
     }
 
     public function testItGetsTheSeason(): void
     {
         $season = factory(Season::class)->create();
         /** @var Competition $competition */
-        $competition = factory(Competition::class)->create(['season_id' => $season->id]);
+        $competition = factory(Competition::class)->create(['season_id' => $season->getId()]);
         $this->assertEquals($season->getId(), $competition->getSeason()->getId());
     }
 }

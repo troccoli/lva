@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Models;
 
 use App\Models\Competition;
 use App\Models\Season;
@@ -51,11 +51,7 @@ class SeasonTest extends TestCase
     {
         /** @var Season $season */
         $season = factory(Season::class)->create();
-        $competitions = collect([
-            factory(Competition::class)->create(['season_id' => $season->id, 'name' => 'DIV1M']),
-            factory(Competition::class)->create(['season_id' => $season->id, 'name' => 'DIV2M']),
-            factory(Competition::class)->create(['season_id' => $season->id, 'name' => 'DIV3M']),
-        ]);
+        $competitions = factory(Competition::class)->times(3)->create(['season_id' => $season->id]);
         factory(Competition::class)->times(7)->create();
 
         $this->assertCount(3, $season->getCompetitions());

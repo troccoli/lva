@@ -1,6 +1,6 @@
 <?php
 
-namespace Feature\CRUD;
+namespace Tests\Feature\CRUD;
 
 use App\Models\Competition;
 use App\Models\Season;

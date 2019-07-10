@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Browser\Admin\DataManagement;
+namespace Tests\Browser\CRUD;
 
 use App\Models\Competition;
 use Illuminate\Database\Eloquent\Collection;
@@ -11,9 +11,12 @@ use Tests\DuskTestCase;
 
 class SeasonTest extends DuskTestCase
 {
+    /**
+     * @throws \Throwable
+     */
     public function testListSeasons(): void
     {
-        $this->browse(function (Browser $browser) {
+        $this->browse(function (Browser $browser): void {
             $browser->loginAs(factory(User::class)->create());
 
             /** @var Collection $seasons */
@@ -24,24 +27,26 @@ class SeasonTest extends DuskTestCase
 
             $browser->visit('/seasons')
                 ->assertSeeLink('New season')
-                ->with('@list', function ($table) use ($page1) {
+                ->with('@list', function (Browser $table) use ($page1): void {
                     $child = 1;
                     foreach ($page1 as $season) {
-                        $table->with("tr:nth-child($child)", function ($row) use ($season) {
+                        /** @var Season $season */
+                        $table->with("tr:nth-child($child)", function (Browser $row) use ($season): void {
                             $row->assertSeeIn('td:nth-child(1)', $season->getName());
                         });
                         $child++;
                     }
                 })
-                ->with('div.pagination', function ($nav) {
+                ->with('div.pagination', function (Browser $nav): void {
                     $nav->clickLink(2);
                 })
                 ->assertPathIs('/seasons')
                 ->assertQueryStringHas('page', 2)
-                ->with('@list', function ($table) use ($page2) {
+                ->with('@list', function (Browser $table) use ($page2): void {
                     $child = 1;
                     foreach ($page2 as $season) {
-                        $table->with("tr:nth-child($child)", function ($row) use ($season) {
+                        /** @var Season $season */
+                        $table->with("tr:nth-child($child)", function (Browser $row) use ($season): void {
                             $row->assertSeeIn('td:nth-child(1)', $season->getName());
                         });
                         $child++;
@@ -50,9 +55,12 @@ class SeasonTest extends DuskTestCase
         });
     }
 
+    /**
+     * @throws \Throwable
+     */
     public function testAddSeason(): void
     {
-        $this->browse(function (Browser $browser) {
+        $this->browse(function (Browser $browser): void {
             $browser->loginAs(factory(User::class)->create());
 
             // Check we can add a season from the landing page
@@ -91,9 +99,12 @@ class SeasonTest extends DuskTestCase
         });
     }
 
-    public function testEditSeason()
+    /**
+     * @throws \Throwable
+     */
+    public function testEditSeason(): void
     {
-        $this->browse(function (Browser $browser) {
+        $this->browse(function (Browser $browser): void {
             $browser->loginAs(factory(User::class)->create());
 
             /** @var Season $season */
@@ -101,7 +112,7 @@ class SeasonTest extends DuskTestCase
 
             // Check we can edit a season from the landing page
             $browser->visit('/seasons')
-                ->with('@list', function ($table) {
+                ->with('@list', function (Browser $table): void {
                     $table->clickLink('Update');
                 })
                 ->assertPathIs('/seasons/' . $season->getId() . '/edit');
@@ -146,9 +157,12 @@ class SeasonTest extends DuskTestCase
         });
     }
 
-    public function testDeleteSeason()
+    /**
+     * @throws \Throwable
+     */
+    public function testDeleteSeason(): void
     {
-        $this->browse(function (Browser $browser) {
+        $this->browse(function (Browser $browser): void {
             $browser->loginAs(factory(User::class)->create());
 
             /** @var Season $season */
@@ -156,7 +170,7 @@ class SeasonTest extends DuskTestCase
 
             $browser->visit('/seasons')
                 ->press('Delete')
-                ->whenAvailable('.bootbox-confirm', function (Browser $modal) {
+                ->whenAvailable('.bootbox-confirm', function (Browser $modal): void {
                     $modal->assertSee('Are you sure?')
                         ->press('Cancel')
                         ->pause(1000);
@@ -165,7 +179,7 @@ class SeasonTest extends DuskTestCase
                 ->assertSee($season->getName());
             $browser->visit('/seasons')
                 ->press('Delete')
-                ->whenAvailable('.bootbox-confirm', function (Browser $modal) {
+                ->whenAvailable('.bootbox-confirm', function (Browser $modal): void {
                     $modal->assertSee('Are you sure?')
                         ->press('Confirm')
                         ->pause(1000);
@@ -178,7 +192,7 @@ class SeasonTest extends DuskTestCase
             factory(Competition::class)->create(['season_id' => $season->getId()]);
             $browser->visit('/seasons')
                 ->press('Delete')
-                ->whenAvailable('.bootbox-confirm', function (Browser $modal) {
+                ->whenAvailable('.bootbox-confirm', function (Browser $modal): void {
                     $modal->assertSee('Are you sure?')
                         ->press('Confirm')
                         ->pause(1000);
