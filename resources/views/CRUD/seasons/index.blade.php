@@ -8,6 +8,12 @@
                     class="btn btn-primary btn-sm">{{ __('New season') }}</a></div>
         </div>
         <div id="resources-list" class="table" dusk="list">
+            @if($seasons->isEmpty())
+            <div class="alert alert-warning">
+                <h4 class="alert-heading">{{ __('Whoops') }}!</h4>
+                <p class="mb-0">{{ __('There are no seasons yet.') }}</p>
+            </div>
+            @else
             <table class="table table-bordered table-hover table-sm">
                 <thead>
                 <tr>
@@ -34,6 +40,7 @@
                 </tbody>
             </table>
             <div class="pagination"> {{ $seasons->links() }} </div>
+            @endif
         </div>
     </div>
 @endsection

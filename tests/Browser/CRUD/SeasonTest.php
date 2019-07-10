@@ -19,6 +19,9 @@ class SeasonTest extends DuskTestCase
         $this->browse(function (Browser $browser): void {
             $browser->loginAs(factory(User::class)->create());
 
+            $browser->visit('/seasons')
+                ->assertSeeIn('@list', 'There are no seasons yet.');
+
             /** @var Collection $seasons */
             $seasons = factory(Season::class)->times(7)->create()->sortByDesc('year');
 

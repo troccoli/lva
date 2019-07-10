@@ -36,6 +36,12 @@ class CompetitionTest extends DuskTestCase
         $this->browse(function (Browser $browser): void {
             $oldSeason = factory(Season::class)->state('last-year')->create();
             $season = factory(Season::class)->create();
+
+            $browser->loginAs(factory(User::class)->create());
+
+            $browser->visit('/competitions')
+                ->assertSeeIn('@list', 'There are no competitions in this season yet.');
+
             factory(Competition::class)->times(3)->create(['season_id' => $oldSeason->getId()]);
             $competitions = factory(Competition::class)
                 ->times(3)
@@ -43,8 +49,6 @@ class CompetitionTest extends DuskTestCase
                 ->sort(function ($c1, $c2) {
                     return $c1->getName() <=> $c2->getName();
                 });
-
-            $browser->loginAs(factory(User::class)->create());
 
             $browser->visit('/competitions')
                 ->assertSee('Competitions for season ' . $season->getName())
@@ -69,6 +73,12 @@ class CompetitionTest extends DuskTestCase
         $this->browse(function (Browser $browser): void {
             $oldSeason = factory(Season::class)->state('last-year')->create();
             $season = factory(Season::class)->create();
+
+            $browser->loginAs(factory(User::class)->create());
+
+            $browser->visit('/competitions?season_id=' . $oldSeason->getId())
+                ->assertSeeIn('@list', 'There are no competitions in this season yet.');
+
             factory(Competition::class)->times(3)->create(['season_id' => $season->getId()]);
             $competitions = factory(Competition::class)
                 ->times(3)
@@ -76,8 +86,6 @@ class CompetitionTest extends DuskTestCase
                 ->sort(function (Competition $c1, Competition $c2) {
                     return $c1->getName() <=> $c2->getName();
                 });
-
-            $browser->loginAs(factory(User::class)->create());
 
             $browser->visit('/competitions?season_id=' . $oldSeason->getId())
                 ->assertSee('Competitions for season ' . $oldSeason->getName())

@@ -8,6 +8,12 @@
                     class="btn btn-primary btn-sm">{{ __('New competition') }}</a></div>
         </div>
         <div id="resources-list" class="table" dusk="list">
+            @if($competitions->isEmpty())
+            <div class="alert alert-warning">
+                <h4 class="alert-heading">{{ __('Whoops') }}!</h4>
+                <p class="mb-0">{{ __('There are no competitions in this season yet.') }}</p>
+            </div>
+            @else
             <table class="table table-bordered table-hover table-sm">
                 <thead>
                 <tr>
@@ -30,6 +36,7 @@
                 @endforeach
                 </tbody>
             </table>
+            @endif
         </div>
     </div>
 @endsection
