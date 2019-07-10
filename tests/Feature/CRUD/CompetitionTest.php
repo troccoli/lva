@@ -97,24 +97,24 @@ class CompetitionTest extends TestCase
         $this->post('/competitions', [])
             ->assertSessionHasErrors('season_id', 'The season is required.')
             ->assertSessionHasErrors('name', 'The name is required.');
-        $this->assertDatabaseMissing('competitions', ['name' => 'MP']);
+        $this->assertDatabaseMissing('competitions', ['name' => 'London League - Men']);
 
-        $this->post('/competitions', ['name' => 'MP'])
+        $this->post('/competitions', ['name' => 'London League - Men'])
             ->assertSessionHasErrors('season_id', 'The season is required.');
-        $this->assertDatabaseMissing('competitions', ['name' => 'MP']);
+        $this->assertDatabaseMissing('competitions', ['name' => 'London League - Men']);
 
-        $this->post('/competitions', ['season_id' => 1, 'name' => 'MP'])
+        $this->post('/competitions', ['season_id' => 1, 'name' => 'London League - Men'])
             ->assertSessionHasErrors('season_id', 'The season does not exist.');
-        $this->assertDatabaseMissing('competitions', ['name' => 'MP']);
+        $this->assertDatabaseMissing('competitions', ['name' => 'London League - Men']);
 
         $season = factory(Season::class)->create();
-        $this->post('/competitions', ['season_id' => $season->getId(), 'name' => 'MP'])
+        $this->post('/competitions', ['season_id' => $season->getId(), 'name' => 'London League - Men'])
             ->assertSessionHasNoErrors();
-        $this->assertDatabaseHas('competitions', ['name' => 'MP']);
+        $this->assertDatabaseHas('competitions', ['name' => 'London League - Men']);
 
-        $this->post('/competitions', ['season_id' => $season->getId(), 'name' => 'MP'])
+        $this->post('/competitions', ['season_id' => $season->getId(), 'name' => 'London League - Men'])
             ->assertSessionHasErrors('name', 'The competition already exists.');
-        $this->assertDatabaseHas('competitions', ['name' => 'MP']);
+        $this->assertDatabaseHas('competitions', ['name' => 'London League - Men']);
     }
 
     public function testEditingACompetition(): void
@@ -123,46 +123,46 @@ class CompetitionTest extends TestCase
             ->assertRedirect();
 
         /** @var Competition $competition */
-        $competition = factory(Competition::class)->create(['name' => 'MP']);
+        $competition = factory(Competition::class)->create(['name' => 'London League - Men']);
         $seasonId = $competition->getSeason()->getId();
 
         $this->actingAs(factory(User::class)->create());
 
         $this->put('/competitions/' . $competition->getId(), [])
             ->assertSessionHasErrors('name', 'The name is required.');
-        $this->assertDatabaseHas('competitions', ['season_id' => $seasonId, 'name' => 'MP']);
+        $this->assertDatabaseHas('competitions', ['season_id' => $seasonId, 'name' => 'London League - Men']);
 
-        $this->put('/competitions/' . $competition->getId(), ['name' => 'DIV1M'])
+        $this->put('/competitions/' . $competition->getId(), ['name' => 'London League - Women'])
             ->assertSessionHasNoErrors();
-        $this->assertDatabaseHas('competitions', ['season_id' => $seasonId, 'name' => 'DIV1M']);
+        $this->assertDatabaseHas('competitions', ['season_id' => $seasonId, 'name' => 'London League - Women']);
 
         factory(Competition::class)->create([
             'season_id' => $seasonId,
-            'name'      => 'DIV1W',
+            'name'      => 'University League',
         ]);
 
-        $this->put('/competitions/' . $competition->getId(), ['name' => 'DIV1W'])
+        $this->put('/competitions/' . $competition->getId(), ['name' => 'University League'])
             ->assertSessionHasErrors('name', 'The competition already exists in this season.');
-        $this->assertDatabaseHas('competitions', ['season_id' => $seasonId, 'name' => 'DIV1M']);
+        $this->assertDatabaseHas('competitions', ['season_id' => $seasonId, 'name' => 'London League - Women']);
 
-        $wp = factory(Competition::class)->create(['name' => 'WP']);
+        $wp = factory(Competition::class)->create(['name' => 'Youth Games']);
 
-        $this->put('/competitions/' . $competition->getId(), ['name' => 'WP'])
+        $this->put('/competitions/' . $competition->getId(), ['name' => 'Youth Games'])
             ->assertSessionHasNoErrors();
-        $this->assertDatabaseHas('competitions', ['season_id' => $seasonId, 'name' => 'WP'])
-            ->assertDatabaseHas('competitions', ['season_id' => $wp->getSeason()->getId(), 'name' => 'WP']);
+        $this->assertDatabaseHas('competitions', ['season_id' => $seasonId, 'name' => 'Youth Games'])
+            ->assertDatabaseHas('competitions', ['season_id' => $wp->getSeason()->getId(), 'name' => 'Youth Games']);
     }
 
     public function testDeletingACompetition(): void
     {
         /** @var Competition $competition */
-        $competition = factory(Competition::class)->create(['name' => 'MP']);
+        $competition = factory(Competition::class)->create(['name' => 'London League - Men']);
 
         $this->actingAs(factory(User::class)->create());
 
         $this->delete('/competitions/' . $competition->getId())
             ->assertSessionHasNoErrors();
-        $this->assertDatabaseMissing('competitions', ['name' => 'MP']);
+        $this->assertDatabaseMissing('competitions', ['name' => 'London League - Men']);
 
         $this->delete('/competitions/' . ($competition->getId() + 1))
             ->assertNotFound();
