@@ -18,6 +18,9 @@
                 @foreach($seasons as $season)
                     <tr>
                         <td>
+                            @component('components.crud.view-button')
+                                {{ route('competitions.index', ['season_id' => $season->getId()]) }}
+                            @endcomponent
                             @component('components.crud.update-button')
                                 {{ route('seasons.edit', [$season]) }}
                             @endcomponent

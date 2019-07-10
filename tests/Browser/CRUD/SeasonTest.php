@@ -20,7 +20,7 @@ class SeasonTest extends DuskTestCase
             $browser->loginAs(factory(User::class)->create());
 
             /** @var Collection $seasons */
-            $seasons = factory(Season::class)->times(7)->create()->sortByDesc('name');
+            $seasons = factory(Season::class)->times(7)->create()->sortByDesc('year');
 
             $page1 = $seasons->slice(0, 5);
             $page2 = $seasons->slice(5, 2);
@@ -70,32 +70,32 @@ class SeasonTest extends DuskTestCase
 
             // Check the form
             $browser->visit('/seasons/create')
-                ->assertInputValue('name', '')
+                ->assertInputValue('year', '')
                 ->assertVisible('@submit-button')
                 ->assertSeeIn('@submit-button', 'ADD SEASON');
 
             // All fields missing
             $browser->visit('/seasons/create')
-                ->type('name', ' ')// This is to get around the HTML5 validation on the browser
+                ->type('year', ' ')// This is to get around the HTML5 validation on the browser
                 ->press('ADD SEASON')
                 ->assertPathIs('/seasons/create')
-                ->assertSeeIn('@name-error', 'The name is required.');
+                ->assertSeeIn('@year-error', 'The year is required.');
 
             /** @var Season $season */
             $season = factory(Season::class)->make();
             // Brand new season
             $browser->visit('/seasons/create')
-                ->type('name', $season->getName())
+                ->type('year', $season->getYear())
                 ->press('ADD SEASON')
                 ->assertPathIs('/seasons')
                 ->assertSee('Season added!');
 
             // Add the same season
             $browser->visit('/seasons/create')
-                ->type('name', $season->getName())
+                ->type('year', $season->getYear())
                 ->press('ADD SEASON')
                 ->assertPathIs('/seasons/create')
-                ->assertSeeIn('@name-error', 'The season already exists.');
+                ->assertSeeIn('@year-error', 'The season already exists.');
         });
     }
 
@@ -119,7 +119,7 @@ class SeasonTest extends DuskTestCase
 
             // Check the form
             $browser->visit('/seasons/' . $season->getId() . '/edit')
-                ->assertInputValue('name', $season->getName())
+                ->assertInputValue('year', $season->getYear())
                 ->assertVisible('@submit-button')
                 ->assertSeeIn('@submit-button', 'SAVE CHANGES');
 
@@ -134,14 +134,14 @@ class SeasonTest extends DuskTestCase
 
             // Remove required fields
             $browser->visit('/seasons/' . $season->getId() . '/edit')
-                ->type('name', ' ')// This is to get around the HTML5 validation on the browser
+                ->type('year', ' ')// This is to get around the HTML5 validation on the browser
                 ->press('SAVE CHANGES')
                 ->assertPathIs('/seasons/' . $season->getId() . '/edit')
-                ->assertSeeIn('@name-error', 'The name is required.');
+                ->assertSeeIn('@year-error', 'The year is required.');
 
             // Edit all details
             $browser->visit('/seasons/' . $season->getId() . '/edit')
-                ->type('name', $newSeason->getName())
+                ->type('year', $newSeason->getYear())
                 ->press('SAVE CHANGES')
                 ->assertPathIs('/seasons')
                 ->assertSee('Season updated!');
@@ -150,10 +150,10 @@ class SeasonTest extends DuskTestCase
 
             // Use an already existing season
             $browser->visit('/seasons/' . $season->getId() . '/edit')
-                ->type('name', $newSeason->getName())
+                ->type('year', $newSeason->getYear())
                 ->press('SAVE CHANGES')
                 ->assertPathIs('/seasons/' . $season->getId() . '/edit')
-                ->assertSeeIn('@name-error', 'The season already exists.');
+                ->assertSeeIn('@year-error', 'The season already exists.');
         });
     }
 
@@ -199,6 +199,28 @@ class SeasonTest extends DuskTestCase
                 })
                 ->assertSee('Cannot delete because there are existing competitions in this season!')
                 ->assertSeeIn('@list', $season->getName());
+        });
+    }
+
+    /**
+     * @throws \Throwable
+     */
+    public function testViewSeason(): void
+    {
+        $this->browse(function (Browser $browser): void {
+            $browser->loginAs(factory(User::class)->create());
+
+            /** @var Season $season */
+            $season = factory(Season::class)->create();
+
+            factory(Competition::class)->times(2)->create(['season_id' => $season->getId()]);
+
+            $browser->visit('/seasons')
+                ->with('@list', function (Browser $table): void {
+                    $table->clickLink('View');
+                })
+                ->assertPathIs('/competitions')
+                ->assertQueryStringHas('season_id', $season->getId());
         });
     }
 }
