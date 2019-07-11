@@ -3,8 +3,8 @@
 @section('content')
     <div class="container">
         <div class="d-flex">
-            <div class="mr-auto"><h1>{{ __('Competitions for season :season', ['season' => $season->getName()]) }}</h1></div>
-            <div><a href="{{ route('competitions.create', ['season_id' => $season->getId()]) }}"
+            <div class="mr-auto"><h1>{{ __('Competitions in the :season season', ['season' => $season->getName()]) }}</h1></div>
+            <div><a href="{{ route('competitions.create', [$season]) }}"
                     class="btn btn-primary btn-sm">{{ __('New competition') }}</a></div>
         </div>
         <div id="resources-list" class="table" dusk="list">
@@ -25,10 +25,10 @@
                     <tr>
                         <td>
                             @component('components.crud.update-button')
-                                {{ route('competitions.edit', [$competition]) }}
+                                {{ route('competitions.edit', [$season, $competition]) }}
                             @endcomponent
                             @component('components.crud.delete-button')
-                                {{ route('competitions.destroy', [$competition]) }}
+                                {{ route('competitions.destroy', [$season, $competition]) }}
                             @endcomponent
                             <span class="pl-2">{{ $competition->getName() }}</span>
                         </td>

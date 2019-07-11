@@ -13,53 +13,26 @@ use Illuminate\View\View;
 
 class CompetitionController extends Controller
 {
-    public function index(Request $request)
+    public function index(Season $season)
     {
-        $seasonId = $request->get('season_id');
-        if (null !== $seasonId) {
-            $season = Season::find($seasonId);
-            if (null === $season) {
-                return redirect()->route('seasons.index')->withToastError('The season does not exist!');
-            }
-        } else {
-            $season = Season::query()->latest()->first();
-            if (null === $season) {
-                return redirect()->route('seasons.index')->withToastError('There are no seasons yet!');
-            }
-        }
-
         $competitions = Competition::query()->inSeason($season)->orderByName()->get();
 
         return view('CRUD.competitions.index', compact('season', 'competitions'));
     }
 
-    public function create(Request $request): View
+    public function create(Season $season): View
     {
-        $seasonId = $request->get('season_id');
-        if (null !== $seasonId) {
-            $season = Season::find($seasonId);
-            if (null === $season) {
-                return redirect()->route('seasons.index')->withToastError('The season does not exist!');
-            }
-        } else {
-            $season = Season::query()->latest()->first();
-            if (null === $season) {
-                return redirect()->route('seasons.index')->withToastError('There are no seasons yet!');
-            }
-        }
-
         return view('CRUD.competitions.create', compact('season'));
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, Season $season): RedirectResponse
     {
         $this->validate($request,
             [
-                'season_id' => 'required|exists:seasons,id',
-                'name'      => [
+                'name' => [
                     'required',
-                    Rule::unique('competitions')->where(function (Builder $query) use ($request): Builder {
-                        return $query->where('season_id', $request->get('season_id'));
+                    Rule::unique('competitions')->where(function (Builder $query) use ($season): Builder {
+                        return $query->where('season_id', $season->getId());
                     }),
                 ],
             ], [
@@ -67,32 +40,22 @@ class CompetitionController extends Controller
                 'name.unique'   => __('The competition already exists in this season.'),
             ]);
 
-        Competition::create($request->only('season_id', 'name'));
+        Competition::create([
+            'season_id' => $season->getId(),
+            'name'      => $request->get('name'),
+        ]);
 
         return redirect()
-            ->route('competitions.index', ['season_id' => $request->get('season_id')])
+            ->route('competitions.index', [$season])
             ->withToastSuccess(__('Competition added!'));
     }
 
-    public function edit(Request $request, Competition $competition): View
+    public function edit(Season $season, Competition $competition): View
     {
-        $seasonId = $request->get('season_id');
-        if (null !== $seasonId) {
-            $season = Season::find($seasonId);
-            if (null === $season) {
-                return redirect()->route('seasons.index')->withToastError('The season does not exist!');
-            }
-        } else {
-            $season = Season::query()->latest()->first();
-            if (null === $season) {
-                return redirect()->route('seasons.index')->withToastError('There are no seasons yet!');
-            }
-        }
-
         return view('CRUD.competitions.edit', compact('season', 'competition'));
     }
 
-    public function update(Request $request, Competition $competition): RedirectResponse
+    public function update(Request $request, Season $season, Competition $competition): RedirectResponse
     {
         $this->validate($request,
             [
@@ -112,17 +75,16 @@ class CompetitionController extends Controller
 
         $competition->update($request->only('name'));
 
-        return redirect()->route('competitions.index', ['season_id' => $competition->getSeason()->getId()])
+        return redirect()->route('competitions.index', [$season])
             ->withToastSuccess(__('Competition updated!'));
     }
 
-    public function destroy(Competition $competition): RedirectResponse
+    public function destroy(Season $season, Competition $competition): RedirectResponse
     {
-        $season = $competition->getSeason();
         $competition->delete();
 
         return redirect()
-            ->route('competitions.index', ['season_id' => $season->getId()])
+            ->route('competitions.index', [$season])
             ->withToastSuccess(__('Competition deleted!'));
     }
 }

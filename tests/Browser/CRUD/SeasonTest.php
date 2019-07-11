@@ -222,8 +222,7 @@ class SeasonTest extends DuskTestCase
                 ->with('@list', function (Browser $table): void {
                     $table->clickLink('View');
                 })
-                ->assertPathIs('/competitions')
-                ->assertQueryStringHas('season_id', $season->getId());
+                ->assertPathIs('/seasons/' . $season->getId() . '/competitions');
         });
     }
 }

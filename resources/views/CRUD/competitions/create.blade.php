@@ -4,10 +4,10 @@
 
     @component('components.forms.crud')
         @slot('title')
-            {{ __('Add a new competition in season :season', ['season' => $season->getName()]) }}
+            {{ __('Add a new competition in the :season season', ['season' => $season->getName()]) }}
         @endslot
 
-        <form method="post" action="{{ route('competitions.store') }}">
+        <form method="post" action="{{ route('competitions.store', [$season]) }}">
             @csrf
 
             @include('CRUD.competitions._form', ['submitText' => __('Add competition')])

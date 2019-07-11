@@ -16,23 +16,24 @@ class CompetitionTest extends TestCase
     {
         /** @var Competition $competition */
         $competition = factory(Competition::class)->create();
+        $seasonId = $competition->getSeason()->getId();
 
-        $this->get('/competitions')
+        $this->get("/seasons/$seasonId/competitions")
             ->assertRedirect('/login');
 
-        $this->get('/competitions/create')
+        $this->get("/seasons/$seasonId/competitions/create")
             ->assertRedirect('/login');
 
-        $this->post('/competitions')
+        $this->post("/seasons/$seasonId/competitions")
             ->assertRedirect('/login');
 
-        $this->get('/competitions/' . $competition->getId() . '/edit')
+        $this->get("/seasons/$seasonId/competitions/" . $competition->getId() . '/edit')
             ->assertRedirect('/login');
 
-        $this->put('/competitions/' . $competition->getId())
+        $this->put("/seasons/$seasonId/competitions/" . $competition->getId())
             ->assertRedirect('/login');
 
-        $this->delete('/competitions/' . $competition->getId())
+        $this->delete("/seasons/$seasonId/competitions/" . $competition->getId())
             ->assertRedirect('/login');
     }
 
@@ -40,131 +41,129 @@ class CompetitionTest extends TestCase
     {
         /** @var Competition $competition */
         $competition = factory(Competition::class)->make();
+        $seasonId = $competition->getSeason()->getId();
 
-        $this->be(factory(User::class)->create());
+        $this->actingAs(factory(User::class)->create());
 
-        $this->get('/competitions')
+        $this->get("/seasons/$seasonId/competitions")
             ->assertOk();
 
-        $this->get('/competitions/create')
+        $this->get("/seasons/$seasonId/competitions/create")
             ->assertOk();
 
-        $this->post('/competitions', $competition->toArray())
-            ->assertRedirect('/competitions?season_id=' . $competition->getSeason()->getId());
+        $this->post("/seasons/$seasonId/competitions", $competition->toArray())
+            ->assertRedirect("/seasons/$seasonId/competitions");
 
         $competition = Competition::first();
 
-        $this->get('/competitions/' . $competition->getId() . '/edit')
+        $this->get("/seasons/$seasonId/competitions/" . $competition->getId() . '/edit')
             ->assertOk();
 
-        $this->put('/competitions/' . $competition->getId(), $competition->toArray())
-            ->assertRedirect('/competitions?season_id=' . $competition->getSeason()->getId());
+        $this->put("/seasons/$seasonId/competitions/" . $competition->getId(), $competition->toArray())
+            ->assertRedirect("/seasons/$seasonId/competitions");
 
-        $this->delete('/competitions/' . $competition->getId())
-            ->assertRedirect('/competitions?season_id=' . $competition->getSeason()->getId());
+        $this->delete("/seasons/$seasonId/competitions/" . $competition->getId())
+            ->assertRedirect("/seasons/$seasonId/competitions");
     }
 
     public function testAccessForUnverifiedUsers(): void
     {
         /** @var Competition $competition */
         $competition = factory(Competition::class)->create();
+        $seasonId = $competition->getSeason()->getId();
 
-        $this->be(factory(User::class)->state('unverified')->create());
+        $this->actingAs(factory(User::class)->state('unverified')->create());
 
-        $this->get('/competitions')
+        $this->get("/seasons/$seasonId/competitions")
             ->assertRedirect('/email/verify');
 
-        $this->get('/competitions/create')
+        $this->get("/seasons/$seasonId/competitions/create")
             ->assertRedirect('/email/verify');
 
-        $this->post('/competitions')
+        $this->post("/seasons/$seasonId/competitions")
             ->assertRedirect('/email/verify');
 
-        $this->get('/competitions/' . $competition->getId() . '/edit')
+        $this->get("/seasons/$seasonId/competitions/" . $competition->getId() . '/edit')
             ->assertRedirect('/email/verify');
 
-        $this->put('/competitions/' . $competition->getId())
+        $this->put("/seasons/$seasonId/competitions/" . $competition->getId())
             ->assertRedirect('/email/verify');
 
-        $this->delete('/competitions/' . ($competition->getId()))
+        $this->delete("/seasons/$seasonId/competitions/" . ($competition->getId()))
             ->assertRedirect('/email/verify');
     }
 
     public function testAddingACompetition(): void
     {
+        $seasonId = factory(Season::class)->create()->getId();
+
         $this->actingAs(factory(User::class)->create());
 
-        $this->post('/competitions', [])
-            ->assertSessionHasErrors('season_id', 'The season is required.')
+        $this->post("/seasons/$seasonId/competitions", [])
             ->assertSessionHasErrors('name', 'The name is required.');
-        $this->assertDatabaseMissing('competitions', ['name' => 'London League - Men']);
+        $this->assertDatabaseMissing('competitions', ['season_id' => $seasonId, 'name' => 'London League - Men']);
 
-        $this->post('/competitions', ['name' => 'London League - Men'])
-            ->assertSessionHasErrors('season_id', 'The season is required.');
-        $this->assertDatabaseMissing('competitions', ['name' => 'London League - Men']);
-
-        $this->post('/competitions', ['season_id' => 1, 'name' => 'London League - Men'])
-            ->assertSessionHasErrors('season_id', 'The season does not exist.');
-        $this->assertDatabaseMissing('competitions', ['name' => 'London League - Men']);
-
-        $season = factory(Season::class)->create();
-        $this->post('/competitions', ['season_id' => $season->getId(), 'name' => 'London League - Men'])
+        $this->post("/seasons/$seasonId/competitions", ['name' => 'London League - Men'])
             ->assertSessionHasNoErrors();
-        $this->assertDatabaseHas('competitions', ['name' => 'London League - Men']);
+        $this->assertDatabaseHas('competitions', ['season_id' => $seasonId, 'name' => 'London League - Men']);
 
-        $this->post('/competitions', ['season_id' => $season->getId(), 'name' => 'London League - Men'])
+        $this->post("/seasons/$seasonId/competitions", ['name' => 'London League - Men'])
             ->assertSessionHasErrors('name', 'The competition already exists.');
-        $this->assertDatabaseHas('competitions', ['name' => 'London League - Men']);
+        $this->assertDatabaseHas('competitions', ['season_id' => $seasonId, 'name' => 'London League - Men']);
+
+        factory(Competition::class)->create(['name' => 'Youth Games']);
+        $this->post("/seasons/$seasonId/competitions", ['name' => 'Youth Games'])
+            ->assertSessionHasNoErrors();
+        $this->assertDatabaseHas('competitions', ['season_id' => $seasonId, 'name' => 'Youth Games']);
     }
 
     public function testEditingACompetition(): void
     {
-        $this->put('/competitions/1')
-            ->assertRedirect();
-
         /** @var Competition $competition */
         $competition = factory(Competition::class)->create(['name' => 'London League - Men']);
         $seasonId = $competition->getSeason()->getId();
 
         $this->actingAs(factory(User::class)->create());
 
-        $this->put('/competitions/' . $competition->getId(), [])
+        $this->put("/seasons/$seasonId/competitions/" . $competition->getId(), [])
             ->assertSessionHasErrors('name', 'The name is required.');
         $this->assertDatabaseHas('competitions', ['season_id' => $seasonId, 'name' => 'London League - Men']);
 
-        $this->put('/competitions/' . $competition->getId(), ['name' => 'London League - Women'])
+        $this->put("/seasons/$seasonId/competitions/" . $competition->getId(), ['name' => 'London League - Women'])
             ->assertSessionHasNoErrors();
         $this->assertDatabaseHas('competitions', ['season_id' => $seasonId, 'name' => 'London League - Women']);
+        $this->assertDatabaseMissing('competitions', ['season_id' => $seasonId, 'name' => 'London League - Men']);
 
         factory(Competition::class)->create([
             'season_id' => $seasonId,
             'name'      => 'University League',
         ]);
 
-        $this->put('/competitions/' . $competition->getId(), ['name' => 'University League'])
+        $this->put("/seasons/$seasonId/competitions/" . $competition->getId(), ['name' => 'University League'])
             ->assertSessionHasErrors('name', 'The competition already exists in this season.');
         $this->assertDatabaseHas('competitions', ['season_id' => $seasonId, 'name' => 'London League - Women']);
 
-        $wp = factory(Competition::class)->create(['name' => 'Youth Games']);
+        $youthGames = factory(Competition::class)->create(['name' => 'Youth Games']);
 
-        $this->put('/competitions/' . $competition->getId(), ['name' => 'Youth Games'])
+        $this->put("/seasons/$seasonId/competitions/" . $competition->getId(), ['name' => 'Youth Games'])
             ->assertSessionHasNoErrors();
-        $this->assertDatabaseHas('competitions', ['season_id' => $seasonId, 'name' => 'Youth Games'])
-            ->assertDatabaseHas('competitions', ['season_id' => $wp->getSeason()->getId(), 'name' => 'Youth Games']);
+        $this->assertDatabaseHas('competitions', ['season_id' => $seasonId, 'name' => 'Youth Games']);
+        $this->assertDatabaseHas('competitions', ['season_id' => $youthGames->getSeason()->getId(), 'name' => 'Youth Games']);
     }
 
     public function testDeletingACompetition(): void
     {
         /** @var Competition $competition */
         $competition = factory(Competition::class)->create(['name' => 'London League - Men']);
+        $seasonId = $competition->getSeason()->getId();
 
         $this->actingAs(factory(User::class)->create());
 
-        $this->delete('/competitions/' . $competition->getId())
+        $this->delete("/seasons/$seasonId/competitions/" . $competition->getId())
             ->assertSessionHasNoErrors();
         $this->assertDatabaseMissing('competitions', ['name' => 'London League - Men']);
 
-        $this->delete('/competitions/' . ($competition->getId() + 1))
+        $this->delete("/seasons/$seasonId/competitions/" . ($competition->getId() + 1))
             ->assertNotFound();
     }
 }
