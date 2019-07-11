@@ -47,16 +47,19 @@ class BreadcrumbsTest extends DuskTestCase
 
     public function authPagesBreadcrumbs(): array
     {
-        $season = factory(Season::class)->create();
         $competition = factory(Competition::class)->create();
+        
+        $competitionId = $competition->getId();
+        $seasonId = $competition->getSeason()->getId();
+        
         return [
-            '/dashboard' => ['Home', 'Dashboard'],
-            '/seasons' => ['Home', 'Seasons'],
-            '/seasons/create' => ['Home', 'Seasons', 'New season'],
-            '/seasons/' . $season->id . '/edit' => ['Home', 'Seasons', 'Edit season'],
-            '/competitions' => ['Home', 'Seasons', 'Competitions'],
-//            '/competitions/create' => ['Home', 'Seasons', 'Competitions', 'New competition'],
-//            '/competitions/' . $competition->id . '/edit' => ['Home', 'Seasons', 'Competitions', 'Edit competition'],
+            "/dashboard" => ['Home', 'Dashboard'],
+            "/seasons" => ['Home', 'Seasons'],
+            "/seasons/create" => ['Home', 'Seasons', 'New season'],
+            "/seasons/$seasonId/edit" => ['Home', 'Seasons', 'Edit season'],
+            "/seasons/$seasonId/competitions" => ['Home', 'Seasons', 'Competitions'],
+            "/seasons/$seasonId/competitions/create" => ['Home', 'Seasons', 'Competitions', 'New competition'],
+            "/seasons/$seasonId/competitions/$competitionId/edit" => ['Home', 'Seasons', 'Competitions', 'Edit competition'],
         ];
     }
 }
