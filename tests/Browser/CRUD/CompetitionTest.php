@@ -3,6 +3,7 @@
 namespace Tests\Browser\CRUD;
 
 use App\Models\Competition;
+use App\Models\Division;
 use App\Models\Season;
 use App\Models\User;
 use Laravel\Dusk\Browser;
@@ -92,7 +93,7 @@ class CompetitionTest extends DuskTestCase
 
             // All fields missing
             $browser->visit("/seasons/$seasonId/competitions/create")
-                ->type('name', ' ') // This is to get around the HTML5 validation on the browser
+                ->type('name', ' ')// This is to get around the HTML5 validation on the browser
                 ->press('ADD COMPETITION')
                 ->assertPathIs("/seasons/$seasonId/competitions/create")
                 ->assertSeeIn('@name-error', 'The name is required.');
@@ -164,7 +165,7 @@ class CompetitionTest extends DuskTestCase
 
             // All fields missing
             $browser->visit("/seasons/$seasonId/competitions/$competitionId/edit")
-                ->type('name', ' ') // This is to get around the HTML5 validation on the browser
+                ->type('name', ' ')// This is to get around the HTML5 validation on the browser
                 ->press('SAVE CHANGES')
                 ->assertPathIs("/seasons/$seasonId/competitions/$competitionId/edit")
                 ->assertSeeIn('@name-error', 'The name is required.');
@@ -226,6 +227,27 @@ class CompetitionTest extends DuskTestCase
                 })
                 ->assertSee('Competition deleted!')
                 ->assertDontSeeIn('@list', 'Youth Games');
+        });
+    }
+
+    /**
+     * @throws \Throwable
+     */
+    public function testViewDivisions(): void
+    {
+        $this->browse(function (Browser $browser): void {
+            $browser->loginAs(factory(User::class)->create());
+
+            /** @var Competition $competition */
+            $competition = factory(Competition::class)->create();
+
+            factory(Division::class)->times(2)->create(['competition_id' => $competition->getId()]);
+
+            $browser->visit('/seasons/' . $competition->getSeason()->getId() . '/competitions')
+                ->with('@list', function (Browser $table): void {
+                    $table->clickLink('View');
+                })
+                ->assertPathIs('/competitions/' . $competition->getId() . '/divisions');
         });
     }
 }

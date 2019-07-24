@@ -15,4 +15,8 @@ Route::middleware(['auth', 'verified'])
             ->group(function (): void {
                 Route::resource('competitions', 'CompetitionController')->except('show');
             });
+        Route::prefix('competitions/{competition}')
+            ->group(function (): void {
+                Route::resource('divisions', 'DivisionController')->except('show');
+            });
     });

@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Competition extends Model
 {
@@ -29,6 +31,16 @@ class Competition extends Model
     public function getSeason(): Season
     {
         return $this->season;
+    }
+
+    public function divisions(): HasMany
+    {
+        return $this->hasMany(Division::class);
+    }
+
+    public function getDivisions(): Collection
+    {
+        return $this->divisions;
     }
 
     public function scopeInSeason(Builder $query, Season $season): Builder

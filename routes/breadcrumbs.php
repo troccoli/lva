@@ -54,3 +54,15 @@ Breadcrumbs::for('competitions.edit', function (BreadcrumbsGenerator $trail, $se
     $trail->parent('competitions.index', $season);
     $trail->push('Edit competition');
 });
+Breadcrumbs::for('divisions.index', function (BreadcrumbsGenerator $trail, $competition) {
+    $trail->parent('competitions.index', $competition->getSeason());
+    $trail->push('Divisions', route('divisions.index', [$competition]));
+});
+Breadcrumbs::for('divisions.create', function (BreadcrumbsGenerator $trail, $competition) {
+    $trail->parent('divisions.index', $competition);
+    $trail->push('New division');
+});
+Breadcrumbs::for('divisions.edit', function (BreadcrumbsGenerator $trail, $competition) {
+    $trail->parent('divisions.index', $competition);
+    $trail->push('Edit division');
+});
