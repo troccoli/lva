@@ -66,3 +66,15 @@ Breadcrumbs::for('divisions.edit', function (BreadcrumbsGenerator $trail, $compe
     $trail->parent('divisions.index', $competition);
     $trail->push('Edit division');
 });
+Breadcrumbs::for('clubs.index', function (BreadcrumbsGenerator $trail) {
+    $trail->parent('home');
+    $trail->push('Clubs', route('clubs.index'));
+});
+Breadcrumbs::for('clubs.create', function (BreadcrumbsGenerator $trail) {
+    $trail->parent('clubs.index');
+    $trail->push('New club');
+});
+Breadcrumbs::for('clubs.edit', function (BreadcrumbsGenerator $trail) {
+    $trail->parent('clubs.index');
+    $trail->push('Edit club');
+});

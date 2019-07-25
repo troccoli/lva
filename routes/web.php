@@ -19,4 +19,5 @@ Route::middleware(['auth', 'verified'])
             ->group(function (): void {
                 Route::resource('divisions', 'DivisionController')->except('show');
             });
+        Route::resource('clubs', 'ClubController')->except('show');
     });
