@@ -8,17 +8,23 @@ use Tests\DuskTestCase;
 
 class HomepageTest extends DuskTestCase
 {
+    /**
+     * @throws \Throwable
+     */
     public function testForGuests(): void
     {
-        $this->browse(function (Browser $browser) {
+        $this->browse(function (Browser $browser): void {
             $browser->visit('/')
                 ->assertSee('London Volleyball Association');
         });
     }
 
+    /**
+     * @throws \Throwable
+     */
     public function testForAuthenticatedUsers(): void
     {
-        $this->browse(function (Browser $browser) {
+        $this->browse(function (Browser $browser): void {
             $browser->loginAs(factory(User::class)->create())
                 ->visit('/')
                 ->assertSee('London Volleyball Association');

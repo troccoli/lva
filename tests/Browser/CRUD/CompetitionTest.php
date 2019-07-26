@@ -65,7 +65,7 @@ class CompetitionTest extends DuskTestCase
      */
     public function testAddCompetition(): void
     {
-        $this->browse(function (Browser $browser) {
+        $this->browse(function (Browser $browser): void {
             $browser->loginAs(factory(User::class)->create());
 
             $browser->visit("/seasons/1/competitions/create")
@@ -127,7 +127,7 @@ class CompetitionTest extends DuskTestCase
      */
     public function testEditCompetition(): void
     {
-        $this->browse(function (Browser $browser) {
+        $this->browse(function (Browser $browser): void {
             $browser->loginAs(factory(User::class)->create());
 
             $browser->visit("/seasons/1/competitions/1/edit")

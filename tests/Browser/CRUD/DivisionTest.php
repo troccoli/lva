@@ -7,7 +7,6 @@ use App\Models\Division;
 use App\Models\Season;
 use App\Models\User;
 use Laravel\Dusk\Browser;
-use PhpParser\Node\Expr\AssignOp\Div;
 use Tests\DuskTestCase;
 
 class DivisionTest extends DuskTestCase
@@ -71,7 +70,7 @@ class DivisionTest extends DuskTestCase
      */
     public function testAddDivision(): void
     {
-        $this->browse(function (Browser $browser) {
+        $this->browse(function (Browser $browser): void {
             /** @var Competition $competition */
             $competition = factory(Competition::class)->create();
             /** @var Season $season */
@@ -170,7 +169,7 @@ class DivisionTest extends DuskTestCase
      */
     public function testEditDivision(): void
     {
-        $this->browse(function (Browser $browser) {
+        $this->browse(function (Browser $browser): void {
             /** @var Division $division */
             $division = factory(Division::class)->create();
             $competition = $division->getCompetition();

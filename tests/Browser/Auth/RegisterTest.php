@@ -8,6 +8,9 @@ use Laravel\Dusk\Browser;
 
 class RegisterTest extends DuskTestCase
 {
+    /**
+     * @throws \Throwable
+     */
     public function testRegisteringForNonExistingUser(): void
     {
         $this->browse(function (Browser $browser): void {
@@ -22,6 +25,9 @@ class RegisterTest extends DuskTestCase
         });
     }
 
+    /**
+     * @throws \Throwable
+     */
     public function testRegisteringForExistingUser(): void
     {
         $this->browse(function (Browser $browser): void {

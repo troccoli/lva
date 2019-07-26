@@ -8,17 +8,23 @@ use Laravel\Dusk\Browser;
 
 class DashboardTest extends DuskTestCase
 {
+    /**
+     * @throws \Throwable
+     */
     public function testForGuests(): void
     {
-        $this->browse(function (Browser $browser) {
+        $this->browse(function (Browser $browser): void {
             $browser->visit('/dashboard')
                 ->assertPathIs('/login');
         });
     }
 
+    /**
+     * @throws \Throwable
+     */
     public function testForUnverifiedUsers(): void
     {
-        $this->browse(function (Browser $browser) {
+        $this->browse(function (Browser $browser): void {
             $user = factory(User::class)->state('unverified')->create();
             $browser->loginAs($user)
                 ->visit('/dashboard')

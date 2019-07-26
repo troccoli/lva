@@ -5,13 +5,15 @@ namespace Tests\Browser\Auth;
 use App\Models\User;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Tests\DuskTestCase;
 use Laravel\Dusk\Browser;
 
 class ResetPasswordTest extends DuskTestCase
 {
+    /**
+     * @throws \Throwable
+     */
     public function testRestPasswordJourney(): void
     {
         $user = factory(User::class)->create();
@@ -29,13 +31,6 @@ class ResetPasswordTest extends DuskTestCase
                 ->assertPathIs('/dashboard')
                 ->assertAuthenticatedAs($user)
                 ->logout();
-//
-//            $user->refresh();
-//            $browser->visit('/login')
-//                ->type('email', $user->email)
-//                ->type('password', 'password123')
-//                ->press('LOGIN')
-//                ->assertAuthenticatedAs($user);
         });
     }
 

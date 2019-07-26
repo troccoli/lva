@@ -8,6 +8,9 @@ use Laravel\Dusk\Browser;
 
 class LoginTest extends DuskTestCase
 {
+    /**
+     * @throws \Throwable
+     */
     public function testLoggingInForNonExistingUser(): void
     {
         $this->browse(function (Browser $browser): void {
@@ -20,6 +23,9 @@ class LoginTest extends DuskTestCase
         });
     }
 
+    /**
+     * @throws \Throwable
+     */
     public function testLoggingInForExistingUser(): void
     {
         $this->browse(function (Browser $browser): void {
@@ -33,9 +39,12 @@ class LoginTest extends DuskTestCase
         });
     }
 
+    /**
+     * @throws \Throwable
+     */
     public function testLoggingIntForUnverifiedUsers(): void
     {
-        $this->browse(function (Browser $browser) {
+        $this->browse(function (Browser $browser): void {
             $user = factory(User::class)->state('unverified')->create();
             $browser->visit('/login')
                 ->type('email', $user->email)

@@ -69,7 +69,7 @@ class TeamTest extends DuskTestCase
      */
     public function testAddTeam(): void
     {
-        $this->browse(function (Browser $browser) {
+        $this->browse(function (Browser $browser): void {
             $browser->loginAs(factory(User::class)->create());
 
             $browser->visit("/clubs/1/teams/create")
@@ -131,7 +131,7 @@ class TeamTest extends DuskTestCase
      */
     public function testEditTeam(): void
     {
-        $this->browse(function (Browser $browser) {
+        $this->browse(function (Browser $browser): void {
             $browser->loginAs(factory(User::class)->create());
 
             $browser->visit("/clubs/1/teams/1/edit")

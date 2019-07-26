@@ -8,9 +8,12 @@ use Laravel\Dusk\Browser;
 
 class ForgottenPasswordTest extends DuskTestCase
 {
+    /**
+     * @throws \Throwable
+     */
     public function testRequestingResetForNonExistingUser(): void
     {
-        $this->browse(function (Browser $browser) {
+        $this->browse(function (Browser $browser): void {
             $browser->visit('/password/reset')
                 ->type('email', 'tom@example.org')
                 ->press('SEND PASSWORD RESET LINK')
@@ -19,9 +22,12 @@ class ForgottenPasswordTest extends DuskTestCase
         });
     }
 
+    /**
+     * @throws \Throwable
+     */
     public function testRequestingRestForExistingUser(): void
     {
-        $this->browse(function (Browser $browser) {
+        $this->browse(function (Browser $browser): void {
             $user = factory(User::class)->create();
             $browser->visit('/password/reset')
                 ->type('email', $user->email)
@@ -31,9 +37,12 @@ class ForgottenPasswordTest extends DuskTestCase
         });
     }
 
+    /**
+     * @throws \Throwable
+     */
     public function testRequestingRestForUnverifiedUser(): void
     {
-        $this->browse(function (Browser $browser) {
+        $this->browse(function (Browser $browser): void {
             $user = factory(User::class)->state('unverified')->create();
             $browser->visit('/password/reset')
                 ->type('email', $user->email)

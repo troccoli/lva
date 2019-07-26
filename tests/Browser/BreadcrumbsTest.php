@@ -12,11 +12,14 @@ use Tests\DuskTestCase;
 
 class BreadcrumbsTest extends DuskTestCase
 {
+    /**
+     * @throws \Throwable
+     */
     public function testBreadcrumbsForPagesThatDoNotRequiredAuthentication(): void
     {
         $breadcrumbs = $this->guestPagesBreadcrumbs();
 
-        $this->browse(function (Browser $browser) use ($breadcrumbs) {
+        $this->browse(function (Browser $browser) use ($breadcrumbs): void {
             foreach ($breadcrumbs as $url => $crumbs) {
                 $browser->visit($url)
                     ->assertSeeIn('.breadcrumb', strtoupper(implode("\n", $crumbs)));
@@ -34,11 +37,14 @@ class BreadcrumbsTest extends DuskTestCase
         ];
     }
 
+    /**
+     * @throws \Throwable
+     */
     public function testBreadcrumbsForPagesThatRequiredAuthentication(): void
     {
         $breadcrumbs = $this->authPagesBreadcrumbs();
 
-        $this->browse(function (Browser $browser) use ($breadcrumbs) {
+        $this->browse(function (Browser $browser) use ($breadcrumbs): void {
             $browser->loginAs(factory(User::class)->create());
             foreach ($breadcrumbs as $url => $crumbs) {
                 $browser->visit($url)
