@@ -17,11 +17,11 @@
                     </div>
                 </div>
                 <div class="card border-primary mb-3">
-                    <div class="card-header">Season</div>
+                    <div class="card-header">{{ __('Season') }}</div>
                     <div class="card-body">
-                        <h4 class="card-title">Manage a season</h4>
-                        <p class="card-text">This is where you create and edit all the data for a season.</p>
-                        <a href="{{ route('seasons.index') }}" class="btn btn-outline-primary">Manage seasons</a>
+                        <h4 class="card-title">{{ __('Manage a season') }}</h4>
+                        <p class="card-text">{{ __('This is where you create and edit all the data for a season.') }}</p>
+                        <a href="{{ route('seasons.index') }}" class="btn btn-outline-primary">{{ __('Manage seasons') }}</a>
                     </div>
                 </div>
                 <div class="card border-primary mb-3" dusk="clubs-teams-panel">

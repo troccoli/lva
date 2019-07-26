@@ -11,10 +11,10 @@
                 </div>
             @endif
             <div class="jumbotron">
-                <h1 class="display-3">Hello there!</h1>
-                <p class="lead">Welcome to the London Volleyball Association's website.</p>
+                <h1 class="display-3">{{ __('Hello there!') }}</h1>
+                <p class="lead">{{ __("Welcome to the London Volleyball Association's website.") }}</p>
                 @guest
-                    <p>If you are an League Administrator please <a href="{{ route('login') }}">login</a>.</p>
+                    <p>@lang('If you are a League Administrator please <a href=":url">login</a>.</p>', ['url' => route('login')])</p>
                 @endguest
             </div>
         </div>
