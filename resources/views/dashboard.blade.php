@@ -10,26 +10,28 @@
                         {{ session('status') }}
                     </div>
                 @endif
-                <div class="card text-white bg-info mb-3">
-                    <div class="card-header">{{ __('Dashboard') }}</div>
-                    <div class="card-body">
-                        {{ __('You are logged in!') }}
+                <h1>{{ __('Welcome to your dashboard') }}</h1>
+                <p>{{ __('From here you can access all the sections of the site you need as a League Administrator.') }}</p>
+                <div class="row">
+                    <div class="col">
+                        <div class="card border-primary mb-3" dusk="seasons-teams-panel">
+                            <div class="card-header">{{ __('Seasons, competitions and divisions') }}</div>
+                            <div class="card-body">
+                                <h4 class="card-title">{{ __('Manage seasons') }}</h4>
+                                <p class="card-text">{{ __('This is where you create and edit all the data for the seasons, competitions and divisions.') }}</p>
+                                <a href="{{ route('seasons.index') }}" class="btn btn-outline-primary">{{ __('Manage seasons') }}</a>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="card border-primary mb-3">
-                    <div class="card-header">{{ __('Season') }}</div>
-                    <div class="card-body">
-                        <h4 class="card-title">{{ __('Manage a season') }}</h4>
-                        <p class="card-text">{{ __('This is where you create and edit all the data for a season.') }}</p>
-                        <a href="{{ route('seasons.index') }}" class="btn btn-outline-primary">{{ __('Manage seasons') }}</a>
-                    </div>
-                </div>
-                <div class="card border-primary mb-3" dusk="clubs-teams-panel">
-                    <div class="card-header">{{ __('Clubs and teams') }}</div>
-                    <div class="card-body">
-                        <h4 class="card-title">{{ __('Manage clubs and their teams') }}</h4>
-                        <p class="card-text">{{ __('This is where you create and edit all the data for clubs and their teams.') }}</p>
-                        <a href="{{ route('clubs.index') }}" class="btn btn-outline-primary">{{ __('Manage clubs') }}</a>
+                    <div class="col">
+                        <div class="card border-primary mb-3" dusk="clubs-teams-panel">
+                            <div class="card-header">{{ __('Clubs and teams') }}</div>
+                            <div class="card-body">
+                                <h4 class="card-title">{{ __('Manage clubs and their teams') }}</h4>
+                                <p class="card-text">{{ __('This is where you create and edit all the data for clubs and their teams.') }}</p>
+                                <a href="{{ route('clubs.index') }}" class="btn btn-outline-primary">{{ __('Manage clubs') }}</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
