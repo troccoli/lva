@@ -31,7 +31,7 @@ Breadcrumbs::for('verification.notice', function (BreadcrumbsGenerator $trail) {
     $trail->push('Email verification');
 });
 Breadcrumbs::for('seasons.index', function (BreadcrumbsGenerator $trail) {
-    $trail->parent('home');
+    $trail->parent('dashboard');
     $trail->push('Seasons', route('seasons.index'));
 });
 Breadcrumbs::for('seasons.create', function (BreadcrumbsGenerator $trail) {
@@ -67,7 +67,7 @@ Breadcrumbs::for('divisions.edit', function (BreadcrumbsGenerator $trail, $compe
     $trail->push('Edit division');
 });
 Breadcrumbs::for('clubs.index', function (BreadcrumbsGenerator $trail) {
-    $trail->parent('home');
+    $trail->parent('dashboard');
     $trail->push('Clubs', route('clubs.index'));
 });
 Breadcrumbs::for('clubs.create', function (BreadcrumbsGenerator $trail) {
