@@ -24,6 +24,14 @@
                         <a href="{{ route('seasons.index') }}" class="btn btn-outline-primary">Manage seasons</a>
                     </div>
                 </div>
+                <div class="card border-primary mb-3" dusk="clubs-teams-panel">
+                    <div class="card-header">{{ __('Clubs and teams') }}</div>
+                    <div class="card-body">
+                        <h4 class="card-title">{{ __('Manage clubs and their teams') }}</h4>
+                        <p class="card-text">{{ __('This is where you create and edit all the data for clubs and their teams.') }}</p>
+                        <a href="{{ route('clubs.index') }}" class="btn btn-outline-primary">{{ __('Manage clubs') }}</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

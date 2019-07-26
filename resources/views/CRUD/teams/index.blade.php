@@ -3,43 +3,39 @@
 @section('content')
     <div class="container">
         <div class="d-flex">
-            <div class="mr-auto"><h1>{{ __('Clubs') }}</h1></div>
-            <div><a href="{{ route('clubs.create') }}"
-                    class="btn btn-primary btn-sm">{{ __('New club') }}</a></div>
+            <div class="mr-auto"><h1>{{ __('Teams in the :club club', ['club' => $club->getName()]) }}</h1></div>
+            <div><a href="{{ route('teams.create', [$club]) }}"
+                    class="btn btn-primary btn-sm">{{ __('New team') }}</a></div>
         </div>
         <div id="resources-list" class="table" dusk="list">
-            @if($clubs->isEmpty())
+            @if($teams->isEmpty())
             <div class="alert alert-warning">
                 <h4 class="alert-heading">{{ __('Whoops') }}!</h4>
-                <p class="mb-0">{{ __('There are no clubs yet.') }}</p>
+                <p class="mb-0">{{ __('There are no teams in this club yet.') }}</p>
             </div>
             @else
             <table class="table table-bordered table-hover table-sm">
                 <thead>
                 <tr>
-                    <th>{{ __('Club') }}</th>
+                    <th>{{ __('Team') }}</th>
                 </tr>
                 </thead>
                 <tbody>
-                @foreach($clubs as $club)
+                @foreach($teams as $team)
                     <tr>
                         <td>
-                            @component('components.crud.view-button')
-                                {{ route('teams.index', ['club_id' => $club->getId()]) }}
-                            @endcomponent
                             @component('components.crud.update-button')
-                                {{ route('clubs.edit', [$club]) }}
+                                {{ route('teams.edit', [$club, $team]) }}
                             @endcomponent
                             @component('components.crud.delete-button')
-                                {{ route('clubs.destroy', [$club]) }}
+                                {{ route('teams.destroy', [$club, $team]) }}
                             @endcomponent
-                            <span class="pl-2">{{ $club->getName() }}</span>
+                            <span class="pl-2">{{ $team->getName() }}</span>
                         </td>
                     </tr>
                 @endforeach
                 </tbody>
             </table>
-            <div class="pagination"> {{ $clubs->links() }} </div>
             @endif
         </div>
     </div>

@@ -20,4 +20,8 @@ Route::middleware(['auth', 'verified'])
                 Route::resource('divisions', 'DivisionController')->except('show');
             });
         Route::resource('clubs', 'ClubController')->except('show');
+        Route::prefix('clubs/{club}')
+            ->group(function (): void {
+                Route::resource('teams', 'TeamController')->except('show');
+            });
     });

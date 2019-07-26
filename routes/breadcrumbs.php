@@ -78,3 +78,15 @@ Breadcrumbs::for('clubs.edit', function (BreadcrumbsGenerator $trail) {
     $trail->parent('clubs.index');
     $trail->push('Edit club');
 });
+Breadcrumbs::for('teams.index', function (BreadcrumbsGenerator $trail, $club) {
+    $trail->parent('clubs.index');
+    $trail->push('Teams', route('teams.index', [$club]));
+});
+Breadcrumbs::for('teams.create', function (BreadcrumbsGenerator $trail, $club) {
+    $trail->parent('teams.index', $club);
+    $trail->push('New team');
+});
+Breadcrumbs::for('teams.edit', function (BreadcrumbsGenerator $trail, $club) {
+    $trail->parent('teams.index', $club);
+    $trail->push('Edit team');
+});

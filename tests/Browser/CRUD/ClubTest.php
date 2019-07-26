@@ -2,7 +2,6 @@
 
 namespace Tests\Browser\CRUD;
 
-use App\Models\Competition;
 use Illuminate\Database\Eloquent\Collection;
 use Laravel\Dusk\Browser;
 use App\Models\Club;
@@ -193,6 +192,27 @@ class ClubTest extends DuskTestCase
                 })
                 ->assertSee('Club deleted!')
                 ->assertDontSee($club->getName());
+        });
+    }
+
+    /**
+     * @throws \Throwable
+     */
+    public function testViewTeams(): void
+    {
+        $this->browse(function (Browser $browser): void {
+            $browser->loginAs(factory(User::class)->create());
+
+            /** @var Club $club */
+            $club = aClub()->build();
+
+            aTeam()->inClub($club)->build(2);
+
+            $browser->visit('/clubs')
+                ->with('@list', function (Browser $table): void {
+                    $table->clickLink('View');
+                })
+                ->assertPathIs('/clubs/' . $club->getId() . '/teams');
         });
     }
 }
