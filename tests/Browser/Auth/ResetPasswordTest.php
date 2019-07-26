@@ -22,9 +22,9 @@ class ResetPasswordTest extends DuskTestCase
                 ->type('email', $user->email)
                 ->press('SEND PASSWORD RESET LINK');
 
-            $this->fixStoredToken($user->email, $token = Str::random(32));
-            $browser->visit('/password/reset/' . $token . '?email=' . urlencode($user->email))
-                ->assertInputValue('email', $user->email)
+            $this->fixStoredToken($user->email, $token = Str::random(60));
+            $browser->visit("/password/reset/$token")
+                ->type('email', $user->email)
                 ->type('password', 'password123')
                 ->type('password_confirmation', 'password123')
                 ->press('RESET PASSWORD')
@@ -34,6 +34,9 @@ class ResetPasswordTest extends DuskTestCase
         });
     }
 
+    /**
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
     private function fixStoredToken(string $email, string $token): void
     {
         $hasher = app()->make(Hasher::class);
