@@ -24,4 +24,5 @@ Route::middleware(['auth', 'verified'])
             ->group(function (): void {
                 Route::resource('teams', 'TeamController')->except('show');
             });
+        Route::resource('venues', 'VenueController');
     });

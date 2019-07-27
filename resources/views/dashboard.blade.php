@@ -33,6 +33,16 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col">
+                        <div class="card border-primary mb-3" dusk="venues-panel">
+                            <div class="card-header">{{ __('Venues') }}</div>
+                            <div class="card-body">
+                                <h4 class="card-title">{{ __('Manage all the venues') }}</h4>
+                                <p class="card-text">{{ __('This is where you manage all the venues for all clubs and teams, regardless of season or competition.') }}</p>
+                                <a href="{{ route('venues.index') }}" class="btn btn-outline-primary">{{ __('Manage venues') }}</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

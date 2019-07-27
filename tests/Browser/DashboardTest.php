@@ -38,7 +38,7 @@ class DashboardTest extends DuskTestCase
      */
     public function testDashboardContent(): void
     {
-        $this->browse(function (Browser $browser):void {
+        $this->browse(function (Browser $browser): void {
             $user = factory(User::class)->create();
             $browser->loginAs($user)
                 ->visit('/dashboard')
@@ -53,6 +53,11 @@ class DashboardTest extends DuskTestCase
                     $panel->assertSee('Clubs and teams')
                         ->assertSee('This is where you create and edit all the data for clubs and their teams.')
                         ->assertSeeLink('Manage clubs');
+                })
+                ->within('@venues-panel', function (Browser $panel): void {
+                    $panel->assertSee('Venues')
+                        ->assertSee('This is where you manage all the venues for all clubs and teams, regardless of season or competition.')
+                        ->assertSeeLink('Manage venues');
                 });
         });
     }

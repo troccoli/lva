@@ -90,3 +90,19 @@ Breadcrumbs::for('teams.edit', function (BreadcrumbsGenerator $trail, $club) {
     $trail->parent('teams.index', $club);
     $trail->push('Edit team');
 });
+Breadcrumbs::for('venues.index', function (BreadcrumbsGenerator $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Venues', route('venues.index'));
+});
+Breadcrumbs::for('venues.show', function (BreadcrumbsGenerator $trail, $venue) {
+    $trail->parent('venues.index');
+    $trail->push($venue->getName());
+});
+Breadcrumbs::for('venues.create', function (BreadcrumbsGenerator $trail) {
+    $trail->parent('venues.index');
+    $trail->push('New venue');
+});
+Breadcrumbs::for('venues.edit', function (BreadcrumbsGenerator $trail, $venue) {
+    $trail->parent('venues.index');
+    $trail->push('Edit venue');
+});
