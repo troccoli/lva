@@ -13,7 +13,7 @@
                 <h1>{{ __('Welcome to your dashboard') }}</h1>
                 <p>{{ __('From here you can access all the sections of the site you need as a League Administrator.') }}</p>
                 <div class="row">
-                    <div class="col">
+                    <div class="col-6">
                         <div class="card border-primary mb-3" dusk="seasons-teams-panel">
                             <div class="card-header">{{ __('Seasons, competitions and divisions') }}</div>
                             <div class="card-body">
@@ -23,7 +23,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col">
+                    <div class="col-6">
                         <div class="card border-primary mb-3" dusk="clubs-teams-panel">
                             <div class="card-header">{{ __('Clubs and teams') }}</div>
                             <div class="card-body">
@@ -33,7 +33,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col">
+                </div>
+                <div class="row">
+                    <div class="col-6">
                         <div class="card border-primary mb-3" dusk="venues-panel">
                             <div class="card-header">{{ __('Venues') }}</div>
                             <div class="card-body">
