@@ -4,6 +4,7 @@ namespace Tests\Unit\Models;
 
 use App\Models\Club;
 use App\Models\Team;
+use App\Models\Venue;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -44,5 +45,21 @@ class ClubTest extends TestCase
         $teams->each(function (Team $team) use ($club): void {
             $this->assertTrue($club->getTeams()->contains($team));
         });
+    }
+
+    public function testItGetsTheVenue(): void
+    {
+        $venue = factory(Venue::class)->create(['name' => 'Olympic Stadium']);
+        $club = aClub()->withVenue($venue)->build();
+
+        $this->assertEquals($venue->toArray(), $club->getVenue()->toArray());
+    }
+
+    public function testItGetsTheVenueId(): void
+    {
+        $venue = factory(Venue::class)->create(['name' => 'Olympic Stadium']);
+        $club = aClub()->withVenue($venue)->build();
+
+        $this->assertSame($venue->getId(), $club->getVenueId());
     }
 }

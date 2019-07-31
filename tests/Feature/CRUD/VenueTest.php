@@ -157,9 +157,11 @@ class VenueTest extends TestCase
 
         /** @var Venue $venue */
         $venue = factory(Venue::class)->create(['name' => 'Olympic Stadium']);
+        aClub()->withName('West Ham FC')->withVenue($venue)->build();
 
         $this->delete('/venues/' . $venue->getId())
             ->assertSessionHasNoErrors();
-        $this->assertDatabaseMissing('venues', ['name' => 'Olympic Stadium']);
+        $this->assertDatabaseMissing('venues', ['name' => 'Olympic Stadium'])
+            ->assertDatabaseHas('clubs', ['name' => 'West Ham FC', 'venue_id' => null]);
     }
 }

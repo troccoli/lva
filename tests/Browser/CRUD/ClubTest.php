@@ -2,6 +2,7 @@
 
 namespace Tests\Browser\CRUD;
 
+use App\Models\Venue;
 use Illuminate\Database\Eloquent\Collection;
 use Laravel\Dusk\Browser;
 use App\Models\Club;
@@ -10,6 +11,16 @@ use Tests\DuskTestCase;
 
 class ClubTest extends DuskTestCase
 {
+    /** @var Venue */
+    private $venue;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->venue = factory(Venue::class)->create();
+    }
+
     /**
      * @throws \Throwable
      */
@@ -22,7 +33,10 @@ class ClubTest extends DuskTestCase
                 ->assertSeeIn('@list', 'There are no clubs yet.');
 
             /** @var Collection $clubs */
-            $clubs = factory(Club::class)->times(25)->create()->sortBy('name');
+            $clubs = factory(Club::class)
+                ->times(25)
+                ->create(['venue_id' => $this->venue->getId()])
+                ->sortBy('name');
 
             $page1 = $clubs->slice(0, 15);
             $page2 = $clubs->slice(15, 15);
@@ -30,11 +44,18 @@ class ClubTest extends DuskTestCase
             $browser->visit('/clubs')
                 ->assertSeeLink('New club')
                 ->with('@list', function (Browser $table) use ($page1): void {
+                    $table->with("thead:nth-child(1) > tr:nth-child(1)", function (Browser $row): void {
+                        $row->assertSeeIn('th:nth-child(1)', 'Club')
+                            ->assertSeeIn('th:nth-child(2)', 'Venue');
+                    });
+                })
+                ->with('@list', function (Browser $table) use ($page1): void {
                     $child = 1;
                     foreach ($page1 as $index => $club) {
                         /** @var Club $club */
                         $table->with("tr:nth-child($child)", function (Browser $row) use ($club): void {
-                            $row->assertSeeIn('td:nth-child(1)', $club->getName());
+                            $row->assertSeeIn('td:nth-child(1)', $club->getName())
+                                ->assertSeeIn('td:nth-child(2)', $this->venue->getName());
                         });
                         $child++;
                     }
@@ -49,7 +70,8 @@ class ClubTest extends DuskTestCase
                     foreach ($page2 as $club) {
                         /** @var Club $club */
                         $table->with("tr:nth-child($child)", function (Browser $row) use ($club): void {
-                            $row->assertSeeIn('td:nth-child(1)', $club->getName());
+                            $row->assertSeeIn('td:nth-child(1)', $club->getName())
+                                ->assertSeeIn('td:nth-child(2)', $this->venue->getName());
                         });
                         $child++;
                     }
@@ -75,29 +97,37 @@ class ClubTest extends DuskTestCase
 
             // Check the form
             $browser->visit('/clubs/create')
-                ->assertInputValue('name', '')
+                ->assertInputValue('@inputName-field', '')
+                ->assertSeeIn('@selectVenue-field', 'No venue')
+                ->assertSelectHasOptions('@selectVenue-field', ["", $this->venue->getId()])
                 ->assertVisible('@submit-button')
                 ->assertSeeIn('@submit-button', 'Add club');
 
             // All fields missing
             $browser->visit('/clubs/create')
-                ->type('name', ' ')// This is to get around the HTML5 validation on the browser
+                ->type('@inputName-field', ' ')// This is to get around the HTML5 validation on the browser
                 ->press('Add club')
                 ->assertPathIs('/clubs/create')
                 ->assertSeeIn('@name-error', 'The name is required.');
 
-            /** @var Club $club */
-            $club = aClub()->buildWithoutSaving();
             // Brand new club
             $browser->visit('/clubs/create')
-                ->type('name', $club->getName())
+                ->type('@inputName-field', 'London Giants')
+                ->press('Add club')
+                ->assertPathIs('/clubs')
+                ->assertSee('Club added!');
+
+            // Add a club with a venue
+            $browser->visit('/clubs/create')
+                ->type('@inputName-field', 'London Spiders')
+                ->select('@selectVenue-field', $this->venue->getName())
                 ->press('Add club')
                 ->assertPathIs('/clubs')
                 ->assertSee('Club added!');
 
             // Add the same club
             $browser->visit('/clubs/create')
-                ->type('name', $club->getName())
+                ->type('@inputName-field', 'London Giants')
                 ->press('Add club')
                 ->assertPathIs('/clubs/create')
                 ->assertSeeIn('@name-error', 'The club already exists.');
@@ -125,7 +155,9 @@ class ClubTest extends DuskTestCase
 
             // Check the form
             $browser->visit('/clubs/' . $club->getId() . '/edit')
-                ->assertInputValue('name', $club->getName())
+                ->assertInputValue('@inputName-field', $club->getName())
+                ->assertSeeIn('@selectVenue-field', 'No venue')
+                ->assertSelectHasOptions('@selectVenue-field', ["", $club->getVenueId(), $this->venue->getId()])
                 ->assertVisible('@submit-button')
                 ->assertSeeIn('@submit-button', 'Save changes');
 
@@ -135,19 +167,20 @@ class ClubTest extends DuskTestCase
                 ->assertPathIs('/clubs')
                 ->assertSee('Club updated!');
 
-            /** @var Club $newClub */
-            $newClub = aClub()->buildWithoutSaving();
-
             // Remove required fields
             $browser->visit('/clubs/' . $club->getId() . '/edit')
-                ->type('name', ' ')// This is to get around the HTML5 validation on the browser
+                ->type('@inputName-field', ' ')// This is to get around the HTML5 validation on the browser
                 ->press('Save changes')
                 ->assertPathIs('/clubs/' . $club->getId() . '/edit')
                 ->assertSeeIn('@name-error', 'The name is required.');
 
+            /** @var Club $newClub */
+            $newClub = aClub()->buildWithoutSaving();
+
             // Edit all details
             $browser->visit('/clubs/' . $club->getId() . '/edit')
-                ->type('name', $newClub->getName())
+                ->type('@inputName-field', $newClub->getName())
+                ->select('@selectVenue-field', $this->venue->getName())
                 ->press('Save changes')
                 ->assertPathIs('/clubs')
                 ->assertSee('Club updated!');
@@ -156,7 +189,7 @@ class ClubTest extends DuskTestCase
 
             // Use an already existing club
             $browser->visit('/clubs/' . $club->getId() . '/edit')
-                ->type('name', $newClub->getName())
+                ->type('@inputName-field', $newClub->getName())
                 ->press('Save changes')
                 ->assertPathIs('/clubs/' . $club->getId() . '/edit')
                 ->assertSeeIn('@name-error', 'The club already exists.');
@@ -206,13 +239,14 @@ class ClubTest extends DuskTestCase
             /** @var Club $club */
             $club = aClub()->build();
 
-            aTeam()->inClub($club)->build(2);
+            $team = aTeam()->inClub($club)->build();
 
             $browser->visit('/clubs')
                 ->with('@list', function (Browser $table): void {
                     $table->clickLink('View');
                 })
-                ->assertPathIs('/clubs/' . $club->getId() . '/teams');
+                ->assertPathIs('/clubs/' . $club->getId() . '/teams')
+                ->assertSeeIn('@list', $team->getName());
         });
     }
 }

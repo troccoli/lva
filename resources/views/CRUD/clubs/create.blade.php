@@ -10,9 +10,14 @@
         </div>
         <div class="row">
             <div class="col">
-                {{ Form::open(['route' => 'clubs.store']) }}
-                @include('CRUD.clubs._form', ['submitText' => __('Add club')])
-                {{ Form::close() }}
+                <form method="POST" action="{{ route('clubs.store') }}">
+                    @csrf
+                    @include('CRUD.clubs._form', [
+                    'nameDefaultValue' => '',
+                    'venueDefaultValue' => null,
+                    'submitText' => __('Add club')
+                    ])
+                </form>
             </div>
         </div>
     </div>

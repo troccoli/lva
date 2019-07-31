@@ -17,5 +17,6 @@ class BladeServiceProvider extends ServiceProvider
         Blade::include('partials.form.email-field', 'emailField');
         Blade::include('partials.form.password-field', 'passwordField');
         Blade::include('partials.form.checkbox-field', 'checkboxField');
+        Blade::include('partials.form.select-field', 'selectField');
     }
 }

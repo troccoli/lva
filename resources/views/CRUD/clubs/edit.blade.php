@@ -10,12 +10,15 @@
         </div>
         <div class="row">
             <div class="col">
-                {{ Form::model($club, ['route' => ['clubs.update', $club], 'method' => 'PUT']) }}
-                @include('CRUD.clubs._form', [
-                'nameDefaultValue' => $club->getName(),
-                'submitText' => __('Save changes')
-                ])
-                {{ Form::close() }}
+                <form method="post" action="{{ route('clubs.update', $club) }}">
+                    @csrf
+                    @method('PUT')
+                    @include('CRUD.clubs._form', [
+                    'nameDefaultValue' => $club->getName(),
+                    'venueDefaultValue' => $club->getVenueId(),
+                    'submitText' => __('Save changes')
+                    ])
+                </form>
             </div>
         </div>
     </div>

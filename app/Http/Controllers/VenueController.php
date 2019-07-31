@@ -17,7 +17,6 @@ class VenueController extends Controller
     public function create(): View
     {
         return view('CRUD.venues.create');
-
     }
 
     public function store(Request $request): RedirectResponse
@@ -33,7 +32,6 @@ class VenueController extends Controller
         Venue::create($request->only('name'));
 
         return redirect()->route('venues.index')->withToastSuccess(__('Venue added!'));
-
     }
 
     public function show(Venue $venue): View
@@ -63,9 +61,9 @@ class VenueController extends Controller
 
     public function destroy(Venue $venue): RedirectResponse
     {
+        $venue->clubs()->update(['venue_id' => null]);
         $venue->delete();
 
         return redirect()->route('venues.index')->withToastSuccess(__('Venue deleted!'));
-
     }
 }

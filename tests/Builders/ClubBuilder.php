@@ -3,6 +3,7 @@
 namespace Tests\Builders;
 
 use App\Models\Club;
+use App\Models\Venue;
 
 class ClubBuilder
 {
@@ -11,6 +12,13 @@ class ClubBuilder
     public function withName(string $name): self
     {
         $this->data['name'] = $name;
+
+        return $this;
+    }
+
+    public function withVenue(Venue $venue): self
+    {
+        $this->data['venue_id'] = $venue->getId();
 
         return $this;
     }

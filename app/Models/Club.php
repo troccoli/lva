@@ -4,11 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Club extends Model
 {
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'venue_id'];
 
     public function getId(): int
     {
@@ -28,5 +29,20 @@ class Club extends Model
     public function getTeams(): Collection
     {
         return $this->teams;
+    }
+
+    public function venue(): BelongsTo
+    {
+        return $this->belongsTo(Venue::class);
+    }
+
+    public function getVenue():? Venue
+    {
+        return $this->venue;
+    }
+
+    public function getVenueId():? string
+    {
+        return $this->venue_id;
     }
 }
