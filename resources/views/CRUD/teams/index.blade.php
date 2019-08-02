@@ -18,6 +18,7 @@
                 <thead>
                 <tr>
                     <th>{{ __('Team') }}</th>
+                    <th>{{ __('Venue') }}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -32,6 +33,7 @@
                             @endcomponent
                             <span class="pl-2">{{ $team->getName() }}</span>
                         </td>
+                        <td>{{ $team->getVenue() ? $team->getVenue()->getName() : '' }}</td>
                     </tr>
                 @endforeach
                 </tbody>

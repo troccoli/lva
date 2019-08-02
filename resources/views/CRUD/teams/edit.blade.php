@@ -13,6 +13,7 @@
                 {{ Form::model($team, ['route' => ['teams.update', $club, $team], 'method' => 'PUT']) }}
                 @include('CRUD.teams._form', [
                 'nameDefaultValue' => $team->getName(),
+                'venueDefaultValue' => $team->getVenueId(),
                 'submitText' => __('Save changes')
                 ])
                 {{ Form::close() }}

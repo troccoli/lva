@@ -11,7 +11,11 @@
         <div class="row">
             <div class="col">
                 {{ Form::open(['route' => ['teams.store', $club]]) }}
-                @include('CRUD.teams._form', ['submitText' => __('Add team')])
+                @include('CRUD.teams._form', [
+                    'nameDefaultValue' => '',
+                    'venueDefaultValue' => null,
+                    'submitText' => __('Add team')
+                ])
                 {{ Form::close() }}
             </div>
         </div>

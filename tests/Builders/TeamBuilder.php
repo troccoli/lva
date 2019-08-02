@@ -4,6 +4,7 @@ namespace Tests\Builders;
 
 use App\Models\Club;
 use App\Models\Team;
+use App\Models\Venue;
 use Illuminate\Database\Eloquent\Collection;
 
 class TeamBuilder
@@ -21,6 +22,13 @@ class TeamBuilder
     public function inClub(Club $club): self
     {
         $this->data['club_id'] = $club->getId();
+
+        return $this;
+    }
+
+    public function withVenue(Venue $venue): self
+    {
+        $this->data['venue_id'] = $venue->getId();
 
         return $this;
     }

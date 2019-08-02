@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Team;
 use App\Models\Club;
+use App\Models\Venue;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -21,7 +22,9 @@ class TeamController extends Controller
 
     public function create(Club $club): View
     {
-        return view('CRUD.teams.create', compact('club'));
+        $venues = Venue::all();
+
+        return view('CRUD.teams.create', compact('club', 'venues'));
     }
 
     public function store(Request $request, Club $club): RedirectResponse
@@ -35,12 +38,15 @@ class TeamController extends Controller
                         return $query->where('club_id', $club->getId());
                     }),
                 ],
+                'venue_id' => 'present|nullable|exists:venues,id'
             ], [
                 'name.required' => __('The name is required.'),
                 'name.unique'   => __('The team already exists in this club.'),
+                'venue_id.present' => __('The venue is required.'),
+                'venue_id.exists' => __('The venue does not exist.'),
             ]);
 
-        Team::create($request->only('club_id', 'name'));
+        Team::create($request->only('club_id', 'name', 'venue_id'));
 
         return redirect()
             ->route('teams.index', [$club])
@@ -49,7 +55,9 @@ class TeamController extends Controller
 
     public function edit(Club $club, Team $team): View
     {
-        return view('CRUD.teams.edit', compact('club', 'team'));
+        $venues = Venue::all();
+
+        return view('CRUD.teams.edit', compact('club', 'team', 'venues'));
     }
 
     public function update(Request $request, Club $club, Team $team): RedirectResponse
@@ -65,12 +73,15 @@ class TeamController extends Controller
                             );
                         }),
                 ],
+                'venue_id' => 'present|nullable|exists:venues,id',
             ], [
                 'name.required' => __('The name is required.'),
                 'name.unique'   => __('The team already exists in this club.'),
+                'venue_id.present' => __('The venue is required.'),
+                'venue_id.exists' => __('The venue does not exist.'),
             ]);
 
-        $team->update($request->only('name'));
+        $team->update($request->only('name', 'venue_id'));
 
         return redirect()->route('teams.index', [$club])
             ->withToastSuccess(__('Team updated!'));

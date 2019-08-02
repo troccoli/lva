@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Team extends Model
 {
-    protected $fillable = ['club_id', 'name'];
+    protected $fillable = ['club_id', 'name', 'venue_id'];
 
     public function getId(): int
     {
@@ -28,6 +28,25 @@ class Team extends Model
     public function getClub(): Club
     {
         return $this->club;
+    }
+
+    public function venue(): BelongsTo
+    {
+        return $this->belongsTo(Venue::class);
+    }
+
+    public function getVenue():? Venue
+    {
+        if (is_null($this->venue)) {
+            return $this->getClub()->getVenue();
+        }
+
+        return $this->venue;
+    }
+
+    public function getVenueId():? string
+    {
+        return $this->venue_id;
     }
 
     public function scopeInClub(Builder $query, Club $club): Builder
