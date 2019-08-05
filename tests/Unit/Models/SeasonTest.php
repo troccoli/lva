@@ -2,52 +2,61 @@
 
 namespace Tests\Unit\Models;
 
-use LVA\Models\Division;
-use LVA\Models\Season;
+use App\Models\Competition;
+use App\Models\Season;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-/**
- * Class SeasonTest.
- */
 class SeasonTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function it_has_many_divisions()
-    {
-        // random number of divisions
-        $divisions = $this->faker->numberBetween(2, 10);
+    use RefreshDatabase;
 
-        /** @var Season[] $seasons */
-        $seasons = factory(Season::class)->times(2)->create();
-
-        // create a random number of division for the first season
-        factory(Division::class)->times($divisions)->create(['season_id' => $seasons[0]->getId()]);
-
-        $this->assertCount(0, $seasons[1]->divisions);
-        $this->assertCount($divisions, $seasons[0]->divisions);
-    }
-
-    /**
-     * @test
-     */
-    public function it_gets_the_id()
+    public function testItGetsTheId(): void
     {
         /** @var Season $season */
         $season = factory(Season::class)->create();
-
         $this->assertEquals($season->id, $season->getId());
     }
 
-    /**
-     * @test
-     */
-    public function it_is_a_string()
+    public function testItGetsTheYear(): void
     {
         /** @var Season $season */
         $season = factory(Season::class)->create();
+        $this->assertEquals($season->year, $season->getYear());
+    }
 
-        $this->assertEquals($season->season, (string)$season);
+    /**
+     * @dataProvider yearsProvider
+     */
+    public function testItGetsTheName(int $year, string $expectedName): void
+    {
+        /** @var Season $season */
+        $season = factory(Season::class)->create(['year' => $year]);
+        $this->assertEquals($expectedName, $season->getName());
+    }
+
+    public function yearsProvider(): array
+    {
+        return [
+            [1999, '1999/00'],
+            [2000, '2000/01'],
+            [2005, '2005/06'],
+            [2009, '2009/10'],
+            [2018, '2018/19'],
+            [2099, '2099/00'],
+        ];
+    }
+
+    public function testItGetsTheCompetitions(): void
+    {
+        /** @var Season $season */
+        $season = factory(Season::class)->create();
+        $competitions = factory(Competition::class)->times(3)->create(['season_id' => $season->id]);
+        factory(Competition::class)->times(7)->create();
+
+        $this->assertCount(3, $season->getCompetitions());
+        $competitions->each(function (Competition $competition) use ($season): void {
+            $this->assertTrue($season->getCompetitions()->contains($competition));
+        });
     }
 }

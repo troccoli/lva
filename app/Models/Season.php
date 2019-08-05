@@ -1,49 +1,37 @@
 <?php
 
-namespace LVA\Models;
+namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-/**
- * Class Season.
- */
 class Season extends Model
 {
-    /**
-     * The database table used by the model.
-     *
-     * @var string
-     */
-    protected $table = 'seasons';
+    protected $fillable = ['year'];
 
-    /**
-     * Attributes that should be mass-assignable.
-     *
-     * @var array
-     */
-    protected $fillable = ['season'];
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function divisions()
-    {
-        return $this->hasMany(Division::class);
-    }
-
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function getYear(): int
     {
-        return $this->season;
+        return $this->year;
+    }
+
+    public function getName(): string
+    {
+        return sprintf('%4u/%02u', $this->year, ($this->year + 1) % 100);
+    }
+
+    public function competitions(): HasMany
+    {
+        return $this->hasMany(Competition::class);
+    }
+
+    public function getCompetitions(): Collection
+    {
+        return $this->competitions;
     }
 }

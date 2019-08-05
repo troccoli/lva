@@ -1,19 +1,23 @@
 @extends('layouts.app')
 
-
 @section('content')
-    <div id="lva-header" class="container-fluid">
-        <div class="row">
-            <div class="col-md-1 col-sm-2 col-xs-3">
-                <img src="{{ asset('/images/lva-logo.png') }}" style="float: left;"/>
-            </div>
-            <div class="col-md-10 col-sm-8 col-xs-6 lva-header-text">
-                <p>London Volleyball Association</p>
-            </div>
-            <div class="col-md-1 col-sm-2 col-xs-3">
-                <img src="{{ asset('/images/lva-logo.png') }}" style="float: right"/>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            @if (session('status'))
+                <div class="alert alert-dismissible alert-success" role="alert">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    {{ session('status') }}
+                </div>
+            @endif
+            <div class="jumbotron">
+                <h1 class="display-3">{{ __('Hello there!') }}</h1>
+                <p class="lead">{{ __("Welcome to the London Volleyball Association's website.") }}</p>
+                @guest
+                    <p>@lang('If you are a League Administrator please <a href=":url">login</a>.</p>', ['url' => route('login')])</p>
+                @endguest
             </div>
         </div>
     </div>
-
+</div>
 @endsection

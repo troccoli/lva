@@ -1,0 +1,88 @@
+:root {
+  --input-padding-x : 1.5rem;
+  --input-padding-y : .75rem;
+}
+
+.form-page {
+
+  max-width : 100%;
+
+  .card {
+
+    border : 0;
+
+    .card-title {
+      margin-bottom : 2rem;
+      font-weight   : 300;
+      font-size     : 1.5rem;
+    }
+
+    .card-body {
+      padding : 2rem;
+    }
+  }
+
+  form {
+    width : 100%;
+
+    .btn {
+      font-size      : 80%;
+      border-radius  : 5rem;
+      letter-spacing : .1rem;
+      font-weight    : bold;
+      padding        : 1rem;
+      transition     : all 0.2s;
+    }
+  }
+
+  .form-label-group {
+    position      : relative;
+    margin-bottom : 1rem;
+
+    input {
+      height        : auto;
+      border-radius : 2rem;
+
+      .form-control {
+        &::-webkit-input-placeholder, &:-ms-input-placeholder, &::-ms-input-placeholder, &::-moz-placeholder, &::placeholder {
+          color   : transparent;
+          opacity : 0;
+        }
+      }
+
+      &:not(:placeholder-shown) {
+        padding-top    : calc(var(--input-padding-y) + var(--input-padding-y) * (2 / 3));
+        padding-bottom : calc(var(--input-padding-y) / 3);
+
+        ~ label {
+          padding-top    : calc(var(--input-padding-y) / 3);
+          padding-bottom : calc(var(--input-padding-y) / 3);
+          font-size      : 12px;
+          color          : #aaaaaa;
+        }
+      }
+    }
+
+    > {
+      input {
+        padding : var(--input-padding-y) var(--input-padding-x);
+      }
+
+      label {
+        padding       : var(--input-padding-y) var(--input-padding-x);
+        position      : absolute;
+        top           : 0;
+        left          : 0;
+        display       : block;
+        width         : 100%;
+        margin-bottom : 0;
+        /* Override default `<label>` margin */
+        color         : #888888;
+        border        : 1px solid transparent;
+        border-radius : .25rem;
+        transition    : all .1s ease-in-out;
+        font-size     : 15px;
+      }
+    }
+  }
+}

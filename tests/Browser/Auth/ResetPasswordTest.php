@@ -1,0 +1,49 @@
+<?php
+
+namespace Tests\Browser\Auth;
+
+use App\Models\User;
+use Illuminate\Contracts\Hashing\Hasher;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Tests\DuskTestCase;
+use Laravel\Dusk\Browser;
+
+class ResetPasswordTest extends DuskTestCase
+{
+    /**
+     * @throws \Throwable
+     */
+    public function testRestPasswordJourney(): void
+    {
+        $user = factory(User::class)->create();
+        $this->browse(function (Browser $browser) use ($user): void {
+            $browser->visit('/password/reset')
+                ->type('email', $user->email)
+                ->press('SEND PASSWORD RESET LINK');
+
+            $this->fixStoredToken($user->email, $token = Str::random(60));
+            $browser->visit("/password/reset/$token")
+                ->type('email', $user->email)
+                ->type('password', 'password123')
+                ->type('password_confirmation', 'password123')
+                ->press('RESET PASSWORD')
+                ->assertPathIs('/dashboard')
+                ->assertAuthenticatedAs($user)
+                ->logout();
+        });
+    }
+
+    /**
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
+    private function fixStoredToken(string $email, string $token): void
+    {
+        $hasher = app()->make(Hasher::class);
+        DB::table('password_resets')
+            ->where('email', $email)
+            ->update([
+                'token' => $hasher->make($token),
+            ]);
+    }
+}

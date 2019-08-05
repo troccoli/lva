@@ -1,15 +1,12 @@
 <?php
 
-namespace LVA\Http\Controllers;
+namespace App\Http\Controllers;
+
+use Illuminate\Contracts\Support\Renderable;
 
 class HomeController extends Controller
 {
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showHome()
+    public function index(): Renderable
     {
         return view('home');
     }

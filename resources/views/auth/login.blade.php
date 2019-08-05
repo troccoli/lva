@@ -1,66 +1,37 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">Login</div>
-                <div class="panel-body">
-                    <form class="form-horizontal" role="form" method="POST" action="{{ route('login') }}">
-                        {!! csrf_field() !!}
+    @component('components.forms.auth')
+        @slot('title')
+            {{ __('Login') }}
+        @endslot
 
-                        <div id="email-field" class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                            <label class="col-md-4 control-label">E-Mail Address</label>
+        <form method="post" action="{{ route('login') }}">
+            @csrf
 
-                            <div class="col-md-6">
-                                <input type="email" class="form-control" name="email" value="{{ old('email') }}">
+            @emailField([
+                'label' => __('Email address'),
+                'fieldName' => 'email',
+                'required' => true,
+            ])
 
-                                @if ($errors->has('email'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
+            @passwordField([
+            'label' => __('Password'),
+            'fieldName' => 'password',
+            'required' => true
+            ])
 
-                        <div id="password-field" class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                            <label class="col-md-4 control-label">Password</label>
+            @checkboxField([
+            'label' => __('Remember me'),
+            'fieldName' => 'remember'
+            ])
 
-                            <div class="col-md-6">
-                                <input type="password" class="form-control" name="password">
-
-                                @if ($errors->has('password'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('password') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="col-md-6 col-md-offset-4">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox" name="remember"> Remember Me
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="col-md-6 col-md-offset-4">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fa fa-btn fa-sign-in"></i> Login
-                                </button>
-
-                                <a id="fl" class="btn btn-link" href="{{ route('password.request') }}">Forgot Your Password?</a>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+            @submitButton(['label' => __('Login')])
+            <div class="text-center">
+                <a class="small" href="{{ route('password.request') }}">
+                    {{ __('Forgot your password?') }}
+                </a>
             </div>
-        </div>
-    </div>
-</div>
+        </form>
+    @endcomponent
 @endsection

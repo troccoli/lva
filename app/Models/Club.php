@@ -1,57 +1,48 @@
 <?php
 
-namespace LVA\Models;
+namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-/**
- * Class Club.
- */
 class Club extends Model
 {
-    /**
-     * The database table used by the model.
-     *
-     * @var string
-     */
-    protected $table = 'clubs';
+    protected $fillable = ['name', 'venue_id'];
 
-    /**
-     * Attributes that should be mass-assignable.
-     *
-     * @var array
-     */
-    protected $fillable = ['club'];
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function teams()
-    {
-        return $this->hasMany(Team::class);
-    }
-
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
-        return $this->club;
+        return $this->name;
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function teams(): HasMany
     {
-        return $this->club;
+        return $this->hasMany(Team::class);
+    }
+
+    public function getTeams(): Collection
+    {
+        return $this->teams;
+    }
+
+    public function venue(): BelongsTo
+    {
+        return $this->belongsTo(Venue::class);
+    }
+
+    public function getVenue():? Venue
+    {
+        return $this->venue;
+    }
+
+    public function getVenueId():? string
+    {
+        return $this->venue_id;
     }
 }

@@ -1,9 +1,10 @@
 <?php
 
-namespace LVA\Http\Controllers\Auth;
+namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
-use LVA\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 class ForgotPasswordController extends Controller
 {
@@ -28,5 +29,10 @@ class ForgotPasswordController extends Controller
     public function __construct()
     {
         $this->middleware('guest');
+    }
+
+    protected function sendResetLinkFailedResponse(Request $request, $response)
+    {
+        return back()->with('status', trans('passwords.sent'));
     }
 }

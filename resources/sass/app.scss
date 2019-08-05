@@ -1,0 +1,21 @@
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Sans|Roboto:300');
+
+// Variables
+@import "~bootswatch/dist/yeti/variables"; // Bootswatch Theme
+@import 'variables';
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+
+// Bootswatch Theme
+@import "~bootswatch/dist/yeti/bootswatch";
+
+// FontAwesome
+@import "~@fortawesome/fontawesome-free/scss/fontawesome";
+@import "~@fortawesome/fontawesome-free/scss/regular";
+@import "~@fortawesome/fontawesome-free/scss/solid";
+@import "~@fortawesome/fontawesome-free/scss/brands";
+
+// My stuff
+@import "forms";

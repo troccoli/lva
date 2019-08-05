@@ -1,113 +1,35 @@
 <?php
 
-namespace LVA\Models;
+namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-/**
- * Class Venue.
- */
 class Venue extends Model
 {
-    /**
-     * The database table used by the model.
-     *
-     * @var string
-     */
-    protected $table = 'venues';
+    use UuidAsKey;
 
-    /**
-     * Attributes that should be mass-assignable.
-     *
-     * @var array
-     */
-    protected $fillable = ['venue', 'directions', 'postcode'];
+    public $incrementing = false;
+    protected $fillable = ['name'];
 
-    /**
-     * @param string $venue
-     *
-     * @return Venue|null
-     */
-    public static function findByName($venue)
-    {
-        return self::where('venue', $venue)->first();
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function fixtures()
-    {
-        return $this->hasMany(Fixture::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function synonyms()
-    {
-        return $this->hasMany(VenueSynonym::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function mapped()
-    {
-        return $this->hasMany(MappedVenue::class);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getName()
+    public function getName(): string
     {
-        return $this->venue;
+        return $this->name;
     }
 
-    /**
-     * @return string
-     */
-    public function getDirections()
+    public function clubs(): HasMany
     {
-        return $this->directions;
+        return $this->hasMany(Club::class);
     }
 
-    public function setPostcodeAttribute($postcode)
+    public function getClubs(): Collection
     {
-        //remove non alphanumeric characters
-        $cleanPostcode = preg_replace('/[^A-Za-z0-9]/', '', $postcode);
-
-        //make uppercase
-        $cleanPostcode = strtoupper($cleanPostcode);
-
-        //insert space
-        $postcode = substr($cleanPostcode, 0, -3) . ' ' . substr($cleanPostcode, -3);
-
-        $this->attributes['postcode'] = $postcode;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPostcode()
-    {
-        return $this->postcode;
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->venue;
+        return $this->clubs;
     }
 }

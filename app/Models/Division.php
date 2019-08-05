@@ -1,75 +1,50 @@
 <?php
 
-namespace LVA\Models;
+namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-/**
- * Class Division.
- */
 class Division extends Model
 {
-    /**
-     * The database table used by the model.
-     *
-     * @var string
-     */
-    protected $table = 'divisions';
+    use SoftDeletes;
 
-    /**
-     * Attributes that should be mass-assignable.
-     *
-     * @var array
-     */
-    protected $fillable = ['season_id', 'division'];
+    protected $fillable = ['competition_id', 'name', 'display_order'];
 
-    /**
-     * @param string $division
-     *
-     * @return Division|null
-     */
-    public static function findByName($seasonId, $division)
-    {
-        return self::where('season_id', $seasonId)->where('division', $division)->first();
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function season()
-    {
-        return $this->belongsTo(Season::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function fixtures()
-    {
-        return $this->hasMany(Fixture::class);
-    }
-
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
-        return $this->division;
+        return $this->name;
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function getOrder(): int
     {
-        return $this->season . ' ' . $this->division;
+        return $this->display_order;
+    }
+
+    public function competition(): BelongsTo
+    {
+        return $this->belongsTo(Competition::class);
+    }
+
+    public function getCompetition(): Competition
+    {
+        return $this->competition;
+    }
+
+    public function scopeInOrder(Builder $builder): Builder
+    {
+        return $builder->orderBy('display_order');
+    }
+
+    public function scopeInCompetition(Builder $builder, Competition $competition): Builder
+    {
+        return $builder->where('competition_id', $competition->getId());
     }
 }

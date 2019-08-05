@@ -2,79 +2,52 @@
 
 namespace Tests;
 
-use Facebook\WebDriver\Chrome\ChromeOptions;
-use Facebook\WebDriver\Remote\DesiredCapabilities;
-use Facebook\WebDriver\Remote\RemoteWebDriver;
+use Closure;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Laravel\Dusk\Browser;
 use Laravel\Dusk\TestCase as BaseTestCase;
+use Facebook\WebDriver\Chrome\ChromeOptions;
+use Facebook\WebDriver\Remote\RemoteWebDriver;
+use Facebook\WebDriver\Remote\DesiredCapabilities;
 
 abstract class DuskTestCase extends BaseTestCase
 {
     use CreatesApplication, DatabaseMigrations;
 
     /**
-     * Prepare for Dusk test execution.
-     *
      * @beforeClass
-     *
-     * @return void
      */
-    public static function prepare()
+    public static function prepare(): void
     {
         static::startChromeDriver();
     }
 
-    public function setUp()
+    protected function driver(): RemoteWebDriver
     {
-        parent::setUp();
-
-        Browser::macro('scrollToElement', function ($element = null) {
-            $this->script("$('html, body').animate({ scrollTop: $('$element').offset().top }, 0);");
-
-            return $this;
-        });
-
-        Browser::macro('pressSubmit', function ($text) {
-            $this->script("$('html, body').animate({ scrollTop: $('input[type=\"submit\"]').offset().top }, 0);");
-            $this->press($text);
-
-            return $this;
-        });
-    }
-
-    /**
-     * Create the RemoteWebDriver instance.
-     *
-     * @return \Facebook\WebDriver\Remote\RemoteWebDriver
-     */
-    protected function driver()
-    {
-        $capabilities = DesiredCapabilities::chrome();
-        $chromeOptions = (new ChromeOptions())->addArguments([
-            'headless',
+        $options = (new ChromeOptions)->addArguments([
             'disable-gpu',
+            'headless',
             'no-sandbox',
             'ignore-ssl-errors',
-            'whitelisted-ips=""'
+            'whitelisted-ips=""',
+            'window-size=1920,1080',
         ]);
-        $capabilities->setCapability(ChromeOptions::CAPABILITY, $chromeOptions);
 
-        if (env('USE_CHROME_DRIVER', false)) {
-            return RemoteWebDriver::create('localhost:9515', $capabilities);
+        if (config('testing.use_selenium')) {
+            return RemoteWebDriver::create(
+                'http://selenium:4444/wd/hub', DesiredCapabilities::chrome()->setCapability(
+                ChromeOptions::CAPABILITY, $options
+            ));
         }
 
-        return RemoteWebDriver::create('http://selenium:4444/wd/hub', $capabilities);
+        return RemoteWebDriver::create(
+            'http://localhost:9515', DesiredCapabilities::chrome()->setCapability(
+            ChromeOptions::CAPABILITY, $options
+        ));
     }
 
-    public function browse(\Closure $callback)
+    public function browse(Closure $callback)
     {
         parent::browse($callback);
         static::$browsers->first()->driver->manage()->deleteAllCookies();
-    }
-
-    protected function newBrowser($driver)
-    {
-        return parent::newBrowser($driver)->resize(2000, 2000);
     }
 }

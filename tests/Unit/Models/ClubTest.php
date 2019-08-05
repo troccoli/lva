@@ -2,63 +2,64 @@
 
 namespace Tests\Unit\Models;
 
-use LVA\Models\Club;
-use LVA\Models\Team;
+use App\Models\Club;
+use App\Models\Team;
+use App\Models\Venue;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-/**
- * Class ClubTest.
- */
 class ClubTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function it_has_many_teams()
-    {
-        // random number of teams to create
-        $teams = $this->faker->numberBetween(2, 10);
+    use RefreshDatabase;
 
-        /** @var Club[] $clubs */
-        $clubs = factory(Club::class)->times(2)->create();
-
-        // Create the appointments for the first role;
-        factory(Team::class)->times($teams)->create(['club_id' => $clubs[0]->id]);
-
-        $this->assertCount(0, $clubs[1]->teams);
-        $this->assertCount($teams, $clubs[0]->teams);
-    }
-
-    /**
-     * @test
-     */
-    public function it_gets_the_id()
+    public function testItGetsTheId(): void
     {
         /** @var Club $club */
         $club = factory(Club::class)->create();
-
         $this->assertEquals($club->id, $club->getId());
     }
 
-    /**
-     * @test
-     */
-    public function it_gets_the_name()
+    public function testItGetsTheName(): void
     {
         /** @var Club $club */
         $club = factory(Club::class)->create();
-
-        $this->assertEquals($club->club, $club->getName());
+        $this->assertEquals($club->name, $club->getName());
     }
 
-    /**
-     * @test
-     */
-    public function it_is_a_string()
+    public function testItGetsTheTeams(): void
     {
         /** @var Club $club */
         $club = factory(Club::class)->create();
 
-        $this->assertEquals($club->club, (string)$club);
+        $teams = collect([
+            aTeam()->inClub($club)->build(),
+            aTeam()->inClub($club)->build(),
+            aTeam()->inClub($club)->build(),
+        ]);
+        aTeam()->build();
+        aTeam()->build();
+        aTeam()->build();
+        aTeam()->build();
+
+        $this->assertCount(3, $club->getTeams());
+        $teams->each(function (Team $team) use ($club): void {
+            $this->assertTrue($club->getTeams()->contains($team));
+        });
+    }
+
+    public function testItGetsTheVenue(): void
+    {
+        $venue = factory(Venue::class)->create(['name' => 'Olympic Stadium']);
+        $club = aClub()->withVenue($venue)->build();
+
+        $this->assertEquals($venue->toArray(), $club->getVenue()->toArray());
+    }
+
+    public function testItGetsTheVenueId(): void
+    {
+        $venue = factory(Venue::class)->create(['name' => 'Olympic Stadium']);
+        $club = aClub()->withVenue($venue)->build();
+
+        $this->assertSame($venue->getId(), $club->getVenueId());
     }
 }

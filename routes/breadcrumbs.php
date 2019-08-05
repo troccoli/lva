@@ -1,189 +1,108 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: giulio
- * Date: 06/03/2016
- * Time: 17:16.
- */
 
-// Home
-Breadcrumbs::register('home', function ($b) {
-    $b->push('Home', route('home'));
-});
+use DaveJamesMiller\Breadcrumbs\BreadcrumbsGenerator;
+use DaveJamesMiller\Breadcrumbs\Facades\Breadcrumbs;
 
-// Auth
-Breadcrumbs::register('login', function ($b) {
-    $b->parent('home');
-    $b->push('Login', route('login'));
+Breadcrumbs::for('home', function (BreadcrumbsGenerator $trail) {
+    $trail->push('Home', route('home'));
 });
-
-Breadcrumbs::register('register', function ($b) {
-    $b->parent('home');
-    $b->push('Register', route('register'));
+Breadcrumbs::for('dashboard', function (BreadcrumbsGenerator $trail) {
+    $trail->parent('home');
+    $trail->push('Dashboard', route('dashboard'));
 });
-
-Breadcrumbs::register('password.request', function ($b) {
-    $b->parent('home');
-    $b->push('Reset Password', route('password.request'));
+Breadcrumbs::for('login', function (BreadcrumbsGenerator $trail) {
+    $trail->parent('home');
+    $trail->push('Login', route('login'));
 });
-
-// Data Management
-Breadcrumbs::register('data-management', function ($b) {
-    $b->parent('home');
-    $b->push('Data management', route('data-management'));
+Breadcrumbs::for('register', function (BreadcrumbsGenerator $trail) {
+    $trail->parent('home');
+    $trail->push('Register', route('register'));
 });
-
-// Data Management - Seasons
-Breadcrumbs::register('seasons.index', function ($b) {
-    $b->parent('data-management');
-    $b->push('Seasons', route('seasons.index'));
+Breadcrumbs::for('password.request', function (BreadcrumbsGenerator $trail) {
+    $trail->parent('home');
+    $trail->push('Forgotten password', route('password.request'));
 });
-Breadcrumbs::register('seasons.create', function ($b) {
-    $b->parent('seasons.index');
-    $b->push('Add', route('seasons.create'));
+Breadcrumbs::for('password.reset', function (BreadcrumbsGenerator $trail) {
+    $trail->parent('home');
+    $trail->push('Reset password', route('password.request'));
 });
-Breadcrumbs::register('seasons.edit', function ($b) {
-    $b->parent('seasons.index');
-    $b->push('Edit');
+Breadcrumbs::for('verification.notice', function (BreadcrumbsGenerator $trail) {
+    $trail->parent('home');
+    $trail->push('Email verification');
 });
-Breadcrumbs::register('seasons.show', function ($b) {
-    $b->parent('seasons.index');
-    $b->push('View');
+Breadcrumbs::for('seasons.index', function (BreadcrumbsGenerator $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Seasons', route('seasons.index'));
 });
-
-// Data Management - Clubs
-Breadcrumbs::register('clubs.index', function ($b) {
-    $b->parent('data-management');
-    $b->push('Clubs', route('clubs.index'));
+Breadcrumbs::for('seasons.create', function (BreadcrumbsGenerator $trail) {
+    $trail->parent('seasons.index');
+    $trail->push('New season');
 });
-Breadcrumbs::register('clubs.create', function ($b) {
-    $b->parent('clubs.index');
-    $b->push('Add', route('clubs.create'));
+Breadcrumbs::for('seasons.edit', function (BreadcrumbsGenerator $trail) {
+    $trail->parent('seasons.index');
+    $trail->push('Edit seasons');
 });
-Breadcrumbs::register('clubs.edit', function ($b) {
-    $b->parent('clubs.index');
-    $b->push('Edit');
+Breadcrumbs::for('competitions.index', function (BreadcrumbsGenerator $trail, $season) {
+    $trail->parent('seasons.index');
+    $trail->push('Competitions', route('competitions.index', [$season]));
 });
-Breadcrumbs::register('clubs.show', function ($b) {
-    $b->parent('clubs.index');
-    $b->push('View');
+Breadcrumbs::for('competitions.create', function (BreadcrumbsGenerator $trail, $season) {
+    $trail->parent('competitions.index', $season);
+    $trail->push('New competition');
 });
-
-// Data Management - Venues
-Breadcrumbs::register('venues.index', function ($b) {
-    $b->parent('data-management');
-    $b->push('Venues', route('venues.index'));
+Breadcrumbs::for('competitions.edit', function (BreadcrumbsGenerator $trail, $season) {
+    $trail->parent('competitions.index', $season);
+    $trail->push('Edit competition');
 });
-Breadcrumbs::register('venues.create', function ($b) {
-    $b->parent('venues.index');
-    $b->push('Add', route('venues.create'));
+Breadcrumbs::for('divisions.index', function (BreadcrumbsGenerator $trail, $competition) {
+    $trail->parent('competitions.index', $competition->getSeason());
+    $trail->push('Divisions', route('divisions.index', [$competition]));
 });
-Breadcrumbs::register('venues.edit', function ($b) {
-    $b->parent('venues.index');
-    $b->push('Edit');
+Breadcrumbs::for('divisions.create', function (BreadcrumbsGenerator $trail, $competition) {
+    $trail->parent('divisions.index', $competition);
+    $trail->push('New division');
 });
-Breadcrumbs::register('venues.show', function ($b) {
-    $b->parent('venues.index');
-    $b->push('View');
+Breadcrumbs::for('divisions.edit', function (BreadcrumbsGenerator $trail, $competition) {
+    $trail->parent('divisions.index', $competition);
+    $trail->push('Edit division');
 });
-
-// Data Management - Roles
-Breadcrumbs::register('roles.index', function ($b) {
-    $b->parent('data-management');
-    $b->push('Roles', route('roles.index'));
+Breadcrumbs::for('clubs.index', function (BreadcrumbsGenerator $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Clubs', route('clubs.index'));
 });
-Breadcrumbs::register('roles.create', function ($b) {
-    $b->parent('roles.index');
-    $b->push('Add', route('roles.create'));
+Breadcrumbs::for('clubs.create', function (BreadcrumbsGenerator $trail) {
+    $trail->parent('clubs.index');
+    $trail->push('New club');
 });
-Breadcrumbs::register('roles.edit', function ($b) {
-    $b->parent('roles.index');
-    $b->push('Edit');
+Breadcrumbs::for('clubs.edit', function (BreadcrumbsGenerator $trail) {
+    $trail->parent('clubs.index');
+    $trail->push('Edit club');
 });
-Breadcrumbs::register('roles.show', function ($b) {
-    $b->parent('roles.index');
-    $b->push('View');
+Breadcrumbs::for('teams.index', function (BreadcrumbsGenerator $trail, $club) {
+    $trail->parent('clubs.index');
+    $trail->push('Teams', route('teams.index', [$club]));
 });
-
-// Data Management - Divisions
-Breadcrumbs::register('divisions.index', function ($b) {
-    $b->parent('data-management');
-    $b->push('Divisions', route('divisions.index'));
+Breadcrumbs::for('teams.create', function (BreadcrumbsGenerator $trail, $club) {
+    $trail->parent('teams.index', $club);
+    $trail->push('New team');
 });
-Breadcrumbs::register('divisions.create', function ($b) {
-    $b->parent('divisions.index');
-    $b->push('Add', route('divisions.create'));
+Breadcrumbs::for('teams.edit', function (BreadcrumbsGenerator $trail, $club) {
+    $trail->parent('teams.index', $club);
+    $trail->push('Edit team');
 });
-Breadcrumbs::register('divisions.edit', function ($b) {
-    $b->parent('divisions.index');
-    $b->push('Edit');
+Breadcrumbs::for('venues.index', function (BreadcrumbsGenerator $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Venues', route('venues.index'));
 });
-Breadcrumbs::register('divisions.show', function ($b) {
-    $b->parent('divisions.index');
-    $b->push('View');
+Breadcrumbs::for('venues.show', function (BreadcrumbsGenerator $trail, $venue) {
+    $trail->parent('venues.index');
+    $trail->push($venue->getName());
 });
-
-// Data Management - Teams
-Breadcrumbs::register('teams.index', function ($b) {
-    $b->parent('data-management');
-    $b->push('Teams', route('teams.index'));
+Breadcrumbs::for('venues.create', function (BreadcrumbsGenerator $trail) {
+    $trail->parent('venues.index');
+    $trail->push('New venue');
 });
-Breadcrumbs::register('teams.create', function ($b) {
-    $b->parent('teams.index');
-    $b->push('Add', route('teams.create'));
-});
-Breadcrumbs::register('teams.edit', function ($b) {
-    $b->parent('teams.index');
-    $b->push('Edit');
-});
-Breadcrumbs::register('teams.show', function ($b) {
-    $b->parent('teams.index');
-    $b->push('View');
-});
-
-// Data Management - Fixtures
-Breadcrumbs::register('fixtures.index', function ($b) {
-    $b->parent('data-management');
-    $b->push('Fixtures', route('fixtures.index'));
-});
-Breadcrumbs::register('fixtures.create', function ($b) {
-    $b->parent('fixtures.index');
-    $b->push('Add', route('fixtures.create'));
-});
-Breadcrumbs::register('fixtures.edit', function ($b) {
-    $b->parent('fixtures.index');
-    $b->push('Edit');
-});
-Breadcrumbs::register('fixtures.show', function ($b) {
-    $b->parent('fixtures.index');
-    $b->push('View');
-});
-
-// Data Management - Available Appointments
-Breadcrumbs::register('available-appointments.index', function ($b) {
-    $b->parent('data-management');
-    $b->push('Available appointments', route('available-appointments.index'));
-});
-Breadcrumbs::register('available-appointments.create', function ($b) {
-    $b->parent('available-appointments.index');
-    $b->push('Add', route('available-appointments.create'));
-});
-Breadcrumbs::register('available-appointments.edit', function ($b) {
-    $b->parent('available-appointments.index');
-    $b->push('Edit');
-});
-Breadcrumbs::register('available-appointments.show', function ($b) {
-    $b->parent('available-appointments.index');
-    $b->push('View');
-});
-
-// Data Management - Upload Fixtures
-Breadcrumbs::register('uploadFixtures', function ($b) {
-    $b->parent('data-management');
-    $b->push('Upload fixtures', route('uploadFixtures'));
-});
-// Data Management - Upload Fixtures - Staus
-Breadcrumbs::register('uploadStatus', function ($b) {
-    $b->parent('uploadFixtures');
-    $b->push('Status');
+Breadcrumbs::for('venues.edit', function (BreadcrumbsGenerator $trail, $venue) {
+    $trail->parent('venues.index');
+    $trail->push('Edit venue');
 });

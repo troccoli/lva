@@ -1,125 +1,61 @@
 <?php
 
-namespace LVA\Models;
+namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-/**
- * Class Team.
- */
 class Team extends Model
 {
-    /**
-     * The database table used by the model.
-     *
-     * @var string
-     */
-    protected $table = 'teams';
+    protected $fillable = ['club_id', 'name', 'venue_id'];
 
-    /**
-     * Attributes that should be mass-assignable.
-     *
-     * @var array
-     */
-    protected $fillable = ['club_id', 'team', 'trigram'];
-
-    /**
-     * @param string $team
-     *
-     * @return Team|null
-     */
-    public static function findByName($team)
-    {
-        return self::where('team', $team)->first();
-    }
-
-    /**
-     * @param string $trigram
-     *
-     * @return Team|null
-     */
-    public static function findByTrigram($trigram)
-    {
-        return self::where('trigram', $trigram)->first();
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function club()
-    {
-        return $this->belongsTo(Club::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function awayFixtures()
-    {
-        return $this->hasMany(Fixture::class, 'away_team_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function homeFixtures()
-    {
-        return $this->hasMany(Fixture::class, 'home_team_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function synonyms()
-    {
-        return $this->hasMany(TeamSynonym::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function mapped()
-    {
-        return $this->hasMany(MappedTeam::class);
-    }
-
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
-        return $this->team;
+        return $this->name;
     }
 
-    /**
-     * @return string
-     */
-    public function getTrigram()
+    public function club(): BelongsTo
     {
-        return $this->trigram;
+        return $this->belongsTo(Club::class);
     }
 
-    /**
-     * @param string $value
-     */
-    public function setTrigramAttribute($value)
+    public function getClub(): Club
     {
-        $this->attributes['trigram'] = strtoupper($value);
+        return $this->club;
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function venue(): BelongsTo
     {
-        return $this->team;
+        return $this->belongsTo(Venue::class);
+    }
+
+    public function getVenue():? Venue
+    {
+        if (is_null($this->venue)) {
+            return $this->getClub()->getVenue();
+        }
+
+        return $this->venue;
+    }
+
+    public function getVenueId():? string
+    {
+        return $this->venue_id;
+    }
+
+    public function scopeInClub(Builder $query, Club $club): Builder
+    {
+        return $query->where('club_id', $club->getId());
+    }
+
+    public function scopeOrderByName(Builder $quey): Builder
+    {
+        return $quey->orderBy('name');
     }
 }
