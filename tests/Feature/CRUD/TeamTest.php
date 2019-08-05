@@ -95,16 +95,17 @@ class TeamTest extends TestCase
 
     public function testAddingATeam(): void
     {
-        /** @var Venue $sobellSC */
-        $sobellSC = factory(Venue::class)->create(['name' => 'Sobell SC']);
+        $venueId = factory(Venue::class)->create()->getId();
         $clubId = aClub()->build()->getId();
 
         $this->actingAs(factory(User::class)->create());
 
+        // Missing required fields
         $this->post("/clubs/$clubId/teams", [])
             ->assertSessionHasErrors('name', 'The name is required.');
         $this->assertDatabaseMissing('teams', ['club_id' => $clubId, 'name' => 'London Scarlets']);
 
+        // OK
         $this->post("/clubs/$clubId/teams", ['club_id' => $clubId, 'name' => 'London Scarlets', 'venue_id' => null])
             ->assertSessionHasNoErrors();
         $this->assertDatabaseHas('teams', [
@@ -112,23 +113,24 @@ class TeamTest extends TestCase
             'name'     => 'London Scarlets',
             'venue_id' => null,
         ]);
-
         $this->post("/clubs/$clubId/teams", [
             'club_id'  => $clubId,
             'name'     => 'London Trollers',
-            'venue_id' => $sobellSC->getId(),
+            'venue_id' => $venueId,
         ])
             ->assertSessionHasNoErrors();
         $this->assertDatabaseHas('teams', [
             'club_id'  => $clubId,
             'name'     => 'London Trollers',
-            'venue_id' => $sobellSC->getId(),
+            'venue_id' => $venueId,
         ]);
 
+        // Already existing team
         $this->post("/clubs/$clubId/teams", ['club_id' => $clubId, 'name' => 'London Trollers', 'venue_id' => null])
             ->assertSessionHasErrors('name', 'The team already exists.');
         $this->assertDatabaseHas('teams', ['club_id' => $clubId, 'name' => 'London Trollers']);
 
+        // Existing team in another club
         factory(Team::class)->create(['name' => 'Sydenham Giants']);
         $this->post("/clubs/$clubId/teams", ['club_id' => $clubId, 'name' => 'Sydenham Giants', 'venue_id' => null])
             ->assertSessionHasNoErrors();
@@ -137,18 +139,19 @@ class TeamTest extends TestCase
 
     public function testEditingATeam(): void
     {
-        /** @var Venue $sobellSC */
-        $sobellSC = factory(Venue::class)->create(['name' => 'Sobell SC']);
+        $venueId = factory(Venue::class)->create()->getId();
         /** @var Team $team */
-        $team = factory(Team::class)->create(['name' => 'London Scarlets', 'venue_id' => $sobellSC->getId()]);
+        $team = factory(Team::class)->create(['name' => 'London Scarlets', 'venue_id' => $venueId]);
         $clubId = $team->getClub()->getId();
 
         $this->actingAs(factory(User::class)->create());
 
+        // Missing required fields
         $this->put("/clubs/$clubId/teams/" . $team->getId(), [])
             ->assertSessionHasErrors('name', 'The name is required.');
         $this->assertDatabaseHas('teams', ['club_id' => $clubId, 'name' => 'London Scarlets']);
 
+        // OK - change name
         $this->put("/clubs/$clubId/teams/" . $team->getId(), ['name' => 'London Bees', 'venue_id' => null])
             ->assertSessionHasNoErrors();
         $this->assertDatabaseHas('teams', [
@@ -161,46 +164,47 @@ class TeamTest extends TestCase
             'name'    => 'London Scarlets',
         ]);
 
-        $this->put("/clubs/$clubId/teams/" . $team->getId(),
-            ['name' => 'London Bees', 'venue_id' => $sobellSC->getId()])
+        // OK - change venue
+        $this->put("/clubs/$clubId/teams/" . $team->getId(), ['name' => 'London Bees', 'venue_id' => $venueId])
             ->assertSessionHasNoErrors();
         $this->assertDatabaseHas('teams', [
             'club_id'  => $clubId,
             'name'     => 'London Bees',
-            'venue_id' => $sobellSC->getId(),
+            'venue_id' => $venueId,
         ]);
 
+        // Already existing team in the club
         factory(Team::class)->create([
             'club_id' => $clubId,
             'name'    => 'The Patriots',
         ]);
-
         $this->put("/clubs/$clubId/teams/" . $team->getId(), ['name' => 'The Patriots', 'venue_id' => null])
             ->assertSessionHasErrors('name', 'The team already exists in this club.');
         $this->assertDatabaseHas('teams', ['club_id' => $clubId, 'name' => 'London Bees']);
 
-        $globalWarriors = aClub()->withName('Global Warriors')->build();
-        factory(Team::class)->create(['club_id' => $globalWarriors->getId(), 'name' => 'London Warriors']);
+        // Existing team in another club
+        $anotherClub = aClub()->build();
+        factory(Team::class)->create(['club_id' => $anotherClub->getId(), 'name' => 'London Warriors']);
 
         $this->put("/clubs/$clubId/teams/" . $team->getId(), ['name' => 'London Warriors', 'venue_id' => null])
             ->assertSessionHasNoErrors();
         $this->assertDatabaseHas('teams', ['club_id' => $clubId, 'name' => 'London Warriors']);
-        $this->assertDatabaseHas('teams', ['club_id' => $globalWarriors->getId(), 'name' => 'London Warriors']);
+        $this->assertDatabaseHas('teams', ['club_id' => $anotherClub->getId(), 'name' => 'London Warriors']);
     }
 
     public function testDeletingATeam(): void
     {
         /** @var Team $team */
-        $team = factory(Team::class)->create(['name' => 'London Scarlets']);
+        $team = factory(Team::class)->create();
         $clubId = $team->getClub()->getId();
 
         $this->actingAs(factory(User::class)->create());
 
         $this->delete("/clubs/$clubId/teams/" . $team->getId())
             ->assertSessionHasNoErrors();
-        $this->assertDatabaseMissing('teams', ['name' => 'London Scarlets']);
+        $this->assertDatabaseMissing('teams', ['id' => $team->getId()]);
 
-        $this->delete("/clubs/$clubId/teams/" . ($team->getId() + 1))
+        $this->delete("/clubs/$clubId/teams/" . $team->getId())
             ->assertNotFound();
     }
 }

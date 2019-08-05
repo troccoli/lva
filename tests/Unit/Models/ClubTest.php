@@ -49,7 +49,7 @@ class ClubTest extends TestCase
 
     public function testItGetsTheVenue(): void
     {
-        $venue = factory(Venue::class)->create(['name' => 'Olympic Stadium']);
+        $venue = factory(Venue::class)->create();
         $club = aClub()->withVenue($venue)->build();
 
         $this->assertEquals($venue->toArray(), $club->getVenue()->toArray());
@@ -57,7 +57,7 @@ class ClubTest extends TestCase
 
     public function testItGetsTheVenueId(): void
     {
-        $venue = factory(Venue::class)->create(['name' => 'Olympic Stadium']);
+        $venue = factory(Venue::class)->create();
         $club = aClub()->withVenue($venue)->build();
 
         $this->assertSame($venue->getId(), $club->getVenueId());

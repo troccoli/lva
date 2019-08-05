@@ -93,18 +93,22 @@ class SeasonTest extends TestCase
     {
         $this->actingAs(factory(User::class)->create());
 
+        // Missing required fields
         $this->post('/seasons', [])
             ->assertSessionHasErrors('year', 'The year is required.');
         $this->assertDatabaseMissing('seasons', ['year' => '2000']);
 
+        // Invalid year
         $this->post('/seasons', ['year' => 'Twothousand'])
             ->assertSessionHasErrors('year', 'The year is not valid.');
         $this->assertDatabaseMissing('seasons', ['year' => '2000']);
 
+        // OK
         $this->post('/seasons', ['year' => '2000'])
             ->assertSessionHasNoErrors();
         $this->assertDatabaseHas('seasons', ['year' => '2000']);
 
+        // Already existing season
         $this->post('/seasons', ['year' => '2000'])
             ->assertSessionHasErrors('year', 'The season already exists.');
         $this->assertDatabaseHas('seasons', ['year' => '2000']);
@@ -112,46 +116,49 @@ class SeasonTest extends TestCase
 
     public function testEditingASeason(): void
     {
+        $this->actingAs(factory(User::class)->create());
+
+        $this->put('/seasons/1')
+            ->assertNotFound();
+
         /** @var Season $season */
         $season = factory(Season::class)->create(['year' => '2000']);
 
-        $this->actingAs(factory(User::class)->create());
-
+        // Missing required fields
         $this->put('/seasons/' . $season->getId(), [])
             ->assertSessionHasErrors('year', 'The year is required.');
         $this->assertDatabaseHas('seasons', ['year' => '2000']);
 
+        // Invalid year
         $this->put('/seasons/' . $season->getId(), ['year' => 'Twothousand and one'])
             ->assertSessionHasErrors('year', 'The year is not valid.');
         $this->assertDatabaseHas('seasons', ['year' => '2000']);
 
+        // OK
         $this->put('/seasons/' . $season->getId(), ['year' => '2001'])
             ->assertSessionHasNoErrors();
         $this->assertDatabaseMissing('seasons', ['year' => 2000])
             ->assertDatabaseHas('seasons', ['year' => '2001']);
 
+        // Already existing season
         factory(Season::class)->create(['year' => '1999']);
-
         $this->put('/seasons/' . $season->getId(), ['year' => '1999'])
             ->assertSessionHasErrors('year', 'The season already exists.');
         $this->assertDatabaseHas('seasons', ['year' => '2001']);
-
-        $this->put('/seasons/' . ($season->getId() + 2))
-            ->assertNotFound();
     }
 
     public function testDeletingASeason(): void
     {
         /** @var Season $season */
-        $season = factory(Season::class)->create(['year' => '2000']);
+        $season = factory(Season::class)->create();
 
         $this->actingAs(factory(User::class)->create());
 
         $this->delete('/seasons/' . $season->getId())
             ->assertSessionHasNoErrors();
-        $this->assertDatabaseMissing('seasons', ['year' => '2000']);
+        $this->assertDatabaseMissing('seasons', ['id' => $season->getId()]);
 
-        $this->delete('/seasons/' . ($season->getId() + 1))
+        $this->delete('/seasons/' . $season->getId())
             ->assertNotFound();
     }
 }

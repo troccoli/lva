@@ -25,34 +25,39 @@ class LoginTest extends TestCase
 
     public function testLoggingIn(): void
     {
-        $user = factory(User::class)->create();
+        $user = factory(User::class)->create(['email' => 'john@example.com']);
 
         // Missing required fields
         $this->post('/login', [])
             ->assertSessionHasErrors(['email', 'password']);
+        $this->assertGuest();
 
         // Wrong password
         $this->post('/login', [
-            'email' => $user->email,
+            'email' => 'john@example.com',
             'password' => 'secret'
         ])->assertSessionHasErrors(['email']);
+        $this->assertGuest();
 
         // Invalid email address
         $this->post('/login', [
             'email' => 'a',
-            'password' => 'secret'
+            'password' => 'password'
         ])->assertSessionHasErrors(['email']);
+        $this->assertGuest();
 
         // Non-existing email
         $this->post('/login', [
-            'email' => $user->email . '.com',
+            'email' => 'tom@example.org',
             'password' => 'password'
         ])->assertSessionHasErrors(['email']);
+        $this->assertGuest();
 
         // OK
         $this->post('/login', [
-            'email'    => $user->email,
+            'email'    => 'john@example.com',
             'password' => 'password',
         ])->assertSessionHasNoErrors();
+        $this->assertAuthenticated();
     }
 }
