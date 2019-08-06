@@ -25,46 +25,45 @@ class RegisterTest extends TestCase
 
     public function testRegistering(): void
     {
-        factory(User::class)->create(['email' => 'john@example.com']);
-        factory(User::class)->make(['email' => 'tom@example.org']);
+        $existingUser = factory(User::class)->create();
+        $user = factory(User::class)->make();
 
         // Missing name, email and password
         $this->post('/register', [])
             ->assertSessionHasErrors(['name', 'email', 'password']);
-        $this->assertDatabaseMissing('users', ['email' => 'tom@example.org']);
 
         // Missing confirmation password
         $this->post('/register', [
             'password' => 'password',
         ])->assertSessionHasErrors(['password']);
-        $this->assertDatabaseMissing('users', ['email' => 'tom@example.org']);
 
         // Password mismatch
         $this->post('/register', [
             'password' => 'password',
             'password_confirmation' => 'secret'
         ])->assertSessionHasErrors(['password']);
-        $this->assertDatabaseMissing('users', ['email' => 'tom@example.org']);
 
         // Wrong email
         $this->post('/register', [
             'email' => 'a',
         ])->assertSessionHasErrors(['email']);
-        $this->assertDatabaseMissing('users', ['email' => 'tom@example.org']);
 
         // Existing email
         $this->post('/register', [
-            'email' => 'john@example.com',
+            'email' => $existingUser->email,
         ])->assertSessionHasErrors(['email']);
-        $this->assertDatabaseMissing('users', ['email' => 'tom@example.org']);
 
         // OK test
         $this->post('/register', [
-            'name' => 'Tom',
-            'email'    => 'tom@example.org',
+            'name' => $user->name,
+            'email'    => $user->email,
             'password' => 'password',
             'password_confirmation' => 'password',
         ])->assertSessionHasNoErrors();
-        $this->assertDatabaseHas('users', ['name' => 'Tom', 'email' => 'tom@example.org']);
+
+        $this->assertDatabaseHas('users', [
+            'name' => $user->name,
+            'email' => $user->email,
+        ]);
     }
 }
