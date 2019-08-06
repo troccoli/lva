@@ -14,7 +14,7 @@ class SeasonTest extends DuskTestCase
     /**
      * @throws \Throwable
      */
-    public function testListSeasons(): void
+    public function testListingAllSeasons(): void
     {
         $this->browse(function (Browser $browser): void {
             $browser->loginAs(factory(User::class)->create());
@@ -22,38 +22,43 @@ class SeasonTest extends DuskTestCase
             $browser->visit('/seasons')
                 ->assertSeeIn('@list', 'There are no seasons yet.');
 
-            /** @var Collection $seasons */
-            $seasons = factory(Season::class)->times(7)->create()->sortByDesc('year');
-
-            $page1 = $seasons->slice(0, 5);
-            $page2 = $seasons->slice(5, 2);
+            factory(Season::class)->create(['year' => 2000]);
+            factory(Season::class)->create(['year' => 2010]);
+            factory(Season::class)->create(['year' => 2002]);
+            factory(Season::class)->create(['year' => 2003]);
+            factory(Season::class)->create(['year' => 2012]);
+            factory(Season::class)->create(['year' => 2011]);
+            factory(Season::class)->create(['year' => 1999]);
+            factory(Season::class)->create(['year' => 2006]);
 
             $browser->visit('/seasons')
                 ->assertSeeLink('New season')
-                ->with('@list', function (Browser $table) use ($page1): void {
-                    $child = 1;
-                    foreach ($page1 as $season) {
-                        /** @var Season $season */
-                        $table->with("tr:nth-child($child)", function (Browser $row) use ($season): void {
-                            $row->assertSeeIn('td:nth-child(1)', $season->getName());
-                        });
-                        $child++;
-                    }
+                ->with('@list', function (Browser $table): void {
+                    $table->assertSeeIn('thead tr:nth-child(1)', 'Season');
+
+                    $table->assertSeeIn('tbody tr:nth-child(1)', '2012/13');
+                    $table->assertSeeIn('tbody tr:nth-child(2)', '2011/12');
+                    $table->assertSeeIn('tbody tr:nth-child(3)', '2010/11');
+                    $table->assertSeeIn('tbody tr:nth-child(4)', '2006/07');
+                    $table->assertSeeIn('tbody tr:nth-child(5)', '2003/04');
+                    $table->assertDontSee('2002/03');
+                    $table->assertDontSee('2000/01');
+                    $table->assertDontSee('1999/00');
                 })
                 ->with('div.pagination', function (Browser $nav): void {
                     $nav->clickLink(2);
                 })
                 ->assertPathIs('/seasons')
                 ->assertQueryStringHas('page', 2)
-                ->with('@list', function (Browser $table) use ($page2): void {
-                    $child = 1;
-                    foreach ($page2 as $season) {
-                        /** @var Season $season */
-                        $table->with("tr:nth-child($child)", function (Browser $row) use ($season): void {
-                            $row->assertSeeIn('td:nth-child(1)', $season->getName());
-                        });
-                        $child++;
-                    }
+                ->with('@list', function (Browser $table): void {
+                    $table->assertDontSee('2012/13');
+                    $table->assertDontSee('2011/12');
+                    $table->assertDontSee('2010/11');
+                    $table->assertDontSee('2006/07');
+                    $table->assertDontSee('2003/04');
+                    $table->assertSeeIn('tbody tr:nth-child(1)', '2002/03');
+                    $table->assertSeeIn('tbody tr:nth-child(2)', '2000/01');
+                    $table->assertSeeIn('tbody tr:nth-child(3)', '1999/00');
                 });
         });
     }
@@ -61,7 +66,7 @@ class SeasonTest extends DuskTestCase
     /**
      * @throws \Throwable
      */
-    public function testAddSeason(): void
+    public function testAddingASeason(): void
     {
         $this->browse(function (Browser $browser): void {
             $browser->loginAs(factory(User::class)->create());
@@ -83,19 +88,19 @@ class SeasonTest extends DuskTestCase
                 ->press('ADD SEASON')
                 ->assertPathIs('/seasons/create')
                 ->assertSeeIn('@year-error', 'The year is required.');
+            $this->assertDatabaseMissing('seasons', ['year' => 2000]);
 
-            /** @var Season $season */
-            $season = factory(Season::class)->make();
             // Brand new season
             $browser->visit('/seasons/create')
-                ->type('year', $season->getYear())
+                ->type('year', '2000')
                 ->press('ADD SEASON')
                 ->assertPathIs('/seasons')
                 ->assertSee('Season added!');
+            $this->assertDatabaseHas('seasons', ['year' => 2000]);
 
             // Add the same season
             $browser->visit('/seasons/create')
-                ->type('year', $season->getYear())
+                ->type('year', '2000')
                 ->press('ADD SEASON')
                 ->assertPathIs('/seasons/create')
                 ->assertSeeIn('@year-error', 'The season already exists.');
@@ -105,124 +110,137 @@ class SeasonTest extends DuskTestCase
     /**
      * @throws \Throwable
      */
-    public function testEditSeason(): void
+    public function testEditingASeason(): void
     {
         $this->browse(function (Browser $browser): void {
             $browser->loginAs(factory(User::class)->create());
 
-            /** @var Season $season */
-            $season = factory(Season::class)->create();
+            $browser->visit("/seasons/1/edit")
+                ->assertTitle('Not Found')
+                ->assertSee('404')
+                ->assertSee('Not Found');
+
+            $seasonId = factory(Season::class)->create(['year' => 2001])->getId();
 
             // Check we can edit a season from the landing page
             $browser->visit('/seasons')
-                ->with('@list', function (Browser $table): void {
+                ->with("@season-$seasonId-row", function (Browser $table): void {
                     $table->clickLink('Update');
                 })
-                ->assertPathIs('/seasons/' . $season->getId() . '/edit');
+                ->assertPathIs("/seasons/$seasonId/edit");
 
             // Check the form
-            $browser->visit('/seasons/' . $season->getId() . '/edit')
-                ->assertInputValue('year', $season->getYear())
+            $browser->visit("/seasons/$seasonId/edit")
+                ->assertInputValue('year', '2001')
                 ->assertVisible('@submit-button')
                 ->assertSeeIn('@submit-button', 'SAVE CHANGES');
 
             // Don't change anything
-            $browser->visit('/seasons/' . $season->getId() . '/edit')
+            $browser->visit("/seasons/$seasonId/edit")
                 ->press('SAVE CHANGES')
                 ->assertPathIs('/seasons')
                 ->assertSee('Season updated!');
-
-            /** @var Season $newSeason */
-            $newSeason = factory(Season::class)->make();
+            $this->assertDatabaseHas('seasons', ['year' => '2001']);
 
             // Remove required fields
-            $browser->visit('/seasons/' . $season->getId() . '/edit')
+            $browser->visit("/seasons/$seasonId/edit")
                 ->type('year', ' ')// This is to get around the HTML5 validation on the browser
                 ->press('SAVE CHANGES')
-                ->assertPathIs('/seasons/' . $season->getId() . '/edit')
+                ->assertPathIs("/seasons/$seasonId/edit")
                 ->assertSeeIn('@year-error', 'The year is required.');
+            $this->assertDatabaseHas('seasons', ['year' => '2001']);
 
             // Edit all details
-            $browser->visit('/seasons/' . $season->getId() . '/edit')
-                ->type('year', $newSeason->getYear())
+            $browser->visit("/seasons/$seasonId/edit")
+                ->type('year', '2000')
                 ->press('SAVE CHANGES')
                 ->assertPathIs('/seasons')
                 ->assertSee('Season updated!');
-
-            $newSeason = factory(Season::class)->create();
+            $this->assertDatabaseMissing('seasons', ['year' => '2001']);
+            $this->assertDatabaseHas('seasons', ['year' => '2000']);
 
             // Use an already existing season
-            $browser->visit('/seasons/' . $season->getId() . '/edit')
-                ->type('year', $newSeason->getYear())
+            factory(Season::class)->create(['year' => 1999]);
+            $browser->visit("/seasons/$seasonId/edit")
+                ->type('year', '1999')
                 ->press('SAVE CHANGES')
-                ->assertPathIs('/seasons/' . $season->getId() . '/edit')
+                ->assertPathIs("/seasons/$seasonId/edit")
                 ->assertSeeIn('@year-error', 'The season already exists.');
+            $this->assertDatabaseHas('seasons', ['id' => $seasonId, 'year' => '2000']);
         });
     }
 
     /**
      * @throws \Throwable
      */
-    public function testDeleteSeason(): void
+    public function testDeletingASeason(): void
     {
         $this->browse(function (Browser $browser): void {
             $browser->loginAs(factory(User::class)->create());
 
-            /** @var Season $season */
-            $season = factory(Season::class)->create();
+            $seasonId = factory(Season::class)->create()->getId();
 
             $browser->visit('/seasons')
-                ->press('Delete')
+                ->within("@season-$seasonId-row", function (Browser $row): void {
+                    $row->press('Delete');
+                })
                 ->whenAvailable('.bootbox-confirm', function (Browser $modal): void {
                     $modal->assertSee('Are you sure?')
                         ->press('Cancel')
                         ->pause(1000);
                 })
-                ->assertDontSee('Season deleted!')
-                ->assertSee($season->getName());
+                ->assertDontSee('Season deleted!');
+            $this->assertDatabaseHas('seasons', ['id' => $seasonId]);
+
             $browser->visit('/seasons')
-                ->press('Delete')
+                ->within("@season-$seasonId-row", function (Browser $row): void {
+                    $row->press('Delete');
+                })
                 ->whenAvailable('.bootbox-confirm', function (Browser $modal): void {
                     $modal->assertSee('Are you sure?')
                         ->press('Confirm')
                         ->pause(1000);
                 })
-                ->assertSee('Season deleted!')
-                ->assertDontSee($season->getName());
+                ->assertSee('Season deleted!');
+            $this->assertDatabaseMissing('seasons', ['id' => $seasonId]);
 
             // Delete season with existing competition
-            $season = factory(Season::class)->create();
-            factory(Competition::class)->create(['season_id' => $season->getId()]);
+            $seasonId = factory(Season::class)->create()->getId();
+            factory(Competition::class)->create(['season_id' => $seasonId]);
             $browser->visit('/seasons')
-                ->press('Delete')
+                ->within("@season-$seasonId-row", function (Browser $row): void {
+                    $row->press('Delete');
+                })
                 ->whenAvailable('.bootbox-confirm', function (Browser $modal): void {
                     $modal->assertSee('Are you sure?')
                         ->press('Confirm')
                         ->pause(1000);
                 })
-                ->assertSee('Cannot delete because there are existing competitions in this season!')
-                ->assertSeeIn('@list', $season->getName());
+                ->assertSee('Cannot delete because there are existing competitions in this season!');
+            $this->assertDatabaseHas('seasons', ['id' => $seasonId]);
         });
     }
 
     /**
      * @throws \Throwable
      */
-    public function testViewSeason(): void
+    public function testViewingTheSeasonCompetitions(): void
     {
         $this->browse(function (Browser $browser): void {
             $browser->loginAs(factory(User::class)->create());
 
-            /** @var Season $season */
-            $season = factory(Season::class)->create();
+            $seasonId = factory(Season::class)->create()->getId();
 
-            factory(Competition::class)->times(2)->create(['season_id' => $season->getId()]);
+            factory(Competition::class)->create(['name' => 'MP', 'season_id' => $seasonId]);
+            factory(Competition::class)->create(['name' => 'WP']);
 
             $browser->visit('/seasons')
-                ->with('@list', function (Browser $table): void {
-                    $table->clickLink('View');
+                ->within("@season-$seasonId-row", function (Browser $row): void {
+                    $row->clickLink('View');
                 })
-                ->assertPathIs('/seasons/' . $season->getId() . '/competitions');
+                ->assertPathIs("/seasons/$seasonId/competitions")
+                ->assertSeeIn('@list', 'MP')
+                ->assertDontSeeIn('@list', 'WP');
         });
     }
 }

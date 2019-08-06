@@ -14,7 +14,7 @@ class CompetitionTest extends DuskTestCase
     /**
      * @throws \Throwable
      */
-    public function testListAllCompetitionsForNonExistingSeason(): void
+    public function testListingAllCompetitionsForNonExistingSeason(): void
     {
         $this->browse(function (Browser $browser): void {
             $browser->loginAs(factory(User::class)->create());
@@ -29,33 +29,31 @@ class CompetitionTest extends DuskTestCase
     /**
      * @throws \Throwable
      */
-    public function testListAllCompetitionsForSeason(): void
+    public function testListingAllCompetitionsForSeason(): void
     {
         $this->browse(function (Browser $browser): void {
-            $seasonId = factory(Season::class)->create(['year' => 2001])->getId();
-
             $browser->loginAs(factory(User::class)->create());
+
+            $seasonId = factory(Season::class)->create(['year' => 2001])->getId();
 
             $browser->visit("/seasons/$seasonId/competitions/")
                 ->assertSee("Competitions in the 2001/02 season")
                 ->assertSeeIn('@list', 'There are no competitions in this season yet.');
 
-            factory(Competition::class)->times(5)->create();
-            $competitions = [
-                1 => factory(Competition::class)->create(['season_id' => $seasonId, 'name' => 'London League']),
-                2 => factory(Competition::class)->create(['season_id' => $seasonId, 'name' => 'Super8']),
-                3 => factory(Competition::class)->create(['season_id' => $seasonId, 'name' => 'Youth Games']),
-            ];
+            factory(Competition::class)->create(['name' => 'University Challenge']);
+            factory(Competition::class)->create(['season_id' => $seasonId, 'name' => 'London League']);
+            factory(Competition::class)->create(['season_id' => $seasonId, 'name' => 'Youth Games']);
+            factory(Competition::class)->create(['season_id' => $seasonId, 'name' => 'Super8']);
 
             $browser->visit("/seasons/$seasonId/competitions/")
                 ->assertSeeLink('New competition')
-                ->with('@list', function (Browser $table) use ($competitions): void {
-                    foreach ($competitions as $index => $competition) {
-                        /** @var Competition $competition */
-                        $table->with("tr:nth-child({$index})", function (Browser $row) use ($competition): void {
-                            $row->assertSeeIn('td:nth-child(1)', $competition->getName());
-                        });
-                    }
+                ->with('@list', function (Browser $table): void {
+                    $table->assertSeeIn('thead tr:nth-child(1)', 'Competition');
+
+                    $table->assertSeeIn('tbody tr:nth-child(1)', 'London League');
+                    $table->assertSeeIn('tbody tr:nth-child(2)', 'Super8');
+                    $table->assertSeeIn('tbody tr:nth-child(3)', 'Youth Games');
+                    $table->assertDontSee('Univesity Challenge');
                 });
         });
     }
@@ -63,7 +61,7 @@ class CompetitionTest extends DuskTestCase
     /**
      * @throws \Throwable
      */
-    public function testAddCompetition(): void
+    public function testAddingACompetition(): void
     {
         $this->browse(function (Browser $browser): void {
             $browser->loginAs(factory(User::class)->create());
@@ -104,6 +102,7 @@ class CompetitionTest extends DuskTestCase
                 ->press('ADD COMPETITION')
                 ->assertPathIs("/seasons/$seasonId/competitions")
                 ->assertSee('Competition added!');
+            $this->assertDatabaseHas('competitions', ['name' => 'London League', 'season_id' => $seasonId]);
 
             // Add the same competition
             $browser->visit("/seasons/$seasonId/competitions/create")
@@ -115,17 +114,19 @@ class CompetitionTest extends DuskTestCase
             // Add same competition in different season
             $oldSeasonId = factory(Season::class)->create(['year' => 2000])->getId();
             $browser->visit("/seasons/$oldSeasonId/competitions/create")
-                ->type('name', 'London Legue')
+                ->type('name', 'London League')
                 ->press('ADD COMPETITION')
                 ->assertPathIs("/seasons/$oldSeasonId/competitions")
                 ->assertSee('Competition added!');
+            $this->assertDatabaseHas('competitions', ['name' => 'London League', 'season_id' => $seasonId]);
+            $this->assertDatabaseHas('competitions', ['name' => 'London League', 'season_id' => $oldSeasonId]);
         });
     }
 
     /**
      * @throws \Throwable
      */
-    public function testEditCompetition(): void
+    public function testEditingACompetition(): void
     {
         $this->browse(function (Browser $browser): void {
             $browser->loginAs(factory(User::class)->create());
@@ -142,15 +143,15 @@ class CompetitionTest extends DuskTestCase
                 ->assertSee('Not Found');
 
             $competitionId = factory(Competition::class)
-                ->create(['season_id' => $seasonId, 'name' => 'Youth Games'])
+                ->create(['name' => 'Youth Games', 'season_id' => $seasonId])
                 ->getId();
 
             $browser->loginAs(factory(User::class)->create());
 
             // Check we can edit a competitions from the landing page
             $browser->visit("/seasons/$seasonId/competitions")
-                ->with('@list', function (Browser $table) {
-                    $table->clickLink('Update');
+                ->within("@competition-$competitionId-row", function (Browser $row): void {
+                    $row->clickLink('Update');
                 })
                 ->assertPathIs("/seasons/$seasonId/competitions/$competitionId/edit")
                 ->assertSee('Edit the Youth Games 2010/11 competition');
@@ -169,22 +170,24 @@ class CompetitionTest extends DuskTestCase
                 ->press('SAVE CHANGES')
                 ->assertPathIs("/seasons/$seasonId/competitions/$competitionId/edit")
                 ->assertSeeIn('@name-error', 'The name is required.');
+            $this->assertDatabaseHas('competitions', ['name' => 'Youth Games', 'season_id' => $seasonId]);
 
             $browser->visit("/seasons/$seasonId/competitions/$competitionId/edit")
                 ->type('name', 'London League')
                 ->press('SAVE CHANGES')
                 ->assertPathIs("/seasons/$seasonId/competitions")
-                ->assertSee('Competition updated!')
-                ->assertSeeIn('@list', 'London League')
-                ->assertDontSeeIn('@list', 'Youth Games');
+                ->assertSee('Competition updated!');
+            $this->assertDatabaseMissing('competitions', ['name' => 'Youth Games', 'season_id' => $seasonId]);
+            $this->assertDatabaseHas('competitions', ['name' => 'London League', 'season_id' => $seasonId]);
 
             // Use the name of an already existing competition in this season
-            factory(Competition::class)->create(['season_id' => $seasonId, 'name' => 'Mix Volleyball']);
+            factory(Competition::class)->create(['name' => 'Mix Volleyball', 'season_id' => $seasonId]);
             $browser->visit("/seasons/$seasonId/competitions/$competitionId/edit")
                 ->type('name', 'Mix Volleyball')
                 ->press('SAVE CHANGES')
                 ->assertPathIs("/seasons/$seasonId/competitions/$competitionId/edit")
                 ->assertSeeIn('@name-error', 'The competition already exists in this season.');
+            $this->assertDatabaseHas('competitions', ['name' => 'London League', 'season_id' => $seasonId]);
 
             // Add same competition in different season
             factory(Competition::class)->create(['name' => 'University Games']);
@@ -192,62 +195,71 @@ class CompetitionTest extends DuskTestCase
                 ->type('name', 'University Games')
                 ->press('SAVE CHANGES')
                 ->assertPathIs("/seasons/$seasonId/competitions")
-                ->assertSee('Competition updated!')
-                ->assertSeeIn('@list', 'University Games');
+                ->assertSee('Competition updated!');
+            $this->assertDatabaseHas('competitions', ['name' => 'University Games', 'season_id' => $seasonId]);
         });
     }
 
     /**
      * @throws \Throwable
      */
-    public function testDeleteCompetition(): void
+    public function testDeletingACompetition(): void
     {
         $this->browse(function (Browser $browser): void {
             $browser->loginAs(factory(User::class)->create());
 
-            /** @var Competition $competition */
-            $competition = factory(Competition::class)->create(['name' => 'Youth Games']);
-            $seasonId = $competition->getSeason()->getId();
+            $seasonId = factory(Season::class)->create()->getId();
+            $competitionId= factory(Competition::class)->create(['season_id' => $seasonId])->getId();
 
             $browser->visit("/seasons/$seasonId/competitions/")
-                ->press('Delete')
+                ->within("@competition-$competitionId-row", function (Browser $row): void {
+                    $row->press('Delete');
+                })
                 ->whenAvailable('.bootbox-confirm', function (Browser $modal): void {
                     $modal->assertSee('Are you sure?')
                         ->press('Cancel')
                         ->pause(1000);
                 })
-                ->assertDontSee('Competition deleted!')
-                ->assertSeeIn('@list', 'Youth Games');
+                ->assertDontSee('Competition deleted!');
+            $this->assertDatabaseHas('competitions', ['id' => $competitionId]);
+
             $browser->visit("/seasons/$seasonId/competitions/")
-                ->press('Delete')
+                ->within("@competition-$competitionId-row", function (Browser $row): void {
+                    $row->press('Delete');
+                })
                 ->whenAvailable('.bootbox-confirm', function (Browser $modal): void {
                     $modal->assertSee('Are you sure?')
                         ->press('Confirm')
                         ->pause(1000);
                 })
-                ->assertSee('Competition deleted!')
-                ->assertDontSeeIn('@list', 'Youth Games');
+                ->assertSee('Competition deleted!');
+            $this->assertDatabaseMissing('competitions', ['id' => $competitionId]);
         });
     }
 
     /**
      * @throws \Throwable
      */
-    public function testViewDivisions(): void
+    public function testViewingTheCompetitionDivisions(): void
     {
         $this->browse(function (Browser $browser): void {
             $browser->loginAs(factory(User::class)->create());
 
-            /** @var Competition $competition */
-            $competition = factory(Competition::class)->create();
+            $seasonId = factory(Season::class)->create()->getId();
+            $competitionId = factory(Competition::class)
+                ->create(['name' => 'Youth Games', 'season_id' => $seasonId])
+                ->getId();
 
-            factory(Division::class)->times(2)->create(['competition_id' => $competition->getId()]);
+            factory(Division::class)->create(['name' => 'DIV1M', 'competition_id' => $competitionId]);
+            factory(Division::class)->create(['name' => 'DIV1W']);
 
-            $browser->visit('/seasons/' . $competition->getSeason()->getId() . '/competitions')
-                ->with('@list', function (Browser $table): void {
-                    $table->clickLink('View');
+            $browser->visit("/seasons/$seasonId/competitions")
+                ->within("@competition-$competitionId-row", function (Browser $row): void {
+                    $row->clickLink('View');
                 })
-                ->assertPathIs('/competitions/' . $competition->getId() . '/divisions');
+                ->assertPathIs("/competitions/$competitionId/divisions")
+                ->assertSeeIn('@list', 'DIV1M')
+                ->assertDontSeeIn('@list', 'DIV1W');
         });
     }
 }

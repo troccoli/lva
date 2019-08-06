@@ -25,8 +25,7 @@ class DashboardTest extends DuskTestCase
     public function testForUnverifiedUsers(): void
     {
         $this->browse(function (Browser $browser): void {
-            $user = factory(User::class)->state('unverified')->create();
-            $browser->loginAs($user)
+            $browser->loginAs(factory(User::class)->state('unverified')->create())
                 ->visit('/dashboard')
                 ->assertSee('Verify your email address!')
                 ->assertPathIs('/email/verify');
@@ -39,8 +38,7 @@ class DashboardTest extends DuskTestCase
     public function testDashboardContent(): void
     {
         $this->browse(function (Browser $browser): void {
-            $user = factory(User::class)->create();
-            $browser->loginAs($user)
+            $browser->loginAs(factory(User::class)->create())
                 ->visit('/dashboard')
                 ->assertSee('Welcome to your dashboard')
                 ->assertSee('From here you can access all the sections of the site you need as a League Administrator.')

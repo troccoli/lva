@@ -13,7 +13,7 @@ class VenueTest extends DuskTestCase
     /**
      * @throws \Throwable
      */
-    public function testListVenues(): void
+    public function testListingAllVenues(): void
     {
         $this->browse(function (Browser $browser): void {
             $browser->loginAs(factory(User::class)->create());
@@ -30,13 +30,13 @@ class VenueTest extends DuskTestCase
             $browser->visit('/venues')
                 ->assertSeeLink('New venue')
                 ->with('@list', function (Browser $table) use ($page1): void {
-                    $row = 1;
+                    $table->assertSeeIn('thead tr:nth-child(1) th:nth-child(1)', 'Venue');
+
+                    $child = 1;
                     foreach ($page1 as $venue) {
                         /** @var Venue $venue */
-                        $table->with("tr:nth-child($row)", function (Browser $row) use ($venue): void {
-                            $row->assertSeeIn('td:nth-child(1)', $venue->getName());
-                        });
-                        $row++;
+                        $table->assertSeeIn("tbody tr:nth-child($child) td:nth-child(1)", $venue->getName());
+                        $child++;
                     }
                 })
                 ->with('div.pagination', function (Browser $nav): void {
@@ -45,13 +45,13 @@ class VenueTest extends DuskTestCase
                 ->assertPathIs('/venues')
                 ->assertQueryStringHas('page', 2)
                 ->with('@list', function (Browser $table) use ($page2): void {
-                    $row = 1;
+                    $table->assertSeeIn('thead tr:nth-child(1) th:nth-child(1)', 'Venue');
+
+                    $child = 1;
                     foreach ($page2 as $venue) {
                         /** @var Venue $venue */
-                        $table->with("tr:nth-child($row)", function (Browser $row) use ($venue): void {
-                            $row->assertSeeIn('td:nth-child(1)', $venue->getName());
-                        });
-                        $row++;
+                        $table->assertSeeIn("tbody tr:nth-child($child) td:nth-child(1)", $venue->getName());
+                        $child++;
                     }
                 });
         });
@@ -60,7 +60,7 @@ class VenueTest extends DuskTestCase
     /**
      * @throws \Throwable
      */
-    public function testAddVenue(): void
+    public function testAddingAVenue(): void
     {
         $this->browse(function (Browser $browser): void {
             $browser->loginAs(factory(User::class)->create());
@@ -82,14 +82,15 @@ class VenueTest extends DuskTestCase
                 ->press('ADD VENUE')
                 ->assertPathIs('/venues/create')
                 ->assertSeeIn('@name-error', 'The name is required.');
+            $this->assertDatabaseMissing('venues', ['name' => 'Olympic Stadium']);
 
             // Brand new venue
             $browser->visit('/venues/create')
                 ->type('name', 'Olympic Stadium')
                 ->press('ADD VENUE')
                 ->assertPathIs('/venues')
-                ->assertSee('Venue added!')
-                ->assertSeeIn('@list', 'Olympic Stadium');
+                ->assertSee('Venue added!');
+            $this->assertDatabaseHas('venues', ['name' => ['Olympic Stadium']]);
 
             // Add the same venue
             $browser->visit('/venues/create')
@@ -103,89 +104,110 @@ class VenueTest extends DuskTestCase
     /**
      * @throws \Throwable
      */
-    public function testEditVenue(): void
+    public function testEditingAVenue(): void
     {
         $this->browse(function (Browser $browser): void {
             $browser->loginAs(factory(User::class)->create());
 
-            /** @var Venue $venue */
-            $venue = factory(Venue::class)->create(['name' => 'Lewisham Sports Hall']);
+            $browser->visit('/venues/1/edit')
+                ->assertTitle('Not Found')
+                ->assertSee('404')
+                ->assertSee('Not Found');
+
+            $venueId = factory(Venue::class)->create(['name' => 'Lewisham Sports Hall'])->getId();
 
             // Check we can edit a venue from the landing page
             $browser->visit('/venues')
-                ->with('@list', function (Browser $table): void {
+                ->with("@venue-$venueId-row", function (Browser $table): void {
                     $table->clickLink('Update');
                 })
-                ->assertPathIs('/venues/' . $venue->getId() . '/edit');
+                ->assertPathIs("/venues/$venueId/edit");
 
             // Check the form
-            $browser->visit('/venues/' . $venue->getId() . '/edit')
+            $browser->visit("/venues/$venueId/edit")
                 ->assertInputValue('name', 'Lewisham Sports Hall')
                 ->assertVisible('@submit-button')
                 ->assertSeeIn('@submit-button', 'SAVE CHANGES');
 
             // Don't change anything
-            $browser->visit('/venues/' . $venue->getId() . '/edit')
+            $browser->visit("/venues/$venueId/edit")
                 ->press('SAVE CHANGES')
                 ->assertPathIs('/venues')
                 ->assertSee('Venue updated!')
                 ->assertSeeIn('@list', 'Lewisham Sports Hall');
+            $this->assertDatabaseHas('venues', [
+                'id'   => $venueId,
+                'name' => 'Lewisham Sports Hall',
+            ]);
 
             // Remove required fields
-            $browser->visit('/venues/' . $venue->getId() . '/edit')
+            $browser->visit("/venues/$venueId/edit")
                 ->type('name', ' ')// This is to get around the HTML5 validation on the browser
                 ->press('SAVE CHANGES')
-                ->assertPathIs('/venues/' . $venue->getId() . '/edit')
+                ->assertPathIs("/venues/$venueId/edit")
                 ->assertSeeIn('@name-error', 'The name is required.');
-
+            $this->assertDatabaseHas('venues', [
+                'id'   => $venueId,
+                'name' => 'Lewisham Sports Hall',
+            ]);
             // Edit all details
-            $browser->visit('/venues/' . $venue->getId() . '/edit')
+            $browser->visit("/venues/$venueId/edit")
                 ->type('name', 'Sobell S.C.')
                 ->press('SAVE CHANGES')
                 ->assertPathIs('/venues')
-                ->assertSee('Venue updated!')
-                ->assertSeeIn('@list', 'Sobell S.C.')
-                ->assertDontSeeIn('@list', 'Lewisham Sports Hall');
-
-            factory(Venue::class)->create(['name' => 'Olympic Stadium']);
+                ->assertSee('Venue updated!');
+            $this->assertDatabaseHas('venues', [
+                'id'   => $venueId,
+                'name' => 'Sobell S.C.',
+            ]);
 
             // Use an already existing venue
-            $browser->visit('/venues/' . $venue->getId() . '/edit')
+            factory(Venue::class)->create(['name' => 'Olympic Stadium']);
+            $browser->visit("/venues/$venueId/edit")
                 ->type('name', 'Olympic Stadium')
                 ->press('SAVE CHANGES')
-                ->assertPathIs('/venues/' . $venue->getId() . '/edit')
+                ->assertPathIs("/venues/$venueId/edit")
                 ->assertSeeIn('@name-error', 'The venue already exists.');
+            $this->assertDatabaseHas('venues', [
+                'id'   => $venueId,
+                'name' => 'Sobell S.C.',
+            ]);
         });
     }
 
     /**
      * @throws \Throwable
      */
-    public function testDeleteVenue(): void
+    public function testDeletingAVenue(): void
     {
         $this->browse(function (Browser $browser): void {
             $browser->loginAs(factory(User::class)->create());
 
-            factory(Venue::class)->create(['name' => 'Sobell S.C.']);
+            $venueId = factory(Venue::class)->create(['name' => 'Sobell S.C.'])->getId();
 
             $browser->visit('/venues')
-                ->press('Delete')
+                ->within("@venue-$venueId-row", function (Browser $row): void {
+                    $row->press('Delete');
+                })
                 ->whenAvailable('.bootbox-confirm', function (Browser $modal): void {
                     $modal->assertSee('Are you sure?')
                         ->press('Cancel')
                         ->pause(1000);
                 })
-                ->assertDontSee('Venue deleted!')
-                ->assertSee('Sobell S.C.');
+                ->assertDontSee('Venue deleted!');
+            $this->assertDatabaseHas('venues', ['id' => $venueId]);
+
             $browser->visit('/venues')
-                ->press('Delete')
+                ->within("@venue-$venueId-row", function (Browser $row): void {
+                    $row->press('Delete');
+                })
                 ->whenAvailable('.bootbox-confirm', function (Browser $modal): void {
                     $modal->assertSee('Are you sure?')
                         ->press('Confirm')
                         ->pause(1000);
                 })
-                ->assertSee('Venue deleted!')
-                ->assertDontSee('Sobell S.C.');
+                ->assertSee('Venue deleted!');
+            $this->assertDatabaseMissing('venues', ['id' => $venueId]);
         });
     }
 

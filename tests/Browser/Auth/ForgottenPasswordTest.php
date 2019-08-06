@@ -28,9 +28,9 @@ class ForgottenPasswordTest extends DuskTestCase
     public function testRequestingRestForExistingUser(): void
     {
         $this->browse(function (Browser $browser): void {
-            $user = factory(User::class)->create();
+            factory(User::class)->create(['email' => 'john@example.com']);
             $browser->visit('/password/reset')
-                ->type('email', $user->email)
+                ->type('email', 'john@example.com')
                 ->press('SEND PASSWORD RESET LINK')
                 ->assertPathIs('/password/reset')
                 ->assertSee('We have e-mailed your password reset link!');
@@ -43,9 +43,9 @@ class ForgottenPasswordTest extends DuskTestCase
     public function testRequestingRestForUnverifiedUser(): void
     {
         $this->browse(function (Browser $browser): void {
-            $user = factory(User::class)->state('unverified')->create();
+            factory(User::class)->state('unverified')->create(['email' => 'john@example.com']);
             $browser->visit('/password/reset')
-                ->type('email', $user->email)
+                ->type('email', 'john@exampe.com')
                 ->press('SEND PASSWORD RESET LINK')
                 ->assertPathIs('/password/reset')
                 ->assertSee('We have e-mailed your password reset link!');
