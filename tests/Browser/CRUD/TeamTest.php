@@ -14,7 +14,7 @@ class TeamTest extends DuskTestCase
     /**
      * @throws \Throwable
      */
-    public function testListAllTeamsForNonExistingClub(): void
+    public function testListingAllTeamsForNonExistingClub(): void
     {
         $this->browse(function (Browser $browser): void {
             $browser->loginAs(factory(User::class)->create());
@@ -29,46 +29,36 @@ class TeamTest extends DuskTestCase
     /**
      * @throws \Throwable
      */
-    public function testListAllTeamsForClub(): void
+    public function testListingAllTeamsForClub(): void
     {
         $this->browse(function (Browser $browser): void {
+            $browser->loginAs(factory(User::class)->create());
+
             $venue = factory(Venue::class)->create(['name' => 'Sobell SC']);
             $club = aClub()->withVenue($venue)->withName('Global Warriors')->build();
-
-            $browser->loginAs(factory(User::class)->create());
 
             $browser->visit("/clubs/{$club->getId()}/teams/")
                 ->assertSee("Teams in the Global Warriors club")
                 ->assertSeeIn('@list', 'There are no teams in this club yet.');
 
-            $otherTeams = aTeam()->build(5);
-            /** @var Collection $teams */
-            $teams = aTeam()->inClub($club)->withVenue($venue)->orderedByName()->build(3);
+            aTeam()->inClub($club)->withVenue($venue)->withName('London Warriors')->build();
+            aTeam()->inClub($club)->withVenue($venue)->withName('Boston Warriors')->build();
+            aTeam()->inClub($club)->withName('Cardiff Warriors')->build();
+            aTeam()->withName('London Spiders')->build();
 
             $browser->visit("/clubs/{$club->getId()}/teams/")
                 ->assertSeeLink('New team')
                 ->with('@list', function (Browser $table): void {
-                    $table->with("thead:nth-child(1) > tr:nth-child(1)", function (Browser $row): void {
-                        $row->assertSeeIn('th:nth-child(1)', 'Team')
-                            ->assertSeeIn('th:nth-child(2)', 'Venue');
-                    });
-                })
-                ->with('@list', function (Browser $table) use ($teams): void {
-                    $row = 1;
-                    foreach ($teams as $team) {
-                        /** @var Team $team */
-                        $table->with("tr:nth-child({$row})", function (Browser $row) use ($team): void {
-                            $row->assertSeeIn('td:nth-child(1)', $team->getName())
-                                ->assertSeeIn('td:nth-child(2)', 'Sobell SC');
-                        });
-                        $row++;
-                    }
-                })
-                ->with('@list', function (Browser $table) use ($otherTeams): void {
-                    foreach ($otherTeams as $team) {
-                        /** @var Team $team */
-                        $table->assertDontSee($team->getName());
-                    };
+                    $table->assertSeeIn('thead tr:nth-child(1) th:nth-child(1)', 'Team');
+                    $table->assertSeeIn('thead tr:nth-child(1) th:nth-child(2)', 'Venue');
+
+                    $table->assertSeeIn('tbody tr:nth-child(1) td:nth-child(1)', 'Boston Warriors');
+                    $table->assertSeeIn('tbody tr:nth-child(1) td:nth-child(2)', 'Sobell SC');
+                    $table->assertSeeIn('tbody tr:nth-child(2) td:nth-child(1)', 'Cardiff Warriors');
+                    $table->assertSeeIn('tbody tr:nth-child(2) td:nth-child(2)', 'Sobell SC');
+                    $table->assertSeeIn('tbody tr:nth-child(3) td:nth-child(1)', 'London Warriors');
+                    $table->assertSeeIn('tbody tr:nth-child(3) td:nth-child(2)', 'Sobell SC');
+                    $table->assertDontSee('London Spiders');
                 });
         });
     }
@@ -76,7 +66,7 @@ class TeamTest extends DuskTestCase
     /**
      * @throws \Throwable
      */
-    public function testAddTeam(): void
+    public function testAddingATeam(): void
     {
         $this->browse(function (Browser $browser): void {
             $browser->loginAs(factory(User::class)->create());
@@ -86,12 +76,13 @@ class TeamTest extends DuskTestCase
                 ->assertSee('404')
                 ->assertSee('Not Found');
 
-            $olympicStadium = factory(Venue::class)->create(['name' => 'Olympic Stadium']);
-            $theBox = factory(Venue::class)->create(['name' => 'The Box']);
+            $venue1 = factory(Venue::class)->create(['name' => 'Olympic Stadium']);
+            $venue2 = factory(Venue::class)->create(['name' => 'The Box']);
             $clubId = aClub()
                 ->withName('Global Warriors')
-                ->withVenue($theBox)
-                ->build()->getId();
+                ->withVenue($venue2)
+                ->build()
+                ->getId();
 
             // Check we can add a teams from the landing page
             $browser->visit("/clubs/$clubId/teams")
@@ -107,7 +98,10 @@ class TeamTest extends DuskTestCase
                 ->assertDisabled('@club-field')
                 ->assertInputValue('name', '')
                 ->assertSelected('@selectVenue-field', '')
-                ->assertSelectHasOptions('@selectVenue-field', ["", $olympicStadium->getId(), $theBox->getId()])
+                ->assertSeeIn('@selectVenue-field', "Club's venue (The Box)")
+                ->assertSeeIn('@selectVenue-field', 'Olympic Stadium')
+                ->assertSeeIn('@selectVenue-field', 'The Box')
+                ->assertSelectHasOptions('@selectVenue-field', ["", $venue1->getId(), $venue2->getId()])
                 ->assertVisible('@submit-button')
                 ->assertSeeIn('@submit-button', 'Add team');
 
@@ -117,28 +111,33 @@ class TeamTest extends DuskTestCase
                 ->press('Add team')
                 ->assertPathIs("/clubs/$clubId/teams/create")
                 ->assertSeeIn('@name-error', 'The name is required.');
+            $this->assertDatabaseMissing('teams', [
+                'name'     => 'Stratford Warriors',
+                'venue_id' => $venue1->getId(),
+            ]);
 
             // Brand new team
             $browser->visit("/clubs/$clubId/teams/create")
                 ->type('name', 'Stratford Warriors')
-                ->select('@selectVenue-field', $olympicStadium->getId())
+                ->select('@selectVenue-field', $venue1->getId())
                 ->press('Add team')
                 ->assertPathIs("/clubs/$clubId/teams")
                 ->assertSee('Team added!');
             $this->assertDatabaseHas('teams', [
-                'name' => 'Stratford Warriors',
-                'venue_id' => $olympicStadium->getId(),
+                'name'     => 'Stratford Warriors',
+                'venue_id' => $venue1->getId(),
             ]);
 
-            // Add the same team
+            // Add the same team (with the same and different venue)
             $browser->visit("/clubs/$clubId/teams/create")
                 ->type('name', 'Stratford Warriors')
+                ->select('@selectVenue-field', $venue1->getId())
                 ->press('Add team')
                 ->assertPathIs("/clubs/$clubId/teams/create")
                 ->assertSeeIn('@name-error', 'The team already exists in this club.');
             $browser->visit("/clubs/$clubId/teams/create")
                 ->type('name', 'Stratford Warriors')
-                ->select('@selectVenue-field', $theBox->getId())
+                ->select('@selectVenue-field', $venue2->getId())
                 ->press('Add team')
                 ->assertPathIs("/clubs/$clubId/teams/create")
                 ->assertSeeIn('@name-error', 'The team already exists in this club.');
@@ -146,17 +145,25 @@ class TeamTest extends DuskTestCase
             // Add same team in different club
             $oldClubId = aClub()->withName('Pacific Ladies')->build()->getId();
             $browser->visit("/clubs/$oldClubId/teams/create")
-                ->type('name', 'London Warriors')
+                ->type('name', 'Stratford Warriors')
                 ->press('Add team')
                 ->assertPathIs("/clubs/$oldClubId/teams")
                 ->assertSee('Team added!');
+            $this->assertDatabaseHas('teams', [
+                'name'    => 'Stratford Warriors',
+                'club_id' => $clubId,
+            ]);
+            $this->assertDatabaseHas('teams', [
+                'name'    => 'Stratford Warriors',
+                'club_id' => $oldClubId,
+            ]);
         });
     }
 
     /**
      * @throws \Throwable
      */
-    public function testEditTeam(): void
+    public function testEditingATeam(): void
     {
         $this->browse(function (Browser $browser): void {
             $browser->loginAs(factory(User::class)->create());
@@ -166,23 +173,24 @@ class TeamTest extends DuskTestCase
                 ->assertSee('404')
                 ->assertSee('Not Found');
 
-            $olympicStadium = factory(Venue::class)->create(['name' => 'Olympic Stadium']);
+            $venue1 = factory(Venue::class)->create(['name' => 'Olympic Stadium']);
             $theBox = factory(Venue::class)->create(['name' => 'The Box']);
-            $globalWarriors = aClub()->withName('Global Warriors')->withVenue($theBox)->build();
-            $clubId = $globalWarriors->getId();
+            $club = aClub()->withName('Global Warriors')->withVenue($theBox)->build();
+            $clubId = $club->getId();
+
             $browser->visit("/clubs/$clubId/teams/1/edit")
                 ->assertTitle('Not Found')
                 ->assertSee('404')
                 ->assertSee('Not Found');
 
-            $team = aTeam()->withName('London Warriors')->inClub($globalWarriors)->build();
+            $team = aTeam()->withName('London Warriors')->inClub($club)->build();
             $teamId = $team->getId();
 
             $browser->loginAs(factory(User::class)->create());
 
             // Check we can edit a team from the landing page
             $browser->visit("/clubs/$clubId/teams")
-                ->with('@list', function (Browser $table) {
+                ->with("@team-$teamId-row", function (Browser $table) {
                     $table->clickLink('Update');
                 })
                 ->assertPathIs("/clubs/$clubId/teams/$teamId/edit")
@@ -193,8 +201,11 @@ class TeamTest extends DuskTestCase
                 ->assertInputValue('@club-field', 'Global Warriors')
                 ->assertDisabled('@club-field')
                 ->assertInputValue('name', 'London Warriors')
+                ->assertSelected('@selectVenue-field', '')
                 ->assertSeeIn('@selectVenue-field', "Club's venue (The Box)")
-                ->assertSelectHasOptions('@selectVenue-field', ["", $olympicStadium->getId(), $theBox->getId()])
+                ->assertSeeIn('@selectVenue-field', 'Olympic Stadium')
+                ->assertSeeIn('@selectVenue-field', 'The Box')
+                ->assertSelectHasOptions('@selectVenue-field', ["", $venue1->getId(), $theBox->getId()])
                 ->assertVisible('@submit-button')
                 ->assertSeeIn('@submit-button', 'Save changes');
 
@@ -204,78 +215,96 @@ class TeamTest extends DuskTestCase
                 ->press('Save changes')
                 ->assertPathIs("/clubs/$clubId/teams/$teamId/edit")
                 ->assertSeeIn('@name-error', 'The name is required.');
+            $this->assertDatabaseHas('teams', [
+                'id'       => $teamId,
+                'name'     => 'London Warriors',
+                'venue_id' => null,
+            ]);
 
             $browser->visit("/clubs/$clubId/teams/$teamId/edit")
                 ->type('name', 'Boston Warriors')
                 ->press('Save changes')
                 ->assertPathIs("/clubs/$clubId/teams")
-                ->assertSee('Team updated!')
-                ->assertSeeIn('@list', 'Boston Warriors')
-                ->assertDontSeeIn('@list', 'London Warriors');
+                ->assertSee('Team updated!');
             $this->assertDatabaseHas('teams', [
-                'name' => 'Boston Warriors',
+                'id'       => $teamId,
+                'name'     => 'Boston Warriors',
                 'venue_id' => null,
             ]);
 
             $browser->visit("/clubs/$clubId/teams/$teamId/edit")
-                ->select('@selectVenue-field', $olympicStadium->getId())
+                ->select('@selectVenue-field', $venue1->getId())
                 ->press('Save changes')
                 ->assertPathIs("/clubs/$clubId/teams")
                 ->assertSee('Team updated!');
             $this->assertDatabaseHas('teams', [
-                'name' => 'Boston Warriors',
-                'venue_id' => $olympicStadium->getId(),
+                'id'       => $teamId,
+                'name'     => 'Boston Warriors',
+                'venue_id' => $venue1->getId(),
             ]);
 
             // Use the name of an already existing team in this club
-            aTeam()->withName('Cardiff Warriors')->inClub($globalWarriors)->build();
+            aTeam()->withName('Cardiff Warriors')->inClub($club)->build();
             $browser->visit("/clubs/$clubId/teams/$teamId/edit")
                 ->type('name', 'Cardiff Warriors')
                 ->press('Save changes')
                 ->assertPathIs("/clubs/$clubId/teams/$teamId/edit")
                 ->assertSeeIn('@name-error', 'The team already exists in this club.');
+            $this->assertDatabaseHas('teams', [
+                'id'       => $teamId,
+                'name'     => 'Boston Warriors',
+                'venue_id' => $venue1->getId(),
+            ]);
 
-            // Add same team in different club
+            // Use same team in different club
             aTeam()->withName('Manchester Warriors')->build();
             $browser->visit("/clubs/$clubId/teams/$teamId/edit")
                 ->type('name', 'Manchester Warriors')
                 ->press('Save changes')
                 ->assertPathIs("/clubs/$clubId/teams")
-                ->assertSee('Team updated!')
-                ->assertSeeIn('@list', 'Manchester Warriors');
+                ->assertSee('Team updated!');
+            $this->assertDatabaseHas('teams', [
+                'id'       => $teamId,
+                'name'     => 'Manchester Warriors',
+                'venue_id' => $venue1->getId(),
+            ]);
         });
     }
 
     /**
      * @throws \Throwable
      */
-    public function testDeleteTeam(): void
+    public function testDeletingATeam(): void
     {
         $this->browse(function (Browser $browser): void {
             $browser->loginAs(factory(User::class)->create());
 
             $club = aClub()->build();
-            /** @var Team $team */
-            $team = aTeam()->withName('London Warriors')->inClub($club)->build();
+            $teamId = aTeam()->withName('London Warriors')->inClub($club)->build()->getId();
 
             $browser->visit("/clubs/{$club->getId()}/teams/")
-                ->press('Delete')
+                ->within("@team-$teamId-row", function (Browser $row): void {
+                    $row->press('Delete');
+                })
                 ->whenAvailable('.bootbox-confirm', function (Browser $modal): void {
                     $modal->assertSee('Are you sure?')
                         ->press('Cancel')
                         ->pause(1000);
                 })
-                ->assertDontSee('Team deleted!')
-                ->assertSeeIn('@list', 'London Warriors');
+                ->assertDontSee('Team deleted!');
+            $this->assertDatabaseHas('teams', ['id' => $teamId]);
+
             $browser->visit("/clubs/{$club->getId()}/teams/")
-                ->press('Delete')
+                ->within("@team-$teamId-row", function (Browser $row): void {
+                    $row->press('Delete');
+                })
                 ->whenAvailable('.bootbox-confirm', function (Browser $modal): void {
                     $modal->assertSee('Are you sure?')
                         ->press('Confirm')
                         ->pause(1000);
                 })
-                ->assertSee('Team deleted!')
-                ->assertDontSeeIn('@list', 'London Warriors');
+                ->assertSee('Team deleted!');
+            $this->assertDatabaseMissing('teams', ['id' => $teamId]);
         });
     }
 }

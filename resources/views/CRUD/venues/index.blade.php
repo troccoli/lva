@@ -22,7 +22,7 @@
                     </thead>
                     <tbody>
                     @foreach($venues as $venue)
-                        <tr>
+                        <tr dusk={{ "venue-{$venue->getId()}-row" }}>
                             <td>
                                 @component('components.crud.view-button')
                                     {{ route('venues.show', [$venue]) }}

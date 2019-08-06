@@ -16,21 +16,20 @@ class ResetPasswordTest extends DuskTestCase
      */
     public function testRestPasswordJourney(): void
     {
-        $user = factory(User::class)->create();
-        $this->browse(function (Browser $browser) use ($user): void {
+        $this->browse(function (Browser $browser): void {
+            $user = factory(User::class)->create(['email' => 'john@example.com']);
             $browser->visit('/password/reset')
-                ->type('email', $user->email)
+                ->type('email', 'john@example.com')
                 ->press('SEND PASSWORD RESET LINK');
 
-            $this->fixStoredToken($user->email, $token = Str::random(60));
-            $browser->visit("/password/reset/$token")
-                ->type('email', $user->email)
+            $this->fixStoredToken('john@example.com', 'THISiSaFan5st1cT0Ken#11@');
+            $browser->visit("/password/reset/" . urlencode('THISiSaFan5st1cT0Ken#11@'))
+                ->type('email', 'john@example.com')
                 ->type('password', 'password123')
                 ->type('password_confirmation', 'password123')
                 ->press('RESET PASSWORD')
                 ->assertPathIs('/dashboard')
-                ->assertAuthenticatedAs($user)
-                ->logout();
+                ->assertAuthenticatedAs($user);
         });
     }
 

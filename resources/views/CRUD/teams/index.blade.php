@@ -23,7 +23,7 @@
                 </thead>
                 <tbody>
                 @foreach($teams as $team)
-                    <tr>
+                    <tr dusk={{ "team-{$team->getId()}-row" }}>
                         <td>
                             @component('components.crud.update-button')
                                 {{ route('teams.edit', [$club, $team]) }}

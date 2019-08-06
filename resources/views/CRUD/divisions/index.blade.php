@@ -27,7 +27,7 @@
                 </thead>
                 <tbody>
                 @foreach($divisions as $division)
-                    <tr>
+                    <tr dusk={{ "division-{$division->getId()}-row" }}>
                         <td>
                             @component('components.crud.update-button')
                                 {{ route('divisions.edit', [$competition, $division]) }}

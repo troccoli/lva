@@ -15,11 +15,12 @@ class LoginTest extends DuskTestCase
     {
         $this->browse(function (Browser $browser): void {
             $browser->visit('/login')
-                ->type('email', 'tom@exampl.com')
+                ->type('email', 'tom@example.org')
                 ->type('password', 'password')
                 ->press('LOGIN')
                 ->assertPathIs('/login')
-                ->assertSee('These credentials do not match our records.');
+                ->assertSee('These credentials do not match our records.')
+                ->assertGuest();
         });
     }
 
@@ -29,9 +30,16 @@ class LoginTest extends DuskTestCase
     public function testLoggingInForExistingUser(): void
     {
         $this->browse(function (Browser $browser): void {
-            $user = factory(User::class)->create();
+            $user = factory(User::class)->create(['email' => 'john@example.com']);
             $browser->visit('/login')
-                ->type('email', $user->email)
+                ->type('email', 'john@example.com')
+                ->type('password', 'secret')
+                ->press('LOGIN')
+                ->assertPathIs('/login')
+                ->assertSee('These credentials do not match our records.')
+                ->assertGuest();
+            $browser->visit('/login')
+                ->type('email', 'john@example.com')
                 ->type('password', 'password')
                 ->press('LOGIN')
                 ->assertPathIs('/dashboard')
@@ -42,16 +50,17 @@ class LoginTest extends DuskTestCase
     /**
      * @throws \Throwable
      */
-    public function testLoggingIntForUnverifiedUsers(): void
+    public function testLoggingInForUnverifiedUsers(): void
     {
         $this->browse(function (Browser $browser): void {
-            $user = factory(User::class)->state('unverified')->create();
+            factory(User::class)->state('unverified')->create(['email' => 'john@example.com']);
             $browser->visit('/login')
-                ->type('email', $user->email)
+                ->type('email', 'john@example.com')
                 ->type('password', 'password')
                 ->press('LOGIN')
                 ->assertSee('Verify your email address!')
-                ->assertPathIs('/email/verify');
+                ->assertPathIs('/email/verify')
+                ->assertAuthenticated();
         });
     }
 }
