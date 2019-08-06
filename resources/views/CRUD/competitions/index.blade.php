@@ -22,7 +22,7 @@
                 </thead>
                 <tbody>
                 @foreach($competitions as $competition)
-                    <tr>
+                    <tr dusk={{ "competition-{$competition->getId()}-row" }}>
                         <td>
                             @component('components.crud.view-button')
                                 {{ route('divisions.index', ['competition_id' => $competition->getId()]) }}

@@ -22,7 +22,7 @@
                 </thead>
                 <tbody>
                 @foreach($seasons as $season)
-                    <tr>
+                    <tr dusk={{ "season-{$season->getId()}-row" }}>
                         <td>
                             @component('components.crud.view-button')
                                 {{ route('competitions.index', ['season_id' => $season->getId()]) }}

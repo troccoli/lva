@@ -23,7 +23,7 @@
                 </thead>
                 <tbody>
                 @foreach($clubs as $club)
-                    <tr>
+                    <tr dusk={{ "club-{$club->getId()}-row" }}>
                         <td>
                             @component('components.crud.view-button')
                                 {{ route('teams.index', ['club_id' => $club->getId()]) }}
