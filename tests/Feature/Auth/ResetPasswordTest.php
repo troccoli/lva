@@ -14,18 +14,10 @@ class ResetPasswordTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        factory(User::class)->create(['email' => 'john@example.com']);
-        DB::table('password_resets')
-            ->insert([
-                'email'      => 'john@example.com',
-                'token'      => app()->make(Hasher::class)->make('THISiSaFan5st1cT0Ken#11@'),
-                'created_at' => Carbon::now(),
-            ]);
-    }
+    /** @var User */
+    private $user;
+    /** @var string */
+    private $token;
 
     public function testResettingPassword(): void
     {
@@ -35,8 +27,8 @@ class ResetPasswordTest extends TestCase
 
         // Password mismatch
         $this->post('/password/reset', [
-            'token'                 => 'THISiSaFan5st1cT0Ken#11@',
-            'email'                 => 'john@example.com',
+            'token'                 => $this->token,
+            'email'                 => $this->user->email,
             'password'              => 'password123',
             'password_confirmation' => 'password',
         ])
@@ -44,8 +36,8 @@ class ResetPasswordTest extends TestCase
 
         // Wrong email address
         $this->post('/password/reset', [
-            'token'                 => 'THISiSaFan5st1cT0Ken#11@',
-            'email'                 => 'tom@example.org',
+            'token'                 => $this->token,
+            'email'                 => 'tom@example.com',
             'password'              => 'password123',
             'password_confirmation' => 'password123',
         ])
@@ -53,8 +45,8 @@ class ResetPasswordTest extends TestCase
 
         // Everything is fine
         $this->post('/password/reset', [
-            'token'                 => 'THISiSaFan5st1cT0Ken#11@',
-            'email'                 => 'john@example.com',
+            'token'                 => $this->token,
+            'email'                 => $this->user->email,
             'password'              => 'password123',
             'password_confirmation' => 'password123',
         ])
@@ -65,11 +57,24 @@ class ResetPasswordTest extends TestCase
     {
         Carbon::setTestNow(Carbon::now()->addHours(2));
         $this->post('/password/reset', [
-            'token'                 => 'THISiSaFan5st1cT0Ken#11@',
-            'email'                 => 'john@emxaple.com',
+            'token'                 => $this->token,
+            'email'                 => $this->user->email,
             'password'              => 'password123',
             'password_confirmation' => 'password123',
         ])
             ->assertSessionHasErrors(['email']);
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->user = factory(User::class)->create();
+        DB::table('password_resets')
+            ->insert([
+                'email'      => $this->user->email,
+                'token'      => app()->make(Hasher::class)->make($this->token = Str::random(32)),
+                'created_at' => Carbon::now(),
+            ]);
     }
 }

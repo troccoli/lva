@@ -37,20 +37,20 @@ class TeamTest extends TestCase
 
     public function testItGetsTheVenue(): void
     {
-        $venue = factory(Venue::class)->create();
-        $team = aTeam()->withVenue($venue)->build();
+        $olympicStadium = factory(Venue::class)->create(['name' => 'Olympic Stadium']);
+        $team = aTeam()->withVenue($olympicStadium)->build();
 
-        $this->assertEquals($venue->toArray(), $team->getVenue()->toArray());
+        $this->assertEquals($olympicStadium->toArray(), $team->getVenue()->toArray());
 
-        $club = aClub()->withVenue($venue)->build();
+        $club = aClub()->withVenue($olympicStadium)->build();
         $team = aTeam()->inClub($club)->build();
 
-        $this->assertEquals($venue->toArray(), $team->getVenue()->toArray());
+        $this->assertEquals($olympicStadium->toArray(), $team->getVenue()->toArray());
     }
 
     public function testItGetsTheVenueFromTheClub(): void
     {
-        $venue = factory(Venue::class)->create();
+        $venue = factory(Venue::class)->create(['name' => 'Olympic Stadium']);
         $club = aClub()->withVenue($venue)->build();
         $team = aTeam()->inClub($club)->build();
 
@@ -59,7 +59,7 @@ class TeamTest extends TestCase
 
     public function testItGetsTheVenueId(): void
     {
-        $venue = factory(Venue::class)->create();
+        $venue = factory(Venue::class)->create(['name' => 'Olympic Stadium']);
         $team = aTeam()->withVenue($venue)->build();
 
         $this->assertSame($venue->getId(), $team->getVenueId());
@@ -67,7 +67,7 @@ class TeamTest extends TestCase
 
     public function testItDoesNotGetTheVenueIdFromTheClub(): void
     {
-        $venue = factory(Venue::class)->create();
+        $venue = factory(Venue::class)->create(['name' => 'Olympic Stadium']);
         $club = aClub()->withVenue($venue)->build();
         $team = aTeam()->inClub($club)->build();
 

@@ -103,17 +103,14 @@ class VenueTest extends TestCase
     {
         $this->actingAs(factory(User::class)->create());
 
-        // Missing required fields
         $this->post('/venues', [])
             ->assertSessionHasErrors('name', 'The name is required.');
         $this->assertDatabaseMissing('venues', ['name' => 'Olympic Stadium']);
 
-        // OK
         $this->post('/venues', ['name' => 'Olympic Stadium'])
             ->assertSessionHasNoErrors();
         $this->assertDatabaseHas('venues', ['name' => 'Olympic Stadium']);
 
-        // Already existing venue
         $this->post('/venues', ['name' => 'Olympic Stadium'])
             ->assertSessionHasErrors('name', 'The venue already exists.');
         $this->assertDatabaseHas('venues', ['name' => 'Olympic Stadium']);
@@ -132,19 +129,17 @@ class VenueTest extends TestCase
         /** @var Venue $venue */
         $venue = factory(Venue::class)->create(['name' => 'Olympic Stadium']);
 
-        // Missing required fields
         $this->put('/venues/' . $venue->getId(), [])
             ->assertSessionHasErrors('name', 'The name is required.');
         $this->assertDatabaseHas('venues', ['name' => 'Olympic Stadium']);
 
-        // OK
         $this->put('/venues/' . $venue->getId(), ['name' => 'Sobell S.C.'])
             ->assertSessionHasNoErrors();
         $this->assertDatabaseMissing('venues', ['name' => 'Olympic Stadium'])
             ->assertDatabaseHas('venues', ['name' => 'Sobell S.C.']);
 
-        // Already existing venue
         factory(Venue::class)->create(['name' => 'University of Westminster']);
+
         $this->put('/venues/' . $venue->getId(), ['name' => 'University of Westminster'])
             ->assertSessionHasErrors('name', 'The venue already exists.');
         $this->assertDatabaseHas('venues', ['name' => 'Sobell S.C.']);
@@ -157,16 +152,16 @@ class VenueTest extends TestCase
     {
         $this->actingAs(factory(User::class)->create());
 
+        $this->delete('/venues/' . Uuid::generate()->string)
+            ->assertNotFound();
+
         /** @var Venue $venue */
-        $venue = factory(Venue::class)->create();
-        $club = aClub()->withVenue($venue)->build();
+        $venue = factory(Venue::class)->create(['name' => 'Olympic Stadium']);
+        aClub()->withName('West Ham FC')->withVenue($venue)->build();
 
         $this->delete('/venues/' . $venue->getId())
             ->assertSessionHasNoErrors();
-        $this->assertDatabaseMissing('venues', ['uuid' => $venue->getId()])
-            ->assertDatabaseHas('clubs', ['id' => $club->getId(), 'venue_id' => null]);
-
-        $this->delete('/venues/' . $venue->getId())
-            ->assertNotFound();
+        $this->assertDatabaseMissing('venues', ['name' => 'Olympic Stadium'])
+            ->assertDatabaseHas('clubs', ['name' => 'West Ham FC', 'venue_id' => null]);
     }
 }
