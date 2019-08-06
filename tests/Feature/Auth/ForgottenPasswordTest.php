@@ -25,7 +25,7 @@ class ForgottenPasswordTest extends TestCase
 
     public function testRequestingResetPassword(): void
     {
-        $user = factory(User::class)->create(['email' => 'john@example.com']);
+        $user = factory(User::class)->create();
 
         // Missing email
         $this->post('/password/email', [])
@@ -35,18 +35,15 @@ class ForgottenPasswordTest extends TestCase
         $this->post('/password/email', [
             'email' => 'a',
         ])->assertSessionHasErrors(['email']);
-        $this->assertDatabaseMissing('password_resets', ['email' => 'a']);
 
         // Non-existing user
         $this->post('/password/email', [
             'email' => 'tom@example.org',
         ])->assertSessionHasNoErrors();
-        $this->assertDatabaseMissing('password_resets', ['email' => 'tom@example.org']);
 
         // Existing user
         $this->post('/password/email', [
-            'email' => 'john@example.com',
+            'email' => $user->email,
         ])->assertSessionHasNoErrors();
-        $this->assertDatabaseHas('password_resets', ['email' => 'john@example.com']);
     }
 }
