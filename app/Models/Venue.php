@@ -32,4 +32,14 @@ class Venue extends Model
     {
         return $this->clubs;
     }
+
+    public function fixtures(): HasMany
+    {
+        return $this->hasMany(Fixture::class);
+    }
+
+    public function getFixtures(): Collection
+    {
+        return $this->fixtures;
+    }
 }
