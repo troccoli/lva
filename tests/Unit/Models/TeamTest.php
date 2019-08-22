@@ -3,9 +3,9 @@
 namespace Tests\Unit\Models;
 
 use App\Models\Club;
+use App\Models\Division;
 use App\Models\Team;
 use App\Models\Venue;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -72,5 +72,32 @@ class TeamTest extends TestCase
         $team = aTeam()->inClub($club)->build();
 
         $this->assertNull($team->getVenueId());
+    }
+
+    public function testItGetsTheDivisions(): void
+    {
+        /** @var Team $team */
+        $team = aTeam()->build();
+        $divisions = collect([
+            factory(Division::class)->create(),
+            factory(Division::class)->create(),
+            factory(Division::class)->create(),
+        ])->each(function (Division $division) use ($team): void {
+            $division->teams()->attach($team);
+        });
+
+        $otherDivisions = collect([
+            factory(Division::class)->create(),
+            factory(Division::class)->create(),
+            factory(Division::class)->create(),
+            factory(Division::class)->create(),
+        ]);
+
+        $teamDivisions = $team->getDivisions();
+
+        $this->assertCount(3, $teamDivisions);
+        $divisions->each(function (Division $division) use ($teamDivisions): void {
+            $this->assertContains($division->getId(), $teamDivisions->pluck('id'));
+        });
     }
 }
