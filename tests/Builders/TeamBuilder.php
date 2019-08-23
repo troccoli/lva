@@ -3,6 +3,7 @@
 namespace Tests\Builders;
 
 use App\Models\Club;
+use App\Models\Division;
 use App\Models\Team;
 use App\Models\Venue;
 use Illuminate\Database\Eloquent\Collection;
@@ -11,6 +12,8 @@ class TeamBuilder
 {
     private $data = [];
     private $sortBy = '';
+    /** @var Division */
+    private $division = null;
 
     public function withName(string $name): self
     {
@@ -33,6 +36,13 @@ class TeamBuilder
         return $this;
     }
 
+    public function inDivision(Division $division): self
+    {
+        $this->division = $division;
+
+        return $this;
+    }
+
     public function orderedByName(): self
     {
         $this->sortBy = 'name';
@@ -45,10 +55,23 @@ class TeamBuilder
     public function build(int $number = 1)
     {
         if ($number === 1) {
-            return factory(Team::class)->create($this->data);
+            /** @var Team $team */
+            $team =  factory(Team::class)->create($this->data);
+
+            if ($this->division) {
+                $team->divisions()->attach($this->division);
+            }
+
+            return $team;
         }
 
         $teams = factory(Team::class, $number)->create($this->data);
+
+        if ($this->division) {
+            $teams->each(function (Team $team): void {
+                $team->divisions()->attach($this->division);
+            });
+        }
 
         if (!empty($this->sortBy)) {
             $teams = $teams->sortBy($this->sortBy);

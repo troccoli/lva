@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Team extends Model
 {
@@ -47,6 +49,16 @@ class Team extends Model
     public function getVenueId():? string
     {
         return $this->venue_id;
+    }
+
+    public function divisions(): BelongsToMany
+    {
+        return $this->belongsToMany(Division::class);
+    }
+
+    public function getDivisions(): Collection
+    {
+        return $this->divisions;
     }
 
     public function scopeInClub(Builder $query, Club $club): Builder

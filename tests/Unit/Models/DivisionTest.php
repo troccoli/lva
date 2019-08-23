@@ -4,6 +4,7 @@ namespace Tests\Unit\Models;
 
 use App\Models\Competition;
 use App\Models\Division;
+use App\Models\Team;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -38,5 +39,31 @@ class DivisionTest extends TestCase
         /** @var Division $division */
         $division = factory(Division::class)->create(['competition_id' => $competition->getId()]);
         $this->assertEquals($competition->getId(), $division->getCompetition()->getId());
+    }
+
+    public function testItGetsTheTeams(): void
+    {
+        /** @var Division $division */
+        $division = factory(Division::class)->create();
+        $teams = collect([
+            aTeam()->inDivision($division)->build(),
+            aTeam()->inDivision($division)->build(),
+            aTeam()->inDivision($division)->build(),
+            aTeam()->inDivision($division)->build(),
+            aTeam()->inDivision($division)->build(),
+        ]);
+
+        $otherTeams = collect([
+            aTeam()->build(),
+            aTeam()->build(),
+            aTeam()->build(),
+        ]);
+
+        $divisionTeams = $division->getTeams();
+
+        $this->assertCount(5, $divisionTeams);
+        $teams->each(function (Team $team) use ($divisionTeams): void {
+            $this->assertContains($team->getId(), $divisionTeams->pluck('id'));
+        });
     }
 }

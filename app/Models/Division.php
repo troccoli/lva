@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Division extends Model
@@ -36,6 +38,16 @@ class Division extends Model
     public function getCompetition(): Competition
     {
         return $this->competition;
+    }
+
+    public function teams(): BelongsToMany
+    {
+        return $this->belongsToMany(Team::class);
+    }
+
+    public function getTeams(): Collection
+    {
+        return $this->teams;
     }
 
     public function scopeInOrder(Builder $builder): Builder
