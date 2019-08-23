@@ -12,6 +12,6 @@ $factory->define(Division::class, function (Faker $faker) {
             return factory(Competition::class)->create()->id;
         },
         'name' => $faker->unique()->company,
-        'display_order' => $faker->unique()->numberBetween(1)
+        'display_order' => $faker->unique()->numberBetween(1, 1000)
     ];
 });
