@@ -8,8 +8,8 @@ class CompetitionsTableSeeder extends Seeder
 {
     public function run(): void
     {
-        $season = factory(Season::class)->create();
-
-        factory(Competition::class)->times(5)->create(['season_id' => $season->id]);
+        Season::each(function (Season $season): void {
+            factory(Competition::class)->create(['season_id' => $season->id]);
+        });
     }
 }

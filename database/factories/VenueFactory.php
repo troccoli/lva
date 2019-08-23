@@ -7,6 +7,6 @@ use Faker\Generator as Faker;
 
 $factory->define(Venue::class, function (Faker $faker) {
     return [
-        'name' => $faker->unique()->company,
+        'name' => str_replace("\n", ' ', $faker->unique()->address),
     ];
 });

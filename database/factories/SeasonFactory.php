@@ -9,7 +9,7 @@ use Illuminate\Support\Carbon;
 
 $factory->define(Season::class, function (Faker $faker) {
     return [
-        'year' => $faker->unique()->year,
+        'year' => $faker->unique()->year(),
     ];
 });
 $factory->state(Season::class, 'last-year', function (Faker $faker) {

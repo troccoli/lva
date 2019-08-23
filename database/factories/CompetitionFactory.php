@@ -12,6 +12,6 @@ $factory->define(Competition::class, function (Faker $faker) {
         'season_id' => function () {
             return factory(Season::class)->create()->id;
         },
-        'name' => $faker->unique()->company,
+        'name' => $faker->unique()->company(),
     ];
 });

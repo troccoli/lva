@@ -12,7 +12,7 @@ $factory->define(Team::class, function (Faker $faker) {
         'club_id'  => function () {
             return factory(Club::class)->create()->id;
         },
-        'name'     => $faker->unique()->company,
+        'name'     => $faker->unique()->city,
         'venue_id' => null,
     ];
 });
