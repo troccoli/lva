@@ -59,6 +59,10 @@ jobs:
           command: php artisan migrate --force
 
       - run:
+          name: Setup Laravel Passport
+          command: php artisan passport:install
+
+      - run:
           name: Run Unit Tests
           command: |
             mkdir -p ./logs/phpunit

@@ -21,6 +21,7 @@ before_script:
   - touch ./storage/logs/laravel.log
   - touch ./database/database.sqlite
   - php artisan migrate --force
+  - php artisan passport:install
   - php artisan dusk:chrome-driver 75
   - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
   - php artisan serve &
