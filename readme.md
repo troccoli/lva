@@ -81,3 +81,7 @@ If you find a bug please submit an issue.
 ## License
 
 This project is open-source software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+# Ideas
+
+1. To set admin's preferences I can use the Laravel model settings package https://github.com/glorand/laravel-model-settings 
