@@ -85,3 +85,4 @@ This project is open-source software licensed under the [MIT license](https://op
 # Ideas
 
 1. To set admin's preferences I can use the Laravel model settings package https://github.com/glorand/laravel-model-settings 
+1. Use HATEOAS for the API https://github.com/gdebrauwer/laravel-hateoas?ref=laravelnews
