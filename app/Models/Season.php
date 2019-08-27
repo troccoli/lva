@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -33,5 +34,10 @@ class Season extends Model
     public function getCompetitions(): Collection
     {
         return $this->competitions;
+    }
+
+    public function scopeOrderedByYear(Builder $query): Builder
+    {
+        return $query->orderBy('year');
     }
 }

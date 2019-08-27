@@ -37,12 +37,21 @@ class Team extends Model
         return $this->belongsTo(Venue::class);
     }
 
-    public function getVenue():? Venue
+    /*
+     * It is necessary to get the venue using an accessor method
+     * as the venue relationship is retrieved directly using
+     * $this->venue in WhenLoaded() method
+     */
+    public function getVenueAttribute():? Venue
     {
-        if (is_null($this->venue)) {
+        if ($this->venue_id === null) {
             return $this->getClub()->getVenue();
         }
 
+        return Venue::find($this->venue_id);
+    }
+    public function getVenue():? Venue
+    {
         return $this->venue;
     }
 
