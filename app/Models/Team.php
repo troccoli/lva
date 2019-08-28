@@ -66,8 +66,8 @@ class Team extends Model
         return $query->where('club_id', $club->getId());
     }
 
-    public function scopeOrderByName(Builder $quey): Builder
+    public function scopeOrderByName(Builder $query): Builder
     {
-        return $quey->orderBy('name');
+        return $query->orderBy('name');
     }
 }
