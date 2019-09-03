@@ -12,8 +12,8 @@ class TeamBuilder
 {
     private $data = [];
     private $sortBy = '';
-    /** @var Division */
-    private $division = null;
+    /** @var Division[] */
+    private $divisions = [];
 
     public function withName(string $name): self
     {
@@ -38,7 +38,7 @@ class TeamBuilder
 
     public function inDivision(Division $division): self
     {
-        $this->division = $division;
+        $this->divisions[] = $division;
 
         return $this;
     }
@@ -58,8 +58,8 @@ class TeamBuilder
             /** @var Team $team */
             $team =  factory(Team::class)->create($this->data);
 
-            if ($this->division) {
-                $team->divisions()->attach($this->division);
+            foreach ($this->divisions as $division) {
+                $team->divisions()->attach($division);
             }
 
             return $team;
@@ -67,9 +67,9 @@ class TeamBuilder
 
         $teams = factory(Team::class, $number)->create($this->data);
 
-        if ($this->division) {
-            $teams->each(function (Team $team): void {
-                $team->divisions()->attach($this->division);
+        foreach ($this->divisions as $division) {
+            $teams->each(function (Team $team) use ($division): void {
+                $team->divisions()->attach($division);
             });
         }
 
