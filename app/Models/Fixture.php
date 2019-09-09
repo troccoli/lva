@@ -25,31 +25,6 @@ class Fixture extends Model
         return $this->match_number;
     }
 
-    public function getDivision(): Division
-    {
-        return $this->division;
-    }
-
-    public function getCompetition(): Competition
-    {
-        return $this->getDivision()->getCompetition();
-    }
-
-    public function getSeason(): Season
-    {
-        return $this->getCompetition()->getSeason();
-    }
-
-    public function getHomeTeam(): Team
-    {
-        return $this->homeTeam;
-    }
-
-    public function getAwayTeam(): Team
-    {
-        return $this->awayTeam;
-    }
-
     public function getMatchDate(): Carbon
     {
         return $this->match_date;
@@ -65,14 +40,24 @@ class Fixture extends Model
         return $this->match_time;
     }
 
-    public function getVenue(): Venue
-    {
-        return $this->venue;
-    }
-
     public function division(): BelongsTo
     {
         return $this->belongsTo(Division::class);
+    }
+
+    public function getDivision(): Division
+    {
+        return $this->division;
+    }
+
+    public function getCompetition(): Competition
+    {
+        return $this->getDivision()->getCompetition();
+    }
+
+    public function getSeason(): Season
+    {
+        return $this->getCompetition()->getSeason();
     }
 
     public function homeTeam(): HasOne
@@ -80,13 +65,28 @@ class Fixture extends Model
         return $this->hasOne(Team::class, 'id', 'home_team_id');
     }
 
+    public function getHomeTeam(): Team
+    {
+        return $this->homeTeam;
+    }
+
     public function awayTeam(): HasOne
     {
         return $this->hasOne(Team::class, 'id', 'away_team_id');
     }
 
+    public function getAwayTeam(): Team
+    {
+        return $this->awayTeam;
+    }
+
     public function venue(): BelongsTo
     {
         return $this->belongsTo(Venue::class);
+    }
+
+    public function getVenue(): Venue
+    {
+        return $this->venue;
     }
 }
