@@ -81,6 +81,6 @@ class FixturesController extends Controller
 
         $perPage = $request->get('perPage', 10);
 
-        return FixtureResource::collection($query->paginate($perPage));
+        return FixtureResource::collection($query->orderBy('match_number')->paginate($perPage));
     }
 }
