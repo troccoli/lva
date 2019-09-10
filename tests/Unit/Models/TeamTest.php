@@ -4,9 +4,11 @@ namespace Tests\Unit\Models;
 
 use App\Models\Club;
 use App\Models\Division;
+use App\Models\Fixture;
 use App\Models\Team;
 use App\Models\Venue;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Collection;
 use Tests\TestCase;
 
 class TeamTest extends TestCase
@@ -98,6 +100,34 @@ class TeamTest extends TestCase
         $this->assertCount(3, $teamDivisions);
         $divisions->each(function (Division $division) use ($teamDivisions): void {
             $this->assertContains($division->getId(), $teamDivisions->pluck('id'));
+        });
+    }
+
+    public function testItGetsTheFixtures(): void
+    {
+        $team = aTeam()->build();
+        $fixtures = collect([
+            aFixture()->between($team, aTeam()->build())->build(),
+            aFixture()->between($team, aTeam()->build())->build(),
+            aFixture()->between($team, aTeam()->build())->build(),
+            aFixture()->between($team, aTeam()->build())->build(),
+            aFixture()->between($team, aTeam()->build())->build(),
+            aFixture()->between(aTeam()->build(), $team)->build(),
+            aFixture()->between(aTeam()->build(), $team)->build(),
+            aFixture()->between(aTeam()->build(), $team)->build(),
+        ]);
+        $otherFixtures = collect([
+            aFixture()->build(),
+            aFixture()->build(),
+            aFixture()->build(),
+        ]);
+
+        /** @var Collection $teamFixtures */
+        $teamFixtures = $team->getFixtures();
+
+        $this->assertCount(8, $teamFixtures);
+        $fixtures->each(function (Fixture $fixture) use ($teamFixtures): void {
+            $this->assertContains($fixture->getId(), $teamFixtures->pluck('id'));
         });
     }
 }

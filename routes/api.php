@@ -34,4 +34,6 @@ Route::middleware('auth:api')
 
         Route::get('venues', 'VenueController@all');
         Route::get('venues/{venue}', 'VenueController@get');
+
+        Route::get('fixtures', 'FixturesController@all');
     });

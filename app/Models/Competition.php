@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-use Doctrine\DBAL\Query\QueryBuilder;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Competition extends Model
 {
@@ -38,9 +38,19 @@ class Competition extends Model
         return $this->hasMany(Division::class);
     }
 
-    public function getDivisions(): Collection
+    public function getDivisions(): EloquentCollection
     {
         return $this->divisions;
+    }
+
+    public function fixtures(): HasManyThrough
+    {
+        return $this->hasManyThrough(Fixture::class, Division::class);
+    }
+
+    public function getFixtures(): EloquentCollection
+    {
+        return $this->fixtures;
     }
 
     public function scopeInSeason(Builder $query, Season $season): Builder

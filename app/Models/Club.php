@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 
 class Club extends Model
 {
@@ -26,7 +27,7 @@ class Club extends Model
         return $this->hasMany(Team::class);
     }
 
-    public function getTeams(): Collection
+    public function getTeams(): EloquentCollection
     {
         return $this->teams;
     }
@@ -44,5 +45,12 @@ class Club extends Model
     public function getVenueId():? string
     {
         return $this->venue_id;
+    }
+
+    public function getFixtures(): Collection
+    {
+        return $this->getTeams()->map(function (Team $team): Collection {
+            return $team->getFixtures();
+        })->flatten();
     }
 }

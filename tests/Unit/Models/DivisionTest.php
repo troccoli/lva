@@ -5,6 +5,8 @@ namespace Tests\Unit\Models;
 use App\Models\Competition;
 use App\Models\Division;
 use App\Models\Team;
+use App\Models\Fixture;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -64,6 +66,30 @@ class DivisionTest extends TestCase
         $this->assertCount(5, $divisionTeams);
         $teams->each(function (Team $team) use ($divisionTeams): void {
             $this->assertContains($team->getId(), $divisionTeams->pluck('id'));
+        });
+    }
+
+    public function testItGetsTheFixtures(): void
+    {
+        $division = factory(Division::class)->create();
+        $fixtures = collect([
+            aFixture()->inDivision($division)->build(),
+            aFixture()->inDivision($division)->build(),
+            aFixture()->inDivision($division)->build(),
+            aFixture()->inDivision($division)->build(),
+        ]);
+        $otherFixtures = collect([
+            aFixture()->build(),
+            aFixture()->build(),
+            aFixture()->build(),
+        ]);
+
+        /** @var Collection $divisionFixtures */
+        $divisionFixtures = $division->getFixtures();
+
+        $this->assertCount(4, $divisionFixtures);
+        $fixtures->each(function (Fixture $fixture) use ($divisionFixtures): void {
+            $this->assertContains($fixture->getId(), $divisionFixtures->pluck('id'));
         });
     }
 }

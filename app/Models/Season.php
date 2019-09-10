@@ -3,9 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 
 class Season extends Model
 {
@@ -31,9 +32,16 @@ class Season extends Model
         return $this->hasMany(Competition::class);
     }
 
-    public function getCompetitions(): Collection
+    public function getCompetitions(): EloquentCollection
     {
         return $this->competitions;
+    }
+
+    public function getFixtures(): Collection
+    {
+        return $this->getCompetitions()->map(function (Competition $competition): Collection {
+            return $competition->getFixtures();
+        })->flatten();
     }
 
     public function scopeOrderedByYear(Builder $query): Builder

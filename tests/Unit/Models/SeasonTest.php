@@ -3,7 +3,10 @@
 namespace Tests\Unit\Models;
 
 use App\Models\Competition;
+use App\Models\Division;
+use App\Models\Fixture;
 use App\Models\Season;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -57,6 +60,37 @@ class SeasonTest extends TestCase
         $this->assertCount(3, $season->getCompetitions());
         $competitions->each(function (Competition $competition) use ($season): void {
             $this->assertTrue($season->getCompetitions()->contains($competition));
+        });
+    }
+
+    public function testItGetsTheFixtures(): void
+    {
+        $season = factory(Season::class)->create();
+        $competition1 = factory(Competition::class)->create(['season_id' => $season->getId()]);
+        $competition2 = factory(Competition::class)->create(['season_id' => $season->getId()]);
+        $division1A = factory(Division::class)->create(['competition_id' => $competition1->getId()]);
+        $division2A = factory(Division::class)->create(['competition_id' => $competition2->getId()]);
+        $division2B = factory(Division::class)->create(['competition_id' => $competition2->getId()]);
+        $fixtures = collect([
+            aFixture()->inDivision($division1A)->build(),
+            aFixture()->inDivision($division1A)->build(),
+            aFixture()->inDivision($division2A)->build(),
+            aFixture()->inDivision($division2B)->build(),
+            aFixture()->inDivision($division2B)->build(),
+            aFixture()->inDivision($division2B)->build(),
+        ]);
+        $otherFixtures = collect([
+            aFixture()->build(),
+            aFixture()->build(),
+            aFixture()->build(),
+        ]);
+
+        /** @var Collection $seasonFixtures */
+        $seasonFixtures = $season->getFixtures();
+
+        $this->assertCount(6, $seasonFixtures);
+        $fixtures->each(function (Fixture $fixture) use ($seasonFixtures): void {
+            $this->assertContains($fixture->getId(), $seasonFixtures->pluck('id'));
         });
     }
 }

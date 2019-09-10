@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 
 class Team extends Model
 {
@@ -65,9 +67,27 @@ class Team extends Model
         return $this->belongsToMany(Division::class);
     }
 
-    public function getDivisions(): Collection
+    public function getDivisions(): EloquentCollection
     {
         return $this->divisions;
+    }
+
+    public function homeFixtures(): HasMany
+    {
+        return $this->hasMany(Fixture::class, 'home_team_id', 'id');
+    }
+
+    public function awayFixtures(): HasMany
+    {
+        return $this->hasMany(Fixture::class, 'away_team_id', 'id');
+    }
+
+    public function getFixtures(): Collection
+    {
+        return collect([
+            $this->homeFixtures,
+            $this->awayFixtures,
+        ])->flatten();
     }
 
     public function scopeInClub(Builder $query, Club $club): Builder

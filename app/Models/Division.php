@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Division extends Model
@@ -48,6 +49,16 @@ class Division extends Model
     public function getTeams(): Collection
     {
         return $this->teams;
+    }
+
+    public function fixtures(): HasMany
+    {
+        return $this->hasMany(Fixture::class);
+    }
+
+    public function getFixtures(): Collection
+    {
+        return $this->fixtures;
     }
 
     public function scopeInOrder(Builder $builder): Builder
