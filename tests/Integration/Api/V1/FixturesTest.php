@@ -5,6 +5,7 @@ namespace Tests\Integration\Api\V1;
 use App\Models\Competition;
 use App\Models\Division;
 use App\Models\Season;
+use App\Models\Team;
 use App\Models\Venue;
 use Illuminate\Support\Carbon;
 use Tests\ApiTestCase;
@@ -454,5 +455,34 @@ class FixturesTest extends ApiTestCase
             'venue_id'     => $this->venue2->getId(),
             'venue'        => 'Westminster University Sports Hall',
         ], $data);
+    }
+
+    private function createRoundRobinFixtures(): void
+    {
+        $homeTeams = collect([
+            $this->team1,
+            $this->team2,
+            $this->team3,
+            $this->team4,
+            $this->team5,
+            $this->team6,
+        ]);
+        $awayTeams = collect($homeTeams->all());
+
+        $matchDate = Carbon::today();
+        $matchNumber = 1;
+        $homeTeams->each(function (Team $homeTeam) use ($awayTeams, &$matchDate, &$matchNumber): void {
+            $awayTeams->each(function (Team $awayTeam) use ($homeTeam, &$matchDate, &$matchNumber): void {
+                if ($homeTeam->getId() != $awayTeam->getId()) {
+                    aFixture()
+                        ->inDivision($this->division3)
+                        ->number($matchNumber++)
+                        ->on($matchDate->addDay(), $matchDate)
+                        ->between($homeTeam, $awayTeam)
+                        ->at($this->venue4)
+                        ->build();
+                }
+            });
+        });
     }
 }

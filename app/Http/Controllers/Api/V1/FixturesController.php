@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Http\Controllers\Api\Transformers\FixtureTransformer;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\FixtureResource;
 use App\Models\Competition;
 use App\Models\Division;
 use App\Models\Fixture;
@@ -11,25 +11,15 @@ use App\Models\Season;
 use App\Models\Team;
 use App\Models\Venue;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
-use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
 class FixturesController extends Controller
 {
-    private $transformer;
-
-    public function __construct(FixtureTransformer $transformer)
-    {
-        $this->transformer = $transformer;
-    }
-
-    /**
-     * @return ResourceCollection|Response
-     */
-    public function all(Request $request)
+    public function all(Request $request): ResourceCollection
     {
         $query = Fixture::query();
 
@@ -59,7 +49,7 @@ class FixturesController extends Controller
             try {
                 $date = Carbon::createFromFormat('Y-m-d', $request->get('on'));
             } catch (\InvalidArgumentException $e) {
-                return response([], 404);
+                throw new ModelNotFoundException();
             }
             $query->where('match_date', $date->setTime(0, 0, 0));
         }
@@ -89,11 +79,6 @@ class FixturesController extends Controller
 
         $query->with(['division', 'venue', 'homeTeam', 'awayTeam']);
 
-        return new ResourceCollection(
-            $query->get()
-                ->map(function (Fixture $fixture): array {
-                    return $this->transformer->transform($fixture);
-                })
-        );
+        return FixtureResource::collection($query->get());
     }
 }
