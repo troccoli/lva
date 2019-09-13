@@ -69,8 +69,12 @@ jobs:
             vendor/bin/phpunit -d memory_limit=512M --log-junit logs/phpunit/junit.xml --testdox-html logs/phpunit/testdox.html
 
       - run:
-          name: Update Chrom Driver
-          command: php artisan dusk:chrome-driver 75
+          name: Update Chrome Driver
+          command: |
+            CHROME_VERSION="$(google-chrome --version)"
+            CHROMEDRIVER_RELEASE="$(echo $CHROME_VERSION | sed 's/^Google Chrome //')"
+            CHROMEDRIVER_RELEASE=${CHROMEDRIVER_RELEASE%%.*}
+            php artisan dusk:chrome-driver $CHROMEDRIVER_RELEASE
 
       - run:
           name: Start Chrome Driver
