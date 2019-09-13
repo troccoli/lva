@@ -110,6 +110,38 @@ class FixturesTest extends ApiTestCase
         $this->assertDataContainsFixture3($data);
     }
 
+    public function testGettingAllFixturesPaginated(): void
+    {
+        // Add some extra fixtures so we can have a few pages
+        $this->createRoundRobinFixtures();
+
+        $response = $this->get('/api/v1/fixtures')
+            ->assertOk();
+
+        $this->assertCount(10, $response->decodeResponseJson('data'));
+        $this->assertArrayContent([
+            'current_page' => 1,
+            'per_page'     => 10,
+            'last_page'    => 4,
+            'from'         => 1,
+            'to'           => 10,
+            'total'        => 33,
+        ], $response->decodeResponseJson('meta'));
+
+        $response = $this->get('/api/v1/fixtures?perPage=15')
+            ->assertOk();
+
+        $this->assertCount(15, $response->decodeResponseJson('data'));
+        $this->assertArrayContent([
+            'current_page' => 1,
+            'per_page'     => 15,
+            'last_page'    => 3,
+            'from'         => 1,
+            'to'           => 15,
+            'total'        => 33,
+        ], $response->decodeResponseJson('meta'));
+    }
+
     public function testGettingAllFixturesInOneSeason(): void
     {
         $this->get('/api/v1/fixtures?season=0')

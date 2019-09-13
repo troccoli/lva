@@ -79,6 +79,8 @@ class FixturesController extends Controller
 
         $query->with(['division', 'venue', 'homeTeam', 'awayTeam']);
 
-        return FixtureResource::collection($query->get());
+        $perPage = $request->get('perPage', 10);
+
+        return FixtureResource::collection($query->paginate($perPage));
     }
 }
