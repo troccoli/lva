@@ -10,6 +10,20 @@ thought I helped them out with a new site.
 
 __I am no longer associated with the LVA and this project is not in any shape or form associated with them.__
 
+Although that was the initial motivation for the project, this is not what it is about anymore. I am now
+using this project to showcase my skills and expertise with PHP and Laravel (and a bit of VueJS).
+
+The code is not perfect, far from it. Firstly because you can always improve your code. But most importantly
+because there are many ways of doing one thing and I try to show a few of them here. So, for example, I could have
+use a package to build forms in blade component, but instead I choose to create Blade components and use them.
+
+So, if you see something that looks different, or notice some inconsistencies, please remember that most likely
+that is on purpose. I will try and document them as I go along.
+
+- [Test Data](./tests/readme.md)
+- [API](./app/Http/Controllers/Api/readme.md)
+- [Views](./resources/views/readme.md)
+
 ## How to try it out
 
 Since I use Docker for development, the following instructions are for Docker too, so before starting make sure you
@@ -33,7 +47,7 @@ The lva-web container is where Apache and PHP are, and where your code is mounte
 The lva-mysql container runs MySQL 5.7 and it has already a database called `lva`.
 
 The lva-mailhog container runs Mailhog and it's used, if you don't know what Mailhog is, to capture all the
-emails that the site sends and allow you to see them __without__ actually sendingno any emails to the outside world.
+emails that the site sends and allow you to see them __without__ actually sending any emails to the outside world.
 
 Finally, the lva-selenium container runs Selenium and it's used for the Laravel Dusk tests.
 
