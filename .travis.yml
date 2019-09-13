@@ -22,7 +22,10 @@ before_script:
   - touch ./database/database.sqlite
   - php artisan migrate --force
   - php artisan passport:install
-  - php artisan dusk:chrome-driver 75
+  - CHROME_VERSION="$(google-chrome-stable --version)"
+  - CHROMEDRIVER_RELEASE="$(echo $CHROME_VERSION | sed 's/^Google Chrome //')"
+  - CHROMEDRIVER_RELEASE=${CHROMEDRIVER_RELEASE%%.*}
+  - php artisan dusk:chrome-driver $CHROMEDRIVER_RELEASE
   - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
   - php artisan serve &
 
