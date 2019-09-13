@@ -8,6 +8,7 @@ use App\Models\Fixture;
 use App\Models\Season;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PhpParser\Node\Expr\AssignOp\Div;
 use Tests\TestCase;
 
 class CompetitionTest extends TestCase
@@ -40,8 +41,9 @@ class CompetitionTest extends TestCase
     {
         /** @var Competition $competition */
         $competition = factory(Competition::class)->create();
-        $divisions = factory(Division::class)->times(3)->create(['competition_id' => $competition->id]);
-        factory(Division::class)->times(7)->create();
+        $divisions = factory(Division::class)->times(3)->create(['competition_id' => $competition->getId()]);
+        $competition2 = factory(Competition::class)->create();
+        factory(Division::class)->times(7)->create(['competition_id' => $competition2->getId()]);
 
         $this->assertCount(3, $competition->getDivisions());
         $divisions->each(function (Division $division) use ($competition): void {
@@ -62,11 +64,12 @@ class CompetitionTest extends TestCase
             aFixture()->inDivision($division3)->build(),
             aFixture()->inDivision($division3)->build(),
         ]);
-        $otherFixtures = collect([
-            aFixture()->build(),
-            aFixture()->build(),
-            aFixture()->build(),
-        ]);
+
+        // Other fixtures
+        $anotherDivision = factory(Division::class)->create();
+        aFixture()->inDivision($anotherDivision)->build();
+        aFixture()->inDivision($anotherDivision)->build();
+        aFixture()->inDivision($anotherDivision)->build();
 
         /** @var Collection $competitionFixtures */
         $competitionFixtures = $competition->getFixtures();

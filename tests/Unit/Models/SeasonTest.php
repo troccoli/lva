@@ -54,8 +54,9 @@ class SeasonTest extends TestCase
     {
         /** @var Season $season */
         $season = factory(Season::class)->create();
-        $competitions = factory(Competition::class)->times(3)->create(['season_id' => $season->id]);
-        factory(Competition::class)->times(7)->create();
+        $competitions = factory(Competition::class)->times(3)->create(['season_id' => $season->getId()]);
+        $season2 = factory(Season::class)->create();
+        factory(Competition::class)->times(7)->create(['season_id' => $season2->getId()]);
 
         $this->assertCount(3, $season->getCompetitions());
         $competitions->each(function (Competition $competition) use ($season): void {
@@ -79,11 +80,12 @@ class SeasonTest extends TestCase
             aFixture()->inDivision($division2B)->build(),
             aFixture()->inDivision($division2B)->build(),
         ]);
-        $otherFixtures = collect([
-            aFixture()->build(),
-            aFixture()->build(),
-            aFixture()->build(),
-        ]);
+
+        // Other fixtures
+        $anotherDivision = factory(Division::class)->create();
+        aFixture()->inDivision($anotherDivision)->build();
+        aFixture()->inDivision($anotherDivision)->build();
+        aFixture()->inDivision($anotherDivision)->build();
 
         /** @var Collection $seasonFixtures */
         $seasonFixtures = $season->getFixtures();

@@ -37,10 +37,14 @@ class VenueTest extends TestCase
             aClub()->withVenue($venue)->build(),
             aClub()->withVenue($venue)->build(),
         ]);
-        aClub()->build();
-        aClub()->build();
-        aClub()->build();
-        aClub()->build();
+
+        // Other clubs
+        $anotherVenue = factory(Venue::class)->create();
+        aClub()->withVenue($anotherVenue)->build();
+        aClub()->withVenue($anotherVenue)->build();
+        aClub()->withVenue($anotherVenue)->build();
+        aClub()->withVenue($anotherVenue)->build();
+        aClub()->withVenue($anotherVenue)->build();
 
         $this->assertCount(3, $venue->getClubs());
         $clubs->each(function (Club $club) use ($venue): void {
@@ -58,13 +62,14 @@ class VenueTest extends TestCase
             aFixture()->at($venue)->build(),
             aFixture()->at($venue)->build(),
         ]);
-        $otherFixtures = collect([
-            aFixture()->build(),
-            aFixture()->build(),
-            aFixture()->build(),
-            aFixture()->build(),
-        ]);
 
+        // Other fixtures
+        $anotherVenue = factory(Venue::class)->create();
+        aFixture()->at($anotherVenue)->build();
+        aFixture()->at($anotherVenue)->build();
+        aFixture()->at($anotherVenue)->build();
+        aFixture()->at($anotherVenue)->build();
+        
         /** @var Collection $fixturesAtVenue */
         $fixturesAtVenue = $venue->getFixtures();
 

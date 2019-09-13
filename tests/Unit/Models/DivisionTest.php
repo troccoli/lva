@@ -55,11 +55,11 @@ class DivisionTest extends TestCase
             aTeam()->inDivision($division)->build(),
         ]);
 
-        $otherTeams = collect([
-            aTeam()->build(),
-            aTeam()->build(),
-            aTeam()->build(),
-        ]);
+        // Other teams
+        $anotherDivision = factory(Division::class)->create();
+        aTeam()->inDivision($anotherDivision)->build();
+        aTeam()->inDivision($anotherDivision)->build();
+        aTeam()->inDivision($anotherDivision)->build();
 
         $divisionTeams = $division->getTeams();
 
@@ -78,11 +78,12 @@ class DivisionTest extends TestCase
             aFixture()->inDivision($division)->build(),
             aFixture()->inDivision($division)->build(),
         ]);
-        $otherFixtures = collect([
-            aFixture()->build(),
-            aFixture()->build(),
-            aFixture()->build(),
-        ]);
+
+        // Other teams
+        $anotherDivision = factory(Division::class)->create();
+        aTeam()->inDivision($anotherDivision)->build();
+        aTeam()->inDivision($anotherDivision)->build();
+        aTeam()->inDivision($anotherDivision)->build();
 
         /** @var Collection $divisionFixtures */
         $divisionFixtures = $division->getFixtures();

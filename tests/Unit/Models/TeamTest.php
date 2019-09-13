@@ -39,29 +39,29 @@ class TeamTest extends TestCase
 
     public function testItGetsTheVenue(): void
     {
-        $olympicStadium = factory(Venue::class)->create(['name' => 'Olympic Stadium']);
-        $team = aTeam()->withVenue($olympicStadium)->build();
+        $venue = factory(Venue::class)->create();
+        $team = aTeam()->withVenue($venue)->build();
 
-        $this->assertEquals($olympicStadium->toArray(), $team->getVenue()->toArray());
+        $this->assertEquals($venue->getId(), $team->getVenue()->getId());
 
-        $club = aClub()->withVenue($olympicStadium)->build();
+        $club = aClub()->withVenue($venue)->build();
         $team = aTeam()->inClub($club)->build();
 
-        $this->assertEquals($olympicStadium->toArray(), $team->getVenue()->toArray());
+        $this->assertEquals($venue->getId(), $team->getVenue()->getId());
     }
 
     public function testItGetsTheVenueFromTheClub(): void
     {
-        $venue = factory(Venue::class)->create(['name' => 'Olympic Stadium']);
+        $venue = factory(Venue::class)->create();
         $club = aClub()->withVenue($venue)->build();
         $team = aTeam()->inClub($club)->build();
 
-        $this->assertEquals($venue->toArray(), $team->getVenue()->toArray());
+        $this->assertEquals($venue->getId(), $team->getVenue()->getId());
     }
 
     public function testItGetsTheVenueId(): void
     {
-        $venue = factory(Venue::class)->create(['name' => 'Olympic Stadium']);
+        $venue = factory(Venue::class)->create();
         $team = aTeam()->withVenue($venue)->build();
 
         $this->assertSame($venue->getId(), $team->getVenueId());
@@ -69,7 +69,7 @@ class TeamTest extends TestCase
 
     public function testItDoesNotGetTheVenueIdFromTheClub(): void
     {
-        $venue = factory(Venue::class)->create(['name' => 'Olympic Stadium']);
+        $venue = factory(Venue::class)->create();
         $club = aClub()->withVenue($venue)->build();
         $team = aTeam()->inClub($club)->build();
 
@@ -88,12 +88,11 @@ class TeamTest extends TestCase
             $division->teams()->attach($team);
         });
 
-        $otherDivisions = collect([
-            factory(Division::class)->create(),
-            factory(Division::class)->create(),
-            factory(Division::class)->create(),
-            factory(Division::class)->create(),
-        ]);
+        // Other divisions
+        factory(Division::class)->create();
+        factory(Division::class)->create();
+        factory(Division::class)->create();
+        factory(Division::class)->create();
 
         $teamDivisions = $team->getDivisions();
 
@@ -116,11 +115,11 @@ class TeamTest extends TestCase
             aFixture()->between(aTeam()->build(), $team)->build(),
             aFixture()->between(aTeam()->build(), $team)->build(),
         ]);
-        $otherFixtures = collect([
-            aFixture()->build(),
-            aFixture()->build(),
-            aFixture()->build(),
-        ]);
+
+        // Other fixtures
+        aFixture()->build();
+        aFixture()->build();
+        aFixture()->build();
 
         /** @var Collection $teamFixtures */
         $teamFixtures = $team->getFixtures();
