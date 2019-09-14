@@ -17,18 +17,17 @@ class DivisionResourceTest extends TestCase
 {
     use RefreshDatabase, AssertArrayContent;
 
-    private $competition;
     private $division;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->competition = factory(Competition::class)->create();
+        $competition = factory(Competition::class)->create();
         $this->division = factory(Division::class)->create([
             'name'           => 'DIV1BM',
             'display_order'  => 3,
-            'competition_id' => $this->competition->getId(),
+            'competition_id' => $competition->getId(),
         ]);
         aTeam()->inDivision($this->division)->build(4);
     }
