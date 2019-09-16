@@ -34,19 +34,31 @@ class DivisionTest extends DuskTestCase
         $this->browse(function (Browser $browser): void {
             $browser->loginAs(factory(User::class)->create());
 
-            $seasonId = factory(Season::class)->create(['year' => 2000])->getId();
+            /** @var Season $season */
+            $season = factory(Season::class)->create();
+            $seasonName = $season->getName();
             $competitionId = factory(Competition::class)
                 ->create([
-                    'season_id' => $seasonId,
+                    'season_id' => $season->getId(),
                     'name'      => 'Youth Games',
                 ])
                 ->getId();
 
             $browser->visit("/competitions/$competitionId/divisions")
-                ->assertSee("Divisions in the Youth Games 2000/01 competition")
+                ->assertSee("Divisions in the Youth Games $seasonName competition")
                 ->assertSeeIn('@list', 'There are no divisions in this competition yet.');
 
-            factory(Division::class)->create(['name' => 'MP']);
+            $anotherSeasonId = factory(Season::class)->create(['year' => 2001])->getId();
+            $anotherCompetitionId = factory(Competition::class)
+                ->create([
+                    'season_id' => $anotherSeasonId,
+                ])
+                ->getId();
+            factory(Division::class)->create([
+                'name' => 'MP',
+                'competition_id' => $anotherCompetitionId,
+            ]);
+
             factory(Division::class)->create([
                 'name'           => 'DIV2BM',
                 'competition_id' => $competitionId,
