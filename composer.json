@@ -27,6 +27,7 @@
         "laravel/passport": "^7.4",
         "laravel/tinker": "^1.0",
         "laravelcollective/html": "^5.8",
+        "mnito/round-robin": "^1.2",
         "realrashid/sweet-alert": "^2.0",
         "webpatser/laravel-uuid": "^3.0"
     },
