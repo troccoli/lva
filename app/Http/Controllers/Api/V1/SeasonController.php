@@ -12,7 +12,7 @@ class SeasonController extends Controller
 {
     public function all(Request $request): ResourceCollection
     {
-        return SeasonResource::collection(Season::all());
+        return SeasonResource::collection(Season::all()->sortByDesc('year'));
     }
 
     public function get(Request $request, Season $season): SeasonResource
