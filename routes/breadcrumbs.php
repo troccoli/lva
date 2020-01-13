@@ -106,3 +106,7 @@ Breadcrumbs::for('venues.edit', function (BreadcrumbsGenerator $trail, $venue) {
     $trail->parent('venues.index');
     $trail->push('Edit venue');
 });
+Breadcrumbs::for('fixtures.index', function (BreadcrumbsGenerator $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Fixtures', route('fixtures.index'));
+});

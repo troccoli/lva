@@ -5,6 +5,7 @@ namespace Tests\Integration\Api\V1;
 use App\Models\Competition;
 use App\Models\Division;
 use App\Models\Season;
+use App\Models\Team;
 use App\Models\Venue;
 use Illuminate\Support\Carbon;
 use Tests\ApiTestCase;
@@ -107,6 +108,38 @@ class FixturesTest extends ApiTestCase
         $this->assertDataContainsFixture1($data);
         $this->assertDataContainsFixture2($data);
         $this->assertDataContainsFixture3($data);
+    }
+
+    public function testGettingAllFixturesPaginated(): void
+    {
+        // Add some extra fixtures so we can have a few pages
+        $this->createRoundRobinFixtures();
+
+        $response = $this->get('/api/v1/fixtures')
+            ->assertOk();
+
+        $this->assertCount(10, $response->decodeResponseJson('data'));
+        $this->assertArrayContent([
+            'current_page' => 1,
+            'per_page'     => 10,
+            'last_page'    => 4,
+            'from'         => 1,
+            'to'           => 10,
+            'total'        => 33,
+        ], $response->decodeResponseJson('meta'));
+
+        $response = $this->get('/api/v1/fixtures?perPage=15')
+            ->assertOk();
+
+        $this->assertCount(15, $response->decodeResponseJson('data'));
+        $this->assertArrayContent([
+            'current_page' => 1,
+            'per_page'     => 15,
+            'last_page'    => 3,
+            'from'         => 1,
+            'to'           => 15,
+            'total'        => 33,
+        ], $response->decodeResponseJson('meta'));
     }
 
     public function testGettingAllFixturesInOneSeason(): void
@@ -454,5 +487,34 @@ class FixturesTest extends ApiTestCase
             'venue_id'     => $this->venue2->getId(),
             'venue'        => 'Westminster University Sports Hall',
         ], $data);
+    }
+
+    private function createRoundRobinFixtures(): void
+    {
+        $homeTeams = collect([
+            $this->team1,
+            $this->team2,
+            $this->team3,
+            $this->team4,
+            $this->team5,
+            $this->team6,
+        ]);
+        $awayTeams = collect($homeTeams->all());
+
+        $matchDate = Carbon::today();
+        $matchNumber = 1;
+        $homeTeams->each(function (Team $homeTeam) use ($awayTeams, &$matchDate, &$matchNumber): void {
+            $awayTeams->each(function (Team $awayTeam) use ($homeTeam, &$matchDate, &$matchNumber): void {
+                if ($homeTeam->getId() != $awayTeam->getId()) {
+                    aFixture()
+                        ->inDivision($this->division3)
+                        ->number($matchNumber++)
+                        ->on($matchDate->addDay(), $matchDate)
+                        ->between($homeTeam, $awayTeam)
+                        ->at($this->venue4)
+                        ->build();
+                }
+            });
+        });
     }
 }

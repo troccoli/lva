@@ -20,7 +20,7 @@
     {{ Breadcrumbs::view('breadcrumbs::json-ld') }}
 </head>
 <body>
-    <div id="app">
+    <div>
         @include('sweetalert::alert')
         @include('layouts.partials.navbar')
 

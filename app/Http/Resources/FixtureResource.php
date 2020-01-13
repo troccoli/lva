@@ -1,13 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\Api\Transformers;
+namespace App\Http\Resources;
 
 use App\Models\Fixture;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FixtureTransformer
+class FixtureResource extends JsonResource
 {
-    public function transform(Fixture $fixture): array
+    public function toArray($request): array
     {
+        /** @var Fixture $fixture */
+        $fixture = $this->resource;
+
         return [
             'id'             => $fixture->getId(),
             'number'         => $fixture->getMatchNumber(),

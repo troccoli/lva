@@ -25,4 +25,7 @@ Route::middleware(['auth', 'verified'])
                 Route::resource('teams', 'TeamController')->except('show');
             });
         Route::resource('venues', 'VenueController');
+        Route::get('fixtures')
+            ->uses('FixturesController@index')
+            ->name('fixtures.index');
     });
