@@ -53,6 +53,16 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-6">
+                        <div class="card border-primary mb-3" dusk="fixtures-panel">
+                            <div class="card-header">{{ __('Fixtures') }}</div>
+                            <div class="card-body">
+                                <h4 class="card-title">{{ __('Manage all fixtures') }}</h4>
+                                <p class="card-text">{{ __('This is where you manage all fixtures.') }}</p>
+                                <a href="{{ route('fixtures.index') }}" class="btn btn-outline-primary">{{ __('Manage fixtures') }}</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

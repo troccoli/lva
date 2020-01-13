@@ -8,7 +8,7 @@ use Tests\ApiTestCase;
 
 class SeasonsTest extends ApiTestCase
 {
-    public function testGettingAllSeasons(): void
+    public function testGettingAllSeasonsInOrder(): void
     {
         $season1 = factory(Season::class)->create(['year' => 1999]);
         $season2 = factory(Season::class)->create(['year' => 2000]);
@@ -20,22 +20,22 @@ class SeasonsTest extends ApiTestCase
 
         $data = $response->decodeResponseJson('data');
         $this->assertCount(4, $data);
-        $this->assertContains([
-            'id'   => $season1->getId(),
-            'name' => '1999/00',
-        ], $data);
-        $this->assertContains([
-            'id'   => $season2->getId(),
-            'name' => '2000/01',
-        ], $data);
-        $this->assertContains([
+        $this->assertSame([
             'id'   => $season3->getId(),
             'name' => '2001/02',
-        ], $data);
-        $this->assertContains([
+        ], array_shift($data));
+        $this->assertSame([
+            'id'   => $season2->getId(),
+            'name' => '2000/01',
+        ], array_shift($data));
+        $this->assertSame([
+            'id'   => $season1->getId(),
+            'name' => '1999/00',
+        ], array_shift($data));
+        $this->assertSame([
             'id'   => $season4->getId(),
             'name' => '1998/99',
-        ], $data);
+        ], array_shift($data));
     }
 
     public function testGettingAllSeasonsWhenThereAreNone(): void

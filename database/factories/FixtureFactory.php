@@ -10,7 +10,7 @@ use Faker\Generator as Faker;
 
 $factory->define(Fixture::class, function (Faker $faker) {
     return [
-        'match_number' => $faker->randomNumber(),
+        'match_number' => $faker->unique()->randomNumber(),
         'division_id' => function () {
             return factory(Division::class)->create()->getId();
         },
