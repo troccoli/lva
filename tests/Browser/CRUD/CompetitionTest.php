@@ -190,7 +190,8 @@ class CompetitionTest extends DuskTestCase
             $this->assertDatabaseHas('competitions', ['name' => 'London League', 'season_id' => $seasonId]);
 
             // Add same competition in different season
-            factory(Competition::class)->create(['name' => 'University Games']);
+            $anotherSeason = factory(Season::class)->create(['year' => 1999]);
+            factory(Competition::class)->create(['name' => 'University Games', 'season_id' => $anotherSeason->getId()]);
             $browser->visit("/seasons/$seasonId/competitions/$competitionId/edit")
                 ->type('name', 'University Games')
                 ->press('SAVE CHANGES')

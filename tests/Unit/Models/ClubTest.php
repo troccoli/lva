@@ -17,31 +17,34 @@ class ClubTest extends TestCase
     public function testItGetsTheId(): void
     {
         /** @var Club $club */
-        $club = factory(Club::class)->create();
+        $club = aClub()->build();
         $this->assertEquals($club->id, $club->getId());
     }
 
     public function testItGetsTheName(): void
     {
         /** @var Club $club */
-        $club = factory(Club::class)->create();
+        $club = aClub()->build();
         $this->assertEquals($club->name, $club->getName());
     }
 
     public function testItGetsTheTeams(): void
     {
         /** @var Club $club */
-        $club = factory(Club::class)->create();
+        $club = aClub()->build();
 
         $teams = collect([
             aTeam()->inClub($club)->build(),
             aTeam()->inClub($club)->build(),
             aTeam()->inClub($club)->build(),
         ]);
-        aTeam()->build();
-        aTeam()->build();
-        aTeam()->build();
-        aTeam()->build();
+
+        // Other teams
+        $anotherClub = aClub()->build();
+        aTeam()->inClub($anotherClub)->build();
+        aTeam()->inClub($anotherClub)->build();
+        aTeam()->inClub($anotherClub)->build();
+        aTeam()->inClub($anotherClub)->build();
 
         $this->assertCount(3, $club->getTeams());
         $teams->each(function (Team $team) use ($club): void {
@@ -51,7 +54,7 @@ class ClubTest extends TestCase
 
     public function testItGetsTheVenue(): void
     {
-        $venue = factory(Venue::class)->create(['name' => 'Olympic Stadium']);
+        $venue = factory(Venue::class)->create();
         $club = aClub()->withVenue($venue)->build();
 
         $this->assertEquals($venue->toArray(), $club->getVenue()->toArray());
@@ -59,7 +62,7 @@ class ClubTest extends TestCase
 
     public function testItGetsTheVenueId(): void
     {
-        $venue = factory(Venue::class)->create(['name' => 'Olympic Stadium']);
+        $venue = factory(Venue::class)->create();
         $club = aClub()->withVenue($venue)->build();
 
         $this->assertSame($venue->getId(), $club->getVenueId());
@@ -79,13 +82,13 @@ class ClubTest extends TestCase
             aFixture()->between(aTeam()->build(), $team1)->build(),
             aFixture()->between(aTeam()->build(), $team2)->build(),
         ]);
-        $otherFixtures = collect([
-            aFixture()->build(),
-            aFixture()->build(),
-            aFixture()->build(),
-            aFixture()->build(),
-            aFixture()->build(),
-        ]);
+
+        // Other fixtures
+        aFixture()->build();
+        aFixture()->build();
+        aFixture()->build();
+        aFixture()->build();
+        aFixture()->build();
 
         /** @var Collection $clubFixtures */
         $clubFixtures = $club->getFixtures();

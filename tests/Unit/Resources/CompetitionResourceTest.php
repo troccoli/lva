@@ -19,17 +19,16 @@ class CompetitionResourceTest extends TestCase
 {
     use RefreshDatabase, AssertArrayContent;
 
-    private $season;
     private $competition;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->season = factory(Season::class)->create();
+        $season = factory(Season::class)->create();
         $this->competition = factory(Competition::class)->create([
             'name'      => 'London Super League',
-            'season_id' => $this->season->getId(),
+            'season_id' => $season->getId(),
         ]);
         factory(Division::class)->times(3)->create([
             'competition_id' => $this->competition->getId(),

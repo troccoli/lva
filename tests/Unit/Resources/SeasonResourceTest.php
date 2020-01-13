@@ -17,14 +17,13 @@ class SeasonResourceTest extends TestCase
     use RefreshDatabase, AssertArrayContent;
 
     private $season;
-    private $competition;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->season = factory(Season::class)->create(['year' => 2014]);
-        $this->competition = factory(Competition::class)->create([
+        factory(Competition::class)->create([
             'season_id' => $this->season->getId(),
         ]);
     }

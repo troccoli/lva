@@ -74,6 +74,7 @@ class FixtureTest extends TestCase
         $this->assertEquals('2019-05-13', $fixture->getMatchDate()->toDateString());
         $this->assertEquals('15:00:00', $fixture->getMatchTime()->toTimeString());
     }
+
     public function testItGetsTheVenue(): void
     {
         $venue = factory(Venue::class)->create();
