@@ -1,61 +1,64 @@
 <template>
-    <div class="container">
-        <div class="d-flex">
-            <div class="mr-auto"><h1>Fixtures</h1></div>
-            <div>
+    <v-container>
+        <v-row>
+            <v-col class="text-left"><h1>Fixtures</h1></v-col>
+            <v-col class="text-right">
                 <router-link :to="{name: 'fixtures.create'}" class="btn btn-primary btn-sm">New fixture</router-link>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col>
+                <BaseSelect dusk="season-selector"
+                            label="Select a season"
+                            :options="seasons"
+                            v-model="season"
+                />
+            </v-col>
+            <v-col>
+                <BaseSelect dusk="competition-selector"
+                            label="Select a competition"
+                            :options="competitions"
+                            v-model="competition"
+                />
+            </v-col>
+            <v-col>
+                <BaseSelect dusk="division-selector"
+                            label="Select a division"
+                            :options="divisions"
+                            v-model="division"
+                />
+            </v-col>
+        </v-row>
+        <v-row>
+            <div id="resources-list" class="table" dusk="list">
+                <div v-if="fixtures.length === 0" class="alert alert-warning">
+                    <h4 class="alert-heading">Whoops!</h4>
+                    <p class="mb-0">There are no fixtures yet.</p>
+                </div>
+                <table v-else class="table table-bordered table-hover table-sm">
+                    <thead>
+                    <tr>
+                        <th>Division</th>
+                        <th>Home team</th>
+                        <th>Away team</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="fixture in fixtures" :key="fixture.id" :dusk="'fixture-' + fixture.id + '-row'">
+                        <td>{{ fixture.division }}</td>
+                        <td>{{ fixture.home_team }}</td>
+                        <td>{{ fixture.away_team }}</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
-        </div>
-        <div>
-            <!--            <BaseSelect-->
-            <!--                    label="Select a category"-->
-            <!--                    :options="categories"-->
-            <!--                    v-model="event.category"-->
-            <!--                    :class="{ error: $v.event.category.$error}"-->
-            <!--                    @blur="$v.event.category.$touch()"-->
-            <!--            />-->
-            <BaseSelect dusk="season-selector"
-                        label="Select a season"
-                        :options="seasons"
-                        v-model="season"
-            />
-            <BaseSelect dusk="competition-selector"
-                        label="Select a competition"
-                        :options="competitions"
-                        v-model="competition"
-            />
-            <BaseSelect dusk="division-selector"
-                        label="Select a division"
-                        :options="divisions"
-                        v-model="division"
-            />
-        </div>
-        <div id="resources-list" class="table" dusk="list">
-            <div v-if="fixtures.length === 0" class="alert alert-warning">
-                <h4 class="alert-heading">Whoops!</h4>
-                <p class="mb-0">There are no fixtures yet.</p>
-            </div>
-            <table v-else class="table table-bordered table-hover table-sm">
-                <thead>
-                <tr>
-                    <th>Division</th>
-                    <th>Home team</th>
-                    <th>Away team</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="fixture in fixtures" :key="fixture.id" :dusk="'fixture-' + fixture.id + '-row'">
-                    <td>{{ fixture.division }}</td>
-                    <td>{{ fixture.home_team }}</td>
-                    <td>{{ fixture.away_team }}</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <button @click="goToPage(page-1)">Previous page</button>
-        &nbsp;|&nbsp;
-        <button @click="goToPage(page+1)">Next page</button>
-    </div>
+        </v-row>
+        <v-row>
+            <button @click="goToPage(page-1)">Previous page</button>
+            &nbsp;|&nbsp;
+            <button @click="goToPage(page+1)">Next page</button>
+        </v-row>
+    </v-container>
 </template>
 
 <script>

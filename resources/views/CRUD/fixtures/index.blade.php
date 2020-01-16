@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div id="fixtures"></div>
+    <v-app id="fixtures"></v-app>
 @endsection
 
 @push('stylesheets')
