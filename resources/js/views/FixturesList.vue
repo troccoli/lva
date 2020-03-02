@@ -7,25 +7,25 @@
             </v-col>
         </v-row>
         <v-row>
-            <v-col>
-                <BaseSelect dusk="season-selector"
-                            label="Select a season"
-                            :options="seasons"
-                            v-model="season"
+            <v-col dusk="season-selector">
+                <v-select :items="seasons"
+                          label="Season"
+                          v-model="season"
+                          outlined
                 />
             </v-col>
-            <v-col>
-                <BaseSelect dusk="competition-selector"
-                            label="Select a competition"
-                            :options="competitions"
-                            v-model="competition"
+            <v-col dusk="competition-selector">
+                <v-select :items="competitions"
+                          label="Competition"
+                          v-model="competition"
+                          outlined
                 />
             </v-col>
-            <v-col>
-                <BaseSelect dusk="division-selector"
-                            label="Select a division"
-                            :options="divisions"
-                            v-model="division"
+            <v-col dusk="division-selector">
+                <v-select :items="divisions"
+                          label="Division"
+                          v-model="division"
+                          outlined
                 />
             </v-col>
         </v-row>
@@ -124,7 +124,7 @@
           return [
             {
               value: null,
-              label: 'No seasons'
+              text : 'No seasons'
             }
           ];
         }
@@ -133,7 +133,7 @@
           .map(function (season) {
             return {
               value: season.id,
-              label: season.name
+              text : season.name
             }
           });
       },
@@ -142,7 +142,7 @@
           return [
             {
               value: null,
-              label: 'No competitions'
+              text : 'No competitions'
             }
           ];
         }
@@ -151,7 +151,7 @@
           .map(function (competition) {
             return {
               value: competition.id,
-              label: competition.name
+              text : competition.name
             }
           })
       },
@@ -160,7 +160,7 @@
           return [
             {
               value: null,
-              label: 'No divisions'
+              text : 'No divisions'
             }
           ];
         }
@@ -169,7 +169,7 @@
           .map(function (division) {
             return {
               value: division.id,
-              label: division.name
+              text : division.name
             }
           })
       },
