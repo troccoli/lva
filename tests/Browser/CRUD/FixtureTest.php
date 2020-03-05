@@ -7,9 +7,9 @@ use App\Models\Division;
 use App\Models\Season;
 use App\Models\Team;
 use App\Models\User;
-use Facebook\WebDriver\WebDriverBy;
 use Illuminate\Support\Carbon;
 use Laravel\Dusk\Browser;
+use Tests\Browser\Pages\FixtureList;
 use Tests\DuskTestCase;
 
 class FixtureTest extends DuskTestCase
@@ -158,11 +158,11 @@ class FixtureTest extends DuskTestCase
             $this->createTestFixtures();
 
             $browser->loginAs(factory(User::class)->create()->givePermissionTo('manage raw data'))
-                ->visit('/fixtures')
-                ->assertSeeLink('New fixture')
-                ->assertButtonEnabled('Previous page')
-                ->assertButtonEnabled('Next page')
-                ->pause(1000);
+                ->visit(new FixtureList())
+                ->pause(1000)
+                ->assertAttribute('@add', 'aria-label', 'Add a fixture')
+                ->assertButtonDisabled('@previousPage')
+                ->assertButtonEnabled('@nextPage');
 
             // Default season, competition and division - page 1
             $browser->assertSeeIn('@season-selector', '2019/20')
@@ -184,7 +184,7 @@ class FixtureTest extends DuskTestCase
                     $this->assertTableRow($table, 10, ['S3C1D1', 'TEAM 4', 'TEAM 5']);
                 })
                 // Default season, competition and division - page 2
-                ->press('Next page')
+                ->press('@nextPage')
                 ->pause(1000)
                 ->with('@list', function (Browser $table): void {
                     $this->assertTableHeader($table, ['Division', 'Home team', 'Away team']);
@@ -272,7 +272,7 @@ class FixtureTest extends DuskTestCase
                 ->assertSeeIn('@competition-selector', 'S3C4')
                 ->assertSeeIn('@division-selector', 'S3C4D1')
                 // go to the second page
-                ->press('Next page')
+                ->press('@nextPage')
                 ->pause(1000)
                 ->with('@list', function (Browser $table): void {
                     $this->assertTableHeader($table, ['Division', 'Home team', 'Away team']);
@@ -289,7 +289,7 @@ class FixtureTest extends DuskTestCase
                     $this->assertTableRow($table, 10, ['S3C4D1', 'TEAM 7', 'TEAM 4']);
                 })
                 // go to the third page
-                ->press('Next page')
+                ->press('@nextPage')
                 ->pause(1000)
                 ->with('@list', function (Browser $table): void {
                     $this->assertTableHeader($table, ['Division', 'Home team', 'Away team']);
@@ -306,7 +306,7 @@ class FixtureTest extends DuskTestCase
                     $this->assertTableRow($table, 10, ['S3C4D1', 'TEAM 3', 'TEAM 6']);
                 })
                 // go back to the second page
-                ->press('Previous page')
+                ->press('@previousPage')
                 ->pause(1000)
                 ->with('@list', function (Browser $table): void {
                     $this->assertTableHeader($table, ['Division', 'Home team', 'Away team']);
