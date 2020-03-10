@@ -29,6 +29,7 @@
         "laravelcollective/html": "^5.8",
         "mnito/round-robin": "^1.2",
         "realrashid/sweet-alert": "^2.0",
+        "spatie/laravel-permission": "^3.11",
         "webpatser/laravel-uuid": "^3.0"
     },
     "require-dev": {
