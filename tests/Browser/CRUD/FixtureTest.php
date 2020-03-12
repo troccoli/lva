@@ -113,7 +113,7 @@ class FixtureTest extends DuskTestCase
     public function testListingAllFixturesWhenThereAreNone(): void
     {
         $this->browse(function (Browser $browser): void {
-            $browser->loginAs(factory(User::class)->create());
+            $browser->loginAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
             $browser->visit('/fixtures')
                 ->pause(1000)
@@ -156,7 +156,7 @@ class FixtureTest extends DuskTestCase
         $this->browse(function (Browser $browser): void {
             $this->createTestFixtures();
 
-            $browser->loginAs(factory(User::class)->create())
+            $browser->loginAs(factory(User::class)->create()->givePermissionTo('manage raw data'))
                 ->visit('/fixtures')
                 ->assertSeeLink('New fixture')
                 ->assertButtonEnabled('Previous page')

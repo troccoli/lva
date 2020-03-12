@@ -17,7 +17,7 @@ class TeamTest extends DuskTestCase
     public function testListingAllTeamsForNonExistingClub(): void
     {
         $this->browse(function (Browser $browser): void {
-            $browser->loginAs(factory(User::class)->create());
+            $browser->loginAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
             $browser->visit("/clubs/1/teams/")
                 ->assertTitle('Not Found')
@@ -32,7 +32,7 @@ class TeamTest extends DuskTestCase
     public function testListingAllTeamsForClub(): void
     {
         $this->browse(function (Browser $browser): void {
-            $browser->loginAs(factory(User::class)->create());
+            $browser->loginAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
             $venue = factory(Venue::class)->create(['name' => 'Sobell SC']);
             $club = aClub()->withVenue($venue)->withName('Global Warriors')->build();
@@ -69,7 +69,7 @@ class TeamTest extends DuskTestCase
     public function testAddingATeam(): void
     {
         $this->browse(function (Browser $browser): void {
-            $browser->loginAs(factory(User::class)->create());
+            $browser->loginAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
             $browser->visit("/clubs/1/teams/create")
                 ->assertTitle('Not Found')
@@ -166,7 +166,7 @@ class TeamTest extends DuskTestCase
     public function testEditingATeam(): void
     {
         $this->browse(function (Browser $browser): void {
-            $browser->loginAs(factory(User::class)->create());
+            $browser->loginAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
             $browser->visit("/clubs/1/teams/1/edit")
                 ->assertTitle('Not Found')
@@ -185,8 +185,6 @@ class TeamTest extends DuskTestCase
 
             $team = aTeam()->withName('London Warriors')->inClub($club)->build();
             $teamId = $team->getId();
-
-            $browser->loginAs(factory(User::class)->create());
 
             // Check we can edit a team from the landing page
             $browser->visit("/clubs/$clubId/teams")
@@ -277,7 +275,7 @@ class TeamTest extends DuskTestCase
     public function testDeletingATeam(): void
     {
         $this->browse(function (Browser $browser): void {
-            $browser->loginAs(factory(User::class)->create());
+            $browser->loginAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
             $club = aClub()->build();
             $teamId = aTeam()->withName('London Warriors')->inClub($club)->build()->getId();

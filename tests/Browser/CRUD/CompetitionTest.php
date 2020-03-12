@@ -17,7 +17,7 @@ class CompetitionTest extends DuskTestCase
     public function testListingAllCompetitionsForNonExistingSeason(): void
     {
         $this->browse(function (Browser $browser): void {
-            $browser->loginAs(factory(User::class)->create());
+            $browser->loginAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
             $browser->visit("/seasons/1/competitions/")
                 ->assertTitle('Not Found')
@@ -32,7 +32,7 @@ class CompetitionTest extends DuskTestCase
     public function testListingAllCompetitionsForSeason(): void
     {
         $this->browse(function (Browser $browser): void {
-            $browser->loginAs(factory(User::class)->create());
+            $browser->loginAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
             $seasonId = factory(Season::class)->create(['year' => 2001])->getId();
 
@@ -64,7 +64,7 @@ class CompetitionTest extends DuskTestCase
     public function testAddingACompetition(): void
     {
         $this->browse(function (Browser $browser): void {
-            $browser->loginAs(factory(User::class)->create());
+            $browser->loginAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
             $browser->visit("/seasons/1/competitions/create")
                 ->assertTitle('Not Found')
@@ -129,7 +129,7 @@ class CompetitionTest extends DuskTestCase
     public function testEditingACompetition(): void
     {
         $this->browse(function (Browser $browser): void {
-            $browser->loginAs(factory(User::class)->create());
+            $browser->loginAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
             $browser->visit("/seasons/1/competitions/1/edit")
                 ->assertTitle('Not Found')
@@ -145,8 +145,6 @@ class CompetitionTest extends DuskTestCase
             $competitionId = factory(Competition::class)
                 ->create(['name' => 'Youth Games', 'season_id' => $seasonId])
                 ->getId();
-
-            $browser->loginAs(factory(User::class)->create());
 
             // Check we can edit a competitions from the landing page
             $browser->visit("/seasons/$seasonId/competitions")
@@ -207,7 +205,7 @@ class CompetitionTest extends DuskTestCase
     public function testDeletingACompetition(): void
     {
         $this->browse(function (Browser $browser): void {
-            $browser->loginAs(factory(User::class)->create());
+            $browser->loginAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
             $seasonId = factory(Season::class)->create()->getId();
             $competitionId= factory(Competition::class)->create(['season_id' => $seasonId])->getId();
@@ -244,7 +242,7 @@ class CompetitionTest extends DuskTestCase
     public function testViewingTheCompetitionDivisions(): void
     {
         $this->browse(function (Browser $browser): void {
-            $browser->loginAs(factory(User::class)->create());
+            $browser->loginAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
             $seasonId = factory(Season::class)->create()->getId();
             $competitionId = factory(Competition::class)

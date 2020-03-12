@@ -17,7 +17,7 @@ class DivisionTest extends DuskTestCase
     public function testListingAllDivisionsForNonExistingCompetition(): void
     {
         $this->browse(function (Browser $browser): void {
-            $browser->loginAs(factory(User::class)->create());
+            $browser->loginAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
             $browser->visit('/competitions/1/divisions')
                 ->assertTitle('Not Found')
@@ -32,7 +32,7 @@ class DivisionTest extends DuskTestCase
     public function testListingAllDivisionsForCompetition(): void
     {
         $this->browse(function (Browser $browser): void {
-            $browser->loginAs(factory(User::class)->create());
+            $browser->loginAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
             /** @var Season $season */
             $season = factory(Season::class)->create();
@@ -94,7 +94,7 @@ class DivisionTest extends DuskTestCase
     public function testAddingADivision(): void
     {
         $this->browse(function (Browser $browser): void {
-            $browser->loginAs(factory(User::class)->create());
+            $browser->loginAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
             $browser->visit("/competitions/1/divisions/create")
                 ->assertTitle('Not Found')
@@ -205,7 +205,7 @@ class DivisionTest extends DuskTestCase
     public function testEditingADivision(): void
     {
         $this->browse(function (Browser $browser): void {
-            $browser->loginAs(factory(User::class)->create());
+            $browser->loginAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
             $browser->visit("/competitions/1/divisions/1/edit")
                 ->assertTitle('Not Found')
@@ -360,7 +360,7 @@ class DivisionTest extends DuskTestCase
     public function testDeletingADivision(): void
     {
         $this->browse(function (Browser $browser): void {
-            $browser->loginAs(factory(User::class)->create());
+            $browser->loginAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
             $seasonId = factory(Season::class)->create(['year' => 2019])->getId();
             $competitionId = factory(Competition::class)->create(['season_id' => $seasonId])->getId();

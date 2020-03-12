@@ -18,6 +18,16 @@ class FixtureTest extends TestCase
             ->assertRedirect('/login');
     }
 
+    public function testAccessForUserWithoutThePermission(): void
+    {
+        $fixture = aFixture()->build();
+
+        $this->actingAs(factory(User::class)->create());
+
+        $this->get('/fixtures')
+            ->assertForbidden();
+    }
+
     public function testAccessForUnverifiedUsers(): void
     {
         $fixture = aFixture()->build();
@@ -28,11 +38,11 @@ class FixtureTest extends TestCase
             ->assertRedirect('/email/verify');
     }
 
-    public function testAccessForAuthenticatedUsers(): void
+    public function testAccessForSuperAdmin(): void
     {
         $fixture = aFixture()->build();
 
-        $this->actingAs(factory(User::class)->create());
+        $this->actingAs(factory(User::class)->create()->assignRole('Super Admin'));
 
         $this->get('/fixtures')
             ->assertOk();

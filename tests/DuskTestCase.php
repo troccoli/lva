@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Models\Venue;
 use Closure;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\TestCase as BaseTestCase;
@@ -12,6 +13,13 @@ use Facebook\WebDriver\Remote\DesiredCapabilities;
 abstract class DuskTestCase extends BaseTestCase
 {
     use CreatesApplication, DatabaseMigrations;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->seed(\RolesAndPermissionsSeeder::class);
+    }
 
     /**
      * @beforeClass
