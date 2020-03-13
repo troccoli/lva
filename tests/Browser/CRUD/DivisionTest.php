@@ -184,7 +184,10 @@ class DivisionTest extends DuskTestCase
             ]);
 
             // Add same division in different competition
-            factory(Division::class)->create(['name' => 'DIV1M']);
+            $anotherCompetitionId = factory(Competition::class)
+                ->create(['name' => 'Sussex League', 'season_id' => $seasonId])
+                ->getId();
+            factory(Division::class)->create(['name' => 'DIV1M', 'competition_id' => $anotherCompetitionId]);
             $browser->visit("/competitions/$competitionId/divisions/create")
                 ->type('name', 'DIV1M')
                 ->type('display_order', 1)
@@ -334,8 +337,11 @@ class DivisionTest extends DuskTestCase
                 'display_order'  => 3,
             ]);
 
-            // Add same competition in different season
-            factory(Division::class)->create(['name' => 'DIV2M']);
+            // Add same division in different competition
+            $anotherCompetitionId = factory(Competition::class)
+                ->create(['name' => 'Sussex League', 'season_id' => $seasonId])
+                ->getId();
+            factory(Division::class)->create(['name' => 'DIV2M', 'competition_id' => $anotherCompetitionId]);
             $browser->visit("/competitions/$competitionId/divisions/$divisionId/edit")
                 ->type('name', 'DIV2M')
                 ->press('SAVE CHANGES')
