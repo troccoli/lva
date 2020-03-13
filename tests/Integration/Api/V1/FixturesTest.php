@@ -74,40 +74,17 @@ class FixturesTest extends ApiTestCase
         $this->team4 = aTeam()->withName('Fireballs')->build();
         $this->team5 = aTeam()->withName('The Winner Takes It All')->build();
         $this->team6 = aTeam()->build();
-
-        $this->fixture1 = aFixture()
-            ->inDivision($this->division1)
-            ->on(Carbon::parse('2019-06-09'), Carbon::parse('19:15'))
-            ->number(45)
-            ->between($this->team1, $this->team4)
-            ->at($this->venue3)
-            ->build();
-        $this->fixture2 = aFixture()
-            ->inDivision($this->division1)
-            ->on(Carbon::parse('2019-05-18'), Carbon::parse('12:00'))
-            ->number(12)
-            ->between($this->team4, $this->team2)
-            ->at($this->venue1)
-            ->build();
-        $this->fixture3 = aFixture()
-            ->inDivision($this->division2)
-            ->on(Carbon::parse('2019-10-20'), Carbon::parse('8:00pm'))
-            ->number(3)
-            ->between($this->team3, $this->team5)
-            ->at($this->venue2)
-            ->build();
     }
 
     public function testGettingAllFixtures(): void
     {
+        $this->createRoundRobinFixtures();
+
         $response = $this->get('/api/v1/fixtures')
             ->assertOk();
         $data = $response->decodeResponseJson('data');
 
-        $this->assertCount(3, $data);
-        $this->assertDataContainsFixture1($data);
-        $this->assertDataContainsFixture2($data);
-        $this->assertDataContainsFixture3($data);
+        $this->assertCount(30, $data);
     }
 
     public function testGettingAllFixturesPaginated(): void
@@ -115,17 +92,17 @@ class FixturesTest extends ApiTestCase
         // Add some extra fixtures so we can have a few pages
         $this->createRoundRobinFixtures();
 
-        $response = $this->get('/api/v1/fixtures')
+        $response = $this->get('/api/v1/fixtures?page=1')
             ->assertOk();
 
         $this->assertCount(10, $response->decodeResponseJson('data'));
         $this->assertArrayContent([
             'current_page' => 1,
             'per_page'     => 10,
-            'last_page'    => 4,
+            'last_page'    => 3,
             'from'         => 1,
             'to'           => 10,
-            'total'        => 33,
+            'total'        => 30,
         ], $response->decodeResponseJson('meta'));
 
         $response = $this->get('/api/v1/fixtures?perPage=15')
@@ -135,15 +112,17 @@ class FixturesTest extends ApiTestCase
         $this->assertArrayContent([
             'current_page' => 1,
             'per_page'     => 15,
-            'last_page'    => 3,
+            'last_page'    => 2,
             'from'         => 1,
             'to'           => 15,
-            'total'        => 33,
+            'total'        => 30,
         ], $response->decodeResponseJson('meta'));
     }
 
     public function testGettingAllFixturesInOneSeason(): void
     {
+        $this->createSampleFixtures();
+
         $this->get('/api/v1/fixtures?season=0')
             ->assertNotFound();
 
@@ -158,6 +137,8 @@ class FixturesTest extends ApiTestCase
 
     public function testGettingAllFixturesInOneCompetition(): void
     {
+        $this->createSampleFixtures();
+
         $this->get('/api/v1/fixtures?competition=0')
             ->assertNotFound();
 
@@ -175,6 +156,8 @@ class FixturesTest extends ApiTestCase
 
     public function testGettingAllFixturesInOneDivision(): void
     {
+        $this->createSampleFixtures();
+
         $this->get('/api/v1/fixtures?division=0')
             ->assertNotFound();
 
@@ -193,6 +176,8 @@ class FixturesTest extends ApiTestCase
 
     public function testGettingAllFixturesOnOneDate(): void
     {
+        $this->createSampleFixtures();
+
         $this->get('/api/v1/fixtures?on=01-01-2019')
             ->assertNotFound();
 
@@ -210,6 +195,8 @@ class FixturesTest extends ApiTestCase
 
     public function testGettingAllFixturesInOneVenue(): void
     {
+        $this->createSampleFixtures();
+
         $this->get('/api/v1/fixtures?venue=0')
             ->assertNotFound();
 
@@ -227,6 +214,8 @@ class FixturesTest extends ApiTestCase
 
     public function testGettingAllFixturesInOneVenueOnOneDate(): void
     {
+        $this->createSampleFixtures();
+
         $this->get('/api/v1/fixtures?venue=0&on=01-01-2019')
             ->assertNotFound();
 
@@ -258,6 +247,8 @@ class FixturesTest extends ApiTestCase
 
     public function testGettingAllFixturesInOneVenueInOneDivision(): void
     {
+        $this->createSampleFixtures();
+
         $this->get('/api/v1/fixtures?division=0&venue=0')
             ->assertNotFound();
 
@@ -289,6 +280,8 @@ class FixturesTest extends ApiTestCase
 
     public function testGettingAllFixturesInOneVenueInOneCompetition(): void
     {
+        $this->createSampleFixtures();
+
         $this->get('/api/v1/fixtures?competition=0&venue=0')
             ->assertNotFound();
 
@@ -316,6 +309,8 @@ class FixturesTest extends ApiTestCase
 
     public function testGettingAllFixturesForOneTeam(): void
     {
+        $this->createSampleFixtures();
+
         $this->get('/api/v1/fixtures?team=0')
             ->assertNotFound();
 
@@ -334,6 +329,8 @@ class FixturesTest extends ApiTestCase
 
     public function testGettingAllFixturesForOneTeamAtHome(): void
     {
+        $this->createSampleFixtures();
+
         $this->get('/api/v1/fixtures?homeTeam=0')
             ->assertNotFound();
 
@@ -351,6 +348,8 @@ class FixturesTest extends ApiTestCase
 
     public function testGettingAllFixturesForOneTeamAway(): void
     {
+        $this->createSampleFixtures();
+
         $this->get('/api/v1/fixtures?awayTeam=0')
             ->assertNotFound();
 
@@ -368,6 +367,8 @@ class FixturesTest extends ApiTestCase
 
     public function testGettingAllFixturesForOneTeamInOneDivision(): void
     {
+        $this->createSampleFixtures();
+
         $this->get('/api/v1/fixtures?division=0&team=0')
             ->assertNotFound();
 
@@ -391,6 +392,8 @@ class FixturesTest extends ApiTestCase
 
     public function testGettingAllFixturesForOneTeamAtHomeInOneDivision(): void
     {
+        $this->createSampleFixtures();
+
         $this->get('/api/v1/fixtures?division=0&homeTeam=0')
             ->assertNotFound();
 
@@ -414,6 +417,8 @@ class FixturesTest extends ApiTestCase
 
     public function testGettingAllFixturesForOneTeamAwayInOneDivision(): void
     {
+        $this->createSampleFixtures();
+
         $this->get('/api/v1/fixtures?division=0&awayTeam=0')
             ->assertNotFound();
 
@@ -487,6 +492,31 @@ class FixturesTest extends ApiTestCase
             'venue_id'     => $this->venue2->getId(),
             'venue'        => 'Westminster University Sports Hall',
         ], $data);
+    }
+
+    private function createSampleFixtures(): void
+    {
+        $this->fixture1 = aFixture()
+            ->inDivision($this->division1)
+            ->on(Carbon::parse('2019-06-09'), Carbon::parse('19:15'))
+            ->number(45)
+            ->between($this->team1, $this->team4)
+            ->at($this->venue3)
+            ->build();
+        $this->fixture2 = aFixture()
+            ->inDivision($this->division1)
+            ->on(Carbon::parse('2019-05-18'), Carbon::parse('12:00'))
+            ->number(12)
+            ->between($this->team4, $this->team2)
+            ->at($this->venue1)
+            ->build();
+        $this->fixture3 = aFixture()
+            ->inDivision($this->division2)
+            ->on(Carbon::parse('2019-10-20'), Carbon::parse('8:00pm'))
+            ->number(3)
+            ->between($this->team3, $this->team5)
+            ->at($this->venue2)
+            ->build();
     }
 
     private function createRoundRobinFixtures(): void

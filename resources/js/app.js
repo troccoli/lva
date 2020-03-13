@@ -8,6 +8,7 @@
 require('./bootstrap');
 
 import Vue from "vue";
+import Vuetify from "vuetify";
 import Fixtures from "./Fixtures.vue";
 import router from "./router";
 import store from "./store";
@@ -33,9 +34,12 @@ import store from "./store";
 
 Vue.config.productionTip = false;
 
+Vue.use(Vuetify);
+
 const fixtures = new Vue({
   router,
   store,
+  vuetify: new Vuetify({}),
   render: h => h(Fixtures)
 }).$mount('#fixtures');
 

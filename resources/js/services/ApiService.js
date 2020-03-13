@@ -19,7 +19,7 @@ export default {
   getDivisions(competitionId) {
     return apiClient.get("/divisions?competition=" + competitionId)
   },
-  getFixtures(divisionId, limit, page) {
-    return apiClient.get("/fixtures?division=" + divisionId + "&page=" + page + '&perPage=' + limit);
+  getFixtures(divisionId) {
+    return apiClient.get("/fixtures?division=" + divisionId);
   },
 };

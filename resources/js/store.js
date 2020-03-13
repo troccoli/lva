@@ -56,8 +56,8 @@ export default new Vuex.Store({
           console.log('There was an error: ', error.response);
         });
     },
-    fetchFixtures({commit}, {divisionId, limit, page}) {
-      return ApiService.getFixtures(divisionId, limit, page)
+    fetchFixtures({commit}, {divisionId}) {
+      return ApiService.getFixtures(divisionId)
         .then(response => {
           commit("SET_FIXTURES", response.data.data);
           return this;

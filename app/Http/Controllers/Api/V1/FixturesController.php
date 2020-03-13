@@ -77,10 +77,15 @@ class FixturesController extends Controller
             $query->where('away_team_id', $awayTeam->getId());
         }
 
-        $query->with(['division', 'venue', 'homeTeam', 'awayTeam']);
+        $query->with(['division', 'venue', 'homeTeam', 'awayTeam'])
+            ->orderBy('match_number');
 
-        $perPage = $request->get('perPage', 10);
+        if ($request->hasAny(['page', 'perPage'])) {
+            $perPage = $request->get('perPage', 10);
 
-        return FixtureResource::collection($query->orderBy('match_number')->paginate($perPage));
+            return FixtureResource::collection($query->paginate($perPage));
+        }
+
+        return FixtureResource::collection(($query->get()));
     }
 }

@@ -1,119 +1,113 @@
 <template>
-    <div class="container">
-        <div class="d-flex">
-            <div class="mr-auto"><h1>Fixtures</h1></div>
-            <div>
-                <router-link :to="{name: 'fixtures.create'}" class="btn btn-primary btn-sm">New fixture</router-link>
-            </div>
-        </div>
-        <div>
-            <!--            <BaseSelect-->
-            <!--                    label="Select a category"-->
-            <!--                    :options="categories"-->
-            <!--                    v-model="event.category"-->
-            <!--                    :class="{ error: $v.event.category.$error}"-->
-            <!--                    @blur="$v.event.category.$touch()"-->
-            <!--            />-->
-            <BaseSelect dusk="season-selector"
-                        label="Select a season"
-                        :options="seasons"
-                        v-model="season"
-            />
-            <BaseSelect dusk="competition-selector"
-                        label="Select a competition"
-                        :options="competitions"
-                        v-model="competition"
-            />
-            <BaseSelect dusk="division-selector"
-                        label="Select a division"
-                        :options="divisions"
-                        v-model="division"
-            />
-        </div>
-        <div id="resources-list" class="table" dusk="list">
-            <div v-if="fixtures.length === 0" class="alert alert-warning">
-                <h4 class="alert-heading">Whoops!</h4>
-                <p class="mb-0">There are no fixtures yet.</p>
-            </div>
-            <table v-else class="table table-bordered table-hover table-sm">
-                <thead>
-                <tr>
-                    <th>Division</th>
-                    <th>Home team</th>
-                    <th>Away team</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="fixture in fixtures" :key="fixture.id" :dusk="'fixture-' + fixture.id + '-row'">
-                    <td>{{ fixture.division }}</td>
-                    <td>{{ fixture.home_team }}</td>
-                    <td>{{ fixture.away_team }}</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <button @click="goToPage(page-1)">Previous page</button>
-        &nbsp;|&nbsp;
-        <button @click="goToPage(page+1)">Next page</button>
-    </div>
+    <v-container>
+        <v-row>
+            <v-col class="text-left"><h1>Fixtures</h1></v-col>
+            <v-col class="text-right">
+                <v-btn color="primary" fab aria-label="Add a fixture" :to="{name: 'fixtures.create'}" dusk="add">
+                    <v-icon>mdi-plus</v-icon>
+                </v-btn>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col dusk="season-selector">
+                <v-select :items="seasons"
+                          label="Season"
+                          v-model="season"
+                          outlined
+                />
+            </v-col>
+            <v-col dusk="competition-selector">
+                <v-select :items="competitions"
+                          label="Competition"
+                          v-model="competition"
+                          outlined
+                />
+            </v-col>
+            <v-col dusk="division-selector">
+                <v-select :items="divisions"
+                          label="Division"
+                          v-model="division"
+                          outlined
+                />
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col dusk="list">
+                <v-data-table
+                        :headers="headers"
+                        :items="fixtures"
+                        item-key="id"
+                        :loading="loading"
+                        loading-text="Loading fixtures. Please wait."
+                        no-data-text="There are no fixtures yet."
+                >
+                </v-data-table>
+            </v-col>
+        </v-row>
+    </v-container>
 </template>
 
 <script>
-  import BaseSelect from "../components/BaseSelect";
-
   export default {
     name      : "FixturesList",
-    components: {BaseSelect},
     data() {
       return {
-        limit      : 10,
+        limit      : null,
         season     : null,
         competition: null,
         division   : null,
-        page       : 1,
+        headers    : [
+          {text: 'Division', value: 'division', sortable: false},
+          {text: 'Home team', value: 'home_team'},
+          {text: 'Away team', value: 'away_team'},
+        ],
+        loading    : false,
       }
     },
     created() {
+      this.loading = true;
       this.$store.dispatch("fetchSeasons")
         .then(store => {
           if (store.state.seasons.length) {
             this.season = store.state.seasons[0].id;
+          } else {
+            this.loading = false;
           }
-        });
+      });
     },
     watch     : {
       season     : function () {
+        this.loading = true;
         this.$store.dispatch("fetchCompetitions", {
           seasonId: this.season
         }).then(store => {
-          this.competition = store.state.competitions[0].id;
+          if (store.state.competitions.length) {
+            this.competition = store.state.competitions[0].id;
+          } else {
+            this.loading = false;
+          }
         });
       },
       competition: function () {
+        this.loading = true;
         this.$store.dispatch("fetchDivisions", {
           competitionId: this.competition
         }).then(store => {
-          this.division = store.state.divisions[0].id;
+          if (store.state.divisions.length) {
+            this.division = store.state.divisions[0].id;
+          } else {
+            this.loading = false;
+          }
         });
       },
       division   : function () {
-        if (this.page === 1) {
-          this.$store.dispatch("fetchFixtures", {
-            divisionId: this.division,
-            limit     : this.limit,
-            page      : 1
-          })
-        } else {
-          this.page = 1;
-        }
-      },
-      page       : function () {
+        this.loading = true;
         this.$store.dispatch("fetchFixtures", {
-          divisionId: this.division,
-          limit     : this.limit,
-          page      : this.page
-        });
-      }
+          divisionId: this.division
+        }).then(() => {
+          this.loading = false;
+        })
+      },
     },
     computed  : {
       seasons() {
@@ -121,7 +115,7 @@
           return [
             {
               value: null,
-              label: 'No seasons'
+              text : 'No seasons'
             }
           ];
         }
@@ -130,7 +124,7 @@
           .map(function (season) {
             return {
               value: season.id,
-              label: season.name
+              text : season.name
             }
           });
       },
@@ -139,7 +133,7 @@
           return [
             {
               value: null,
-              label: 'No competitions'
+              text : 'No competitions'
             }
           ];
         }
@@ -148,7 +142,7 @@
           .map(function (competition) {
             return {
               value: competition.id,
-              label: competition.name
+              text : competition.name
             }
           })
       },
@@ -157,7 +151,7 @@
           return [
             {
               value: null,
-              label: 'No divisions'
+              text : 'No divisions'
             }
           ];
         }
@@ -166,26 +160,23 @@
           .map(function (division) {
             return {
               value: division.id,
-              label: division.name
+              text : division.name
             }
           })
       },
       fixtures() {
-        if (this.$store.state.fixtures.length === 0) {
+        if (this.loading || this.$store.state.fixtures.length === 0) {
           return [];
         }
 
         return this.$store.state.fixtures;
       }
     },
-    methods   : {
-      goToPage(page) {
-        this.page = page;
-      }
-    }
   }
 </script>
 
 <style scoped>
-
+    a.v-btn:hover {
+        text-decoration: none;
+    }
 </style>
