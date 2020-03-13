@@ -39,12 +39,41 @@ class VenueTest extends TestCase
             ->assertRedirect('/login');
     }
 
-    public function testAccessForAuthenticatedUsers(): void
+    public function testAccessForUserWithoutThePermission(): void
+    {
+        /** @var Venue $venue */
+        $venue = factory(Venue::class)->create();
+
+        $this->be(factory(User::class)->create());
+
+        $this->get('/venues')
+            ->assertForbidden();
+
+        $this->get('/venues/' . $venue->getId())
+            ->assertForbidden();
+
+        $this->get('/venues/create')
+            ->assertForbidden();
+
+        $this->post('/venues')
+            ->assertForbidden();
+
+        $this->get('/venues/' . $venue->getId() . '/edit')
+            ->assertForbidden();
+
+        $this->put('/venues/' . $venue->getId())
+            ->assertForbidden();
+
+        $this->delete('/venues/' . $venue->getId())
+            ->assertForbidden();
+    }
+
+    public function testAccessForSuperAdmin(): void
     {
         /** @var Venue $venue */
         $venue = factory(Venue::class)->make();
 
-        $this->be(factory(User::class)->create());
+        $this->be(factory(User::class)->create()->assignRole('Super Admin'));
 
         $this->get('/venues')
             ->assertOk();
@@ -101,7 +130,7 @@ class VenueTest extends TestCase
 
     public function testAddingAVenue(): void
     {
-        $this->actingAs(factory(User::class)->create());
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
         $this->post('/venues', [])
             ->assertSessionHasErrors('name', 'The name is required.');
@@ -121,7 +150,7 @@ class VenueTest extends TestCase
      */
     public function testEditingAVenue(): void
     {
-        $this->actingAs(factory(User::class)->create());
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
         $this->put('/venues/' . Uuid::generate()->string)
             ->assertNotFound();
@@ -150,7 +179,7 @@ class VenueTest extends TestCase
      */
     public function testDeletingAVenue(): void
     {
-        $this->actingAs(factory(User::class)->create());
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
         $this->delete('/venues/' . Uuid::generate()->string)
             ->assertNotFound();

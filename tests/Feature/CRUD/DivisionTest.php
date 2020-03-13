@@ -38,13 +38,40 @@ class DivisionTest extends TestCase
             ->assertRedirect('/login');
     }
 
-    public function testAccessForAuthenticatedUsers(): void
+    public function testAccessForUserWithoutThePermission(): void
+    {
+        /** @var Division $division */
+        $division = factory(Division::class)->create();
+        $competition = $division->getCompetition();
+
+        $this->be(factory(User::class)->create());
+
+        $this->get("/competitions/{$competition->getId()}/divisions")
+            ->assertForbidden();
+
+        $this->get("/competitions/{$competition->getId()}/divisions/create")
+            ->assertForbidden();
+
+        $this->post("/competitions/{$competition->getId()}/divisions")
+            ->assertForbidden();
+
+        $this->get("/competitions/{$competition->getId()}/divisions/{$division->getId()}/edit")
+            ->assertForbidden();
+
+        $this->put("/competitions/{$competition->getId()}/divisions/{$division->getId()}")
+            ->assertForbidden();
+
+        $this->delete("/competitions/{$competition->getId()}/divisions/{$division->getId()}")
+            ->assertForbidden();
+    }
+
+    public function testAccessForSuperAdmin(): void
     {
         /** @var Division $division */
         $division = factory(Division::class)->make();
         $competitionId = $division->getCompetition()->getId();
 
-        $this->be(factory(User::class)->create());
+        $this->be(factory(User::class)->create()->assignRole('Super Admin'));
 
         $this->get("/competitions/$competitionId/divisions")
             ->assertOk();
@@ -96,7 +123,7 @@ class DivisionTest extends TestCase
 
     public function testAddingADivision(): void
     {
-        $this->actingAs(factory(User::class)->create());
+        $this->be(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
         $this->post("/competitions/1/divisions", [])
             ->assertNotFound();
@@ -229,7 +256,7 @@ class DivisionTest extends TestCase
 
     public function testEditingADivision(): void
     {
-        $this->actingAs(factory(User::class)->create());
+        $this->be(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
         $this->put("/competitions/1/divisions/1", [])
             ->assertNotFound();
@@ -359,7 +386,7 @@ class DivisionTest extends TestCase
 
     public function testDeletingADivision(): void
     {
-        $this->actingAs(factory(User::class)->create());
+        $this->be(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
         $this->delete("/competitions/1/divisions/1")
             ->assertNotFound();

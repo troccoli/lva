@@ -37,13 +37,40 @@ class CompetitionTest extends TestCase
             ->assertRedirect('/login');
     }
 
-    public function testAccessForAuthenticatedUsers(): void
+    public function testAccessForUserWithoutThePermission(): void
+    {
+        /** @var Competition $competition */
+        $competition = factory(Competition::class)->create();
+        $seasonId = $competition->getSeason()->getId();
+
+        $this->actingAs(factory(User::class)->create());
+
+        $this->get("/seasons/$seasonId/competitions")
+            ->assertForbidden();
+
+        $this->get("/seasons/$seasonId/competitions/create")
+            ->assertForbidden();
+
+        $this->post("/seasons/$seasonId/competitions")
+            ->assertForbidden();
+
+        $this->get("/seasons/$seasonId/competitions/" . $competition->getId() . '/edit')
+            ->assertForbidden();
+
+        $this->put("/seasons/$seasonId/competitions/" . $competition->getId())
+            ->assertForbidden();
+
+        $this->delete("/seasons/$seasonId/competitions/" . $competition->getId())
+            ->assertForbidden();
+    }
+
+    public function testAccessForSuperAdmin(): void
     {
         /** @var Competition $competition */
         $competition = factory(Competition::class)->make();
         $seasonId = $competition->getSeason()->getId();
 
-        $this->actingAs(factory(User::class)->create());
+        $this->actingAs(factory(User::class)->create()->assignRole('Super Admin'));
 
         $this->get("/seasons/$seasonId/competitions")
             ->assertOk();
@@ -97,7 +124,7 @@ class CompetitionTest extends TestCase
     {
         $seasonId = factory(Season::class)->create()->getId();
 
-        $this->actingAs(factory(User::class)->create());
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
         $this->post("/seasons/$seasonId/competitions", [])
             ->assertSessionHasErrors('name', 'The name is required.');
@@ -123,7 +150,7 @@ class CompetitionTest extends TestCase
         $competition = factory(Competition::class)->create(['name' => 'London League - Men']);
         $seasonId = $competition->getSeason()->getId();
 
-        $this->actingAs(factory(User::class)->create());
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
         $this->put("/seasons/$seasonId/competitions/" . $competition->getId(), [])
             ->assertSessionHasErrors('name', 'The name is required.');
@@ -157,7 +184,7 @@ class CompetitionTest extends TestCase
         $competition = factory(Competition::class)->create(['name' => 'London League - Men']);
         $seasonId = $competition->getSeason()->getId();
 
-        $this->actingAs(factory(User::class)->create());
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
         $this->delete("/seasons/$seasonId/competitions/" . $competition->getId())
             ->assertSessionHasNoErrors();

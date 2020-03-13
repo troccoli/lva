@@ -37,13 +37,40 @@ class TeamTest extends TestCase
             ->assertRedirect('/login');
     }
 
-    public function testAccessForAuthenticatedUsers(): void
+    public function testAccessForUserWithoutThePermission(): void
+    {
+        /** @var Team $team */
+        $team = aTeam()->build();
+        $clubId = $team->getClub()->getId();
+
+        $this->actingAs(factory(User::class)->create());
+
+        $this->get("/clubs/$clubId/teams")
+            ->assertForbidden();
+
+        $this->get("/clubs/$clubId/teams/create")
+            ->assertForbidden();
+
+        $this->post("/clubs/$clubId/teams")
+            ->assertForbidden();
+
+        $this->get("/clubs/$clubId/teams/" . $team->getId() . '/edit')
+            ->assertForbidden();
+
+        $this->put("/clubs/$clubId/teams/" . $team->getId())
+            ->assertForbidden();
+
+        $this->delete("/clubs/$clubId/teams/" . $team->getId())
+            ->assertForbidden();
+    }
+
+    public function testAccessForSuperAdmin(): void
     {
         /** @var Team $team */
         $team = aTeam()->buildWithoutSaving();
         $clubId = $team->getClub()->getId();
 
-        $this->actingAs(factory(User::class)->create());
+        $this->actingAs(factory(User::class)->create()->assignRole('Super Admin'));
 
         $this->get("/clubs/$clubId/teams")
             ->assertOk();
@@ -99,7 +126,7 @@ class TeamTest extends TestCase
         $sobellSC = factory(Venue::class)->create(['name' => 'Sobell SC']);
         $clubId = aClub()->build()->getId();
 
-        $this->actingAs(factory(User::class)->create());
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
         $this->post("/clubs/$clubId/teams", [])
             ->assertSessionHasErrors('name', 'The name is required.');
@@ -143,7 +170,7 @@ class TeamTest extends TestCase
         $team = factory(Team::class)->create(['name' => 'London Scarlets', 'venue_id' => $sobellSC->getId()]);
         $clubId = $team->getClub()->getId();
 
-        $this->actingAs(factory(User::class)->create());
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
         $this->put("/clubs/$clubId/teams/" . $team->getId(), [])
             ->assertSessionHasErrors('name', 'The name is required.');
@@ -194,7 +221,7 @@ class TeamTest extends TestCase
         $team = factory(Team::class)->create(['name' => 'London Scarlets']);
         $clubId = $team->getClub()->getId();
 
-        $this->actingAs(factory(User::class)->create());
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
         $this->delete("/clubs/$clubId/teams/" . $team->getId())
             ->assertSessionHasNoErrors();

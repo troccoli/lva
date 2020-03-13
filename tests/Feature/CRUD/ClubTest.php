@@ -36,12 +36,40 @@ class ClubTest extends TestCase
             ->assertRedirect('/login');
     }
 
-    public function testAccessForAuthenticatedUsers(): void
+    public function testAccessForUserWithoutThePermission(): void
+    {
+        /** @var Club $club */
+        $club = aClub()->build();
+
+        $this->actingAs(factory(User::class)->create());
+
+        $this->get('/clubs')
+            ->assertForbidden();
+
+        $this->get('/clubs/create')
+            ->assertForbidden();
+
+        $this->post('/clubs', $club->toArray())
+            ->assertForbidden();
+
+        $club = Club::first();
+
+        $this->get('/clubs/' . $club->getId() . '/edit')
+            ->assertForbidden();
+
+        $this->put('/clubs/' . $club->getId(), $club->toArray())
+            ->assertForbidden();
+
+        $this->delete('/clubs/' . $club->getId())
+            ->assertForbidden();
+    }
+
+    public function testAccessForSuperAdmin(): void
     {
         /** @var Club $club */
         $club = aClub()->buildWithoutSaving();
 
-        $this->be(factory(User::class)->create());
+        $this->actingAs(factory(User::class)->create()->assignRole('Super Admin'));
 
         $this->get('/clubs')
             ->assertOk();
@@ -69,7 +97,7 @@ class ClubTest extends TestCase
         /** @var Club $club */
         $club = aClub()->build();
 
-        $this->be(factory(User::class)->state('unverified')->create());
+        $this->actingAs(factory(User::class)->state('unverified')->create());
 
         $this->get('/clubs')
             ->assertRedirect('/email/verify');
@@ -92,7 +120,7 @@ class ClubTest extends TestCase
 
     public function testAddingAClub(): void
     {
-        $this->actingAs(factory(User::class)->create());
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
         $this->post('/clubs', [])
             ->assertSessionHasErrors('name', 'The name is required.')
@@ -119,7 +147,7 @@ class ClubTest extends TestCase
 
     public function testEditingAClub(): void
     {
-        $this->actingAs(factory(User::class)->create());
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
         $this->put('/clubs/1')
             ->assertNotFound();
@@ -161,7 +189,7 @@ class ClubTest extends TestCase
 
     public function testDeletingAClub(): void
     {
-        $this->actingAs(factory(User::class)->create());
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
         $this->delete('/clubs/1')
             ->assertNotFound();

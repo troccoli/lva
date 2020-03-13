@@ -35,12 +35,40 @@ class SeasonTest extends TestCase
             ->assertRedirect('/login');
     }
 
-    public function testAccessForAuthenticatedUsers(): void
+    public function testAccessForUserWithoutThePermission(): void
+    {
+        /** @var Season $season */
+        $season = factory(Season::class)->create();
+
+        $this->be(factory(User::class)->create());
+
+        $this->get('/seasons')
+            ->assertForbidden();
+
+        $this->get('/seasons/create')
+            ->assertForbidden();
+
+        $this->post('/seasons', $season->toArray())
+            ->assertForbidden();
+
+        $season = Season::first();
+
+        $this->get('/seasons/' . $season->getId() . '/edit')
+            ->assertForbidden();
+
+        $this->put('/seasons/' . $season->getId(), $season->toArray())
+            ->assertForbidden();
+
+        $this->delete('/seasons/' . $season->getId())
+            ->assertForbidden();
+    }
+
+    public function testAccessForSuperAdmin(): void
     {
         /** @var Season $season */
         $season = factory(Season::class)->make();
 
-        $this->be(factory(User::class)->create());
+        $this->be(factory(User::class)->create()->assignRole('Super Admin'));
 
         $this->get('/seasons')
             ->assertOk();
@@ -91,7 +119,7 @@ class SeasonTest extends TestCase
 
     public function testAddingASeason(): void
     {
-        $this->actingAs(factory(User::class)->create());
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
         $this->post('/seasons', [])
             ->assertSessionHasErrors('year', 'The year is required.');
@@ -115,7 +143,7 @@ class SeasonTest extends TestCase
         /** @var Season $season */
         $season = factory(Season::class)->create(['year' => '2000']);
 
-        $this->actingAs(factory(User::class)->create());
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
         $this->put('/seasons/' . $season->getId(), [])
             ->assertSessionHasErrors('year', 'The year is required.');
@@ -145,7 +173,7 @@ class SeasonTest extends TestCase
         /** @var Season $season */
         $season = factory(Season::class)->create(['year' => '2000']);
 
-        $this->actingAs(factory(User::class)->create());
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
         $this->delete('/seasons/' . $season->getId())
             ->assertSessionHasNoErrors();
