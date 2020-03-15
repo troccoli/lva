@@ -44,3 +44,15 @@ services:
       - /dev/shm:/dev/shm
     links:
       - web:selenium.test
+
+  cypress:
+    container_name: lva-cypress
+    image: cypress/included:4.1.0
+    depends_on:
+      - web
+    environment:
+      - CYPRESS_baseUrl=http://web
+    working_dir: /e2e
+    command: npx cypress run
+    volumes:
+      - ./tests/End2End/:/e2e
