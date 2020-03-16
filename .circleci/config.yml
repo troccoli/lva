@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  cypress: cypress-io/cypress
+
 jobs:
   build:
 #    branches:
@@ -105,3 +108,9 @@ jobs:
       - store_artifacts:
           path: ./storage/logs
           destination: laravel
+
+workflows:
+  build:
+    jobs:
+      - cypress/run:
+          store_artifacts: true
