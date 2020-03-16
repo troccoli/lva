@@ -53,6 +53,7 @@ services:
     environment:
       - CYPRESS_baseUrl=http://web
     working_dir: /e2e
-    command: npx cypress run
+    entrypoint: sh -c
+    command: ["sleep infinity"]
     volumes:
       - ./tests/End2End/:/e2e
