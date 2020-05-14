@@ -33,7 +33,5 @@ jobs:
         run: chmod -R 777 storage bootstrap/cache
       - name: Execute tests (Unit and Feature tests) via PHPUnit
         run: |
-#          mkdir -p ./logs/phpunit
           vendor/bin/phpunit
-#          vendor/bin/phpunit -d memory_limit=512M --log-junit logs/phpunit/junit.xml --testdox-html logs/phpunit/testdox.html
 
