@@ -47,7 +47,7 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
       - name: Install composer dependencies
-        if: ! steps.cache-composer-packages.outputs.cache-hit
+        if: ${{ ! steps.cache-composer-packages.outputs.cache-hit }}
         run: composer install -n --ignore-platform-reqs --no-progress --no-suggest
       - name: Build artifacts
         run: |
