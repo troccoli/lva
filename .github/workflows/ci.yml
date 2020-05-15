@@ -54,7 +54,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ${{ env.build-artifacts }}
-          path: ~/${{ env.build-artifacts }}.gz
+          path: ~/${{ env.build-artifacts }}.tgz
   unit-tests:
     env:
       job-name: unit-tests
