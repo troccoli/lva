@@ -5,6 +5,7 @@ on: [push]
 env:
   node-modules-cache-name: cache-node-modules-2
   composer-packages-cache-name: cache-composer-packages-2
+  build-artifacts: build-artifacts
 
 jobs:
   debug:
@@ -23,6 +24,7 @@ jobs:
       - name: Setup Environment
         run: cp .env.ci .env
       - name: Cache node modules
+        id: cache-node-modules
         uses: actions/cache@v1
         with:
           path: ./node_modules
@@ -32,8 +34,10 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
       - name: Install node dependencise
+        if: ! steps.cahe-node-modules.outputs.cache-hit
         run: npm install
       - name: Cache composer packages
+        id: cache-composer-packages
         uses: actions/cache@v1
         with:
           path: ./vendor
@@ -43,7 +47,17 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
       - name: Install composer dependencies
+        if: ! steps.cache-composer-packages.outputs.cache-hit
         run: composer install -n --ignore-platform-reqs --no-progress --no-suggest
+      - name: Build artifacts
+        run: |
+          npm run prod
+          tar cz -f ~/${{ env.build-artifacts }}.gz ./public/css ./public/fonts ./public/js ./public/mix-manifest.json
+      - name: Store build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.build-artifacts }}
+          path: ~/${{ env.build-artifacts }}
   unit-tests:
     env:
       job-name: unit-tests
@@ -164,6 +178,10 @@ jobs:
             ${{ runner.os }}-build-${{ env.composer-packages-cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
+      - name: Restore building artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.build-artifacts }}
       - name: Migrate Database
         run: php artisan migrate --force
       - name: Setup Laravel Passport
@@ -213,6 +231,10 @@ jobs:
             ${{ runner.os }}-build-${{ env.composer-packages-cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
+      - name: Restore building artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.build-artifacts }}
       - name: Migrate Database
         run: php artisan migrate --force
       - name: Setup Laravel Passport
