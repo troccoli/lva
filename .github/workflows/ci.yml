@@ -1,0 +1,261 @@
+name: lva
+
+on: [push]
+
+env:
+  node-modules-cache-name: cache-node-modules-2
+  composer-packages-cache-name: cache-composer-packages-2
+  build-artifacts: build-artifacts
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - run: php --version
+      - run: node --version
+      - run: npm --version
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Environment
+        run: cp .env.ci .env
+      - name: Cache node modules
+        id: cache-node-modules
+        uses: actions/cache@v1
+        with:
+          path: ./node_modules
+          key: ${{ runner.os }}-build-${{ env.node-modules-cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.node-modules-cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Install node dependencise
+        if: ${{ ! steps.cahe-node-modules.outputs.cache-hit }}
+        run: npm install
+      - name: Cache composer packages
+        id: cache-composer-packages
+        uses: actions/cache@v1
+        with:
+          path: ./vendor
+          key: ${{ runner.os }}-build-${{ env.composer-packages-cache-name }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.composer-packages-cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Install composer dependencies
+        if: ${{ ! steps.cache-composer-packages.outputs.cache-hit }}
+        run: composer install -n --ignore-platform-reqs --no-progress --no-suggest
+      - name: Build artifacts
+        run: npm run prod
+      - name: Tar artifacts
+        run: /bin/tar -cz -f ~/${{ env.build-artifacts }}.tgz -C ./public css fonts js mix-manifest.json
+      - name: Store build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.build-artifacts }}
+          path: ~/${{ env.build-artifacts }}.tgz
+  unit-tests:
+    env:
+      job-name: unit-tests
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Environment
+        run: |
+          cp .env.ci .env
+          touch ./storage/logs/laravel.log
+          touch ./database/database.sqlite
+      - name: Restore node modules cache
+        uses: actions/cache@v1
+        with:
+          path: ./node_modules
+          key: ${{ runner.os }}-build-${{ env.node-modules-cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.node-modules-cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Restore composer packages cache
+        uses: actions/cache@v1
+        with:
+          path: ./vendor
+          key: ${{ runner.os }}-build-${{ env.composer-packages-cache-name }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.composer-packages-cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Migrate Database
+        run: php artisan migrate --force
+      - name: Setup Laravel Passport
+        run: php artisan passport:install
+      - name: Directory Permissions
+        run: chmod -R 777 storage bootstrap/cache
+      - name: Execute Unit tests via PHPUnit
+        run: vendor/bin/phpunit tests/Unit
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: ${{ env.job-name }}-log
+          path: ./storage/logs/*.log
+  integration-tests:
+    env:
+      job-name: integration-tests
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Environment
+        run: |
+          cp .env.ci .env
+          touch ./storage/logs/laravel.log
+          touch ./database/database.sqlite
+      - name: Restore node modules cache
+        uses: actions/cache@v1
+        with:
+          path: ./node_modules
+          key: ${{ runner.os }}-build-${{ env.node-modules-cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.node-modules-cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Restore composer packages cache
+        uses: actions/cache@v1
+        with:
+          path: ./vendor
+          key: ${{ runner.os }}-build-${{ env.composer-packages-cache-name }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.composer-packages-cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Migrate Database
+        run: php artisan migrate --force
+      - name: Setup Laravel Passport
+        run: php artisan passport:install
+      - name: Directory Permissions
+        run: chmod -R 777 storage bootstrap/cache
+      - name: Run Laravel Server
+        run: php artisan serve &
+      - name: Execute Integration tests via PHPUnit
+        run: vendor/bin/phpunit tests/Integration
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: ${{ env.job-name }}-log
+          path: ./storage/logs/*.log
+  feature-tests:
+    env:
+      job-name: feature-tests
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Environment
+        run: |
+          cp .env.ci .env
+          touch ./storage/logs/laravel.log
+          touch ./database/database.sqlite
+      - name: Restore node modules cache
+        uses: actions/cache@v1
+        with:
+          path: ./node_modules
+          key: ${{ runner.os }}-build-${{ env.node-modules-cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.node-modules-cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Restore composer packages cache
+        uses: actions/cache@v1
+        with:
+          path: ./vendor
+          key: ${{ runner.os }}-build-${{ env.composer-packages-cache-name }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.composer-packages-cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Restore building artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ env.build-artifacts }}
+      - run: tar -xz -f ./${{ env.build-artifacts }}.tgz -C ./public
+      - name: Migrate Database
+        run: php artisan migrate --force
+      - name: Setup Laravel Passport
+        run: php artisan passport:install
+      - name: Directory Permissions
+        run: chmod -R 777 storage bootstrap/cache
+      - name: Run Laravel Server
+        run: php artisan serve &
+      - name: Execute Feature tests via PHPUnit
+        run: vendor/bin/phpunit tests/Feature
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: ${{ env.job-name }}-log
+          path: ./storage/logs/*.log
+  dusk-tests:
+    env:
+      job-name: dusk-tests
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Environment
+        run: |
+          cp .env.ci .env
+          touch ./storage/logs/laravel.log
+          touch ./database/database.sqlite
+      - name: Restore node modules cache
+        uses: actions/cache@v1
+        with:
+          path: ./node_modules
+          key: ${{ runner.os }}-build-${{ env.node-modules-cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.node-modules-cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+      - name: Restore composer packages cache
+        uses: actions/cache@v1
+        with:
+          path: ./vendor
+          key: ${{ runner.os }}-build-${{ env.composer-packages-cache-name }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.composer-packages-cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Restore building artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ env.build-artifacts }}
+      - run: tar -xz -f ./${{ env.build-artifacts }}.tgz -C ./public
+      - name: Migrate Database
+        run: php artisan migrate --force
+      - name: Setup Laravel Passport
+        run: php artisan passport:install
+      - name: Directory Permissions
+        run: chmod -R 777 storage bootstrap/cache
+      - name: Update Chrome Driver
+        run: |
+          CHROME_VERSION="$(google-chrome --version)"
+          CHROMEDRIVER_RELEASE="$(echo $CHROME_VERSION | sed 's/^Google Chrome //')"
+          CHROMEDRIVER_RELEASE=${CHROMEDRIVER_RELEASE%%.*}
+          php artisan dusk:chrome-driver $CHROMEDRIVER_RELEASE
+      - name: Start Chrome Driver
+        run: ./vendor/laravel/dusk/bin/chromedriver-linux &
+      - name: Run Laravel Server
+        run: php artisan serve &
+      - name: Run Laravel Dusk Tests
+        run: php artisan dusk
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: ${{ env.job-name }}-log
+          path: ./storage/logs/*.log
+

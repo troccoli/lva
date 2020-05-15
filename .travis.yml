@@ -6,9 +6,9 @@ php:
 addons:
   chrome: stable
 
-#branches:
-#  only:
-#  - master
+branches:
+  only:
+  - master
 
 install:
   - cp .env.ci .env
