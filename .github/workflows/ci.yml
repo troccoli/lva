@@ -11,12 +11,11 @@ jobs:
   debug:
     runs-on: ubuntu-latest
     steps:
-      - name: PHP version
-        run: php --version
-      - name: NodeJS version
-        run: node --version
-      - name: npm version
-        run: npm --version
+      - uses: actions/checkout@v2
+      - run: php --version
+      - run: node --version
+      - run: npm --version
+      - run: php artisan --version
   build:
     runs-on: ubuntu-latest
     steps:
@@ -50,9 +49,9 @@ jobs:
         if: ${{ ! steps.cache-composer-packages.outputs.cache-hit }}
         run: composer install -n --ignore-platform-reqs --no-progress --no-suggest
       - name: Build artifacts
-        run: |
-          npm run prod
-          /bin/tar -cz -f ~/${{ env.build-artifacts }}.tgz -C ./public css fonts js mix-manifest.json
+        run: npm run prod
+      - name: Tar artifacts
+        runt: /bin/tar -cz -f ~/${{ env.build-artifacts }}.tgz -C ./public css fonts js mix-manifest.json
       - name: Store build artifacts
         uses: actions/upload-artifact@v2
         with:
@@ -179,7 +178,7 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
       - name: Restore building artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/download-artifact@v2
         with:
           name: ${{ env.build-artifacts }}
       - run: tar -xz -f ${{ env.build-artifacts }}.tgz -C ./public
@@ -233,7 +232,7 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
       - name: Restore building artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/download-artifact@v2
         with:
           name: ${{ env.build-artifacts }}
       - run: tar -xz -f ${{ env.build-artifacts }}.tgz -C ./public
