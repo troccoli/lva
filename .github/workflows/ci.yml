@@ -1,12 +1,17 @@
 name: lva
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Setup Environment
+        run: |
+          cp .env.ci .env
+          touch ./storage/logs/laravel.log
+          touch ./database/database.sqlite
       - name: Cache node modules
         uses: actions/cache@v1
         env:
