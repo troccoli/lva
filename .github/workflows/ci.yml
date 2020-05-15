@@ -6,6 +6,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Print versions
+        run: |
+          composer --version
+          node --version
+          npm --version
       - uses: actions/checkout@v2
       - name: Setup Environment
         run: |
@@ -39,32 +44,45 @@ jobs:
             ${{ runner.os }}-
       - name: Install Dependencies
         run: |
-          composer install
+          composer install -n --ignore-platform-reqs --no-progress --no-suggest
           npm install
-      - name: Build
-        run: npm build
-      - name: Test
-        run: npm test
+      - name: Run Webpack
+        run: npm run prod
   unit-tests:
     runs-on: ubuntu-latest
+    needs: [build]
     steps:
       - uses: actions/checkout@v2
-      - name: Print versions
-        run: |
-          composer --version
-          node --version
-          npm --version
       - name: Setup Environment
         run: |
           cp .env.ci .env
           touch ./storage/logs/laravel.log
           touch ./database/database.sqlite
-      - name: Install Dependencies
-        run: |
-          composer install -n --ignore-platform-reqs --no-progress --no-suggest
-          npm install
-      - name: Run Webpack
-        run: npm run prod
+      - name: Restore node modules cache
+        uses: actions/cache@v1
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+      - name: Restore composer packages cache
+        uses: actions/cache@v1
+        env:
+          cache-name: cache-composer-packages
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
       - name: Migrate Database
         run: php artisan migrate --force
       - name: Setup Laravel Passport
@@ -78,24 +96,39 @@ jobs:
 
   dusk-tests:
     runs-on: ubuntu-latest
+    needs: [build]
     steps:
       - uses: actions/checkout@v2
-      - name: Print versions
-        run: |
-          composer --version
-          node --version
-          npm --version
       - name: Setup Environment
         run: |
           cp .env.ci .env
           touch ./storage/logs/laravel.log
           touch ./database/database.sqlite
-      - name: Install Dependencies
-        run: |
-          composer install -n --ignore-platform-reqs --no-progress --no-suggest
-          npm install
-      - name: Run Webpack
-        run: npm run prod
+      - name: Restore node modules cache
+        uses: actions/cache@v1
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+      - name: Restore composer packages cache
+        uses: actions/cache@v1
+        env:
+          cache-name: cache-composer-packages
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
       - name: Migrate Database
         run: php artisan migrate --force
       - name: Setup Laravel Passport
