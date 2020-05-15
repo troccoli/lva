@@ -52,7 +52,7 @@ jobs:
       - name: Build artifacts
         run: |
           npm run prod
-          tar cz -f ~/${{ env.build-artifacts }}.gz ./public/css ./public/fonts ./public/js ./public/mix-manifest.json
+          /bin/tar -cz -f ~/${{ env.build-artifacts }}.tgz -C ./public css fonts js mix-manifest.json
       - name: Store build artifacts
         uses: actions/upload-artifact@v2
         with:
@@ -182,6 +182,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ${{ env.build-artifacts }}
+      - run: tar -xz -f ${{ env.build-artifacts }}.tgz -C ./public
       - name: Migrate Database
         run: php artisan migrate --force
       - name: Setup Laravel Passport
@@ -235,7 +236,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ${{ env.build-artifacts }}
-      - run: tar xz -f
+      - run: tar -xz -f ${{ env.build-artifacts }}.tgz -C ./public
       - name: Migrate Database
         run: php artisan migrate --force
       - name: Setup Laravel Passport
