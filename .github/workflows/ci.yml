@@ -80,11 +80,12 @@ jobs:
         run: chmod -R 777 storage bootstrap/cache
       - name: Execute Unit tests via PHPUnit
         run: vendor/bin/phpunit tests/Unit
-      - name: Download artifacts
+      - name: Upload artifacts
         uses: actions/upload-artifact@v2
+        if: failure()
         with:
-          name: ${{ steps.name }}
-          path: ./storage/logs/
+          name: ${{ job.id }}-log
+          path: ./storage/logs/*.log
 
   integration-tests:
     runs-on: ubuntu-latest
