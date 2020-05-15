@@ -163,6 +163,12 @@ jobs:
         run: php artisan serve &
       - name: Execute Feature tests via PHPUnit
         run: vendor/bin/phpunit tests/Feature
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: ${{ job.id }}-log
+          path: ./storage/logs/*.log
   dusk-tests:
       runs-on: ubuntu-latest
       needs: [build]
