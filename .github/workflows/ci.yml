@@ -179,8 +179,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: ${{ env.build-artifacts }}
-          path: ~
-      - run: tar -xz -f ~/${{ env.build-artifacts }}.tgz -C ./public
+      - run: tar -xz -f ./${{ env.build-artifacts }}.tgz -C ./public
       - name: Migrate Database
         run: php artisan migrate --force
       - name: Setup Laravel Passport
