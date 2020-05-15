@@ -2,6 +2,10 @@ name: lva
 
 on: [push]
 
+env:
+  node-modules-cache-name: cache-node-modules-2
+  composer-packages-cache-name: cache-composer-packages-2
+
 jobs:
   debug:
     runs-on: ubuntu-latest
@@ -20,8 +24,38 @@ jobs:
         run: cp .env.ci .env
       - name: Cache node modules
         uses: actions/cache@v1
-        env:
-          cache-name: cache-node-modules-2
+        with:
+          path: ./node_modules
+          key: ${{ runner.os }}-build-${{ env.node-modules-cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.node-modules-cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Install node dependencise
+        run: npm install
+      - name: Cache composer packages
+        uses: actions/cache@v1
+        with:
+          path: ./vendor
+          key: ${{ runner.os }}-build-${{ env.composer-packages-cache-name }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.composer-packages-cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Install composer dependencies
+        run: composer install -n --ignore-platform-reqs --no-progress --no-suggest
+  unit-tests:
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Environment
+        run: |
+          cp .env.ci .env
+          touch ./storage/logs/laravel.log
+          touch ./database/database.sqlite
+      - name: Restore node modules cache
+        uses: actions/cache@v1
         with:
           path: ./node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
@@ -29,10 +63,8 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
-      - name: Cache composer packages
+      - name: Restore composer packages cache
         uses: actions/cache@v1
-        env:
-          cache-name: cache-composer-packages-2
         with:
           path: ./vendor
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/composer.lock') }}
@@ -40,50 +72,14 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
-      - name: Install composer dependencies
-        run: composer install -n --ignore-platform-reqs --no-progress --no-suggest
-      - name: Install node dependencise
-        run: npm install
-  unit-tests:
-      runs-on: ubuntu-latest
-      needs: [build]
-      steps:
-        - uses: actions/checkout@v2
-        - name: Setup Environment
-          run: |
-            cp .env.ci .env
-            touch ./storage/logs/laravel.log
-            touch ./database/database.sqlite
-        - name: Restore node modules cache
-          uses: actions/cache@v1
-          env:
-            cache-name: cache-node-modules-2
-          with:
-            path: ./node_modules
-            key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-            restore-keys: |
-              ${{ runner.os }}-build-${{ env.cache-name }}-
-              ${{ runner.os }}-build-
-              ${{ runner.os }}-
-        - name: Restore composer packages cache
-          uses: actions/cache@v1
-          env:
-            cache-name: cache-composer-packages-2
-          with:
-            path: ./vendor
-            key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/composer.lock') }}
-            restore-keys: |
-              ${{ runner.os }}-build-${{ env.cache-name }}-
-              ${{ runner.os }}-build-
-              ${{ runner.os }}-
-        - name: Migrate Database
-          run: php artisan migrate --force
-        - name: Setup Laravel Passport
-          run: php artisan passport:install
-        - name: Directory Permissions
-          run: chmod -R 777 storage bootstrap/cache
-        - name: Execute Unit tests via PHPUnit
-          run: vendor/bin/phpunit tests/Unit
+      - name: Migrate Database
+        run: php artisan migrate --force
+      - name: Setup Laravel Passport
+        run: php artisan passport:install
+      - name: Directory Permissions
+        run: chmod -R 777 storage bootstrap/cache
+      - name: Execute Unit tests via PHPUnit
+        run: vendor/bin/phpunit tests/Unit
   integration-tests:
     runs-on: ubuntu-latest
     needs: [build]
@@ -96,24 +92,20 @@ jobs:
           touch ./database/database.sqlite
       - name: Restore node modules cache
         uses: actions/cache@v1
-        env:
-          cache-name: cache-node-modules-2
         with:
           path: ./node_modules
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-build-${{ env.node-modules-cache-name }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-${{ env.node-modules-cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
       - name: Restore composer packages cache
         uses: actions/cache@v1
-        env:
-          cache-name: cache-composer-packages-2
         with:
           path: ./vendor
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/composer.lock') }}
+          key: ${{ runner.os }}-build-${{ env.composer-packages-cache-name }}-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-${{ env.composer-packages-cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
       - name: Migrate Database
@@ -138,24 +130,20 @@ jobs:
           touch ./database/database.sqlite
       - name: Restore node modules cache
         uses: actions/cache@v1
-        env:
-          cache-name: cache-node-modules-2
         with:
           path: ./node_modules
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-build-${{ env.node-modules-cache-name }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-${{ env.node-modules-cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
       - name: Restore composer packages cache
         uses: actions/cache@v1
-        env:
-          cache-name: cache-composer-packages-2
         with:
           path: ./vendor
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/composer.lock') }}
+          key: ${{ runner.os }}-build-${{ env.composer-packages-cache-name }}-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-${{ env.composer-packages-cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
       - name: Migrate Database
@@ -180,13 +168,11 @@ jobs:
             touch ./database/database.sqlite
         - name: Restore node modules cache
           uses: actions/cache@v1
-          env:
-            cache-name: cache-node-modules
           with:
-            path: ~/.npm
-            key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+            path: ./node_modules
+            key: ${{ runner.os }}-build-${{ env.node-modules-cache-name }}-${{ hashFiles('**/package-lock.json') }}
             restore-keys: |
-              ${{ runner.os }}-build-${{ env.cache-name }}-
+              ${{ runner.os }}-build-${{ env.node-modules-cache-name }}-
               ${{ runner.os }}-build-
               ${{ runner.os }}-
         - name: Get Composer Cache Directory
@@ -194,13 +180,11 @@ jobs:
           run: echo "::set-output name=dir::$(composer config cache-files-dir)"
         - name: Restore composer packages cache
           uses: actions/cache@v1
-          env:
-            cache-name: cache-composer-packages
           with:
-            path: ${{ steps.composer-cache.outputs.dir }}
-            key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/composer.lock') }}
+            path: ./vendor
+            key: ${{ runner.os }}-build-${{ env.composer-packages-cache-name }}-${{ hashFiles('**/composer.lock') }}
             restore-keys: |
-              ${{ runner.os }}-build-${{ env.cache-name }}-
+              ${{ runner.os }}-build-${{ env.composer-packages-cache-name }}-
               ${{ runner.os }}-build-
               ${{ runner.os }}-
         - name: Migrate Database
