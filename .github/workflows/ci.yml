@@ -34,7 +34,7 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
       - name: Install node dependencise
-        if: ! steps.cahe-node-modules.outputs.cache-hit
+        if: ${{ ! steps.cahe-node-modules.outputs.cache-hit }}
         run: npm install
       - name: Cache composer packages
         id: cache-composer-packages
@@ -57,7 +57,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ${{ env.build-artifacts }}
-          path: ~/${{ env.build-artifacts }}
+          path: ~/${{ env.build-artifacts }}.gz
   unit-tests:
     env:
       job-name: unit-tests
@@ -235,6 +235,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ${{ env.build-artifacts }}
+      - run: tar xz -f
       - name: Migrate Database
         run: php artisan migrate --force
       - name: Setup Laravel Passport
