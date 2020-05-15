@@ -11,11 +11,9 @@ jobs:
   debug:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
       - run: php --version
       - run: node --version
       - run: npm --version
-      - run: php artisan --version
   build:
     runs-on: ubuntu-latest
     steps:
@@ -181,7 +179,8 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: ${{ env.build-artifacts }}
-      - run: tar -xz -f ${{ env.build-artifacts }}.tgz -C ./public
+          path: ~
+      - run: tar -xz -f ~/${{ env.build-artifacts }}.tgz -C ./public
       - name: Migrate Database
         run: php artisan migrate --force
       - name: Setup Laravel Passport
@@ -235,7 +234,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: ${{ env.build-artifacts }}
-      - run: tar -xz -f ${{ env.build-artifacts }}.tgz -C ./public
+      - run: tar -xz -f ./${{ env.build-artifacts }}.tgz -C ./public
       - name: Migrate Database
         run: php artisan migrate --force
       - name: Setup Laravel Passport
