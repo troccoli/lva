@@ -51,7 +51,7 @@ jobs:
       - name: Build artifacts
         run: npm run prod
       - name: Tar artifacts
-        runt: /bin/tar -cz -f ~/${{ env.build-artifacts }}.tgz -C ./public css fonts js mix-manifest.json
+        run: /bin/tar -cz -f ~/${{ env.build-artifacts }}.tgz -C ./public css fonts js mix-manifest.json
       - name: Store build artifacts
         uses: actions/upload-artifact@v2
         with:
