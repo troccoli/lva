@@ -28,7 +28,6 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
-        run: npm install
       - name: Cache composer packages
         uses: actions/cache@v1
         env:
@@ -40,9 +39,12 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
-        run: composer install -n --ignore-platform-reqs --no-progress --no-suggest
-#      - name: Run Webpack
-#        run: npm run prod
+      - name: Install Dependencies
+        run: |
+          composer install -n --ignore-platform-reqs --no-progress --no-suggest
+          npm install
+      - name: Run Webpack
+        run: npm run prod
   unit-tests:
     runs-on: ubuntu-latest
     needs: [build]
