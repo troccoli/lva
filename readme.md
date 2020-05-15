@@ -1,7 +1,7 @@
-<p align="center">
-<a href="https://travis-ci.org/troccoli/lva"><img src="https://travis-ci.org/troccoli/lva.svg?branch=master" alt="Build Status"></a>
-<a href="https://github.com/troccoli/lva"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License"></a>
-</p>
+[![Build Status](https://travis-ci.org/troccoli/lva.svg?branch=master)](https://travis-ci.org/troccoli/lva)
+[![CircleCI](https://circleci.com/gh/troccoli/lva.svg?style=shield)](https://app.circleci.com/pipelines/github/troccoli/lva?branch=master)
+![](https://github.com/troccoli/lva/workflows/lva/badge.svg)
+![GitHub](https://img.shields.io/github/license/troccoli/lva?color=blue)
 
 ## About the project
 
