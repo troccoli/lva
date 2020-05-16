@@ -27,7 +27,6 @@ jobs:
           path: ./node_modules
           key: ${{ runner.os }}-build-${{ env.node-modules-cache-name }}-${{ hashFiles('**/package-lock.json') }}
       - name: Install node dependencise
-        if: ${{ ! steps.cahe-node-modules.outputs.cache-hit }}
         run: npm install
       - name: Cache composer packages
         id: cache-composer-packages
@@ -36,7 +35,6 @@ jobs:
           path: ./vendor
           key: ${{ runner.os }}-build-${{ env.composer-packages-cache-name }}-${{ hashFiles('**/composer.lock') }}
       - name: Install composer dependencies
-        if: ${{ ! steps.cache-composer-packages.outputs.cache-hit }}
         run: composer install -n --ignore-platform-reqs --no-progress --no-suggest
       - name: Build artifacts
         run: npm run prod
