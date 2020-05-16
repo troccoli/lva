@@ -25,7 +25,7 @@
                     <tr dusk={{ "season-{$season->getId()}-row" }}>
                         <td>
                             @component('components.crud.view-button')
-                                {{ route('competitions.index', ['season_id' => $season->getId()]) }}
+                                {{ route('competitions.index', ['season' => $season->getId()]) }}
                             @endcomponent
                             @component('components.crud.update-button')
                                 {{ route('seasons.edit', [$season]) }}

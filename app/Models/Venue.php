@@ -12,6 +12,7 @@ class Venue extends Model
 
     public $incrementing = false;
     protected $fillable = ['name'];
+    protected $keyType = 'string';
 
     public function getId(): string
     {

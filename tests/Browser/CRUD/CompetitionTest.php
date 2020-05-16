@@ -34,18 +34,19 @@ class CompetitionTest extends DuskTestCase
         $this->browse(function (Browser $browser): void {
             $browser->loginAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
-            $seasonId = factory(Season::class)->create(['year' => 2001])->getId();
+            $season2001Id = factory(Season::class)->create(['year' => 2001])->getId();
+            $season2002Id = factory(Season::class)->create(['year' => 2002])->getId();
 
-            $browser->visit("/seasons/$seasonId/competitions/")
+            $browser->visit("/seasons/$season2001Id/competitions/")
                 ->assertSee("Competitions in the 2001/02 season")
                 ->assertSeeIn('@list', 'There are no competitions in this season yet.');
 
-            factory(Competition::class)->create(['name' => 'University Challenge']);
-            factory(Competition::class)->create(['season_id' => $seasonId, 'name' => 'London League']);
-            factory(Competition::class)->create(['season_id' => $seasonId, 'name' => 'Youth Games']);
-            factory(Competition::class)->create(['season_id' => $seasonId, 'name' => 'Super8']);
+            factory(Competition::class)->create(['season_id' => $season2002Id, 'name' => 'University Challenge']);
+            factory(Competition::class)->create(['season_id' => $season2001Id, 'name' => 'London League']);
+            factory(Competition::class)->create(['season_id' => $season2001Id, 'name' => 'Youth Games']);
+            factory(Competition::class)->create(['season_id' => $season2001Id, 'name' => 'Super8']);
 
-            $browser->visit("/seasons/$seasonId/competitions/")
+            $browser->visit("/seasons/$season2001Id/competitions/")
                 ->assertSeeLink('New competition')
                 ->with('@list', function (Browser $table): void {
                     $table->assertSeeIn('thead tr:nth-child(1)', 'Competition');

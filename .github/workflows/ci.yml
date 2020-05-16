@@ -26,12 +26,7 @@ jobs:
         with:
           path: ./node_modules
           key: ${{ runner.os }}-build-${{ env.node-modules-cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.node-modules-cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
       - name: Install node dependencise
-        if: ${{ ! steps.cahe-node-modules.outputs.cache-hit }}
         run: npm install
       - name: Cache composer packages
         id: cache-composer-packages
@@ -39,12 +34,7 @@ jobs:
         with:
           path: ./vendor
           key: ${{ runner.os }}-build-${{ env.composer-packages-cache-name }}-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.composer-packages-cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
       - name: Install composer dependencies
-        if: ${{ ! steps.cache-composer-packages.outputs.cache-hit }}
         run: composer install -n --ignore-platform-reqs --no-progress --no-suggest
       - name: Build artifacts
         run: npm run prod
@@ -72,19 +62,11 @@ jobs:
         with:
           path: ./node_modules
           key: ${{ runner.os }}-build-${{ env.node-modules-cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.node-modules-cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
       - name: Restore composer packages cache
         uses: actions/cache@v1
         with:
           path: ./vendor
           key: ${{ runner.os }}-build-${{ env.composer-packages-cache-name }}-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.composer-packages-cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
       - name: Migrate Database
         run: php artisan migrate --force
       - name: Setup Laravel Passport
@@ -116,19 +98,11 @@ jobs:
         with:
           path: ./node_modules
           key: ${{ runner.os }}-build-${{ env.node-modules-cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.node-modules-cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
       - name: Restore composer packages cache
         uses: actions/cache@v1
         with:
           path: ./vendor
           key: ${{ runner.os }}-build-${{ env.composer-packages-cache-name }}-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.composer-packages-cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
       - name: Migrate Database
         run: php artisan migrate --force
       - name: Setup Laravel Passport
@@ -162,19 +136,11 @@ jobs:
         with:
           path: ./node_modules
           key: ${{ runner.os }}-build-${{ env.node-modules-cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.node-modules-cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
       - name: Restore composer packages cache
         uses: actions/cache@v1
         with:
           path: ./vendor
           key: ${{ runner.os }}-build-${{ env.composer-packages-cache-name }}-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.composer-packages-cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
       - name: Restore building artifacts
         uses: actions/download-artifact@v2
         with:
@@ -213,10 +179,6 @@ jobs:
         with:
           path: ./node_modules
           key: ${{ runner.os }}-build-${{ env.node-modules-cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.node-modules-cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
       - name: Get Composer Cache Directory
         id: composer-cache
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"
@@ -225,10 +187,6 @@ jobs:
         with:
           path: ./vendor
           key: ${{ runner.os }}-build-${{ env.composer-packages-cache-name }}-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.composer-packages-cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
       - name: Restore building artifacts
         uses: actions/download-artifact@v2
         with:
