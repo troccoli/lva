@@ -9,7 +9,7 @@ class ResetPassword extends Notification
 {
     public $token;
 
-    public function construct($token)
+    public function __construct($token)
     {
         $this->token = $token;
     }

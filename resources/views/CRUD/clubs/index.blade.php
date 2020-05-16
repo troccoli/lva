@@ -26,7 +26,7 @@
                     <tr dusk={{ "club-{$club->getId()}-row" }}>
                         <td>
                             @component('components.crud.view-button')
-                                {{ route('teams.index', ['club_id' => $club->getId()]) }}
+                                {{ route('teams.index', ['club' => $club->getId()]) }}
                             @endcomponent
                             @component('components.crud.update-button')
                                 {{ route('clubs.edit', [$club]) }}
