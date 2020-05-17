@@ -209,11 +209,17 @@ jobs:
       - name: Run Laravel Server
         run: php artisan serve &
       - name: Run Laravel Dusk Tests
+        id: laravel-dusk
         run: php artisan dusk
-      - name: Upload artifacts
+      - name: Upload logs
         uses: actions/upload-artifact@v2
-        if: failure()
+        if: ${{ steps.laravel-dusk.outcome == 'failure' }}
         with:
           name: ${{ env.job-name }}-log
           path: ./storage/logs/*.log
-
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v2
+        if: ${{ steps.laravel-dusk.outcome == 'failure' }}
+        with:
+          name: ${{ env.job-name }}-screenshots
+          path: ./tests/Browser/screenshots
