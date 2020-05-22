@@ -7,16 +7,16 @@ use App\Models\Season;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
 
 class UsersTableSeeder extends Seeder
 {
     public function run(): void
     {
-        /** @var User $user */
-        $user = factory(User::class)->create();
-
-        $user->assignRole('Site Admin');
+        $user = factory(User::class)->create([
+            'name' => "Site Admin",
+            'email' => "site-admin@example.com",
+        ]);
+        $user->assignRole("Site Admin");
 
         Season::all()->each(function (Season $season) {
             $user = factory(User::class)->create([
