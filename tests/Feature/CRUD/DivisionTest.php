@@ -71,7 +71,7 @@ class DivisionTest extends TestCase
         $division = factory(Division::class)->make();
         $competitionId = $division->getCompetition()->getId();
 
-        $this->be(factory(User::class)->create()->assignRole('Super Admin'));
+        $this->be(factory(User::class)->create()->assignRole('Site Admin'));
 
         $this->get("/competitions/$competitionId/divisions")
             ->assertOk();

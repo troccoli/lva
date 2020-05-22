@@ -73,7 +73,7 @@ class VenueTest extends TestCase
         /** @var Venue $venue */
         $venue = factory(Venue::class)->make();
 
-        $this->be(factory(User::class)->create()->assignRole('Super Admin'));
+        $this->be(factory(User::class)->create()->assignRole('Site Admin'));
 
         $this->get('/venues')
             ->assertOk();

@@ -68,7 +68,7 @@ class SeasonTest extends TestCase
         /** @var Season $season */
         $season = factory(Season::class)->make();
 
-        $this->be(factory(User::class)->create()->assignRole('Super Admin'));
+        $this->be(factory(User::class)->create()->assignRole('Site Admin'));
 
         $this->get('/seasons')
             ->assertOk();

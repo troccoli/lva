@@ -11,6 +11,6 @@ class UsersTableSeeder extends Seeder
         /** @var User $user */
         $user = factory(User::class)->create();
 
-        $user->assignRole('Super Admin');
+        $user->assignRole('Site Admin');
     }
 }

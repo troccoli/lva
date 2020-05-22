@@ -14,7 +14,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         Permission::create(['name' => 'manage raw data']);
 
-        Role::create(['name' => 'Super Admin']);
+        Role::create(['name' => 'Site Admin']);
         Role::create(['name' => 'League Admin'])
             ->givePermissionTo('manage raw data');
         Role::create(['name' => 'Division Admin']);

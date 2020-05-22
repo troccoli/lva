@@ -44,7 +44,7 @@ class BreadcrumbsTest extends DuskTestCase
         $breadcrumbs = $this->authPagesBreadcrumbs();
 
         $this->browse(function (Browser $browser) use ($breadcrumbs): void {
-            $browser->loginAs(factory(User::class)->create()->assignRole('Super Admin'));
+            $browser->loginAs(factory(User::class)->create()->assignRole('Site Admin'));
             foreach ($breadcrumbs as $url => $crumbs) {
                 $browser->visit($url)
                     ->assertSeeIn('.breadcrumb', strtoupper(implode("\n", $crumbs)));
