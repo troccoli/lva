@@ -12,14 +12,5 @@ class ClubsTableSeeder extends Seeder
         Venue::each(function (Venue $venue): void {
             factory(Club::class)->create(['venue_id' => $venue->getId()]);
         });
-
-        $this->createRoles();
-    }
-
-    private function createRoles(): void
-    {
-        Club::all()->each(function (Club $club) {
-            Role::create(['name' => "Club {$club->getId()} Secretary"]);
-        });
     }
 }
