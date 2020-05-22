@@ -70,7 +70,7 @@ class TeamTest extends TestCase
         $team = aTeam()->buildWithoutSaving();
         $clubId = $team->getClub()->getId();
 
-        $this->actingAs(factory(User::class)->create()->assignRole('Super Admin'));
+        $this->actingAs(factory(User::class)->create()->assignRole('Site Admin'));
 
         $this->get("/clubs/$clubId/teams")
             ->assertOk();
