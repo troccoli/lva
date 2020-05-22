@@ -35,7 +35,7 @@ class DivisionTest extends DuskTestCase
             $browser->loginAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
             /** @var Season $season */
-            $season = factory(Season::class)->create();
+            $season = factory(Season::class)->create(['year' => 1999]);
             $seasonName = $season->getName();
             $competitionId = factory(Competition::class)
                 ->create([
