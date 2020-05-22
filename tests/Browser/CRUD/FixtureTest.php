@@ -117,7 +117,7 @@ class FixtureTest extends DuskTestCase
             $browser->loginAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
             $browser->visit('/fixtures')
-                ->pause(1000)
+                ->pause(1500)
                 ->assertSeeIn('@season-selector', 'No seasons')
                 ->assertSeeIn('@competition-selector', 'No competitions')
                 ->assertSeeIn('@division-selector', 'No divisions')
@@ -125,7 +125,7 @@ class FixtureTest extends DuskTestCase
 
             $season = factory(Season::class)->create(['year' => 2015]);
             $browser->visit('/fixtures')
-                ->pause(1000)
+                ->pause(1500)
                 ->assertSeeIn('@season-selector', '2015/16')
                 ->assertSeeIn('@competition-selector', 'No competitions')
                 ->assertSeeIn('@division-selector', 'No divisions')
@@ -133,7 +133,7 @@ class FixtureTest extends DuskTestCase
 
             $competition = factory(Competition::class)->create(['name' => 'COMP1', 'season_id' => $season->getId()]);
             $browser->visit('/fixtures')
-                ->pause(1000)
+                ->pause(1500)
                 ->assertSeeIn('@season-selector', '2015/16')
                 ->assertSeeIn('@competition-selector', 'COMP1')
                 ->assertSeeIn('@division-selector', 'No divisions')
@@ -141,7 +141,7 @@ class FixtureTest extends DuskTestCase
 
             $division = factory(Division::class)->create(['name' => 'DIV1', 'display_order' => 1, 'competition_id' => $competition->getId()]);
             $browser->visit('/fixtures')
-                ->pause(1000)
+                ->pause(1500)
                 ->assertSeeIn('@season-selector', '2015/16')
                 ->assertSeeIn('@competition-selector', 'COMP1')
                 ->assertSeeIn('@division-selector', 'DIV1')
@@ -159,7 +159,7 @@ class FixtureTest extends DuskTestCase
 
             $browser->loginAs(factory(User::class)->create()->givePermissionTo('manage raw data'))
                 ->visit(new FixtureList())
-                ->pause(1000)
+                ->pause(1500)
                 ->assertAttribute('@add', 'aria-label', 'Add a fixture')
                 ->assertButtonDisabled('@previousPage')
                 ->assertButtonEnabled('@nextPage');
@@ -168,7 +168,7 @@ class FixtureTest extends DuskTestCase
             $browser->assertSeeIn('@season-selector', '2019/20')
                 ->assertSeeIn('@competition-selector', 'S3C1')
                 ->assertSeeIn('@division-selector', 'S3C1D1')
-                ->pause(1000)
+                ->pause(1500)
                 ->with('@list', function (Browser $table): void {
                     $this->assertTableHeader($table, ['Division', 'Home team', 'Away team']);
 
@@ -185,7 +185,7 @@ class FixtureTest extends DuskTestCase
                 })
                 // Default season, competition and division - page 2
                 ->press('@nextPage')
-                ->pause(1000)
+                ->pause(1500)
                 ->with('@list', function (Browser $table): void {
                     $this->assertTableHeader($table, ['Division', 'Home team', 'Away team']);
 
@@ -203,7 +203,7 @@ class FixtureTest extends DuskTestCase
 
             // Select a season, with default competition and division - page 1
             $browser->vuetifySelect('@season-selector', '2017/18')
-                ->pause(1000)
+                ->pause(1500)
                 ->assertSeeIn('@season-selector', '2017/18')
                 ->assertSeeIn('@competition-selector', 'S2C1')
                 ->assertSeeIn('@division-selector', 'S2C1D1')
@@ -220,10 +220,10 @@ class FixtureTest extends DuskTestCase
 
             // Select a season and a competition, default division - page 1
             $browser->vuetifySelect('@season-selector', '2019/20')
-                ->pause(1000)
+                ->pause(1500)
                 ->assertSeeIn('@season-selector', '2019/20')
                 ->vuetifySelect('@competition-selector', 'S3C2')
-                ->pause(1000)
+                ->pause(1500)
                 ->assertSeeIn('@competition-selector', 'S3C2')
                 ->assertSeeIn('@division-selector', 'S3C2D1')
                 ->with('@list', function (Browser $table): void {
@@ -243,13 +243,13 @@ class FixtureTest extends DuskTestCase
 
             // Select a season, competition and division - page 1
             $browser->vuetifySelect('@season-selector', '2017/18')
-                ->pause(1000)
+                ->pause(1500)
                 ->assertSeeIn('@season-selector', '2017/18')
                 ->vuetifySelect('@competition-selector', 'S2C2')
-                ->pause(1000)
+                ->pause(1500)
                 ->assertSeeIn('@competition-selector', 'S2C2')
                 ->vuetifySelect('@division-selector', 'S2C2D3')
-                ->pause(1000)
+                ->pause(1500)
                 ->assertSeeIn('@division-selector', 'S2C2D3')
                 ->with('@list', function (Browser $table): void {
                     $this->assertTableHeader($table, ['Division', 'Home team', 'Away team']);
@@ -264,16 +264,16 @@ class FixtureTest extends DuskTestCase
 
             // Select a season, competition and division and go through pages
             $browser->vuetifySelect('@season-selector', '2019/20')
-                ->pause(1000)
+                ->pause(1500)
                 ->assertSeeIn('@season-selector', '2019/20')
                 ->assertSeeIn('@competition-selector', 'S3C1')
                 ->vuetifySelect('@competition-selector', 'S3C4')
-                ->pause(1000)
+                ->pause(1500)
                 ->assertSeeIn('@competition-selector', 'S3C4')
                 ->assertSeeIn('@division-selector', 'S3C4D1')
                 // go to the second page
                 ->press('@nextPage')
-                ->pause(1000)
+                ->pause(1500)
                 ->with('@list', function (Browser $table): void {
                     $this->assertTableHeader($table, ['Division', 'Home team', 'Away team']);
 
@@ -290,7 +290,7 @@ class FixtureTest extends DuskTestCase
                 })
                 // go to the third page
                 ->press('@nextPage')
-                ->pause(1000)
+                ->pause(1500)
                 ->with('@list', function (Browser $table): void {
                     $this->assertTableHeader($table, ['Division', 'Home team', 'Away team']);
 
@@ -307,7 +307,7 @@ class FixtureTest extends DuskTestCase
                 })
                 // go back to the second page
                 ->press('@previousPage')
-                ->pause(1000)
+                ->pause(1500)
                 ->with('@list', function (Browser $table): void {
                     $this->assertTableHeader($table, ['Division', 'Home team', 'Away team']);
 
