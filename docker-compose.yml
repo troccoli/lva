@@ -4,7 +4,7 @@ services:
 
   web:
     container_name: lva-web
-    image: troccoli/laravel:4.6.1
+    image: troccoli/laravel:7.4.6
     volumes:
       - ./:/var/www/vhosts/app:z
     ports:
