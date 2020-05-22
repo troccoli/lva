@@ -7,16 +7,22 @@ use App\Models\Season;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
 
 class UsersTableSeeder extends Seeder
 {
+    use SeederProgressBar;
+
     public function run(): void
     {
+        $this->initProgressBar(Role::count());
+
         $user = factory(User::class)->create([
             'name' => "Site Admin",
             'email' => "site-admin@example.com",
         ]);
         $user->assignRole("Site Admin");
+        $this->advanceProgressBar();
 
         Season::all()->each(function (Season $season) {
             $user = factory(User::class)->create([
@@ -24,6 +30,7 @@ class UsersTableSeeder extends Seeder
                 'email' => "season-{$season->getId()}-admin@example.com",
             ]);
             $user->assignRole("Season {$season->getName()} Admin");
+            $this->advanceProgressBar();
         });
         Competition::all()->each(function (Competition $competition) {
             $user = factory(User::class)->create([
@@ -31,6 +38,7 @@ class UsersTableSeeder extends Seeder
                 'email' => "competition-{$competition->getId()}-admin@example.com",
             ]);
             $user->assignRole("Competition {$competition->getId()} Admin");
+            $this->advanceProgressBar();
         });
         Division::all()->each(function (Division $division) {
             $user = factory(User::class)->create([
@@ -38,6 +46,7 @@ class UsersTableSeeder extends Seeder
                 'email' => "division-{$division->getId()}-admin@example.com",
             ]);
             $user->assignRole("Division {$division->getId()} Admin");
+            $this->advanceProgressBar();
         });
 
         Club::all()->each(function (Club $club) {
@@ -46,6 +55,7 @@ class UsersTableSeeder extends Seeder
                 'email' => "club-{$club->getId()}-secretary@example.com",
             ]);
             $user->assignRole("Club {$club->getId()} Secretary");
+            $this->advanceProgressBar();
         });
         Team::all()->each(function (Team $team) {
             $user = factory(User::class)->create([
@@ -53,6 +63,9 @@ class UsersTableSeeder extends Seeder
                 'email' => "team-{$team->getId()}-secretary@example.com",
             ]);
             $user->assignRole("Team {$team->getId()} Secretary");
+            $this->advanceProgressBar();
         });
+
+        $this->finishProgressBar();
     }
 }
