@@ -18,34 +18,34 @@ class UsersTableSeeder extends Seeder
         $this->initProgressBar(Role::count());
 
         $user = factory(User::class)->create([
-            'name' => "Site Admin",
-            'email' => "site-admin@example.com",
+            'name' => "Site Administrator",
+            'email' => "site-administrator@example.com",
         ]);
-        $user->assignRole("Site Admin");
+        $user->assignRole("Site Administrator");
         $this->advanceProgressBar();
 
         Season::all()->each(function (Season $season) {
             $user = factory(User::class)->create([
-                'name' => "Season {$season->getId()} Admin",
-                'email' => "season-{$season->getId()}-admin@example.com",
+                'name' => "Season {$season->getId()} Administrator",
+                'email' => "season-{$season->getId()}-administrator@example.com",
             ]);
-            $user->assignRole("Season {$season->getId()} Admin");
+            $user->assignRole("Season {$season->getId()} Administrator");
             $this->advanceProgressBar();
         });
         Competition::all()->each(function (Competition $competition) {
             $user = factory(User::class)->create([
-                'name' => "Competition {$competition->getId()} Admin",
-                'email' => "competition-{$competition->getId()}-admin@example.com",
+                'name' => "Competition {$competition->getId()} Administrator",
+                'email' => "competition-{$competition->getId()}-administrator@example.com",
             ]);
-            $user->assignRole("Competition {$competition->getId()} Admin");
+            $user->assignRole("Competition {$competition->getId()} Administrator");
             $this->advanceProgressBar();
         });
         Division::all()->each(function (Division $division) {
             $user = factory(User::class)->create([
-                'name' => "Division {$division->getId()} Admin",
-                'email' => "division-{$division->getId()}-admin@example.com",
+                'name' => "Division {$division->getId()} Administrator",
+                'email' => "division-{$division->getId()}-administrator@example.com",
             ]);
-            $user->assignRole("Division {$division->getId()} Admin");
+            $user->assignRole("Division {$division->getId()} Administrator");
             $this->advanceProgressBar();
         });
 
