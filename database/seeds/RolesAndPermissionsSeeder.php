@@ -31,7 +31,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         $this->initProgressBar($allRolesCount);
         Season::all()->each(function (Season $season) {
-            Role::create(['name' => "Season {$season->getName()} Admin"]);
+            Role::create(['name' => "Season {$season->getId()} Admin"]);
             $this->advanceProgressBar();
         });
         Competition::all()->each(function (Competition $competition) {

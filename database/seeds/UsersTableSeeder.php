@@ -26,10 +26,10 @@ class UsersTableSeeder extends Seeder
 
         Season::all()->each(function (Season $season) {
             $user = factory(User::class)->create([
-                'name' => "Season {$season->getName()} Admin",
+                'name' => "Season {$season->getId()} Admin",
                 'email' => "season-{$season->getId()}-admin@example.com",
             ]);
-            $user->assignRole("Season {$season->getName()} Admin");
+            $user->assignRole("Season {$season->getId()} Admin");
             $this->advanceProgressBar();
         });
         Competition::all()->each(function (Competition $competition) {
