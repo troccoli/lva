@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Events\CompetitionCreated;
+use App\Events\DivisionCreated;
 use App\Events\SeasonCreated;
 use App\Listeners\CreateCompetitionAdminRole;
+use App\Listeners\CreateDivisionAdminRole;
 use App\Listeners\CreateSeasonAdminRole;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -26,6 +28,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         CompetitionCreated::class => [
             CreateCompetitionAdminRole::class,
+        ],
+        DivisionCreated::class => [
+            CreateDivisionAdminRole::class,
         ],
     ];
 
