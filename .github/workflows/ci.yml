@@ -179,9 +179,6 @@ jobs:
         with:
           path: ./node_modules
           key: ${{ runner.os }}-build-${{ env.node-modules-cache-name }}-${{ hashFiles('**/package-lock.json') }}
-      - name: Get Composer Cache Directory
-        id: composer-cache
-        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
       - name: Restore composer packages cache
         uses: actions/cache@v1
         with:
