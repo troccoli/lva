@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use App\Events\ClubCreated;
 use App\Events\CompetitionCreated;
 use App\Events\DivisionCreated;
 use App\Events\SeasonCreated;
+use App\Listeners\CreateClubSecretaryRole;
 use App\Listeners\CreateCompetitionAdminRole;
 use App\Listeners\CreateDivisionAdminRole;
 use App\Listeners\CreateSeasonAdminRole;
@@ -31,6 +33,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         DivisionCreated::class => [
             CreateDivisionAdminRole::class,
+        ],
+        ClubCreated::class => [
+            CreateClubSecretaryRole::class,
         ],
     ];
 
