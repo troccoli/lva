@@ -23,6 +23,13 @@ class ClubBuilder
         return $this;
     }
 
+    public function withoutVenue(): self
+    {
+        $this->data['venue_id'] = null;
+
+        return $this;
+    }
+
     public function build(): Club
     {
         return factory(Club::class)->create($this->data);

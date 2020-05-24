@@ -2,10 +2,12 @@
 
 namespace Tests\Feature\CRUD;
 
+use App\Events\TeamCreated;
 use App\Models\Team;
 use App\Models\User;
 use App\Models\Venue;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class TeamTest extends TestCase
@@ -229,5 +231,19 @@ class TeamTest extends TestCase
 
         $this->delete("/clubs/$clubId/teams/" . ($team->getId() + 1))
             ->assertNotFound();
+    }
+
+    public function testAddingTeamWillDispatchTheEvent(): void
+    {
+        Event::fake();
+
+        // Cannot create a venue as the events are faked and the Venue model
+        // needs to create a UUID
+        $clubId = aClub()->withoutVenue()->build()->getId();
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
+
+        $this->post("/clubs/$clubId/teams", ['club_id' => $clubId, 'name' => 'London Scarlets', 'venue_id' => null]);
+
+        Event::assertDispatched(TeamCreated::class);
     }
 }

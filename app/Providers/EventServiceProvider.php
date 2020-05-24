@@ -6,10 +6,12 @@ use App\Events\ClubCreated;
 use App\Events\CompetitionCreated;
 use App\Events\DivisionCreated;
 use App\Events\SeasonCreated;
+use App\Events\TeamCreated;
 use App\Listeners\CreateClubSecretaryRole;
 use App\Listeners\CreateCompetitionAdminRole;
 use App\Listeners\CreateDivisionAdminRole;
 use App\Listeners\CreateSeasonAdminRole;
+use App\Listeners\CreateTeamSecretaryRole;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -36,6 +38,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         ClubCreated::class => [
             CreateClubSecretaryRole::class,
+        ],
+        TeamCreated::class => [
+            CreateTeamSecretaryRole::class,
         ],
     ];
 

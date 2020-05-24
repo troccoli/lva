@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\TeamCreated;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Model;
@@ -13,6 +14,10 @@ use Illuminate\Support\Collection;
 class Team extends Model
 {
     protected $fillable = ['club_id', 'name', 'venue_id'];
+
+    protected $dispatchesEvents = [
+        'created' => TeamCreated::class,
+    ];
 
     public function getId(): int
     {
