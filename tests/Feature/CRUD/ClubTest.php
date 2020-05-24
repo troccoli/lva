@@ -2,10 +2,12 @@
 
 namespace Tests\Feature\CRUD;
 
+use App\Events\ClubCreated;
 use App\Models\Club;
 use App\Models\User;
 use App\Models\Venue;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class ClubTest extends TestCase
@@ -200,5 +202,16 @@ class ClubTest extends TestCase
         $this->delete('/clubs/' . $club->getId())
             ->assertSessionHasNoErrors();
         $this->assertDatabaseMissing('clubs', ['id' => $club->getId()]);
+    }
+
+    public function testAddingClubWillDispatchTheEvent(): void
+    {
+        Event::fake();
+
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
+
+        $this->post('/clubs', ['name' => 'London Giants', 'venue_id' => null]);
+
+        Event::assertDispatched(ClubCreated::class);
     }
 }

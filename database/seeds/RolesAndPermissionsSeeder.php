@@ -21,25 +21,25 @@ class RolesAndPermissionsSeeder extends Seeder
 
         Permission::create(['name' => 'manage raw data']);
 
-        Role::create(['name' => 'Site Admin']);
-        Role::create(['name' => 'League Admin'])
+        Role::create(['name' => 'Site Administrator']);
+        Role::create(['name' => 'League Administrator'])
             ->givePermissionTo('manage raw data');
-        Role::create(['name' => 'Division Admin']);
+        Role::create(['name' => 'Division Administrator']);
 
         $allRolesCount = Season::count() + Competition::count() + Division::count() +
             Club::count() + Team::count();
 
         $this->initProgressBar($allRolesCount);
         Season::all()->each(function (Season $season) {
-            Role::create(['name' => "Season {$season->getName()} Admin"]);
+            Role::create(['name' => "Season {$season->getId()} Administrator"]);
             $this->advanceProgressBar();
         });
         Competition::all()->each(function (Competition $competition) {
-            Role::create(['name' => "Competition {$competition->getId()} Admin"]);
+            Role::create(['name' => "Competition {$competition->getId()} Administrator"]);
             $this->advanceProgressBar();
         });
         Division::all()->each(function (Division $division) {
-            Role::create(['name' => "Division {$division->getId()} Admin"]);
+            Role::create(['name' => "Division {$division->getId()} Administrator"]);
             $this->advanceProgressBar();
         });
 

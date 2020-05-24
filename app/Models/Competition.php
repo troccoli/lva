@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\CompetitionCreated;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +13,10 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 class Competition extends Model
 {
     protected $fillable = ['season_id', 'name'];
+
+    protected $dispatchesEvents = [
+        'created' => CompetitionCreated::class,
+    ];
 
     public function getId(): int
     {

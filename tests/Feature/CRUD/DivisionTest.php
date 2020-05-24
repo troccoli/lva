@@ -2,11 +2,12 @@
 
 namespace Tests\Feature\CRUD;
 
+use App\Events\DivisionCreated;
 use App\Models\Competition;
 use App\Models\Division;
-use App\Models\Season;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class DivisionTest extends TestCase
@@ -399,15 +400,31 @@ class DivisionTest extends TestCase
         /** @var Division $division */
         $division = factory(Division::class)->create([
             'competition_id' => $competition->getId(),
-            'name'           => 'MP',
-            'display_order'  => 1,
+            'name' => 'MP',
+            'display_order' => 1,
         ]);
 
         $this->delete("/competitions/{$competition->getId()}/divisions/{$division->getId()}")
             ->assertSessionHasNoErrors();
         $this->assertDatabaseMissing('divisions', [
-            'id'         => $division->getId(),
+            'id' => $division->getId(),
             'deleted_at' => null,
         ]);
+    }
+
+    public function testAddingDivisionWillDispatchTheEvent(): void
+    {
+        Event::fake();
+
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
+        $competitionId = factory(Competition::class)->create()->getId();
+
+        $this->post("/competitions/$competitionId/divisions", [
+            'competition_id' => $competitionId,
+            'name' => 'MP',
+            'display_order' => 1,
+        ]);
+
+        Event::assertDispatched(DivisionCreated::class);
     }
 }
