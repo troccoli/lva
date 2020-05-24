@@ -12,14 +12,5 @@ class CompetitionsTableSeeder extends Seeder
         Season::each(function (Season $season): void {
             factory(Competition::class)->create(['season_id' => $season->id]);
         });
-
-        $this->createRoles();
-    }
-
-    private function createRoles(): void
-    {
-        Competition::all()->each(function (Competition $competition) {
-            Role::create(['name' => "Competition {$competition->getId()} Admin"]);
-        });
     }
 }

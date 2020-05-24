@@ -73,6 +73,8 @@ jobs:
         run: php artisan passport:install
       - name: Directory Permissions
         run: chmod -R 777 storage bootstrap/cache
+      - name: Dump Autoloader
+        run: composer dump-autoload
       - name: Execute Unit tests via PHPUnit
         run: vendor/bin/phpunit tests/Unit
       - name: Upload artifacts
@@ -109,6 +111,8 @@ jobs:
         run: php artisan passport:install
       - name: Directory Permissions
         run: chmod -R 777 storage bootstrap/cache
+      - name: Dump Autoloader
+        run: composer dump-autoload
       - name: Run Laravel Server
         run: php artisan serve &
       - name: Execute Integration tests via PHPUnit
@@ -152,6 +156,8 @@ jobs:
         run: php artisan passport:install
       - name: Directory Permissions
         run: chmod -R 777 storage bootstrap/cache
+      - name: Dump Autoloader
+        run: composer dump-autoload
       - name: Run Laravel Server
         run: php artisan serve &
       - name: Execute Feature tests via PHPUnit
@@ -179,9 +185,6 @@ jobs:
         with:
           path: ./node_modules
           key: ${{ runner.os }}-build-${{ env.node-modules-cache-name }}-${{ hashFiles('**/package-lock.json') }}
-      - name: Get Composer Cache Directory
-        id: composer-cache
-        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
       - name: Restore composer packages cache
         uses: actions/cache@v1
         with:
@@ -198,6 +201,8 @@ jobs:
         run: php artisan passport:install
       - name: Directory Permissions
         run: chmod -R 777 storage bootstrap/cache
+      - name: Dump Autoloader
+        run: composer dump-autoload
       - name: Update Chrome Driver
         run: |
           CHROME_VERSION="$(google-chrome --version)"

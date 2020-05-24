@@ -4,18 +4,16 @@ use App\Models\Division;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
-use Symfony\Component\Console\Helper\ProgressBar;
-use Symfony\Component\Console\Output\ConsoleOutput;
 
 class FixturesTableSeeder extends Seeder
 {
+    use SeederProgressBar;
+
     public function run(): void
     {
         $divisions = Division::all();
 
-        ProgressBar::setFormatDefinition('normal', '[%bar%] %percent:3s%%');
-        $progressBar = new ProgressBar(new ConsoleOutput());
-        $progressBar->start($divisions->count());
+        $this->initProgressBar($divisions->count());
 
         /** @var Division $division */
         foreach ($divisions as $division) {
@@ -23,7 +21,7 @@ class FixturesTableSeeder extends Seeder
 
             $matchDate = Carbon::today()->setYear($division->getCompetition()->getSeason()->getYear());
             $matchNumber = 1;
-            $progressBar->advance();
+            $this->advanceProgressBar();
             foreach ($this->buildRounds($teams) as $round) {
                 foreach ($round as $match) {
                     $matchTime = $this->setMatchTime($matchDate);
@@ -42,8 +40,7 @@ class FixturesTableSeeder extends Seeder
                 $matchDate->addDay();
             };
         };
-        $progressBar->finish();
-        echo "\n";
+        $this->finishProgressBar();
     }
 
     private function setMatchTime(Carbon $matchDate): Carbon

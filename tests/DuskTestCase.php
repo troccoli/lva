@@ -9,6 +9,8 @@ use Laravel\Dusk\TestCase as BaseTestCase;
 use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 abstract class DuskTestCase extends BaseTestCase
 {
@@ -18,7 +20,8 @@ abstract class DuskTestCase extends BaseTestCase
     {
         parent::setUp();
 
-        $this->seed(\RolesAndPermissionsSeeder::class);
+        Role::create(['name' => 'Site Admin']);
+        Permission::create(['name' => 'manage raw data']);
     }
 
     /**
