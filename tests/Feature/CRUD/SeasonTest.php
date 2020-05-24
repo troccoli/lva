@@ -2,9 +2,11 @@
 
 namespace Tests\Feature\CRUD;
 
+use App\Events\SeasonCreated;
 use App\Models\Season;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class SeasonTest extends TestCase
@@ -119,23 +121,32 @@ class SeasonTest extends TestCase
 
     public function testAddingASeason(): void
     {
+        Event::fake();
+
         $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
 
         $this->post('/seasons', [])
             ->assertSessionHasErrors('year', 'The year is required.');
         $this->assertDatabaseMissing('seasons', ['year' => '2000']);
+        Event::assertNotDispatched(SeasonCreated::class);
 
         $this->post('/seasons', ['year' => 'Twothousand'])
             ->assertSessionHasErrors('year', 'The year is not valid.');
         $this->assertDatabaseMissing('seasons', ['year' => '2000']);
+        Event::assertNotDispatched(SeasonCreated::class);
 
         $this->post('/seasons', ['year' => '2000'])
             ->assertSessionHasNoErrors();
         $this->assertDatabaseHas('seasons', ['year' => '2000']);
+        Event::assertDispatchedTimes(SeasonCreated::class, 1);
+        Event::assertDispatched(SeasonCreated::class, function (SeasonCreated $event): bool {
+            return $event->season->getYear() === 2000;
+        });
 
         $this->post('/seasons', ['year' => '2000'])
             ->assertSessionHasErrors('year', 'The season already exists.');
         $this->assertDatabaseHas('seasons', ['year' => '2000']);
+        Event::assertDispatchedTimes(SeasonCreated::class, 1);
     }
 
     public function testEditingASeason(): void
@@ -181,5 +192,16 @@ class SeasonTest extends TestCase
 
         $this->delete('/seasons/' . ($season->getId() + 1))
             ->assertNotFound();
+    }
+
+    public function testAddingSeasonWillDispatchTheEvent(): void
+    {
+        Event::fake();
+
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
+
+        $this->post('/seasons', ['year' => '2000']);
+
+        Event::assertDispatched(SeasonCreated::class);
     }
 }

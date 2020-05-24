@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\SeasonCreated;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Model;
@@ -11,6 +12,10 @@ use Illuminate\Support\Collection;
 class Season extends Model
 {
     protected $fillable = ['year'];
+
+    protected $dispatchesEvents = [
+        'created' => SeasonCreated::class,
+    ];
 
     public function getId(): int
     {
