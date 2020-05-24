@@ -2,10 +2,12 @@
 
 namespace Tests\Feature\CRUD;
 
+use App\Events\CompetitionCreated;
 use App\Models\Competition;
 use App\Models\Season;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class CompetitionTest extends TestCase
@@ -192,5 +194,17 @@ class CompetitionTest extends TestCase
 
         $this->delete("/seasons/$seasonId/competitions/" . ($competition->getId() + 1))
             ->assertNotFound();
+    }
+
+    public function testAddingCompetitionWillDispatchTheEvent(): void
+    {
+        Event::fake();
+
+        $seasonId = factory(Season::class)->create()->getId();
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
+
+        $this->post("/seasons/$seasonId/competitions", ['name' => 'London League - Men']);
+
+        Event::assertDispatched(CompetitionCreated::class);
     }
 }
