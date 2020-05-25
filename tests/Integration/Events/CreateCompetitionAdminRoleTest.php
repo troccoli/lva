@@ -15,6 +15,6 @@ class CreateCompetitionAdminRoleTest extends TestCase
     {
         $competition = factory(Competition::class)->create();
 
-        $this->assertDatabaseHas('roles', ['name' => "Competition {$competition->getId()} Administrator"]);
+        $this->assertDatabaseHas('roles', ['name' => $competition->getAdminRole()]);
     }
 }

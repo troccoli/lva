@@ -14,6 +14,6 @@ class CreateClubSecretaryRoleTest extends TestCase
     {
         $club = factory(Club::class)->create();
 
-        $this->assertDatabaseHas('roles', ['name' => "Club {$club->getId()} Secretary"]);
+        $this->assertDatabaseHas('roles', ['name' => $club->getSecretaryRole()]);
     }
 }

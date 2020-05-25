@@ -28,6 +28,13 @@ class SeasonTest extends TestCase
         $this->assertEquals($season->year, $season->getYear());
     }
 
+    public function testItGetsTheNameOfTheAdminRole(): void
+    {
+        /** @var Season $season */
+        $season = factory(Season::class)->create();
+        $this->assertEquals("Season {$season->getId()} Administrator", $season->getAdminRole());
+    }
+
     /**
      * @dataProvider yearsProvider
      */

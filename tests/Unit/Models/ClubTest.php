@@ -28,6 +28,13 @@ class ClubTest extends TestCase
         $this->assertEquals($club->name, $club->getName());
     }
 
+    public function testItGetsTheNameOfTheSecretaryRole(): void
+    {
+        /** @var Club $club */
+        $club = factory(Club::class)->create();
+        $this->assertEquals("Club {$club->getId()} Secretary", $club->getSecretaryRole());
+    }
+
     public function testItGetsTheTeams(): void
     {
         /** @var Club $club */

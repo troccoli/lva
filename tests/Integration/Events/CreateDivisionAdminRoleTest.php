@@ -17,6 +17,6 @@ class CreateDivisionAdminRoleTest extends TestCase
     {
         $division = factory(Division::class)->create();
 
-        $this->assertDatabaseHas('roles', ['name' => "Division {$division->getId()} Administrator"]);
+        $this->assertDatabaseHas('roles', ['name' => $division->getAdminRole()]);
     }
 }

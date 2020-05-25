@@ -9,6 +9,6 @@ class CreateSeasonAdminRole
 {
     public function handle(SeasonCreated $event): void
     {
-        Role::create(['name' => "Season {$event->season->getId()} Administrator"]);
+        Role::create(['name' => $event->season->getAdminRole()]);
     }
 }

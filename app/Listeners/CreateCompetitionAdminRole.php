@@ -9,6 +9,6 @@ class CreateCompetitionAdminRole
 {
     public function handle(CompetitionCreated $event): void
     {
-        Role::create(['name' => "Competition {$event->competition->getId()} Administrator"]);
+        Role::create(['name' => $event->competition->getAdminRole()]);
     }
 }

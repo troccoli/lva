@@ -9,6 +9,6 @@ class CreateTeamSecretaryRole
 {
     public function handle(TeamCreated $event): void
     {
-        Role::create(['name' => "Team {$event->team->getId()} Secretary"]);
+        Role::create(['name' => $event->team->getSecretaryRole()]);
     }
 }

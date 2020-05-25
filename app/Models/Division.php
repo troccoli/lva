@@ -32,6 +32,11 @@ class Division extends Model
         return $this->name;
     }
 
+    public function getAdminRole(): string
+    {
+        return "Division $this->id Administrator";
+    }
+
     public function getOrder(): int
     {
         return $this->display_order;

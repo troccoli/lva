@@ -29,6 +29,13 @@ class TeamTest extends TestCase
         $this->assertEquals($team->name, $team->getName());
     }
 
+    public function testItGetsTheNameOfTheSecretaryRole(): void
+    {
+        /** @var Team $team */
+        $team = factory(Team::class)->create();
+        $this->assertEquals("Team {$team->getId()} Secretary", $team->getSecretaryRole());
+    }
+
     public function testItGetsTheClub(): void
     {
         $club = factory(Club::class)->create();

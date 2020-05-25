@@ -28,6 +28,12 @@ class DivisionTest extends TestCase
         $this->assertEquals($division->name, $division->getName());
     }
 
+    public function testItGetsTheNameOfTheAdminRole(): void
+    {
+        /** @var Division $division */
+        $division = factory(Division::class)->create();
+        $this->assertEquals("Division {$division->getId()} Administrator", $division->getAdminRole());
+    }
     public function testItGetsTheDisplayingOrder(): void
     {
         /** @var Division $division */
