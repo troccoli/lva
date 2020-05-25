@@ -42,7 +42,7 @@ class FixtureTest extends TestCase
     {
         $fixture = aFixture()->build();
 
-        $this->actingAs(factory(User::class)->create()->assignRole('Site Admin'));
+        $this->actingAs(factory(User::class)->create()->assignRole('Site Administrator'));
 
         $this->get('/fixtures')
             ->assertOk();

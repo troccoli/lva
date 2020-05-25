@@ -20,7 +20,7 @@ abstract class DuskTestCase extends BaseTestCase
     {
         parent::setUp();
 
-        Role::create(['name' => 'Site Admin']);
+        Role::create(['name' => 'Site Administrator']);
         Permission::create(['name' => 'manage raw data']);
     }
 

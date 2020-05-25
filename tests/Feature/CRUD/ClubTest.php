@@ -71,7 +71,7 @@ class ClubTest extends TestCase
         /** @var Club $club */
         $club = aClub()->buildWithoutSaving();
 
-        $this->actingAs(factory(User::class)->create()->assignRole('Site Admin'));
+        $this->actingAs(factory(User::class)->create()->assignRole('Site Administrator'));
 
         $this->get('/clubs')
             ->assertOk();
