@@ -3,12 +3,12 @@
 namespace App\Listeners;
 
 use App\Events\SeasonCreated;
-use Spatie\Permission\Models\Role;
+use App\Jobs\CreateSeasonAdminRole;
 
-class CreateSeasonAdminRole
+class SetUpSeasonAdmin
 {
     public function handle(SeasonCreated $event): void
     {
-        Role::create(['name' => $event->season->getAdminRole()]);
+        CreateSeasonAdminRole::dispatchNow($event->season);
     }
 }
