@@ -17,4 +17,14 @@ class CreateCompetitionAdminRoleTest extends TestCase
 
         $this->assertDatabaseHas('roles', ['name' => $competition->getAdminRole()]);
     }
+
+    public function testCompetitionPermissionsAreCreatedWhenCompetitionIsCreated(): void
+    {
+        $competition = factory(Competition::class)->create();
+
+        $this->assertDatabaseHas('permissions', ['name' => "edit-competition-{$competition->getId()}"]);
+        $this->assertDatabaseHas('permissions', ['name' => "delete-competition-{$competition->getId()}"]);
+        $this->assertDatabaseHas('permissions', ['name' => "add-divisions-in-competition-{$competition->getId()}"]);
+        $this->assertDatabaseHas('permissions', ['name' => "view-divisions-in-competition-{$competition->getId()}"]);
+    }
 }

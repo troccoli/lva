@@ -16,4 +16,14 @@ class CreateSeasonAdminRoleTest extends TestCase
 
         $this->assertDatabaseHas('roles', ['name' => "Season {$season->getId()} Administrator"]);
     }
+
+    public function testSeasonsPermissionsAreCreatedWhenSeasonIsCreated(): void
+    {
+        $season = factory(Season::class)->create();
+
+        $this->assertDatabaseHas('permissions', ['name' => "edit-season-{$season->getId()}"]);
+        $this->assertDatabaseHas('permissions', ['name' => "delete-season-{$season->getId()}"]);
+        $this->assertDatabaseHas('permissions', ['name' => "add-competitions-in-season-{$season->getId()}"]);
+        $this->assertDatabaseHas('permissions', ['name' => "view-competitions-in-season-{$season->getId()}"]);
+    }
 }

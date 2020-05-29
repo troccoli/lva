@@ -16,4 +16,14 @@ class CreateClubSecretaryRoleTest extends TestCase
 
         $this->assertDatabaseHas('roles', ['name' => $club->getSecretaryRole()]);
     }
+
+    public function testClubPermissionsAreCreatedWhenClubIsCreated(): void
+    {
+        $club = aClub()->build();
+
+        $this->assertDatabaseHas('permissions', ['name' => "edit-club-{$club->getId()}"]);
+        $this->assertDatabaseHas('permissions', ['name' => "delete-club-{$club->getId()}"]);
+        $this->assertDatabaseHas('permissions', ['name' => "add-teams-in-club-{$club->getId()}"]);
+        $this->assertDatabaseHas('permissions', ['name' => "view-teams-in-club-{$club->getId()}"]);
+    }
 }
