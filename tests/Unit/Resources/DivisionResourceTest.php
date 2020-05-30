@@ -10,12 +10,12 @@ use App\Models\Division;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\MissingValue;
+use Tests\Concerns\InteractsWithArrays;
 use Tests\TestCase;
-use Tests\AssertArrayContent;
 
 class DivisionResourceTest extends TestCase
 {
-    use RefreshDatabase, AssertArrayContent;
+    use RefreshDatabase, InteractsWithArrays;
 
     private $division;
 

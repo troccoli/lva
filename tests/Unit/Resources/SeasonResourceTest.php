@@ -9,12 +9,12 @@ use App\Models\Season;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Tests\Concerns\InteractsWithArrays;
 use Tests\TestCase;
-use Tests\AssertArrayContent;
 
 class SeasonResourceTest extends TestCase
 {
-    use RefreshDatabase, AssertArrayContent;
+    use RefreshDatabase, InteractsWithArrays;
 
     private $season;
 

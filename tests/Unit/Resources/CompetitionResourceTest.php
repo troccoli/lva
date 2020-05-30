@@ -12,12 +12,12 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\MissingValue;
+use Tests\Concerns\InteractsWithArrays;
 use Tests\TestCase;
-use Tests\AssertArrayContent;
 
 class CompetitionResourceTest extends TestCase
 {
-    use RefreshDatabase, AssertArrayContent;
+    use RefreshDatabase, InteractsWithArrays;
 
     private $competition;
 

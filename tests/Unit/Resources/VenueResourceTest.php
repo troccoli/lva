@@ -3,19 +3,17 @@
 namespace Tests\Unit\Resources;
 
 use App\Http\Resources\ClubResource;
-use App\Http\Resources\CompetitionResource;
-use App\Http\Resources\DivisionResource;
 use App\Http\Resources\VenueResource;
 use App\Models\Venue;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Tests\Concerns\InteractsWithArrays;
 use Tests\TestCase;
-use Tests\AssertArrayContent;
 
 class VenueResourceTest extends TestCase
 {
-    use RefreshDatabase, AssertArrayContent;
+    use RefreshDatabase, InteractsWithArrays;
 
     private $venue;
 

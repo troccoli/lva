@@ -3,24 +3,21 @@
 namespace Tests\Unit\Resources;
 
 use App\Http\Resources\ClubResource;
-use App\Http\Resources\CompetitionResource;
 use App\Http\Resources\DivisionResource;
 use App\Http\Resources\TeamResource;
 use App\Http\Resources\VenueResource;
-use App\Models\Competition;
 use App\Models\Division;
-use App\Models\Season;
 use App\Models\Venue;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\MissingValue;
+use Tests\Concerns\InteractsWithArrays;
 use Tests\TestCase;
-use Tests\AssertArrayContent;
 
 class TeamResourceTest extends TestCase
 {
-    use RefreshDatabase, AssertArrayContent;
+    use RefreshDatabase, InteractsWithArrays;
 
     private $team;
 
