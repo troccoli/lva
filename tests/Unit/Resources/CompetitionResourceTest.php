@@ -8,6 +8,7 @@ use App\Http\Resources\SeasonResource;
 use App\Models\Competition;
 use App\Models\Division;
 use App\Models\Season;
+use Illuminate\Foundation\Testing\WithoutEvents;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\MissingValue;
@@ -16,7 +17,7 @@ use Tests\TestCase;
 
 class CompetitionResourceTest extends TestCase
 {
-    use InteractsWithArrays;
+    use InteractsWithArrays, WithoutEvents;
 
     private $competition;
 
