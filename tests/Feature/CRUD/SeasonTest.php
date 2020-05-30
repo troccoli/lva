@@ -123,7 +123,7 @@ class SeasonTest extends TestCase
     {
         Event::fake();
 
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
 
         $this->post('/seasons', [])
             ->assertSessionHasErrors('year', 'The year is required.');
@@ -154,7 +154,7 @@ class SeasonTest extends TestCase
         /** @var Season $season */
         $season = factory(Season::class)->create(['year' => '2000']);
 
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
 
         $this->put('/seasons/' . $season->getId(), [])
             ->assertSessionHasErrors('year', 'The year is required.');
@@ -184,7 +184,7 @@ class SeasonTest extends TestCase
         /** @var Season $season */
         $season = factory(Season::class)->create(['year' => '2000']);
 
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
 
         $this->delete('/seasons/' . $season->getId())
             ->assertSessionHasNoErrors();
@@ -198,7 +198,7 @@ class SeasonTest extends TestCase
     {
         Event::fake();
 
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
 
         $this->post('/seasons', ['year' => '2000']);
 

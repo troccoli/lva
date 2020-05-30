@@ -19,11 +19,11 @@ class RolesAndPermissionsSeeder extends Seeder
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
 
-        Permission::create(['name' => 'manage raw data']);
+        Permission::create(['name' => 'view-seasons']);
 
         Role::create(['name' => 'Site Administrator']);
         Role::create(['name' => 'League Administrator'])
-            ->givePermissionTo('manage raw data');
+            ->givePermissionTo('view-seasons');
         Role::create(['name' => 'Division Administrator']);
     }
 }

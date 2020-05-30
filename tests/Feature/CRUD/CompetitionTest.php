@@ -126,7 +126,7 @@ class CompetitionTest extends TestCase
     {
         $seasonId = factory(Season::class)->create()->getId();
 
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
 
         $this->post("/seasons/$seasonId/competitions", [])
             ->assertSessionHasErrors('name', 'The name is required.');
@@ -152,7 +152,7 @@ class CompetitionTest extends TestCase
         $competition = factory(Competition::class)->create(['name' => 'London League - Men']);
         $seasonId = $competition->getSeason()->getId();
 
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
 
         $this->put("/seasons/$seasonId/competitions/" . $competition->getId(), [])
             ->assertSessionHasErrors('name', 'The name is required.');
@@ -186,7 +186,7 @@ class CompetitionTest extends TestCase
         $competition = factory(Competition::class)->create(['name' => 'London League - Men']);
         $seasonId = $competition->getSeason()->getId();
 
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
 
         $this->delete("/seasons/$seasonId/competitions/" . $competition->getId())
             ->assertSessionHasNoErrors();
@@ -201,7 +201,7 @@ class CompetitionTest extends TestCase
         Event::fake();
 
         $seasonId = factory(Season::class)->create()->getId();
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
 
         $this->post("/seasons/$seasonId/competitions", ['name' => 'London League - Men']);
 

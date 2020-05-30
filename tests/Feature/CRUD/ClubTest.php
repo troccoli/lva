@@ -122,7 +122,7 @@ class ClubTest extends TestCase
 
     public function testAddingAClub(): void
     {
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
 
         $this->post('/clubs', [])
             ->assertSessionHasErrors('name', 'The name is required.')
@@ -149,7 +149,7 @@ class ClubTest extends TestCase
 
     public function testEditingAClub(): void
     {
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
 
         $this->put('/clubs/1')
             ->assertNotFound();
@@ -191,7 +191,7 @@ class ClubTest extends TestCase
 
     public function testDeletingAClub(): void
     {
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
 
         $this->delete('/clubs/1')
             ->assertNotFound();
@@ -208,7 +208,7 @@ class ClubTest extends TestCase
     {
         Event::fake();
 
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
 
         $this->post('/clubs', ['name' => 'London Giants', 'venue_id' => null]);
 

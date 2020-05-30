@@ -128,7 +128,7 @@ class TeamTest extends TestCase
         $sobellSC = factory(Venue::class)->create(['name' => 'Sobell SC']);
         $clubId = aClub()->build()->getId();
 
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
 
         $this->post("/clubs/$clubId/teams", [])
             ->assertSessionHasErrors('name', 'The name is required.');
@@ -172,7 +172,7 @@ class TeamTest extends TestCase
         $team = factory(Team::class)->create(['name' => 'London Scarlets', 'venue_id' => $sobellSC->getId()]);
         $clubId = $team->getClub()->getId();
 
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
 
         $this->put("/clubs/$clubId/teams/" . $team->getId(), [])
             ->assertSessionHasErrors('name', 'The name is required.');
@@ -223,7 +223,7 @@ class TeamTest extends TestCase
         $team = factory(Team::class)->create(['name' => 'London Scarlets']);
         $clubId = $team->getClub()->getId();
 
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
 
         $this->delete("/clubs/$clubId/teams/" . $team->getId())
             ->assertSessionHasNoErrors();
@@ -240,7 +240,7 @@ class TeamTest extends TestCase
         // Cannot create a venue as the events are faked and the Venue model
         // needs to create a UUID
         $clubId = aClub()->withoutVenue()->build()->getId();
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
 
         $this->post("/clubs/$clubId/teams", ['club_id' => $clubId, 'name' => 'London Scarlets', 'venue_id' => null]);
 

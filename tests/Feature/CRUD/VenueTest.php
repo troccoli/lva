@@ -130,7 +130,7 @@ class VenueTest extends TestCase
 
     public function testAddingAVenue(): void
     {
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
 
         $this->post('/venues', [])
             ->assertSessionHasErrors('name', 'The name is required.');
@@ -150,7 +150,7 @@ class VenueTest extends TestCase
      */
     public function testEditingAVenue(): void
     {
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
 
         $this->put('/venues/' . Uuid::generate()->string)
             ->assertNotFound();
@@ -179,7 +179,7 @@ class VenueTest extends TestCase
      */
     public function testDeletingAVenue(): void
     {
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
 
         $this->delete('/venues/' . Uuid::generate()->string)
             ->assertNotFound();

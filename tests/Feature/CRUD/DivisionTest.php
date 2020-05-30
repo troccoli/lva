@@ -124,7 +124,7 @@ class DivisionTest extends TestCase
 
     public function testAddingADivision(): void
     {
-        $this->be(factory(User::class)->create()->givePermissionTo('manage raw data'));
+        $this->be(factory(User::class)->create()->givePermissionTo('view-seasons'));
 
         $this->post("/competitions/1/divisions", [])
             ->assertNotFound();
@@ -257,7 +257,7 @@ class DivisionTest extends TestCase
 
     public function testEditingADivision(): void
     {
-        $this->be(factory(User::class)->create()->givePermissionTo('manage raw data'));
+        $this->be(factory(User::class)->create()->givePermissionTo('view-seasons'));
 
         $this->put("/competitions/1/divisions/1", [])
             ->assertNotFound();
@@ -387,7 +387,7 @@ class DivisionTest extends TestCase
 
     public function testDeletingADivision(): void
     {
-        $this->be(factory(User::class)->create()->givePermissionTo('manage raw data'));
+        $this->be(factory(User::class)->create()->givePermissionTo('view-seasons'));
 
         $this->delete("/competitions/1/divisions/1")
             ->assertNotFound();
@@ -416,7 +416,7 @@ class DivisionTest extends TestCase
     {
         Event::fake();
 
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
         $competitionId = factory(Competition::class)->create()->getId();
 
         $this->post("/competitions/$competitionId/divisions", [

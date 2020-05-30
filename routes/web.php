@@ -10,7 +10,7 @@ Route::get('/', 'HomeController@index')->name('home');
 Route::middleware(['auth', 'verified'])
     ->group(function (): void {
         Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
-        Route::middleware(['can:manage raw data'])
+        Route::middleware(['can:view-seasons'])
             ->group(function (): void {
                 Route::resource('seasons', 'SeasonController')->except('show');
                 Route::prefix('seasons/{season}')
