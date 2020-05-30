@@ -10,14 +10,14 @@ class ClubCreatedTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testClubSecretaryRoleIsCreatedWhenClubIsCreated(): void
+    public function testClubSecretaryRoleIsCreated(): void
     {
         $club = factory(Club::class)->create();
 
         $this->assertDatabaseHas('roles', ['name' => $club->getSecretaryRole()]);
     }
 
-    public function testClubPermissionsAreCreatedWhenClubIsCreated(): void
+    public function testClubPermissionsAreCreated(): void
     {
         $club = aClub()->build();
 

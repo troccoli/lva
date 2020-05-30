@@ -10,14 +10,14 @@ class TeamCreatedTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testTeamSecretaryRoleIsCreatedWhenTeamIsCreated(): void
+    public function testTeamSecretaryRoleIsCreated(): void
     {
         $team = factory(Team::class)->create();
 
         $this->assertDatabaseHas('roles', ['name' => $team->getSecretaryRole()]);
     }
 
-    public function testTeamPermissionsAreCreatedWhenTeamIsCreated(): void
+    public function testTeamPermissionsAreCreated(): void
     {
         $team = aTeam()->build();
 

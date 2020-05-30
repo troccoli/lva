@@ -10,14 +10,14 @@ class CompetitionCreatedTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testCompetitionAdminRoleIsCreatedWhenCompetitionIsCreated(): void
+    public function testCompetitionAdminRoleIsCreated(): void
     {
         $competition = factory(Competition::class)->create();
 
         $this->assertDatabaseHas('roles', ['name' => $competition->getAdminRole()]);
     }
 
-    public function testCompetitionPermissionsAreCreatedWhenCompetitionIsCreated(): void
+    public function testCompetitionPermissionsAreCreated(): void
     {
         $competition = factory(Competition::class)->create();
 

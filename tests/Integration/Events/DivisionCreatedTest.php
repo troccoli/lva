@@ -10,14 +10,14 @@ class DivisionCreatedTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testDivisionAdminRoleIsCreatedWhenDivisionIsCreated(): void
+    public function testDivisionAdminRoleIsCreated(): void
     {
         $division = factory(Division::class)->create();
 
         $this->assertDatabaseHas('roles', ['name' => $division->getAdminRole()]);
     }
 
-    public function testDivisionPermissionsAreCreatedWhenDivisionIsCreated(): void
+    public function testDivisionPermissionsAreCreated(): void
     {
         $division = factory(Division::class)->create();
 

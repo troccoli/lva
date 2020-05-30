@@ -10,14 +10,14 @@ class SeasonCreatedTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testSeasonAdminRoleIsCreatedWhenSeasonIsCreated(): void
+    public function testSeasonAdminRoleIsCreated(): void
     {
         $season = factory(Season::class)->create();
 
         $this->assertDatabaseHas('roles', ['name' => "Season {$season->getId()} Administrator"]);
     }
 
-    public function testSeasonsPermissionsAreCreatedWhenSeasonIsCreated(): void
+    public function testSeasonsPermissionsAreCreated(): void
     {
         $season = factory(Season::class)->create();
 
@@ -26,4 +26,5 @@ class SeasonCreatedTest extends TestCase
         $this->assertDatabaseHas('permissions', ['name' => "add-competitions-in-season-{$season->getId()}"]);
         $this->assertDatabaseHas('permissions', ['name' => "view-competitions-in-season-{$season->getId()}"]);
     }
+
 }
