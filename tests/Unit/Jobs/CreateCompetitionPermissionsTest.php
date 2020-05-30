@@ -4,13 +4,10 @@ namespace Tests\Unit\Jobs;
 
 use App\Jobs\CreateCompetitionPermissions;
 use App\Models\Competition;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class CreateCompetitionPermissionsTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testItCreatesTheCompetitionPermissions(): void
     {
         $competition = \Mockery::mock(Competition::class, [

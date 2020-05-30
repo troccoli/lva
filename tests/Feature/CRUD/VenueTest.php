@@ -2,16 +2,13 @@
 
 namespace Tests\Feature\CRUD;
 
-use App\Models\Venue;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\Venue;
 use Tests\TestCase;
 use Webpatser\Uuid\Uuid;
 
 class VenueTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testAccessForGuests(): void
     {
         /** @var Venue $venue */

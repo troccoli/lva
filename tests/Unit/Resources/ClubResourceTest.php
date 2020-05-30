@@ -5,7 +5,6 @@ namespace Tests\Unit\Resources;
 use App\Http\Resources\ClubResource;
 use App\Http\Resources\TeamResource;
 use App\Http\Resources\VenueResource;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\MissingValue;
@@ -14,7 +13,7 @@ use Tests\TestCase;
 
 class ClubResourceTest extends TestCase
 {
-    use RefreshDatabase, InteractsWithArrays;
+    use InteractsWithArrays;
 
     private $club;
 

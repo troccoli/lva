@@ -8,7 +8,6 @@ use App\Http\Resources\TeamResource;
 use App\Http\Resources\VenueResource;
 use App\Models\Division;
 use App\Models\Venue;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\MissingValue;
@@ -17,7 +16,7 @@ use Tests\TestCase;
 
 class TeamResourceTest extends TestCase
 {
-    use RefreshDatabase, InteractsWithArrays;
+    use InteractsWithArrays;
 
     private $team;
 

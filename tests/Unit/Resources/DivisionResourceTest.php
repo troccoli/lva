@@ -7,7 +7,6 @@ use App\Http\Resources\DivisionResource;
 use App\Http\Resources\TeamResource;
 use App\Models\Competition;
 use App\Models\Division;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\MissingValue;
 use Tests\Concerns\InteractsWithArrays;
@@ -15,7 +14,7 @@ use Tests\TestCase;
 
 class DivisionResourceTest extends TestCase
 {
-    use RefreshDatabase, InteractsWithArrays;
+    use InteractsWithArrays;
 
     private $division;
 

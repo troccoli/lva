@@ -5,7 +5,6 @@ namespace Tests\Unit\Resources;
 use App\Http\Resources\ClubResource;
 use App\Http\Resources\VenueResource;
 use App\Models\Venue;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Tests\Concerns\InteractsWithArrays;
@@ -13,7 +12,7 @@ use Tests\TestCase;
 
 class VenueResourceTest extends TestCase
 {
-    use RefreshDatabase, InteractsWithArrays;
+    use InteractsWithArrays;
 
     private $venue;
 

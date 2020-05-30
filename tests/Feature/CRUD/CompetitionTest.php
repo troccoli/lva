@@ -6,14 +6,11 @@ use App\Events\CompetitionCreated;
 use App\Models\Competition;
 use App\Models\Season;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class CompetitionTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testAccessForGuests(): void
     {
         /** @var Competition $competition */

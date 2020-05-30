@@ -3,13 +3,10 @@
 namespace Tests\Integration\Events;
 
 use App\Models\Team;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class TeamCreatedTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testTeamSecretaryRoleIsCreated(): void
     {
         $team = factory(Team::class)->create();

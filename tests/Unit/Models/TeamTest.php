@@ -7,14 +7,11 @@ use App\Models\Division;
 use App\Models\Fixture;
 use App\Models\Team;
 use App\Models\Venue;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 use Tests\TestCase;
 
 class TeamTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testItGetsTheId(): void
     {
         /** @var Team $team */

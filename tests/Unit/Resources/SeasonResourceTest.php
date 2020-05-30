@@ -6,7 +6,6 @@ use App\Http\Resources\CompetitionResource;
 use App\Http\Resources\SeasonResource;
 use App\Models\Competition;
 use App\Models\Season;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Tests\Concerns\InteractsWithArrays;
@@ -14,7 +13,7 @@ use Tests\TestCase;
 
 class SeasonResourceTest extends TestCase
 {
-    use RefreshDatabase, InteractsWithArrays;
+    use InteractsWithArrays;
 
     private $season;
 

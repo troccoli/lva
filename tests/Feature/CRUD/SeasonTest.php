@@ -5,14 +5,11 @@ namespace Tests\Feature\CRUD;
 use App\Events\SeasonCreated;
 use App\Models\Season;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class SeasonTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testAccessForGuests(): void
     {
         /** @var Season $season */

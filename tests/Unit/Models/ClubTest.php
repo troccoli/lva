@@ -6,14 +6,11 @@ use App\Models\Club;
 use App\Models\Fixture;
 use App\Models\Team;
 use App\Models\Venue;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 use Tests\TestCase;
 
 class ClubTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testItGetsTheId(): void
     {
         /** @var Club $club */

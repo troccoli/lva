@@ -6,14 +6,11 @@ use App\Events\DivisionCreated;
 use App\Models\Competition;
 use App\Models\Division;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class DivisionTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testAccessForGuests(): void
     {
         /** @var Division $division */

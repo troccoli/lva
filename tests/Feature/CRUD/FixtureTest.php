@@ -3,13 +3,10 @@
 namespace Tests\Feature\CRUD;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class FixtureTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testAccessForGuests(): void
     {
         $fixture = aFixture()->build();

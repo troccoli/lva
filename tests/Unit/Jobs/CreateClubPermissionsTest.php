@@ -4,13 +4,10 @@ namespace Tests\Unit\Jobs;
 
 use App\Jobs\CreateClubPermissions;
 use App\Models\Club;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class CreateClubPermissionsTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testItCreatesTheClubPermissions(): void
     {
         $club = \Mockery::mock(Club::class, [

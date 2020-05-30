@@ -3,13 +3,10 @@
 namespace Tests\Integration\Events;
 
 use App\Models\Competition;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class CompetitionCreatedTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testCompetitionAdminRoleIsCreated(): void
     {
         $competition = factory(Competition::class)->create();

@@ -3,13 +3,10 @@
 namespace Tests\Integration\Events;
 
 use App\Models\Division;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class DivisionCreatedTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testDivisionAdminRoleIsCreated(): void
     {
         $division = factory(Division::class)->create();

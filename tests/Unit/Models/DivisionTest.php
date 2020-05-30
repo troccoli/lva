@@ -4,16 +4,13 @@ namespace Tests\Unit\Models;
 
 use App\Models\Competition;
 use App\Models\Division;
-use App\Models\Team;
 use App\Models\Fixture;
+use App\Models\Team;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class DivisionTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testItGetsTheId(): void
     {
         /** @var Division $division */

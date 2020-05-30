@@ -4,13 +4,10 @@ namespace Tests\Unit\Jobs;
 
 use App\Jobs\CreateDivisionPermissions;
 use App\Models\Division;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class CreateDivisionPermissionsTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testItCreatesTheDivisionPermissions(): void
     {
         $division = \Mockery::mock(Division::class, [

@@ -3,13 +3,10 @@
 namespace Tests\Integration\Events;
 
 use App\Models\Club;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ClubCreatedTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testClubSecretaryRoleIsCreated(): void
     {
         $club = factory(Club::class)->create();

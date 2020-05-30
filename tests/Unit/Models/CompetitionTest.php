@@ -7,14 +7,10 @@ use App\Models\Division;
 use App\Models\Fixture;
 use App\Models\Season;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use PhpParser\Node\Expr\AssignOp\Div;
 use Tests\TestCase;
 
 class CompetitionTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testItGetsTheId(): void
     {
         /** @var Competition $competition */

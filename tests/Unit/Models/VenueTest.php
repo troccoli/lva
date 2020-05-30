@@ -6,13 +6,10 @@ use App\Models\Club;
 use App\Models\Fixture;
 use App\Models\Venue;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class VenueTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testItGetsTheId(): void
     {
         /** @var Venue $venue */
@@ -69,7 +66,7 @@ class VenueTest extends TestCase
         aFixture()->at($anotherVenue)->build();
         aFixture()->at($anotherVenue)->build();
         aFixture()->at($anotherVenue)->build();
-        
+
         /** @var Collection $fixturesAtVenue */
         $fixturesAtVenue = $venue->getFixtures();
 

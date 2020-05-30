@@ -4,13 +4,10 @@ namespace Tests\Unit\Jobs;
 
 use App\Jobs\CreateSeasonPermissions;
 use App\Models\Season;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class CreateSeasonPermissionsTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testItCreatesTheSeasonPermissions(): void
     {
         $season = \Mockery::mock(Season::class, [
