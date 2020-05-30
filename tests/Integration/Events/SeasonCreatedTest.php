@@ -6,7 +6,7 @@ use App\Models\Season;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class CreateSeasonAdminRoleTest extends TestCase
+class SeasonCreatedTest extends TestCase
 {
     use RefreshDatabase;
 

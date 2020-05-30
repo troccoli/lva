@@ -6,7 +6,7 @@ use App\Models\Club;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class CreateClubSecretaryRoleTest extends TestCase
+class ClubCreatedTest extends TestCase
 {
     use RefreshDatabase;
 

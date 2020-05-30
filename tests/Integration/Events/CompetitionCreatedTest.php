@@ -2,12 +2,11 @@
 
 namespace Tests\Integration\Events;
 
-use App\Events\CompetitionCreated;
 use App\Models\Competition;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class CreateCompetitionAdminRoleTest extends TestCase
+class CompetitionCreatedTest extends TestCase
 {
     use RefreshDatabase;
 
