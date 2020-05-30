@@ -17,7 +17,7 @@ class SeasonTest extends DuskTestCase
     public function testListingAllSeasons(): void
     {
         $this->browse(function (Browser $browser): void {
-            $browser->loginAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
+            $browser->loginAs($this->siteAdmin);
 
             $browser->visit('/seasons')
                 ->assertSeeIn('@list', 'There are no seasons yet.');
@@ -69,7 +69,7 @@ class SeasonTest extends DuskTestCase
     public function testAddingASeason(): void
     {
         $this->browse(function (Browser $browser): void {
-            $browser->loginAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
+            $browser->loginAs($this->siteAdmin);
 
             // Check we can add a season from the landing page
             $browser->visit('/seasons')
@@ -113,7 +113,7 @@ class SeasonTest extends DuskTestCase
     public function testEditingASeason(): void
     {
         $this->browse(function (Browser $browser): void {
-            $browser->loginAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
+            $browser->loginAs($this->siteAdmin);
 
             $browser->visit("/seasons/1/edit")
                 ->assertTitle('Not Found')
@@ -176,7 +176,7 @@ class SeasonTest extends DuskTestCase
     public function testDeletingASeason(): void
     {
         $this->browse(function (Browser $browser): void {
-            $browser->loginAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
+            $browser->loginAs($this->siteAdmin);
 
             $seasonId = factory(Season::class)->create()->getId();
 
@@ -227,7 +227,7 @@ class SeasonTest extends DuskTestCase
     public function testViewingTheSeasonCompetitions(): void
     {
         $this->browse(function (Browser $browser): void {
-            $browser->loginAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
+            $browser->loginAs($this->siteAdmin);
 
             $seasonId = factory(Season::class)->create()->getId();
 

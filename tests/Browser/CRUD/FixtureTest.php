@@ -114,7 +114,7 @@ class FixtureTest extends DuskTestCase
     public function testListingAllFixturesWhenThereAreNone(): void
     {
         $this->browse(function (Browser $browser): void {
-            $browser->loginAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
+            $browser->loginAs($this->siteAdmin);
 
             $browser->visit('/fixtures')
                 ->pause(1500)
@@ -156,9 +156,9 @@ class FixtureTest extends DuskTestCase
     {
         $this->browse(function (Browser $browser): void {
             $this->createTestFixtures();
+            $browser->loginAs($this->siteAdmin);
 
-            $browser->loginAs(factory(User::class)->create()->givePermissionTo('view-seasons'))
-                ->visit(new FixtureList())
+            $browser->visit(new FixtureList())
                 ->pause(1500)
                 ->assertAttribute('@add', 'aria-label', 'Add a fixture')
                 ->assertButtonDisabled('@previousPage')

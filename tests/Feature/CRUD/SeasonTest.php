@@ -34,7 +34,7 @@ class SeasonTest extends TestCase
             ->assertRedirect('/login');
     }
 
-    public function testAccessForUserWithoutThePermission(): void
+    public function testAccessForUsersWithoutAnyCorrectRoles(): void
     {
         /** @var Season $season */
         $season = factory(Season::class)->create();
@@ -62,12 +62,12 @@ class SeasonTest extends TestCase
             ->assertForbidden();
     }
 
-    public function testAccessForSuperAdmin(): void
+    public function testAccessForSiteAdministrators(): void
     {
         /** @var Season $season */
         $season = factory(Season::class)->make();
 
-        $this->be(factory(User::class)->create()->assignRole('Site Administrator'));
+        $this->be($this->siteAdmin);
 
         $this->get('/seasons')
             ->assertOk();
@@ -116,11 +116,45 @@ class SeasonTest extends TestCase
             ->assertRedirect('/email/verify');
     }
 
+    public function testAccessForSeasonAdministrators(): void
+    {
+        /** @var Season $season */
+        $season = factory(Season::class)->create();
+
+        $this->be(factory(User::class)->create()->assignRole($season->getAdminRole()));
+
+        $this->get('/seasons')
+            ->assertOk();
+
+        $this->get('/seasons/create')
+            ->assertForbidden();
+
+        $this->post('/seasons', $season->toArray())
+            ->assertForbidden();
+
+        $this->get('/seasons/' . $season->getId() . '/edit')
+            ->assertOk();
+
+        $this->put('/seasons/' . $season->getId(), $season->toArray())
+            ->assertRedirect('seasons');
+
+        $this->delete('/seasons/' . $season->getId())
+            ->assertForbidden();
+
+        $anotherSeason = factory(Season::class)->create();
+
+        $this->get('/seasons/' . $anotherSeason->getId() . '/edit')
+            ->assertForbidden();
+
+        $this->put('/seasons/' . $anotherSeason->getId(), $season->toArray())
+            ->assertForbidden();
+    }
+
     public function testAddingASeason(): void
     {
         Event::fake();
 
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
+        $this->actingAs($this->siteAdmin);
 
         $this->post('/seasons', [])
             ->assertSessionHasErrors('year', 'The year is required.');
@@ -151,7 +185,7 @@ class SeasonTest extends TestCase
         /** @var Season $season */
         $season = factory(Season::class)->create(['year' => '2000']);
 
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
+        $this->actingAs($this->siteAdmin);
 
         $this->put('/seasons/' . $season->getId(), [])
             ->assertSessionHasErrors('year', 'The year is required.');
@@ -181,7 +215,7 @@ class SeasonTest extends TestCase
         /** @var Season $season */
         $season = factory(Season::class)->create(['year' => '2000']);
 
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
+        $this->actingAs($this->siteAdmin);
 
         $this->delete('/seasons/' . $season->getId())
             ->assertSessionHasNoErrors();
@@ -195,7 +229,7 @@ class SeasonTest extends TestCase
     {
         Event::fake();
 
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
+        $this->actingAs($this->siteAdmin);
 
         $this->post('/seasons', ['year' => '2000']);
 

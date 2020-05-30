@@ -5,6 +5,7 @@ namespace Tests\Feature\CRUD;
 use App\Events\DivisionCreated;
 use App\Models\Competition;
 use App\Models\Division;
+use App\Models\Season;
 use App\Models\User;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
@@ -36,7 +37,7 @@ class DivisionTest extends TestCase
             ->assertRedirect('/login');
     }
 
-    public function testAccessForUserWithoutThePermission(): void
+    public function testAccessForUsersWithoutThePermission(): void
     {
         /** @var Division $division */
         $division = factory(Division::class)->create();
@@ -63,13 +64,13 @@ class DivisionTest extends TestCase
             ->assertForbidden();
     }
 
-    public function testAccessForSuperAdmin(): void
+    public function testAccessForSiteAdministrators(): void
     {
         /** @var Division $division */
         $division = factory(Division::class)->make();
         $competitionId = $division->getCompetition()->getId();
 
-        $this->be(factory(User::class)->create()->assignRole('Site Administrator'));
+        $this->be($this->siteAdmin);
 
         $this->get("/competitions/$competitionId/divisions")
             ->assertOk();
@@ -119,9 +120,204 @@ class DivisionTest extends TestCase
             ->assertRedirect('/email/verify');
     }
 
+    public function testAccessForSeasonAdministrators(): void
+    {
+        /** @var Division $division */
+        $division = factory(Division::class)->make();
+        $competitionId = $division->getCompetition()->getId();
+
+        $this->actingAs(factory(User::class)->create()->assignRole($division->getCompetition()->getSeason()->getAdminRole()));
+
+        $this->get("/competitions/$competitionId/divisions")
+            ->assertOk();
+
+        $this->get("/competitions/$competitionId/divisions/create")
+            ->assertOk();
+
+        $this->post("/competitions/$competitionId/divisions", $division->toArray())
+            ->assertRedirect("/competitions/$competitionId/divisions");
+
+        $division = Division::first();
+
+        $this->get("/competitions/$competitionId/divisions/" . $division->getId() . '/edit')
+            ->assertOk();
+
+        $this->put("/competitions/$competitionId/divisions/" . $division->getId(), $division->toArray())
+            ->assertRedirect("/competitions/$competitionId/divisions");
+
+        $this->delete("/competitions/$competitionId/divisions/" . $division->getId())
+            ->assertRedirect("/competitions/$competitionId/divisions");
+    }
+
+    public function testAccessForCompetitionAdministrators(): void
+    {
+        $seasonId = factory(Season::class)->create(['year' => 2000])->getId();
+        /** @var Competition $competition */
+        $competition = factory(Competition::class)->create(['season_id' => $seasonId]);
+        $competitionId = $competition->getId();
+        /** @var Division $division */
+        $division = factory(Division::class)->make(['competition_id' => $competitionId]);
+
+        $this->actingAs(factory(User::class)->create()->assignRole($competition->getAdminRole()));
+
+        $this->get("/competitions/$competitionId/divisions")
+            ->assertOk();
+
+        $this->get("/competitions/$competitionId/divisions/create")
+            ->assertOk();
+
+        $this->post("/competitions/$competitionId/divisions", $division->toArray())
+            ->assertRedirect("/competitions/$competitionId/divisions");
+
+        $division = Division::first();
+
+        $this->get("/competitions/$competitionId/divisions/" . $division->getId() . '/edit')
+            ->assertOk();
+
+        $this->put("/competitions/$competitionId/divisions/" . $division->getId(), $division->toArray())
+            ->assertRedirect("/competitions/$competitionId/divisions");
+
+        $this->delete("/competitions/$competitionId/divisions/" . $division->getId())
+            ->assertRedirect("/competitions/$competitionId/divisions");
+
+        // Recreate a division so the rest of the test can work
+        $division = factory(Division::class)->create(['competition_id' => $competitionId]);
+
+        // Competition Admin for a different competition in the same season
+        /** @var Competition $anotherCompetition */
+        $anotherCompetition = factory(Competition::class)->create(['season_id' => $seasonId]);
+
+        $this->actingAs(factory(User::class)->create()->assignRole($anotherCompetition->getAdminRole()));
+
+        $this->get("/competitions/$competitionId/divisions")
+            ->assertForbidden();
+
+        $this->get("/competitions/$competitionId/divisions/create")
+            ->assertForbidden();
+
+        $this->post("/competitions/$competitionId/divisions", $division->toArray())
+            ->assertForbidden();
+
+        $r = $this->get("/competitions/$competitionId/divisions/" . $division->getId() . '/edit');
+
+        $this->get("/competitions/$competitionId/divisions/" . $division->getId() . '/edit')
+            ->assertForbidden();
+
+        $this->put("/competitions/$competitionId/divisions/" . $division->getId(), $division->toArray())
+            ->assertForbidden();
+
+        $this->delete("/competitions/$competitionId/divisions/" . $division->getId())
+            ->assertForbidden();
+
+        // Competition Admin for a different competition in a different season
+        $anotherSeasonId = factory(Season::class)->create(['year' => 2001])->getId();
+        /** @var Competition $yetAnotherCompetition */
+        $yetAnotherCompetition = factory(Competition::class)->create(['season_id' => $anotherSeasonId]);
+
+        $this->actingAs(factory(User::class)->create()->assignRole($yetAnotherCompetition->getAdminRole()));
+
+        $this->get("/competitions/$competitionId/divisions")
+            ->assertForbidden();
+
+        $this->get("/competitions/$competitionId/divisions/create")
+            ->assertForbidden();
+
+        $this->post("/competitions/$competitionId/divisions", $division->toArray())
+            ->assertForbidden();
+
+        $this->get("/competitions/$competitionId/divisions/" . $division->getId() . '/edit')
+            ->assertForbidden();
+
+        $this->put("/competitions/$competitionId/divisions/" . $division->getId(), $division->toArray())
+            ->assertForbidden();
+
+        $this->delete("/competitions/$competitionId/divisions/" . $division->getId())
+            ->assertForbidden();
+    }
+
+    public function testAccessForDivisionAdministrators(): void
+    {
+        $seasonId = factory(Season::class)->create(['year' => 2000])->getId();
+        /** @var Competition $competition */
+        $competition = factory(Competition::class)->create(['season_id' => $seasonId]);
+        $competitionId = $competition->getId();
+        /** @var Division $division */
+        $division = factory(Division::class)->create(['competition_id' => $competitionId]);
+
+        $this->actingAs(factory(User::class)->create()->assignRole($division->getAdminRole()));
+
+        $this->get("/competitions/$competitionId/divisions")
+            ->assertOk();
+
+        $this->get("/competitions/$competitionId/divisions/create")
+            ->assertForbidden();
+
+        $this->post("/competitions/$competitionId/divisions", $division->toArray())
+            ->assertForbidden();
+
+        $this->get("/competitions/$competitionId/divisions/" . $division->getId() . '/edit')
+            ->assertOk();
+
+        $this->put("/competitions/$competitionId/divisions/" . $division->getId(), $division->toArray())
+            ->assertRedirect("/competitions/$competitionId/divisions");
+
+        $this->delete("/competitions/$competitionId/divisions/" . $division->getId())
+            ->assertForbidden();
+
+        // Division Administrator for another division in the same competition
+        /** @var Division $anotherDivision */
+        $anotherDivision = factory(Division::class)->create(['competition_id' => $competitionId]);
+
+        $this->actingAs(factory(User::class)->create()->assignRole($anotherDivision->getAdminRole()));
+
+        $this->get("/competitions/$competitionId/divisions")
+            ->assertOk();
+
+        $this->get("/competitions/$competitionId/divisions/create")
+            ->assertForbidden();
+
+        $this->post("/competitions/$competitionId/divisions", $division->toArray())
+            ->assertForbidden();
+
+        $this->get("/competitions/$competitionId/divisions/" . $division->getId() . '/edit')
+            ->assertForbidden();
+
+        $this->put("/competitions/$competitionId/divisions/" . $division->getId(), $division->toArray())
+            ->assertForbidden();
+
+        $this->delete("/competitions/$competitionId/divisions/" . $division->getId())
+            ->assertForbidden();
+
+        // Division Administrator in another competition and season
+        $anotherSeasonId = factory(Season::class)->create(['year' => 2001])->getId();
+        $anotherCompetitionId = factory(Competition::class)->create(['season_id' => $anotherSeasonId])->getId();
+        /** @var Division $yetAnotherDivision */
+        $yetAnotherDivision = factory(Division::class)->create(['competition_id' => $anotherCompetitionId]);
+
+        $this->actingAs(factory(User::class)->create()->assignRole($yetAnotherDivision->getAdminRole()));
+
+        $this->get("/competitions/$competitionId/divisions")
+            ->assertForbidden();
+
+        $this->get("/competitions/$competitionId/divisions/create")
+            ->assertForbidden();
+
+        $this->post("/competitions/$competitionId/divisions", $division->toArray())
+            ->assertForbidden();
+
+        $this->get("/competitions/$competitionId/divisions/" . $division->getId() . '/edit')
+            ->assertForbidden();
+
+        $this->put("/competitions/$competitionId/divisions/" . $division->getId(), $division->toArray())
+            ->assertForbidden();
+
+        $this->delete("/competitions/$competitionId/divisions/" . $division->getId())
+            ->assertForbidden();
+    }
+
     public function testAddingADivision(): void
     {
-        $this->be(factory(User::class)->create()->givePermissionTo('view-seasons'));
+        $this->be($this->siteAdmin);
 
         $this->post("/competitions/1/divisions", [])
             ->assertNotFound();
@@ -254,7 +450,7 @@ class DivisionTest extends TestCase
 
     public function testEditingADivision(): void
     {
-        $this->be(factory(User::class)->create()->givePermissionTo('view-seasons'));
+        $this->be($this->siteAdmin);
 
         $this->put("/competitions/1/divisions/1", [])
             ->assertNotFound();
@@ -384,7 +580,7 @@ class DivisionTest extends TestCase
 
     public function testDeletingADivision(): void
     {
-        $this->be(factory(User::class)->create()->givePermissionTo('view-seasons'));
+        $this->be($this->siteAdmin);
 
         $this->delete("/competitions/1/divisions/1")
             ->assertNotFound();
@@ -413,7 +609,7 @@ class DivisionTest extends TestCase
     {
         Event::fake();
 
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
+        $this->be($this->siteAdmin);
         $competitionId = factory(Competition::class)->create()->getId();
 
         $this->post("/competitions/$competitionId/divisions", [

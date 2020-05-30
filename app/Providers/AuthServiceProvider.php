@@ -2,6 +2,14 @@
 
 namespace App\Providers;
 
+use App\Models\Competition;
+use App\Models\Division;
+use App\Models\Fixture;
+use App\Models\Season;
+use App\Policies\CompetitionPolicy;
+use App\Policies\DivisionPolicy;
+use App\Policies\FixturePolicy;
+use App\Policies\SeasonPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Passport\Passport;
@@ -14,7 +22,10 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        // 'App\Model' => 'App\Policies\ModelPolicy',
+        Season::class => SeasonPolicy::class,
+        Competition::class => CompetitionPolicy::class,
+        Division::class => DivisionPolicy::class,
+        Fixture::class => FixturePolicy::class,
     ];
 
     /**

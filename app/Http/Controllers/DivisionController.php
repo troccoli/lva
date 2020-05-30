@@ -14,6 +14,8 @@ class DivisionController extends Controller
 {
     public function index(Competition $competition): View
     {
+        $this->authorize('viewAny', [Division::class, $competition]);
+
         $divisions = Division::query()->inCompetition($competition)->inOrder()->get();
 
         return view('CRUD.divisions.index', compact('competition', 'divisions'));
@@ -21,11 +23,15 @@ class DivisionController extends Controller
 
     public function create(Competition $competition): View
     {
+        $this->authorize('create', [Division::class, $competition]);
+
         return view('CRUD.divisions.create', compact('competition'));
     }
 
     public function store(Request $request, Competition $competition): RedirectResponse
     {
+        $this->authorize('create', [Division::class, $competition]);
+
         $this->validate($request,
             [
                 'competition_id' => 'required|exists:competitions,id',
@@ -61,11 +67,15 @@ class DivisionController extends Controller
 
     public function edit(Competition $competition, Division $division): View
     {
+        $this->authorize('update', $division);
+
         return view('CRUD.divisions.edit', compact('competition', 'division'));
     }
 
     public function update(Request $request, Competition $competition, Division $division): RedirectResponse
     {
+        $this->authorize('update', $division);
+
         $this->validate($request,
             [
                 'name'          => [
@@ -105,6 +115,8 @@ class DivisionController extends Controller
 
     public function destroy(Competition $competition, Division $division): RedirectResponse
     {
+        $this->authorize('delete', $division);
+
         $division->delete();
 
         return redirect()

@@ -15,6 +15,8 @@ class CompetitionController extends Controller
 {
     public function index(Season $season)
     {
+        $this->authorize('viewAny', [Competition::class, $season]);
+
         $competitions = Competition::query()->inSeason($season)->orderByName()->get();
 
         return view('CRUD.competitions.index', compact('season', 'competitions'));
@@ -22,11 +24,15 @@ class CompetitionController extends Controller
 
     public function create(Season $season): View
     {
+        $this->authorize('create', [Competition::class, $season]);
+
         return view('CRUD.competitions.create', compact('season'));
     }
 
     public function store(Request $request, Season $season): RedirectResponse
     {
+        $this->authorize('create', [Competition::class, $season]);
+
         $this->validate($request,
             [
                 'name' => [
@@ -52,11 +58,15 @@ class CompetitionController extends Controller
 
     public function edit(Season $season, Competition $competition): View
     {
+        $this->authorize('update', $competition);
+
         return view('CRUD.competitions.edit', compact('season', 'competition'));
     }
 
     public function update(Request $request, Season $season, Competition $competition): RedirectResponse
     {
+        $this->authorize('update', $competition);
+
         $this->validate($request,
             [
                 'name' => [
@@ -81,6 +91,8 @@ class CompetitionController extends Controller
 
     public function destroy(Season $season, Competition $competition): RedirectResponse
     {
+        $this->authorize('delete', $competition);
+
         $competition->delete();
 
         return redirect()
