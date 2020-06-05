@@ -24,6 +24,13 @@ class UsersTableSeeder extends Seeder
         $user->assignRole("Site Administrator");
         $this->advanceProgressBar();
 
+        $user = factory(User::class)->create([
+            'name' => "Referee Administrator",
+            'email' => "referee-administrator@example.com",
+        ]);
+        $user->assignRole("Referee Administrator");
+        $this->advanceProgressBar();
+
         Season::all()->each(function (Season $season) {
             $user = factory(User::class)->create([
                 'name' => "Season {$season->getId()} Administrator",

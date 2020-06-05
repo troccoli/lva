@@ -22,6 +22,7 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::create(['name' => 'view-seasons']);
 
         Role::create(['name' => 'Site Administrator']);
+        Role::create(['name' => 'Referees Administrator']);
         Role::create(['name' => 'League Administrator'])
             ->givePermissionTo('view-seasons');
         Role::create(['name' => 'Division Administrator']);
