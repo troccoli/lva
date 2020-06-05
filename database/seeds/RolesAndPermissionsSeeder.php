@@ -19,38 +19,11 @@ class RolesAndPermissionsSeeder extends Seeder
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
 
-        Permission::create(['name' => 'manage raw data']);
+        Permission::create(['name' => 'view-seasons']);
 
         Role::create(['name' => 'Site Administrator']);
         Role::create(['name' => 'League Administrator'])
-            ->givePermissionTo('manage raw data');
+            ->givePermissionTo('view-seasons');
         Role::create(['name' => 'Division Administrator']);
-
-        $allRolesCount = Season::count() + Competition::count() + Division::count() +
-            Club::count() + Team::count();
-
-        $this->initProgressBar($allRolesCount);
-        Season::all()->each(function (Season $season) {
-            Role::create(['name' => "Season {$season->getId()} Administrator"]);
-            $this->advanceProgressBar();
-        });
-        Competition::all()->each(function (Competition $competition) {
-            Role::create(['name' => "Competition {$competition->getId()} Administrator"]);
-            $this->advanceProgressBar();
-        });
-        Division::all()->each(function (Division $division) {
-            Role::create(['name' => "Division {$division->getId()} Administrator"]);
-            $this->advanceProgressBar();
-        });
-
-        Club::all()->each(function (Club $club) {
-            Role::create(['name' => "Club {$club->getId()} Secretary"]);
-            $this->advanceProgressBar();
-        });
-        Team::all()->each(function (Team $team) {
-            Role::create(['name' => "Team {$team->getId()} Secretary"]);
-            $this->advanceProgressBar();
-        });
-        $this->finishProgressBar();
     }
 }

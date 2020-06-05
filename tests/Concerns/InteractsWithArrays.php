@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests;
+namespace Tests\Concerns;
 
-trait AssertArrayContent
+trait InteractsWithArrays
 {
     private function assertArrayContent(array $expected, array $actual): void
     {

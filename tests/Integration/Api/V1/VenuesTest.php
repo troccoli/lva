@@ -4,11 +4,11 @@ namespace Tests\Integration\Api\V1;
 
 use App\Models\Venue;
 use Tests\ApiTestCase;
-use Tests\AssertArrayContent;
+use Tests\Concerns\InteractsWithArrays;
 
 class VenuesTest extends ApiTestCase
 {
-    use AssertArrayContent;
+    use InteractsWithArrays;
 
     public function testGettingAllVenues(): void
     {

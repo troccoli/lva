@@ -6,14 +6,13 @@ use App\Http\Resources\FixtureResource;
 use App\Models\Division;
 use App\Models\Fixture;
 use App\Models\Venue;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
-use Tests\AssertArrayContent;
+use Tests\Concerns\InteractsWithArrays;
 use Tests\TestCase;
 
 class FixtureResourceTest extends TestCase
 {
-    use RefreshDatabase, AssertArrayContent;
+    use InteractsWithArrays;
 
     private $division;
     private $homeTeam;

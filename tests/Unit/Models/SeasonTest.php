@@ -7,13 +7,11 @@ use App\Models\Division;
 use App\Models\Fixture;
 use App\Models\Season;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithoutEvents;
 use Tests\TestCase;
 
 class SeasonTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testItGetsTheId(): void
     {
         /** @var Season $season */
@@ -26,6 +24,13 @@ class SeasonTest extends TestCase
         /** @var Season $season */
         $season = factory(Season::class)->create();
         $this->assertEquals($season->year, $season->getYear());
+    }
+
+    public function testItGetsTheNameOfTheAdminRole(): void
+    {
+        /** @var Season $season */
+        $season = factory(Season::class)->create();
+        $this->assertEquals("Season {$season->getId()} Administrator", $season->getAdminRole());
     }
 
     /**

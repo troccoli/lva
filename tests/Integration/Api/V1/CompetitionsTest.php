@@ -6,11 +6,11 @@ use App\Models\Competition;
 use App\Models\Division;
 use App\Models\Season;
 use Tests\ApiTestCase;
-use Tests\AssertArrayContent;
+use Tests\Concerns\InteractsWithArrays;
 
 class CompetitionsTest extends ApiTestCase
 {
-    use AssertArrayContent;
+    use InteractsWithArrays;
 
     public function testGettingAllCompetitions(): void
     {

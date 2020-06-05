@@ -7,13 +7,10 @@ use App\Models\Division;
 use App\Models\Season;
 use App\Models\Venue;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class FixtureTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testItGetsTheId(): void
     {
         $fixture = aFixture()->build();

@@ -9,11 +9,11 @@ use App\Models\Team;
 use App\Models\Venue;
 use Illuminate\Support\Carbon;
 use Tests\ApiTestCase;
-use Tests\AssertArrayContent;
+use Tests\Concerns\InteractsWithArrays;
 
 class FixturesTest extends ApiTestCase
 {
-    use AssertArrayContent;
+    use InteractsWithArrays;
 
     private $season1;
     private $season2;

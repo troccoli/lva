@@ -5,15 +5,12 @@ namespace Tests\Feature\Auth;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Contracts\Hashing\Hasher;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class ResetPasswordTest extends TestCase
 {
-    use RefreshDatabase;
-
     /** @var User */
     private $user;
     /** @var string */

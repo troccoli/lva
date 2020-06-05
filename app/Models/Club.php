@@ -27,6 +27,11 @@ class Club extends Model
         return $this->name;
     }
 
+    public function getSecretaryRole(): string
+    {
+        return "Club $this->id Secretary";
+    }
+
     public function teams(): HasMany
     {
         return $this->hasMany(Team::class);

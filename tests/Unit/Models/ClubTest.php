@@ -6,14 +6,11 @@ use App\Models\Club;
 use App\Models\Fixture;
 use App\Models\Team;
 use App\Models\Venue;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 use Tests\TestCase;
 
 class ClubTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testItGetsTheId(): void
     {
         /** @var Club $club */
@@ -26,6 +23,13 @@ class ClubTest extends TestCase
         /** @var Club $club */
         $club = aClub()->build();
         $this->assertEquals($club->name, $club->getName());
+    }
+
+    public function testItGetsTheNameOfTheSecretaryRole(): void
+    {
+        /** @var Club $club */
+        $club = factory(Club::class)->create();
+        $this->assertEquals("Club {$club->getId()} Secretary", $club->getSecretaryRole());
     }
 
     public function testItGetsTheTeams(): void

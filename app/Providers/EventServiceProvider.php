@@ -7,11 +7,11 @@ use App\Events\CompetitionCreated;
 use App\Events\DivisionCreated;
 use App\Events\SeasonCreated;
 use App\Events\TeamCreated;
-use App\Listeners\CreateClubSecretaryRole;
-use App\Listeners\CreateCompetitionAdminRole;
-use App\Listeners\CreateDivisionAdminRole;
-use App\Listeners\CreateSeasonAdminRole;
-use App\Listeners\CreateTeamSecretaryRole;
+use App\Listeners\SetUpClubSecretary;
+use App\Listeners\SetUpCompetitionAdmin;
+use App\Listeners\SetUpDivisionAdmin;
+use App\Listeners\SetUpSeasonAdmin;
+use App\Listeners\SetUpTeamSecretary;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -28,19 +28,19 @@ class EventServiceProvider extends ServiceProvider
             SendEmailVerificationNotification::class,
         ],
         SeasonCreated::class => [
-            CreateSeasonAdminRole::class,
+            SetUpSeasonAdmin::class,
         ],
         CompetitionCreated::class => [
-            CreateCompetitionAdminRole::class,
+            SetUpCompetitionAdmin::class,
         ],
         DivisionCreated::class => [
-            CreateDivisionAdminRole::class,
+            SetUpDivisionAdmin::class,
         ],
         ClubCreated::class => [
-            CreateClubSecretaryRole::class,
+            SetUpClubSecretary::class,
         ],
         TeamCreated::class => [
-            CreateTeamSecretaryRole::class,
+            SetUpTeamSecretary::class,
         ],
     ];
 

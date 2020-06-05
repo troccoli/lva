@@ -5,11 +5,11 @@ namespace Tests\Integration\Api\V1;
 use App\Models\Competition;
 use App\Models\Division;
 use Tests\ApiTestCase;
-use Tests\AssertArrayContent;
+use Tests\Concerns\InteractsWithArrays;
 
 class DivisionsTest extends ApiTestCase
 {
-    use AssertArrayContent;
+    use InteractsWithArrays;
 
     public function testGettingAllDivisions(): void
     {

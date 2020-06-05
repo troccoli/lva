@@ -4,16 +4,13 @@ namespace Tests\Unit\Models;
 
 use App\Models\Competition;
 use App\Models\Division;
-use App\Models\Team;
 use App\Models\Fixture;
+use App\Models\Team;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class DivisionTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testItGetsTheId(): void
     {
         /** @var Division $division */
@@ -28,6 +25,12 @@ class DivisionTest extends TestCase
         $this->assertEquals($division->name, $division->getName());
     }
 
+    public function testItGetsTheNameOfTheAdminRole(): void
+    {
+        /** @var Division $division */
+        $division = factory(Division::class)->create();
+        $this->assertEquals("Division {$division->getId()} Administrator", $division->getAdminRole());
+    }
     public function testItGetsTheDisplayingOrder(): void
     {
         /** @var Division $division */

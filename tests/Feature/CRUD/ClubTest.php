@@ -6,14 +6,11 @@ use App\Events\ClubCreated;
 use App\Models\Club;
 use App\Models\User;
 use App\Models\Venue;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class ClubTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testAccessForGuests(): void
     {
         /** @var Club $club */
@@ -71,7 +68,7 @@ class ClubTest extends TestCase
         /** @var Club $club */
         $club = aClub()->buildWithoutSaving();
 
-        $this->actingAs(factory(User::class)->create()->assignRole('Site Admin'));
+        $this->actingAs(factory(User::class)->create()->assignRole('Site Administrator'));
 
         $this->get('/clubs')
             ->assertOk();
@@ -122,7 +119,7 @@ class ClubTest extends TestCase
 
     public function testAddingAClub(): void
     {
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
 
         $this->post('/clubs', [])
             ->assertSessionHasErrors('name', 'The name is required.')
@@ -149,7 +146,7 @@ class ClubTest extends TestCase
 
     public function testEditingAClub(): void
     {
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
 
         $this->put('/clubs/1')
             ->assertNotFound();
@@ -191,7 +188,7 @@ class ClubTest extends TestCase
 
     public function testDeletingAClub(): void
     {
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
 
         $this->delete('/clubs/1')
             ->assertNotFound();
@@ -208,7 +205,7 @@ class ClubTest extends TestCase
     {
         Event::fake();
 
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
 
         $this->post('/clubs', ['name' => 'London Giants', 'venue_id' => null]);
 

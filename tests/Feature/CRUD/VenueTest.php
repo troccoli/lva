@@ -2,16 +2,13 @@
 
 namespace Tests\Feature\CRUD;
 
-use App\Models\Venue;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\Venue;
 use Tests\TestCase;
 use Webpatser\Uuid\Uuid;
 
 class VenueTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testAccessForGuests(): void
     {
         /** @var Venue $venue */
@@ -73,7 +70,7 @@ class VenueTest extends TestCase
         /** @var Venue $venue */
         $venue = factory(Venue::class)->make();
 
-        $this->be(factory(User::class)->create()->assignRole('Site Admin'));
+        $this->be(factory(User::class)->create()->assignRole('Site Administrator'));
 
         $this->get('/venues')
             ->assertOk();
@@ -130,7 +127,7 @@ class VenueTest extends TestCase
 
     public function testAddingAVenue(): void
     {
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
 
         $this->post('/venues', [])
             ->assertSessionHasErrors('name', 'The name is required.');
@@ -150,7 +147,7 @@ class VenueTest extends TestCase
      */
     public function testEditingAVenue(): void
     {
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
 
         $this->put('/venues/' . Uuid::generate()->string)
             ->assertNotFound();
@@ -179,7 +176,7 @@ class VenueTest extends TestCase
      */
     public function testDeletingAVenue(): void
     {
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('manage raw data'));
+        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
 
         $this->delete('/venues/' . Uuid::generate()->string)
             ->assertNotFound();

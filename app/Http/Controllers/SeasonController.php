@@ -9,6 +9,11 @@ use Illuminate\View\View;
 
 class SeasonController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Season::class, 'season');
+    }
+
     public function index(): View
     {
         return view('CRUD.seasons.index', ['seasons' => Season::orderBy('year', 'desc')->paginate(5)]);
