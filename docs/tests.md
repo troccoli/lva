@@ -32,3 +32,14 @@ Much more readable and easier to understand. It also hides the details of how th
 is structured. For example, if the name of a club is not stored in the `name` field
 any more, we will need only to change the builder, rather than all the occurences where
 the factory has been used.
+
+The downside of using these builders is that I have to declare global functions to access
+them: see [helpers.php](../tests/Builders/helpers.php).
+
+To avoid this I took another approach: a [Test Model Factory](../tests/Builders/TestModelFactory.php).
+This is a final class that provides static methods to access the builder, so I can now write
+code like
+
+```php
+$role = \Tests\Builders\TestModelFactory::aRole()->named('Marketing Officer')->build();
+```
