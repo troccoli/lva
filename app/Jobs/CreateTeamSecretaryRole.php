@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers\RolesHelper;
 use App\Models\Team;
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -20,6 +21,6 @@ class CreateTeamSecretaryRole
 
     public function handle(): void
     {
-        Role::create(['name' => $this->team->getSecretaryRole()]);
+        Role::create(['name' => RolesHelper::teamSecretaryName($this->team)]);
     }
 }

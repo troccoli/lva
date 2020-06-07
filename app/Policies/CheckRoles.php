@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Helpers\RolesHelper;
 use App\Models\Club;
 use App\Models\Competition;
 use App\Models\Division;
@@ -14,7 +15,7 @@ trait CheckRoles
     public function hasAnySeasonAdminRole(User $user): bool
     {
         return $user->hasRole(Season::all()->map(function (Season $season): string {
-            return $season->getAdminRole();
+            return RolesHelper::seasonAdminName($season);
         })->toArray());
     }
 
@@ -25,7 +26,7 @@ trait CheckRoles
             : Competition::all();
 
         return $user->hasRole($competitions->map(function (Competition $competition): string {
-            return $competition->getAdminRole();
+            return RolesHelper::competitionAdminName($competition);
         })->toArray());
     }
 
@@ -36,21 +37,21 @@ trait CheckRoles
             : Division::all();
 
         return $user->hasRole($divisions->map(function (Division $division): string {
-            return $division->getAdminRole();
+            return RolesHelper::divisionAdminName($division);
         })->toArray());
     }
 
     public function hasAnyClubSecretaryRole(User $user): bool
     {
         return $user->hasRole(Club::all()->map(function (Club $club): string {
-            return $club->getSecretaryRole();
+            return RolesHelper::clubSecretaryName($club);
         })->toArray());
     }
 
     public function hasAnyTeamSecretaryRole(User $user): bool
     {
         return $user->hasRole(Team::all()->map(function (Team $team): string {
-            return $team->getSecretaryRole();
+            return RolesHelper::teamSecretaryName($team);
         })->toArray());
     }
 }

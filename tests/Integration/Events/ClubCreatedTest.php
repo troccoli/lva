@@ -2,6 +2,7 @@
 
 namespace Tests\Integration\Events;
 
+use App\Helpers\RolesHelper;
 use App\Models\Club;
 use App\Models\User;
 use Tests\Concerns\InteractsWithPermissions;
@@ -15,7 +16,7 @@ class ClubCreatedTest extends TestCase
     {
         $club = factory(Club::class)->create();
 
-        $this->assertDatabaseHas('roles', ['name' => $club->getSecretaryRole()]);
+        $this->assertDatabaseHas('roles', ['name' => RolesHelper::clubSecretaryName($club)]);
     }
 
     public function testClubPermissionsAreCreated(): void
@@ -36,7 +37,7 @@ class ClubCreatedTest extends TestCase
 
         /** @var User $user */
         $user = factory(User::class)->create();
-        $user->assignRole($club->getSecretaryRole());
+        $user->assignRole(RolesHelper::clubSecretaryName($club));
 
         $this->assertUserCan($user, "edit-club-$clubId")
             ->assertUserCan($user, "add-teams-in-club-$clubId")

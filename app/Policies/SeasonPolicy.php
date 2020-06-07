@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Helpers\RolesHelper;
 use App\Models\Season;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -43,7 +44,7 @@ class SeasonPolicy
 
     public function update(User $user, Season $season): bool
     {
-        return $user->hasRole($season->getAdminRole());
+        return $user->hasRole(RolesHelper::seasonAdminName($season));
     }
 
     public function delete(User $user, Season $season): bool

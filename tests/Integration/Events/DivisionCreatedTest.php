@@ -2,6 +2,7 @@
 
 namespace Tests\Integration\Events;
 
+use App\Helpers\RolesHelper;
 use App\Models\Division;
 use App\Models\User;
 use Tests\Concerns\InteractsWithPermissions;
@@ -13,9 +14,10 @@ class DivisionCreatedTest extends TestCase
 
     public function testDivisionAdminRoleIsCreated(): void
     {
+        /** @var Division $division */
         $division = factory(Division::class)->create();
 
-        $this->assertDatabaseHas('roles', ['name' => $division->getAdminRole()]);
+        $this->assertDatabaseHas('roles', ['name' => RolesHelper::divisionAdminName($division)]);
     }
 
     public function testDivisionPermissionsAreCreated(): void
@@ -38,7 +40,7 @@ class DivisionCreatedTest extends TestCase
 
         /** @var User $divisionAdmin */
         $divisionAdmin = factory(User::class)->create();
-        $divisionAdmin->assignRole($division->getAdminRole());
+        $divisionAdmin->assignRole(RolesHelper::divisionAdminName($division));
 
         $this->assertUserCan($divisionAdmin, "edit-division-$divisionId")
             ->assertUserCan($divisionAdmin, "add-fixtures-in-division-$divisionId")
@@ -50,7 +52,7 @@ class DivisionCreatedTest extends TestCase
 
         /** @var User $competitionAdmin */
         $competitionAdmin = factory(User::class)->create();
-        $competitionAdmin->assignRole($division->getCompetition()->getAdminRole());
+        $competitionAdmin->assignRole(RolesHelper::competitionAdminName($division->getCompetition()));
 
         $this->assertUserCan($competitionAdmin, "edit-division-$divisionId")
             ->assertUserCan($competitionAdmin, "add-fixtures-in-division-$divisionId")
@@ -62,7 +64,7 @@ class DivisionCreatedTest extends TestCase
 
         /** @var User $seasonAdmin */
         $seasonAdmin = factory(User::class)->create();
-        $seasonAdmin->assignRole($division->getCompetition()->getSeason()->getAdminRole());
+        $seasonAdmin->assignRole(RolesHelper::seasonAdminName($division->getCompetition()->getSeason()));
 
         $this->assertUserCan($seasonAdmin, "edit-division-$divisionId")
             ->assertUserCan($seasonAdmin, "add-fixtures-in-division-$divisionId")

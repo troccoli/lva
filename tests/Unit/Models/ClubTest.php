@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Models;
 
+use App\Helpers\RolesHelper;
 use App\Models\Club;
 use App\Models\Fixture;
 use App\Models\Team;
@@ -29,7 +30,7 @@ class ClubTest extends TestCase
     {
         /** @var Club $club */
         $club = factory(Club::class)->create();
-        $this->assertEquals("Club {$club->getId()} Secretary", $club->getSecretaryRole());
+        $this->assertEquals("Club {$club->getId()} Secretary", RolesHelper::clubSecretaryName($club));
     }
 
     public function testItGetsTheTeams(): void

@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Models;
 
+use App\Helpers\RolesHelper;
 use App\Models\Competition;
 use App\Models\Division;
 use App\Models\Fixture;
@@ -29,7 +30,7 @@ class DivisionTest extends TestCase
     {
         /** @var Division $division */
         $division = factory(Division::class)->create();
-        $this->assertEquals("Division {$division->getId()} Administrator", $division->getAdminRole());
+        $this->assertEquals("Division {$division->getId()} Administrator", RolesHelper::divisionAdminName($division));
     }
     public function testItGetsTheDisplayingOrder(): void
     {

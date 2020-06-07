@@ -11,13 +11,13 @@ class CreateTeamSecretaryRoleTest extends TestCase
     public function testItCreatesTheTeamAdminRole(): void
     {
         $team = \Mockery::mock(Team::class, [
-            'getSecretaryRole' => 'Team Secretary Role',
+            'getId' => '456',
         ]);
 
         $sut = new CreateTeamSecretaryRole($team);
 
         $sut->handle();
 
-        $this->assertDatabaseHas('roles', ['name' => 'Team Secretary Role']);
+        $this->assertDatabaseHas('roles', ['name' => 'Team 456 Secretary']);
     }
 }

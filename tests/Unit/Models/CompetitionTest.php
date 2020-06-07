@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Models;
 
+use App\Helpers\RolesHelper;
 use App\Models\Competition;
 use App\Models\Division;
 use App\Models\Fixture;
@@ -29,7 +30,7 @@ class CompetitionTest extends TestCase
     {
         /** @var Competition $competition */
         $competition = factory(Competition::class)->create();
-        $this->assertEquals("Competition {$competition->getId()} Administrator", $competition->getAdminRole());
+        $this->assertEquals("Competition {$competition->getId()} Administrator", RolesHelper::competitionAdminName($competition));
     }
 
     public function testItGetsTheSeason(): void

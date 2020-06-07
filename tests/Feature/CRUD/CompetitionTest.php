@@ -3,6 +3,7 @@
 namespace Tests\Feature\CRUD;
 
 use App\Events\CompetitionCreated;
+use App\Helpers\RolesHelper;
 use App\Models\Competition;
 use App\Models\Season;
 use App\Models\User;
@@ -126,7 +127,7 @@ class CompetitionTest extends TestCase
         $competition = factory(Competition::class)->create(['season_id' => $seasonId]);
         $competitionId = $competition->getId();
 
-        $this->actingAs(factory(User::class)->create()->assignRole($competition->getAdminRole()));
+        $this->actingAs(factory(User::class)->create()->assignRole(RolesHelper::competitionAdminName($competition)));
 
         $this->get("/seasons/$seasonId/competitions")
             ->assertOk();
@@ -189,7 +190,7 @@ class CompetitionTest extends TestCase
         $competition = factory(Competition::class)->make();
         $seasonId = $competition->getSeason()->getId();
 
-        $this->actingAs(factory(User::class)->create()->assignRole($competition->getSeason()->getAdminRole()));
+        $this->actingAs(factory(User::class)->create()->assignRole(RolesHelper::seasonAdminName($competition->getSeason())));
 
         $this->get("/seasons/$seasonId/competitions")
             ->assertOk();

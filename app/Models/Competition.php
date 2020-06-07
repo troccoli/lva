@@ -28,11 +28,6 @@ class Competition extends Model
         return $this->name;
     }
 
-    public function getAdminRole(): string
-    {
-        return "Competition $this->id Administrator";
-    }
-
     public function season(): BelongsTo
     {
         return $this->belongsTo(Season::class);

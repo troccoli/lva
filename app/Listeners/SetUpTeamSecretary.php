@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\TeamCreated;
+use App\Helpers\RolesHelper;
 use App\Jobs\CreateTeamPermissions;
 use App\Jobs\CreateTeamSecretaryRole;
 use App\Models\Team;
@@ -20,12 +21,12 @@ class SetUpTeamSecretary
         CreateTeamPermissions::dispatchNow($team);
 
         /** @var Role $teamSecretaryRole */
-        $teamSecretaryRole = Role::findByName($team->getSecretaryRole());
+        $teamSecretaryRole = Role::findByName(RolesHelper::teamSecretaryName($team));
         $teamSecretaryRole->givePermissionTo([
             "edit-team-$teamId",
         ]);
 
-        $clubSecretaryRole = Role::findByName($team->getClub()->getSecretaryRole());
+        $clubSecretaryRole = Role::findByName(RolesHelper::clubSecretaryName($team->getClub()));
         $clubSecretaryRole->givePermissionTo([
             "edit-team-$teamId",
             "delete-team-$teamId",

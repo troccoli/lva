@@ -32,11 +32,6 @@ class Season extends Model
         return sprintf('%4u/%02u', $this->year, ($this->year + 1) % 100);
     }
 
-    public function getAdminRole(): string
-    {
-        return "Season $this->id Administrator";
-    }
-
     public function competitions(): HasMany
     {
         return $this->hasMany(Competition::class);
