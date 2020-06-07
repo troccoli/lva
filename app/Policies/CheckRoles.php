@@ -48,9 +48,13 @@ trait CheckRoles
         })->toArray());
     }
 
-    public function hasAnyTeamSecretaryRole(User $user): bool
+    public function hasAnyTeamSecretaryRole(User $user, ?Club $club = null): bool
     {
-        return $user->hasRole(Team::all()->map(function (Team $team): string {
+        $teams = $club
+            ? $club->getTeams()
+            : Team::all();
+
+        return $user->hasRole($teams->map(function (Team $team): string {
             return RolesHelper::teamSecretaryName($team);
         })->toArray());
     }
