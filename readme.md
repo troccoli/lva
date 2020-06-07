@@ -21,9 +21,9 @@ use a package to build forms in blade component, but instead I choose to create 
 So, if you see something that looks different, or notice some inconsistencies, please remember that most likely
 that is on purpose. I will try and document them as I go along.
 
-- [Test Data](./tests/readme.md)
-- [API](./app/Http/Controllers/Api/readme.md)
-- [Views](./resources/views/readme.md)
+- [Test Data](./docs/tests.md)
+- [API](./docs/api.md)
+- [Views](./docs/views.md)
 
 ## How to try it out
 
