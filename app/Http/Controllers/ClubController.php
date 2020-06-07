@@ -10,6 +10,11 @@ use Illuminate\View\View;
 
 class ClubController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Club::class, 'club');
+    }
+
     public function index(): View
     {
         return view('CRUD.clubs.index', ['clubs' => Club::orderBy('name')->paginate(15)]);

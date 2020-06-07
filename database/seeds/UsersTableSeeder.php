@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\RolesHelper;
 use App\Models\Club;
 use App\Models\Competition;
 use App\Models\Division;
@@ -15,7 +16,13 @@ class UsersTableSeeder extends Seeder
 
     public function run(): void
     {
-        $this->initProgressBar(Role::count());
+        $this->initProgressBar(Role::count() + 1);
+
+        factory(User::class)->create([
+            'name' => "Test User",
+            'email' => "test-user@example.com",
+        ]);
+        $this->advanceProgressBar();
 
         $user = factory(User::class)->create([
             'name' => "Site Administrator",
@@ -25,10 +32,10 @@ class UsersTableSeeder extends Seeder
         $this->advanceProgressBar();
 
         $user = factory(User::class)->create([
-            'name' => "Referee Administrator",
-            'email' => "referee-administrator@example.com",
+            'name' => "Referees Administrator",
+            'email' => "referees-administrator@example.com",
         ]);
-        $user->assignRole("Referee Administrator");
+        $user->assignRole("Referees Administrator");
         $this->advanceProgressBar();
 
         Season::all()->each(function (Season $season) {
@@ -36,7 +43,7 @@ class UsersTableSeeder extends Seeder
                 'name' => "Season {$season->getId()} Administrator",
                 'email' => "season-{$season->getId()}-administrator@example.com",
             ]);
-            $user->assignRole("Season {$season->getId()} Administrator");
+            $user->assignRole(RolesHelper::seasonAdminName($season));
             $this->advanceProgressBar();
         });
         Competition::all()->each(function (Competition $competition) {
@@ -44,7 +51,7 @@ class UsersTableSeeder extends Seeder
                 'name' => "Competition {$competition->getId()} Administrator",
                 'email' => "competition-{$competition->getId()}-administrator@example.com",
             ]);
-            $user->assignRole("Competition {$competition->getId()} Administrator");
+            $user->assignRole(RolesHelper::competitionAdminName($competition));
             $this->advanceProgressBar();
         });
         Division::all()->each(function (Division $division) {
@@ -52,7 +59,7 @@ class UsersTableSeeder extends Seeder
                 'name' => "Division {$division->getId()} Administrator",
                 'email' => "division-{$division->getId()}-administrator@example.com",
             ]);
-            $user->assignRole("Division {$division->getId()} Administrator");
+            $user->assignRole(RolesHelper::divisionAdminName($division));
             $this->advanceProgressBar();
         });
 
@@ -61,7 +68,7 @@ class UsersTableSeeder extends Seeder
                 'name' => "Club {$club->getId()} Secretary",
                 'email' => "club-{$club->getId()}-secretary@example.com",
             ]);
-            $user->assignRole("Club {$club->getId()} Secretary");
+            $user->assignRole(RolesHelper::clubSecretaryName($club));
             $this->advanceProgressBar();
         });
         Team::all()->each(function (Team $team) {
@@ -69,7 +76,7 @@ class UsersTableSeeder extends Seeder
                 'name' => "Team {$team->getId()} Secretary",
                 'email' => "team-{$team->getId()}-secretary@example.com",
             ]);
-            $user->assignRole("Team {$team->getId()} Secretary");
+            $user->assignRole(RolesHelper::teamSecretaryName($team));
             $this->advanceProgressBar();
         });
 

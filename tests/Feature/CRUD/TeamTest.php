@@ -3,6 +3,8 @@
 namespace Tests\Feature\CRUD;
 
 use App\Events\TeamCreated;
+use App\Helpers\RolesHelper;
+use App\Models\Club;
 use App\Models\Team;
 use App\Models\User;
 use App\Models\Venue;
@@ -36,7 +38,7 @@ class TeamTest extends TestCase
             ->assertRedirect('/login');
     }
 
-    public function testAccessForUserWithoutThePermission(): void
+    public function testAccessForUsersWithoutAnyCorrectRoles(): void
     {
         /** @var Team $team */
         $team = aTeam()->build();
@@ -63,7 +65,7 @@ class TeamTest extends TestCase
             ->assertForbidden();
     }
 
-    public function testAccessForSuperAdmin(): void
+    public function testAccessForSiteAdministrators(): void
     {
         /** @var Team $team */
         $team = aTeam()->buildWithoutSaving();
@@ -119,13 +121,115 @@ class TeamTest extends TestCase
             ->assertRedirect('/email/verify');
     }
 
+    public function testAccessForClubAdministrators(): void
+    {
+        /** @var Club $club */
+        $club = aClub()->build();
+        $clubId = $club->getId();
+
+        /** @var Team $team */
+        $team = aTeam()->inClub($club)->buildWithoutSaving();
+
+        $this->actingAs(factory(User::class)->create()->assignRole(RolesHelper::clubSecretaryName($club)));
+
+        $this->get("/clubs/$clubId/teams")
+            ->assertOk();
+
+        $this->get("/clubs/$clubId/teams/create")
+            ->assertOk();
+
+        $this->post("/clubs/$clubId/teams", $team->toArray())
+            ->assertRedirect("/clubs/$clubId/teams");
+
+        $team = Team::first();
+        $teamId = $team->getId();
+
+        $this->get("/clubs/$clubId/teams/$teamId/edit")
+            ->assertOk();
+
+        $this->put("/clubs/$clubId/teams/$teamId", $team->toArray())
+            ->assertRedirect("/clubs/$clubId/teams");
+
+        $this->delete("/clubs/$clubId/teams/$teamId")
+            ->assertRedirect("/clubs/$clubId/teams");
+    }
+
+    public function testAccessForTeamAdministrators(): void
+    {
+        /** @var Club $club */
+        $club = aClub()->build();
+        $clubId = $club->getId();
+
+        /** @var Team $team */
+        $team = aTeam()->inClub($club)->build();
+        $teamId = $team->getId();
+
+        $this->actingAs(factory(User::class)->create()->assignRole(RolesHelper::teamSecretaryName($team)));
+
+        $this->get("/clubs/$clubId/teams")
+            ->assertOk();
+
+        $this->get("/clubs/$clubId/teams/create")
+            ->assertForbidden();
+
+        $this->post("/clubs/$clubId/teams", $team->toArray())
+            ->assertForbidden();
+
+        $this->get("/clubs/$clubId/teams/$teamId/edit")
+            ->assertOk();
+
+        $this->put("/clubs/$clubId/teams/$teamId", $team->toArray())
+            ->assertRedirect("/clubs/$clubId/teams");
+
+        $this->delete("/clubs/$clubId/teams/$teamId")
+            ->assertForbidden();
+
+        /** @var Team $anotherTeam */
+        $anotherTeam = aTeam()->inClub($club)->build();
+        $anotherTeamId = $anotherTeam->getId();
+
+        $this->get("/clubs/$clubId/teams/$anotherTeamId/edit")
+            ->assertForbidden();
+
+        $this->put("/clubs/$clubId/teams/$anotherTeamId", $team->toArray())
+            ->assertForbidden();
+
+        $this->delete("/clubs/$clubId/teams/$teamId")
+            ->assertForbidden();
+
+        /** @var Club $anotherClub */
+        $anotherClub = aClub()->build();
+        $anotherClubId = $anotherClub->getId();
+
+        $yetAnotherTeam = aTeam()->inClub($anotherClub)->build();
+        $yetAnotherTeamId = $yetAnotherTeam->getId();
+
+        $this->get("/clubs/$anotherClubId/teams")
+            ->assertForbidden();
+
+        $this->get("/clubs/$anotherClubId/teams/create")
+            ->assertForbidden();
+
+        $this->post("/clubs/$anotherClubId/teams", $team->toArray())
+            ->assertForbidden();
+
+        $this->get("/clubs/$anotherClubId/teams/$yetAnotherTeamId/edit")
+            ->assertForbidden();
+
+        $this->put("/clubs/$anotherClubId/teams/$yetAnotherTeamId", $team->toArray())
+            ->assertForbidden();
+
+        $this->delete("/clubs/$anotherClubId/teams/$yetAnotherTeamId")
+            ->assertForbidden();
+    }
+
     public function testAddingATeam(): void
     {
         /** @var Venue $sobellSC */
         $sobellSC = factory(Venue::class)->create(['name' => 'Sobell SC']);
         $clubId = aClub()->build()->getId();
 
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
+        $this->actingAs($this->siteAdmin);
 
         $this->post("/clubs/$clubId/teams", [])
             ->assertSessionHasErrors('name', 'The name is required.');
@@ -169,7 +273,7 @@ class TeamTest extends TestCase
         $team = factory(Team::class)->create(['name' => 'London Scarlets', 'venue_id' => $sobellSC->getId()]);
         $clubId = $team->getClub()->getId();
 
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
+        $this->actingAs($this->siteAdmin);
 
         $this->put("/clubs/$clubId/teams/" . $team->getId(), [])
             ->assertSessionHasErrors('name', 'The name is required.');
@@ -220,7 +324,7 @@ class TeamTest extends TestCase
         $team = factory(Team::class)->create(['name' => 'London Scarlets']);
         $clubId = $team->getClub()->getId();
 
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
+        $this->actingAs($this->siteAdmin);
 
         $this->delete("/clubs/$clubId/teams/" . $team->getId())
             ->assertSessionHasNoErrors();
@@ -237,7 +341,7 @@ class TeamTest extends TestCase
         // Cannot create a venue as the events are faked and the Venue model
         // needs to create a UUID
         $clubId = aClub()->withoutVenue()->build()->getId();
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
+        $this->actingAs($this->siteAdmin);
 
         $this->post("/clubs/$clubId/teams", ['club_id' => $clubId, 'name' => 'London Scarlets', 'venue_id' => null]);
 

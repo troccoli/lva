@@ -22,13 +22,10 @@ Route::middleware(['auth', 'verified'])
         Route::get('fixtures')
             ->uses('FixturesController@index')
             ->name('fixtures.index');
-        Route::middleware(['can:view-seasons'])
+        Route::resource('clubs', 'ClubController')->except('show');
+        Route::prefix('clubs/{club}')
             ->group(function (): void {
-                Route::resource('clubs', 'ClubController')->except('show');
-                Route::prefix('clubs/{club}')
-                    ->group(function (): void {
-                        Route::resource('teams', 'TeamController')->except('show');
-                    });
-                Route::resource('venues', 'VenueController');
+                Route::resource('teams', 'TeamController')->except('show');
             });
+        Route::resource('venues', 'VenueController');
     });

@@ -15,6 +15,8 @@ class TeamController extends Controller
 {
     public function index(Club $club): View
     {
+        $this->authorize('viewAny', [Team::class, $club]);
+
         $teams = Team::query()->inClub($club)->orderByName()->get();
 
         return view('CRUD.teams.index', compact('club', 'teams'));
@@ -22,6 +24,8 @@ class TeamController extends Controller
 
     public function create(Club $club): View
     {
+        $this->authorize('create', [Team::class, $club]);
+
         $venues = Venue::all();
 
         return view('CRUD.teams.create', compact('club', 'venues'));
@@ -29,6 +33,8 @@ class TeamController extends Controller
 
     public function store(Request $request, Club $club): RedirectResponse
     {
+        $this->authorize('create', [Team::class, $club]);
+
         $this->validate($request,
             [
                 'club_id' => 'required|exists:clubs,id',
@@ -55,6 +61,8 @@ class TeamController extends Controller
 
     public function edit(Club $club, Team $team): View
     {
+        $this->authorize('update', $team);
+
         $venues = Venue::all();
 
         return view('CRUD.teams.edit', compact('club', 'team', 'venues'));
@@ -62,6 +70,8 @@ class TeamController extends Controller
 
     public function update(Request $request, Club $club, Team $team): RedirectResponse
     {
+        $this->authorize('update', $team);
+
         $this->validate($request,
             [
                 'name' => [
@@ -89,6 +99,8 @@ class TeamController extends Controller
 
     public function destroy(Club $club, Team $team): RedirectResponse
     {
+        $this->authorize('delete', $team);
+
         $team->delete();
 
         return redirect()

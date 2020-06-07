@@ -26,7 +26,7 @@ class ClubTest extends DuskTestCase
     public function testListingAllClubs(): void
     {
         $this->browse(function (Browser $browser): void {
-            $browser->loginAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
+            $browser->loginAs($this->siteAdmin);
 
             $browser->visit('/clubs')
                 ->assertSeeIn('@list', 'There are no clubs yet.');
@@ -77,7 +77,7 @@ class ClubTest extends DuskTestCase
     public function testAddingAClub(): void
     {
         $this->browse(function (Browser $browser): void {
-            $browser->loginAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
+            $browser->loginAs($this->siteAdmin);
 
             // Check we can add a club from the landing page
             $browser->visit('/clubs')
@@ -137,7 +137,7 @@ class ClubTest extends DuskTestCase
     public function testEditingAClub(): void
     {
         $this->browse(function (Browser $browser): void {
-            $browser->loginAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
+            $browser->loginAs($this->siteAdmin);
 
             $browser->visit("/clubs/1/edit")
                 ->assertTitle('Not Found')
@@ -212,7 +212,7 @@ class ClubTest extends DuskTestCase
     public function testDeletingAClub(): void
     {
         $this->browse(function (Browser $browser): void {
-            $browser->loginAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
+            $browser->loginAs($this->siteAdmin);
 
             $clubId = aClub()->build()->getId();
 
@@ -248,7 +248,7 @@ class ClubTest extends DuskTestCase
     public function testViewingTheClubTeams(): void
     {
         $this->browse(function (Browser $browser): void {
-            $browser->loginAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
+            $browser->loginAs($this->siteAdmin);
 
             /** @var Club $club */
             $club = aClub()->build();

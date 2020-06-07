@@ -36,7 +36,7 @@ class VenueTest extends TestCase
             ->assertRedirect('/login');
     }
 
-    public function testAccessForUserWithoutThePermission(): void
+    public function testAccessForUsersWithoutAnyCorrectRoles(): void
     {
         /** @var Venue $venue */
         $venue = factory(Venue::class)->create();
@@ -65,12 +65,12 @@ class VenueTest extends TestCase
             ->assertForbidden();
     }
 
-    public function testAccessForSuperAdmin(): void
+    public function testAccessForSiteAdministrators(): void
     {
         /** @var Venue $venue */
         $venue = factory(Venue::class)->make();
 
-        $this->be(factory(User::class)->create()->assignRole('Site Administrator'));
+        $this->be($this->siteAdmin);
 
         $this->get('/venues')
             ->assertOk();
@@ -127,7 +127,7 @@ class VenueTest extends TestCase
 
     public function testAddingAVenue(): void
     {
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
+        $this->be($this->siteAdmin);
 
         $this->post('/venues', [])
             ->assertSessionHasErrors('name', 'The name is required.');
@@ -147,7 +147,7 @@ class VenueTest extends TestCase
      */
     public function testEditingAVenue(): void
     {
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
+        $this->be($this->siteAdmin);
 
         $this->put('/venues/' . Uuid::generate()->string)
             ->assertNotFound();
@@ -176,7 +176,7 @@ class VenueTest extends TestCase
      */
     public function testDeletingAVenue(): void
     {
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
+        $this->be($this->siteAdmin);
 
         $this->delete('/venues/' . Uuid::generate()->string)
             ->assertNotFound();

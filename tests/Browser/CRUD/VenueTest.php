@@ -16,7 +16,7 @@ class VenueTest extends DuskTestCase
     public function testListingAllVenues(): void
     {
         $this->browse(function (Browser $browser): void {
-            $browser->loginAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
+            $browser->loginAs($this->siteAdmin);
 
             $browser->visit('/venues')
                 ->assertSeeIn('@list', 'There are no venues yet.');
@@ -63,7 +63,7 @@ class VenueTest extends DuskTestCase
     public function testAddingAVenue(): void
     {
         $this->browse(function (Browser $browser): void {
-            $browser->loginAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
+            $browser->loginAs($this->siteAdmin);
 
             // Check we can add a venue from the landing page
             $browser->visit('/venues')
@@ -107,7 +107,7 @@ class VenueTest extends DuskTestCase
     public function testEditingAVenue(): void
     {
         $this->browse(function (Browser $browser): void {
-            $browser->loginAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
+            $browser->loginAs($this->siteAdmin);
 
             $browser->visit('/venues/1/edit')
                 ->assertTitle('Not Found')
@@ -181,7 +181,7 @@ class VenueTest extends DuskTestCase
     public function testDeletingAVenue(): void
     {
         $this->browse(function (Browser $browser): void {
-            $browser->loginAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
+            $browser->loginAs($this->siteAdmin);
 
             $venueId = factory(Venue::class)->create(['name' => 'Sobell S.C.'])->getId();
 
@@ -217,7 +217,7 @@ class VenueTest extends DuskTestCase
     public function testViewVenue(): void
     {
         $this->browse(function (Browser $browser): void {
-            $browser->loginAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
+            $browser->loginAs($this->siteAdmin);
 
             /** @var Venue $venue */
             $venue = factory(Venue::class)->create(['name' => 'Olympic Stadium']);

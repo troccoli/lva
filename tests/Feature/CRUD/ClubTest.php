@@ -3,6 +3,7 @@
 namespace Tests\Feature\CRUD;
 
 use App\Events\ClubCreated;
+use App\Helpers\RolesHelper;
 use App\Models\Club;
 use App\Models\User;
 use App\Models\Venue;
@@ -35,7 +36,7 @@ class ClubTest extends TestCase
             ->assertRedirect('/login');
     }
 
-    public function testAccessForUserWithoutThePermission(): void
+    public function testAccessForUsersWithoutAnyCorrectRoles(): void
     {
         /** @var Club $club */
         $club = aClub()->build();
@@ -63,12 +64,12 @@ class ClubTest extends TestCase
             ->assertForbidden();
     }
 
-    public function testAccessForSuperAdmin(): void
+    public function testAccessForSiteAdministrators(): void
     {
         /** @var Club $club */
         $club = aClub()->buildWithoutSaving();
 
-        $this->actingAs(factory(User::class)->create()->assignRole('Site Administrator'));
+        $this->actingAs($this->siteAdmin);
 
         $this->get('/clubs')
             ->assertOk();
@@ -117,9 +118,43 @@ class ClubTest extends TestCase
             ->assertRedirect('/email/verify');
     }
 
+    public function testAccessForClubSecretaries(): void
+    {
+        /** @var Club $club */
+        $club = factory(Club::class)->create();
+
+        $this->be(factory(User::class)->create()->assignRole(RolesHelper::clubSecretaryName($club)));
+
+        $this->get('/clubs')
+            ->assertOk();
+
+        $this->get('/clubs/create')
+            ->assertForbidden();
+
+        $this->post('/clubs', $club->toArray())
+            ->assertForbidden();
+
+        $this->get('/clubs/' . $club->getId() . '/edit')
+            ->assertOk();
+
+        $this->put('/clubs/' . $club->getId(), $club->toArray())
+            ->assertRedirect('clubs');
+
+        $this->delete('/clubs/' . $club->getId())
+            ->assertForbidden();
+
+        $anotherClub = factory(Club::class)->create();
+
+        $this->get('/clubs/' . $anotherClub->getId() . '/edit')
+            ->assertForbidden();
+
+        $this->put('/clubs/' . $anotherClub->getId(), $club->toArray())
+            ->assertForbidden();
+    }
+
     public function testAddingAClub(): void
     {
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
+        $this->actingAs($this->siteAdmin);
 
         $this->post('/clubs', [])
             ->assertSessionHasErrors('name', 'The name is required.')
@@ -146,7 +181,7 @@ class ClubTest extends TestCase
 
     public function testEditingAClub(): void
     {
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
+        $this->actingAs($this->siteAdmin);
 
         $this->put('/clubs/1')
             ->assertNotFound();
@@ -188,7 +223,7 @@ class ClubTest extends TestCase
 
     public function testDeletingAClub(): void
     {
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
+        $this->actingAs($this->siteAdmin);
 
         $this->delete('/clubs/1')
             ->assertNotFound();
@@ -205,7 +240,7 @@ class ClubTest extends TestCase
     {
         Event::fake();
 
-        $this->actingAs(factory(User::class)->create()->givePermissionTo('view-seasons'));
+        $this->actingAs($this->siteAdmin);
 
         $this->post('/clubs', ['name' => 'London Giants', 'venue_id' => null]);
 
