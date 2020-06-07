@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers\RolesHelper;
 use App\Models\Season;
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -20,6 +21,6 @@ class CreateSeasonAdminRole
 
     public function handle(): void
     {
-        Role::create(['name' => $this->season->getAdminRole()]);
+        Role::create(['name' => RolesHelper::seasonAdminName($this->season)]);
     }
 }

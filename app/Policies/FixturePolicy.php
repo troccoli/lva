@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Helpers\RolesHelper;
 use App\Models\Division;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -26,27 +27,27 @@ class FixturePolicy
     public function create(User $user, Division $division): bool
     {
         return $user->hasAnyRole(
-            $division->getAdminRole(),
-            $division->getCompetition()->getAdminRole(),
-            $division->getCompetition()->getSeason()->getAdminRole()
+            RolesHelper::divisionAdminName($division),
+            RolesHelper::competitionAdminName($division->getCompetition()),
+            RolesHelper::seasonAdminName($division->getCompetition()->getSeason())
         );
     }
 
     public function update(User $user, Division $division): bool
     {
         return $user->hasAnyRole(
-            $division->getAdminRole(),
-            $division->getCompetition()->getAdminRole(),
-            $division->getCompetition()->getSeason()->getAdminRole()
+            RolesHelper::divisionAdminName($division),
+            RolesHelper::competitionAdminName($division->getCompetition()),
+            RolesHelper::seasonAdminName($division->getCompetition()->getSeason())
         );
     }
 
     public function delete(User $user, Division $division): bool
     {
         return $user->hasAnyRole(
-            $division->getAdminRole(),
-            $division->getCompetition()->getAdminRole(),
-            $division->getCompetition()->getSeason()->getAdminRole()
+            RolesHelper::divisionAdminName($division),
+            RolesHelper::competitionAdminName($division->getCompetition()),
+            RolesHelper::seasonAdminName($division->getCompetition()->getSeason())
         );
     }
 }

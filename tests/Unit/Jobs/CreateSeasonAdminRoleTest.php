@@ -11,13 +11,13 @@ class CreateSeasonAdminRoleTest extends TestCase
     public function testItCreatesTheSeasonAdminRole(): void
     {
         $season = \Mockery::mock(Season::class, [
-            'getAdminRole' => 'Season Admin Role',
+            'getId' => '111',
         ]);
 
         $sut = new CreateSeasonAdminRole($season);
 
         $sut->handle();
 
-        $this->assertDatabaseHas('roles', ['name' => 'Season Admin Role']);
+        $this->assertDatabaseHas('roles', ['name' => 'Season 111 Administrator']);
     }
 }

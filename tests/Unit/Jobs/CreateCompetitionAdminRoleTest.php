@@ -11,13 +11,13 @@ class CreateCompetitionAdminRoleTest extends TestCase
     public function testItCreatesTheCompetitionAdminRole(): void
     {
         $competition = \Mockery::mock(Competition::class, [
-            'getAdminRole' => 'Competition Admin Role'
+            'getId' => '123'
         ]);
 
         $sut = new CreateCompetitionAdminRole($competition);
 
         $sut->handle();
 
-        $this->assertDatabaseHas('roles', ['name' => 'Competition Admin Role']);
+        $this->assertDatabaseHas('roles', ['name' => 'Competition 123 Administrator']);
     }
 }

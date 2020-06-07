@@ -2,6 +2,7 @@
 
 namespace Tests\Integration\Events;
 
+use App\Helpers\RolesHelper;
 use App\Models\Competition;
 use App\Models\User;
 use Tests\Concerns\InteractsWithPermissions;
@@ -15,7 +16,7 @@ class CompetitionCreatedTest extends TestCase
     {
         $competition = factory(Competition::class)->create();
 
-        $this->assertDatabaseHas('roles', ['name' => $competition->getAdminRole()]);
+        $this->assertDatabaseHas('roles', ['name' => RolesHelper::competitionAdminName($competition)]);
     }
 
     public function testCompetitionPermissionsAreCreated(): void
@@ -36,7 +37,7 @@ class CompetitionCreatedTest extends TestCase
 
         /** @var User $competitionAdmin */
         $competitionAdmin = factory(User::class)->create();
-        $competitionAdmin->assignRole($competition->getAdminRole());
+        $competitionAdmin->assignRole(RolesHelper::competitionAdminName($competition));
 
         $this->assertUserCan($competitionAdmin, "edit-competition-$competitionId")
             ->assertUserCan($competitionAdmin, "add-divisions-in-competition-$competitionId")
@@ -46,7 +47,7 @@ class CompetitionCreatedTest extends TestCase
 
         /** @var User $seasonAdmin */
         $seasonAdmin = factory(User::class)->create();
-        $seasonAdmin->assignRole($competition->getSeason()->getAdminRole());
+        $seasonAdmin->assignRole(RolesHelper::seasonAdminName($competition->getSeason()));
 
         $this->assertUserCan($seasonAdmin, "edit-competition-$competitionId")
             ->assertUserCan($seasonAdmin, "add-divisions-in-competition-$competitionId")

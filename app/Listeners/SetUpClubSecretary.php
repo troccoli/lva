@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\ClubCreated;
+use App\Helpers\RolesHelper;
 use App\Jobs\CreateClubPermissions;
 use App\Jobs\CreateClubSecretaryRole;
 use App\Models\Club;
@@ -19,7 +20,7 @@ class SetUpClubSecretary
         CreateClubSecretaryRole::dispatchNow($club);
         CreateClubPermissions::dispatchNow($club);
 
-        $role = Role::findByName($club->getSecretaryRole());
+        $role = Role::findByName(RolesHelper::clubSecretaryName($club));
         $role->givePermissionTo([
             "edit-club-$clubId",
             "add-teams-in-club-$clubId",

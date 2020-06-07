@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers\RolesHelper;
 use App\Models\Division;
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -20,6 +21,6 @@ class CreateDivisionAdminRole
 
     public function handle(): void
     {
-        Role::create(['name' => $this->division->getAdminRole()]);
+        Role::create(['name' => RolesHelper::divisionAdminName($this->division)]);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Models;
 
+use App\Helpers\RolesHelper;
 use App\Models\Competition;
 use App\Models\Division;
 use App\Models\Fixture;
@@ -30,7 +31,7 @@ class SeasonTest extends TestCase
     {
         /** @var Season $season */
         $season = factory(Season::class)->create();
-        $this->assertEquals("Season {$season->getId()} Administrator", $season->getAdminRole());
+        $this->assertEquals("Season {$season->getId()} Administrator", RolesHelper::seasonAdminName($season));
     }
 
     /**

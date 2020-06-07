@@ -29,11 +29,6 @@ class Team extends Model
         return $this->name;
     }
 
-    public function getSecretaryRole(): string
-    {
-        return "Team $this->id Secretary";
-    }
-
     public function club(): BelongsTo
     {
         return $this->belongsTo(Club::class);

@@ -2,6 +2,7 @@
 
 namespace Tests\Integration\Events;
 
+use App\Helpers\RolesHelper;
 use App\Models\Season;
 use App\Models\User;
 use Tests\Concerns\InteractsWithPermissions;
@@ -36,7 +37,7 @@ class SeasonCreatedTest extends TestCase
 
         /** @var User $user */
         $user = factory(User::class)->create();
-        $user->assignRole($season->getAdminRole());
+        $user->assignRole(RolesHelper::seasonAdminName($season));
 
         $this->assertUserCan($user, "edit-season-$seasonId")
             ->assertUserCan($user, "add-competitions-in-season-$seasonId")

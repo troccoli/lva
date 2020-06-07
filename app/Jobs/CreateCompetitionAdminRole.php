@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers\RolesHelper;
 use App\Models\Competition;
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -20,6 +21,6 @@ class CreateCompetitionAdminRole
 
     public function handle(): void
     {
-        Role::create(['name' => $this->competition->getAdminRole()]);
+        Role::create(['name' => RolesHelper::competitionAdminName($this->competition)]);
     }
 }

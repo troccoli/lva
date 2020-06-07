@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\CRUD;
 
+use App\Helpers\RolesHelper;
 use App\Models\Competition;
 use App\Models\Division;
 use App\Models\Season;
@@ -54,7 +55,7 @@ class FixtureTest extends TestCase
         $season = factory(Season::class)->create();
 
         $this
-            ->actingAs(factory(User::class)->create()->assignRole($season->getAdminRole()))
+            ->actingAs(factory(User::class)->create()->assignRole(RolesHelper::seasonAdminName($season)))
             ->get('/fixtures')
             ->assertOk();
     }
@@ -65,7 +66,7 @@ class FixtureTest extends TestCase
         $competition = factory(Competition::class)->create();
 
         $this
-            ->actingAs(factory(User::class)->create()->assignRole($competition->getAdminRole()))
+            ->actingAs(factory(User::class)->create()->assignRole(RolesHelper::competitionAdminName($competition)))
             ->get('/fixtures')
             ->assertOk();
     }
@@ -76,7 +77,7 @@ class FixtureTest extends TestCase
         $division = factory(Division::class)->create();
 
         $this
-            ->actingAs(factory(User::class)->create()->assignRole($division->getAdminRole()))
+            ->actingAs(factory(User::class)->create()->assignRole(RolesHelper::divisionAdminName($division)))
             ->get('/fixtures')
             ->assertOk();
     }

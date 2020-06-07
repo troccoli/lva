@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers\RolesHelper;
 use App\Models\Club;
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -20,6 +21,6 @@ class CreateClubSecretaryRole
 
     public function handle(): void
     {
-        Role::create(['name' => $this->club->getSecretaryRole()]);
+        Role::create(['name' => RolesHelper::clubSecretaryName($this->club)]);
     }
 }

@@ -3,6 +3,7 @@
 namespace Tests\Feature\CRUD;
 
 use App\Events\SeasonCreated;
+use App\Helpers\RolesHelper;
 use App\Models\Season;
 use App\Models\User;
 use Illuminate\Support\Facades\Event;
@@ -121,7 +122,7 @@ class SeasonTest extends TestCase
         /** @var Season $season */
         $season = factory(Season::class)->create();
 
-        $this->be(factory(User::class)->create()->assignRole($season->getAdminRole()));
+        $this->be(factory(User::class)->create()->assignRole(RolesHelper::seasonAdminName($season)));
 
         $this->get('/seasons')
             ->assertOk();
