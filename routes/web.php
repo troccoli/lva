@@ -27,8 +27,5 @@ Route::middleware(['auth', 'verified'])
             ->group(function (): void {
                 Route::resource('teams', 'TeamController')->except('show');
             });
-        Route::middleware(['can:view-seasons'])
-            ->group(function (): void {
-                Route::resource('venues', 'VenueController');
-            });
+        Route::resource('venues', 'VenueController');
     });

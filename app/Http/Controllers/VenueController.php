@@ -9,6 +9,11 @@ use Illuminate\View\View;
 
 class VenueController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Venue::class, 'venue');
+    }
+
     public function index(): View
     {
         return view('CRUD.venues.index', ['venues' => Venue::paginate(15)]);
