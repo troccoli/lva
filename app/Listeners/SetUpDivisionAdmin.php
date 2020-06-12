@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\DivisionCreated;
+use App\Helpers\PermissionsHelper;
 use App\Helpers\RolesHelper;
 use App\Jobs\CreateDivisionAdminRole;
 use App\Jobs\CreateDivisionPermissions;
@@ -15,7 +16,6 @@ class SetUpDivisionAdmin
     {
         /** @var Division $division */
         $division = $event->division;
-        $divisionId = $division->getId();
 
         CreateDivisionAdminRole::dispatchNow($division);
         CreateDivisionPermissions::dispatchNow($division);
@@ -23,31 +23,31 @@ class SetUpDivisionAdmin
         /** @var Role $divisionAdminRole */
         $divisionAdminRole = Role::findByName(RolesHelper::divisionAdmin($division));
         $divisionAdminRole->givePermissionTo([
-            "edit-division-$divisionId",
-            "add-fixtures-in-division-$divisionId",
-            "edit-fixtures-in-division-$divisionId",
-            "delete-fixtures-in-division-$divisionId",
-            "view-fixtures-in-division-$divisionId",
+            PermissionsHelper::editDivision($division),
+            PermissionsHelper::addFixtures($division),
+            PermissionsHelper::editFixtures($division),
+            PermissionsHelper::deleteFixtures($division),
+            PermissionsHelper::viewFixtures($division),
         ]);
 
         $competitionAdminRole = Role::findByName(RolesHelper::competitionAdmin($division->getCompetition()));
         $competitionAdminRole->givePermissionTo([
-            "edit-division-$divisionId",
-            "delete-division-$divisionId",
-            "add-fixtures-in-division-$divisionId",
-            "edit-fixtures-in-division-$divisionId",
-            "delete-fixtures-in-division-$divisionId",
-            "view-fixtures-in-division-$divisionId",
+            PermissionsHelper::editDivision($division),
+            PermissionsHelper::deleteDivision($division),
+            PermissionsHelper::addFixtures($division),
+            PermissionsHelper::editFixtures($division),
+            PermissionsHelper::deleteFixtures($division),
+            PermissionsHelper::viewFixtures($division),
         ]);
 
         $seasonAdminRole = Role::findByName(RolesHelper::seasonAdmin($division->getCompetition()->getSeason()));
         $seasonAdminRole->givePermissionTo([
-            "edit-division-$divisionId",
-            "delete-division-$divisionId",
-            "add-fixtures-in-division-$divisionId",
-            "edit-fixtures-in-division-$divisionId",
-            "delete-fixtures-in-division-$divisionId",
-            "view-fixtures-in-division-$divisionId",
+            PermissionsHelper::editDivision($division),
+            PermissionsHelper::deleteDivision($division),
+            PermissionsHelper::addFixtures($division),
+            PermissionsHelper::editFixtures($division),
+            PermissionsHelper::deleteFixtures($division),
+            PermissionsHelper::viewFixtures($division),
         ]);
     }
 }

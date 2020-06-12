@@ -21,7 +21,7 @@ class CreateCompetitionPermissionsTest extends TestCase
         $this->assertDatabaseCount('permissions', 5);
         $this->assertDatabaseHas('permissions', ['name' => 'edit-competition-123']);
         $this->assertDatabaseHas('permissions', ['name' => 'delete-competition-123']);
-        $this->assertDatabaseHas('permissions', ['name' => 'add-divisions-in-competition-123']);
+        $this->assertDatabaseHas('permissions', ['name' => 'add-division-in-competition-123']);
         $this->assertDatabaseHas('permissions', ['name' => 'view-divisions-in-competition-123']);
     }
 }

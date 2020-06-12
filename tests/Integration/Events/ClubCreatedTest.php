@@ -25,7 +25,7 @@ class ClubCreatedTest extends TestCase
 
         $this->assertDatabaseHas('permissions', ['name' => "edit-club-{$club->getId()}"]);
         $this->assertDatabaseHas('permissions', ['name' => "delete-club-{$club->getId()}"]);
-        $this->assertDatabaseHas('permissions', ['name' => "add-teams-in-club-{$club->getId()}"]);
+        $this->assertDatabaseHas('permissions', ['name' => "add-team-in-club-{$club->getId()}"]);
         $this->assertDatabaseHas('permissions', ['name' => "view-teams-in-club-{$club->getId()}"]);
     }
 
@@ -40,7 +40,7 @@ class ClubCreatedTest extends TestCase
         $user->assignRole(RolesHelper::clubSecretary($club));
 
         $this->assertUserCan($user, "edit-club-$clubId")
-            ->assertUserCan($user, "add-teams-in-club-$clubId")
+            ->assertUserCan($user, "add-team-in-club-$clubId")
             ->assertUserCan($user, "view-teams-in-club-$clubId");
 
         $this->assertUserCannot($user, "delete-club-$clubId");

@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers\PermissionsHelper;
 use App\Models\Competition;
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -20,13 +21,11 @@ class CreateCompetitionPermissions
 
     public function handle()
     {
-        $competitionId = $this->competition->getId();
-
         collect([
-            "edit-competition-$competitionId",
-            "delete-competition-$competitionId",
-            "add-divisions-in-competition-$competitionId",
-            "view-divisions-in-competition-$competitionId",
+            PermissionsHelper::editCompetition($this->competition),
+            PermissionsHelper::deleteCompetition($this->competition),
+            PermissionsHelper::addDivision($this->competition),
+            PermissionsHelper::viewDivisions($this->competition),
         ])->each(function (string $permission): void {
             Permission::create(['name' => $permission]);
         });

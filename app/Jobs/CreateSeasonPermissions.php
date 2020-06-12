@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers\PermissionsHelper;
 use App\Models\Season;
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -20,13 +21,11 @@ class CreateSeasonPermissions
 
     public function handle()
     {
-        $seasonId = $this->season->getId();
-
         collect([
-            "edit-season-$seasonId",
-            "delete-season-$seasonId",
-            "add-competitions-in-season-$seasonId",
-            "view-competitions-in-season-$seasonId",
+            PermissionsHelper::editSeason($this->season),
+            PermissionsHelper::deleteSeason($this->season),
+            PermissionsHelper::addCompetition($this->season),
+            PermissionsHelper::viewCompetitions($this->season),
         ])->each(function (string $permission): void {
             Permission::create(['name' => $permission]);
         });
