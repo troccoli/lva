@@ -5,10 +5,11 @@ namespace Tests\Integration\Api\V1;
 use App\Models\Competition;
 use App\Models\Division;
 use App\Models\Season;
-use Tests\ApiTestCase;
+use Laravel\Passport\Passport;
 use Tests\Concerns\InteractsWithArrays;
+use Tests\TestCase;
 
-class CompetitionsTest extends ApiTestCase
+class CompetitionsTest extends TestCase
 {
     use InteractsWithArrays;
 
@@ -28,6 +29,8 @@ class CompetitionsTest extends ApiTestCase
             'name'      => 'Minor Leagues',
             'season_id' => $season2->getId(),
         ]);
+
+        Passport::actingAs($this->siteAdmin);
 
         $response = $this->getJson('/api/v1/competitions')
             ->assertOk();
@@ -59,6 +62,8 @@ class CompetitionsTest extends ApiTestCase
             'name'      => 'University Games',
             'season_id' => $season->getId(),
         ]);
+
+        Passport::actingAs($this->siteAdmin);
 
         $response = $this->getJson('/api/v1/competitions?with[]=season')
             ->assertOk();
@@ -114,6 +119,8 @@ class CompetitionsTest extends ApiTestCase
             'competition_id' => $competition2->getId(),
             'display_order'  => 1,
         ]);
+
+        Passport::actingAs($this->siteAdmin);
 
         $response = $this->getJson('/api/v1/competitions?with[]=divisions')
             ->assertOk();
@@ -171,6 +178,8 @@ class CompetitionsTest extends ApiTestCase
             'season_id' => $season->getId(),
         ]);
 
+        Passport::actingAs($this->siteAdmin);
+
         $response = $this->getJson('/api/v1/competitions?season=' . $season->getId())
             ->assertOk();
 
@@ -188,6 +197,8 @@ class CompetitionsTest extends ApiTestCase
 
     public function testGettingAllCompetitionsWhenThereAreNone(): void
     {
+        Passport::actingAs($this->siteAdmin);
+
         $response = $this->getJson('/api/v1/competitions')
             ->assertOk();
 
@@ -196,6 +207,8 @@ class CompetitionsTest extends ApiTestCase
 
     public function testGettingAllCompetitionsForNonExistingSeason(): void
     {
+        Passport::actingAs($this->siteAdmin);
+
         $this->getJson('/api/v1/competitions?season=1')
             ->assertNotFound();
     }
@@ -208,6 +221,8 @@ class CompetitionsTest extends ApiTestCase
             'season_id' => $season->getId(),
         ]);
 
+        Passport::actingAs($this->siteAdmin);
+
         $response = $this->getJson('/api/v1/competitions/' . $competition->getId())
             ->assertOk();
 
@@ -219,6 +234,8 @@ class CompetitionsTest extends ApiTestCase
 
     public function testGettingANonExistingCompetition(): void
     {
+        Passport::actingAs($this->siteAdmin);
+
         $this->getJson('/api/v1/competitions/1')
             ->assertNotFound();
     }
@@ -230,6 +247,8 @@ class CompetitionsTest extends ApiTestCase
             'name'      => 'London Magic League',
             'season_id' => $season->getId(),
         ]);
+
+        Passport::actingAs($this->siteAdmin);
 
         $response = $this->getJson('/api/v1/competitions/' . $competition->getId() . '?with[]=season')
             ->assertOk();
@@ -259,6 +278,8 @@ class CompetitionsTest extends ApiTestCase
             'competition_id' => $competition->getId(),
             'display_order'  => 1,
         ]);
+
+        Passport::actingAs($this->siteAdmin);
 
         $response = $this->getJson('/api/v1/competitions/' . $competition->getId() . '?with[]=divisions')
             ->assertOk();
@@ -290,6 +311,8 @@ class CompetitionsTest extends ApiTestCase
         $competition = factory(Competition::class)->create([
             'name' => 'London Magic League',
         ]);
+
+        Passport::actingAs($this->siteAdmin);
 
         $response = $this->getJson('/api/v1/competitions/' . $competition->getId() . '?with[]=divisions')
             ->assertOk();

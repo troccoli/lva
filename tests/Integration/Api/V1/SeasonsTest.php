@@ -4,9 +4,10 @@ namespace Tests\Integration\Api\V1;
 
 use App\Models\Competition;
 use App\Models\Season;
-use Tests\ApiTestCase;
+use Laravel\Passport\Passport;
+use Tests\TestCase;
 
-class SeasonsTest extends ApiTestCase
+class SeasonsTest extends TestCase
 {
     public function testGettingAllSeasonsInOrder(): void
     {
@@ -14,6 +15,8 @@ class SeasonsTest extends ApiTestCase
         $season2 = factory(Season::class)->create(['year' => 2000]);
         $season3 = factory(Season::class)->create(['year' => 2001]);
         $season4 = factory(Season::class)->create(['year' => 1998]);
+
+        Passport::actingAs($this->siteAdmin);
 
         $response = $this->getJson('/api/v1/seasons')
             ->assertOk();
@@ -40,6 +43,8 @@ class SeasonsTest extends ApiTestCase
 
     public function testGettingAllSeasonsWhenThereAreNone(): void
     {
+        Passport::actingAs($this->siteAdmin);
+
         $response = $this->getJson('/api/v1/seasons')
             ->assertOk();
 
@@ -49,6 +54,8 @@ class SeasonsTest extends ApiTestCase
     public function testGettingOneSeason(): void
     {
         $season = factory(Season::class)->create(['year' => 2000]);
+
+        Passport::actingAs($this->siteAdmin);
 
         $response = $this->getJson('/api/v1/seasons/' . $season->getId())
             ->assertOk();
@@ -61,6 +68,8 @@ class SeasonsTest extends ApiTestCase
 
     public function testGettingANonExistingSeason(): void
     {
+        Passport::actingAs($this->siteAdmin);
+
         $this->getJson('/api/v1/seasons/1')
             ->assertNotFound();
     }
@@ -77,6 +86,8 @@ class SeasonsTest extends ApiTestCase
             'name'      => 'University Games',
             'season_id' => $season->getId(),
         ]);
+
+        Passport::actingAs($this->siteAdmin);
 
         $response = $this->getJson('/api/v1/seasons/' . $season->getId() . '?with[]=competitions')
             ->assertOk();
@@ -99,6 +110,8 @@ class SeasonsTest extends ApiTestCase
     public function testGettingOneSeasonWithItsCompetitionsWhenThereAreNone(): void
     {
         $season = factory(Season::class)->create();
+
+        Passport::actingAs($this->siteAdmin);
 
         $response = $this->getJson('/api/v1/seasons/' . $season->getId() . '?with[]=competitions')
             ->assertOk();

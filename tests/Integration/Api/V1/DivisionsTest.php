@@ -4,10 +4,11 @@ namespace Tests\Integration\Api\V1;
 
 use App\Models\Competition;
 use App\Models\Division;
-use Tests\ApiTestCase;
+use Laravel\Passport\Passport;
 use Tests\Concerns\InteractsWithArrays;
+use Tests\TestCase;
 
-class DivisionsTest extends ApiTestCase
+class DivisionsTest extends TestCase
 {
     use InteractsWithArrays;
 
@@ -25,6 +26,8 @@ class DivisionsTest extends ApiTestCase
             'name'          => 'MP',
             'display_order' => 1,
         ]);
+
+        Passport::actingAs($this->siteAdmin);
 
         $response = $this->getJson('/api/v1/divisions')
             ->assertOk();
@@ -51,6 +54,8 @@ class DivisionsTest extends ApiTestCase
 
     public function testGettingAllDivisionsWhenThereAreNone(): void
     {
+        Passport::actingAs($this->siteAdmin);
+
         $response = $this->getJson('/api/v1/divisions')
             ->assertOk();
 
@@ -76,6 +81,8 @@ class DivisionsTest extends ApiTestCase
             'display_order'  => 1,
             'competition_id' => $competition2->getId(),
         ]);
+
+        Passport::actingAs($this->siteAdmin);
 
         $response = $this->getJson('/api/v1/divisions?with[]=competition')
             ->assertOk();
@@ -126,6 +133,8 @@ class DivisionsTest extends ApiTestCase
         ]);
         $team3 = aTeam()->withName('London Cubs')->inDivision($division2)->build();
 
+        Passport::actingAs($this->siteAdmin);
+
         $response = $this->getJson('/api/v1/divisions?with[]=teams')
             ->assertOk();
 
@@ -173,6 +182,8 @@ class DivisionsTest extends ApiTestCase
             'competition_id' => $competition->getId(),
         ]);
 
+        Passport::actingAs($this->siteAdmin);
+
         $response = $this->getJson('/api/v1/divisions/' . $division->getId())
             ->assertOk();
 
@@ -185,6 +196,8 @@ class DivisionsTest extends ApiTestCase
 
     public function testGettingANonExistingDivision(): void
     {
+        Passport::actingAs($this->siteAdmin);
+
         $this->getJson('/api/v1/divisions/1')
             ->assertNotFound();
     }
@@ -197,6 +210,8 @@ class DivisionsTest extends ApiTestCase
             'display_order'  => 2,
             'competition_id' => $competition->getId(),
         ]);
+
+        Passport::actingAs($this->siteAdmin);
 
         $response = $this->getJson('/api/v1/divisions/' . $division->getId() . '?with[]=competition')
             ->assertOk();
@@ -220,6 +235,8 @@ class DivisionsTest extends ApiTestCase
         ]);
         $team1 = aTeam()->withName('London Bears')->inDivision($division)->build();
         $team2 = aTeam()->withName('The Giants')->inDivision($division)->build();
+
+        Passport::actingAs($this->siteAdmin);
 
         $response = $this->getJson('/api/v1/divisions/' . $division->getId() . '?with[]=teams')
             ->assertOk();
@@ -248,6 +265,8 @@ class DivisionsTest extends ApiTestCase
     public function testGettingOneDivisionWithItsTeamsWhenThereAreNone(): void
     {
         $division = factory(Division::class)->create();
+
+        Passport::actingAs($this->siteAdmin);
 
         $response = $this->getJson('/api/v1/divisions/' . $division->getId() . '?with[]=teams')
             ->assertOk();

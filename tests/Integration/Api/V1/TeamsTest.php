@@ -4,10 +4,11 @@ namespace Tests\Integration\Api\V1;
 
 use App\Models\Division;
 use App\Models\Venue;
-use Tests\ApiTestCase;
+use Laravel\Passport\Passport;
 use Tests\Concerns\InteractsWithArrays;
+use Tests\TestCase;
 
-class TeamsTest extends ApiTestCase
+class TeamsTest extends TestCase
 {
     use InteractsWithArrays;
 
@@ -16,6 +17,8 @@ class TeamsTest extends ApiTestCase
         $team1 = aTeam()->withName('Rocketfella')->build();
         $team3 = aTeam()->withName('Mighty Plumbers')->build();
         $team2 = aTeam()->withName('Sporting Dudes')->build();
+
+        Passport::actingAs($this->siteAdmin);
 
         $response = $this->getJson('/api/v1/teams')
             ->assertOk();
@@ -38,6 +41,8 @@ class TeamsTest extends ApiTestCase
 
     public function testGettingAllTeamsWhenThereAreNone(): void
     {
+        Passport::actingAs($this->siteAdmin);
+
         $response = $this->getJson('/api/v1/teams')
             ->assertOk();
 
@@ -52,6 +57,8 @@ class TeamsTest extends ApiTestCase
         $team3 = aTeam()->withName('Mighty Plumbers')->inClub($club3)->build();
         $club2 = aClub()->withName('Dudes')->build();
         $team2 = aTeam()->withName('Sporting Dudes')->inClub($club2)->build();
+
+        Passport::actingAs($this->siteAdmin);
 
         $response = $this->getJson('/api/v1/teams?with[]=club')
             ->assertOk();
@@ -92,6 +99,8 @@ class TeamsTest extends ApiTestCase
         $team3 = aTeam()->withName('Mighty Plumbers')->withVenue($venue2)->build();
         $venue3 = factory(Venue::class)->create(['name' => 'Westminster University Sports Hall']);
         $team2 = aTeam()->withName('Sporting Dudes')->withVenue($venue3)->build();
+
+        Passport::actingAs($this->siteAdmin);
 
         $response = $this->getJson('/api/v1/teams?with[]=venue')
             ->assertOk();
@@ -137,6 +146,8 @@ class TeamsTest extends ApiTestCase
             ->inDivision($division2)
             ->inDivision($division3)
             ->build();
+
+        Passport::actingAs($this->siteAdmin);
 
         $response = $this->getJson('/api/v1/teams?with[]=divisions')
             ->assertOk();
@@ -215,6 +226,8 @@ class TeamsTest extends ApiTestCase
         $team3 = aTeam()->withName('Mighty Plumbers')->build();
         $team2 = aTeam()->withName('Sporting Dudes')->build();
 
+        Passport::actingAs($this->siteAdmin);
+
         $response = $this->getJson('/api/v1/teams/' . $team3->getId())
             ->assertOk();
 
@@ -226,6 +239,8 @@ class TeamsTest extends ApiTestCase
 
     public function testGettingANonExistingTeam(): void
     {
+        Passport::actingAs($this->siteAdmin);
+
         $this->getJson('/api/v1/teams/1')
             ->assertNotFound();
     }
@@ -236,6 +251,8 @@ class TeamsTest extends ApiTestCase
         $team1 = aTeam()->withName('Rocketfella')->build();
         $team3 = aTeam()->withName('Mighty Plumbers')->inClub($club)->build();
         $team2 = aTeam()->withName('Sporting Dudes')->build();
+
+        Passport::actingAs($this->siteAdmin);
 
         $response = $this->getJson('/api/v1/teams/' . $team3->getId() . '?with[]=club')
             ->assertOk();
@@ -257,6 +274,8 @@ class TeamsTest extends ApiTestCase
         $team1 = aTeam()->withName('Rocketfella')->withVenue($venue)->build();
         $team2 = aTeam()->withName('Sporting Dudes')->build();
 
+        Passport::actingAs($this->siteAdmin);
+
         $response = $this->getJson('/api/v1/teams/' . $team1->getId() . '?with[]=venue')
             ->assertOk();
 
@@ -277,6 +296,8 @@ class TeamsTest extends ApiTestCase
         $team1 = aTeam()->withName('Rocketfella')->build();
         $team3 = aTeam()->withName('Mighty Plumbers')->inClub($club)->build();
         $team2 = aTeam()->withName('Sporting Dudes')->build();
+
+        Passport::actingAs($this->siteAdmin);
 
         $response = $this->getJson('/api/v1/teams/' . $team3->getId() . '?with[]=venue')
             ->assertOk();
@@ -304,6 +325,8 @@ class TeamsTest extends ApiTestCase
             ->inDivision($division2)
             ->inDivision($division3)
             ->build();
+
+        Passport::actingAs($this->siteAdmin);
 
         $response = $this->getJson('/api/v1/teams/' . $team1->getId() . '?with[]=divisions')
             ->assertOk();
@@ -342,6 +365,8 @@ class TeamsTest extends ApiTestCase
         $team1 = aTeam()->withName('Rocketfella')->build();
         $team3 = aTeam()->withName('Mighty Plumbers')->build();
         $team2 = aTeam()->withName('Sporting Dudes')->build();
+
+        Passport::actingAs($this->siteAdmin);
 
         $response = $this->getJson('/api/v1/teams/' . $team1->getId() . '?with[]=divisions')
             ->assertOk();

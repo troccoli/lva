@@ -8,10 +8,11 @@ use App\Models\Season;
 use App\Models\Team;
 use App\Models\Venue;
 use Illuminate\Support\Carbon;
-use Tests\ApiTestCase;
+use Laravel\Passport\Passport;
 use Tests\Concerns\InteractsWithArrays;
+use Tests\TestCase;
 
-class FixturesTest extends ApiTestCase
+class FixturesTest extends TestCase
 {
     use InteractsWithArrays;
 
@@ -80,6 +81,8 @@ class FixturesTest extends ApiTestCase
     {
         $this->createRoundRobinFixtures();
 
+        Passport::actingAs($this->siteAdmin);
+
         $response = $this->getJson('/api/v1/fixtures')
             ->assertOk();
         $data = $response->decodeResponseJson('data');
@@ -91,6 +94,8 @@ class FixturesTest extends ApiTestCase
     {
         // Add some extra fixtures so we can have a few pages
         $this->createRoundRobinFixtures();
+
+        Passport::actingAs($this->siteAdmin);
 
         $response = $this->getJson('/api/v1/fixtures?page=1')
             ->assertOk();
@@ -123,6 +128,8 @@ class FixturesTest extends ApiTestCase
     {
         $this->createSampleFixtures();
 
+        Passport::actingAs($this->siteAdmin);
+
         $this->getJson('/api/v1/fixtures?season=0')
             ->assertNotFound();
 
@@ -138,6 +145,8 @@ class FixturesTest extends ApiTestCase
     public function testGettingAllFixturesInOneCompetition(): void
     {
         $this->createSampleFixtures();
+
+        Passport::actingAs($this->siteAdmin);
 
         $this->getJson('/api/v1/fixtures?competition=0')
             ->assertNotFound();
@@ -157,6 +166,8 @@ class FixturesTest extends ApiTestCase
     public function testGettingAllFixturesInOneDivision(): void
     {
         $this->createSampleFixtures();
+
+        Passport::actingAs($this->siteAdmin);
 
         $this->getJson('/api/v1/fixtures?division=0')
             ->assertNotFound();
@@ -178,6 +189,8 @@ class FixturesTest extends ApiTestCase
     {
         $this->createSampleFixtures();
 
+        Passport::actingAs($this->siteAdmin);
+
         $this->getJson('/api/v1/fixtures?on=01-01-2019')
             ->assertNotFound();
 
@@ -197,6 +210,8 @@ class FixturesTest extends ApiTestCase
     {
         $this->createSampleFixtures();
 
+        Passport::actingAs($this->siteAdmin);
+
         $this->getJson('/api/v1/fixtures?venue=0')
             ->assertNotFound();
 
@@ -215,6 +230,8 @@ class FixturesTest extends ApiTestCase
     public function testGettingAllFixturesInOneVenueOnOneDate(): void
     {
         $this->createSampleFixtures();
+
+        Passport::actingAs($this->siteAdmin);
 
         $this->getJson('/api/v1/fixtures?venue=0&on=01-01-2019')
             ->assertNotFound();
@@ -249,6 +266,8 @@ class FixturesTest extends ApiTestCase
     {
         $this->createSampleFixtures();
 
+        Passport::actingAs($this->siteAdmin);
+
         $this->getJson('/api/v1/fixtures?division=0&venue=0')
             ->assertNotFound();
 
@@ -282,6 +301,8 @@ class FixturesTest extends ApiTestCase
     {
         $this->createSampleFixtures();
 
+        Passport::actingAs($this->siteAdmin);
+
         $this->getJson('/api/v1/fixtures?competition=0&venue=0')
             ->assertNotFound();
 
@@ -311,6 +332,8 @@ class FixturesTest extends ApiTestCase
     {
         $this->createSampleFixtures();
 
+        Passport::actingAs($this->siteAdmin);
+
         $this->getJson('/api/v1/fixtures?team=0')
             ->assertNotFound();
 
@@ -331,6 +354,8 @@ class FixturesTest extends ApiTestCase
     {
         $this->createSampleFixtures();
 
+        Passport::actingAs($this->siteAdmin);
+
         $this->getJson('/api/v1/fixtures?homeTeam=0')
             ->assertNotFound();
 
@@ -350,6 +375,8 @@ class FixturesTest extends ApiTestCase
     {
         $this->createSampleFixtures();
 
+        Passport::actingAs($this->siteAdmin);
+
         $this->getJson('/api/v1/fixtures?awayTeam=0')
             ->assertNotFound();
 
@@ -368,6 +395,8 @@ class FixturesTest extends ApiTestCase
     public function testGettingAllFixturesForOneTeamInOneDivision(): void
     {
         $this->createSampleFixtures();
+
+        Passport::actingAs($this->siteAdmin);
 
         $this->getJson('/api/v1/fixtures?division=0&team=0')
             ->assertNotFound();
@@ -394,6 +423,8 @@ class FixturesTest extends ApiTestCase
     {
         $this->createSampleFixtures();
 
+        Passport::actingAs($this->siteAdmin);
+
         $this->getJson('/api/v1/fixtures?division=0&homeTeam=0')
             ->assertNotFound();
 
@@ -418,6 +449,8 @@ class FixturesTest extends ApiTestCase
     public function testGettingAllFixturesForOneTeamAwayInOneDivision(): void
     {
         $this->createSampleFixtures();
+
+        Passport::actingAs($this->siteAdmin);
 
         $this->getJson('/api/v1/fixtures?division=0&awayTeam=0')
             ->assertNotFound();

@@ -3,10 +3,11 @@
 namespace Tests\Integration\Api\V1;
 
 use App\Models\Venue;
-use Tests\ApiTestCase;
+use Laravel\Passport\Passport;
 use Tests\Concerns\InteractsWithArrays;
+use Tests\TestCase;
 
-class ClubsTest extends ApiTestCase
+class ClubsTest extends TestCase
 {
     use InteractsWithArrays;
 
@@ -15,6 +16,8 @@ class ClubsTest extends ApiTestCase
         $club1 = aClub()->withName('London Bears')->build();
         $club2 = aClub()->withName('The Spiders')->build();
         $club3 = aClub()->withName('Boston Giants')->build();
+
+        Passport::actingAs($this->siteAdmin);
 
         $response = $this->getJson('/api/v1/clubs')
             ->assertOk();
@@ -42,6 +45,8 @@ class ClubsTest extends ApiTestCase
         $club2 = aClub()->withName('The Spiders')->withVenue($venue1)->build();
         $venue2 = factory(Venue::class)->create(['name' => 'The Box']);
         $club3 = aClub()->withName('Boston Giants')->withVenue($venue2)->build();
+
+        Passport::actingAs($this->siteAdmin);
 
         $response = $this->getJson('/api/v1/clubs?with[]=venue')
             ->assertOk();
@@ -82,6 +87,8 @@ class ClubsTest extends ApiTestCase
         $club3 = aClub()->withName('Boston Giants')->build();
         $team2 = aTeam()->withName('BigFoot')->inClub($club3)->build();
         $team3 = aTeam()->withName('King Kong')->inClub($club3)->build();
+
+        Passport::actingAs($this->siteAdmin);
 
         $response = $this->getJson('/api/v1/clubs?with[]=teams')
             ->assertOk();
@@ -127,6 +134,8 @@ class ClubsTest extends ApiTestCase
 
     public function testGettingAllClubsWhenThereAreNone(): void
     {
+        Passport::actingAs($this->siteAdmin);
+
         $response = $this->getJson('/api/v1/clubs')
             ->assertOk();
 
@@ -137,6 +146,8 @@ class ClubsTest extends ApiTestCase
     {
         $club = aClub()->withName('Paris St. German')->build();
         aClub()->build();
+
+        Passport::actingAs($this->siteAdmin);
 
         $response = $this->getJson('/api/v1/clubs/' . $club->getId())
             ->assertOk();
@@ -149,6 +160,8 @@ class ClubsTest extends ApiTestCase
 
     public function testGettingANonExistingClub(): void
     {
+        Passport::actingAs($this->siteAdmin);
+
         $this->getJson('/api/v1/clubs/1')
             ->assertNotFound();
     }
@@ -158,6 +171,8 @@ class ClubsTest extends ApiTestCase
         $venue = factory(Venue::class)->create(['name' => 'Sobell SC']);
         $club = aClub()->withName('Paris St. German')->withVenue($venue)->build();
         aClub()->build();
+
+        Passport::actingAs($this->siteAdmin);
 
         $response = $this->getJson('/api/v1/clubs/' . $club->getId() . '?with[]=venue')
             ->assertOk();
@@ -178,6 +193,8 @@ class ClubsTest extends ApiTestCase
         $team1 = aTeam()->withName('Spikers')->inClub($club)->build();
         $team2 = aTeam()->withName('Fireball')->inClub($club)->build();
         aClub()->build();
+
+        Passport::actingAs($this->siteAdmin);
 
         $response = $this->getJson('/api/v1/clubs/' . $club->getId() . '?with[]=teams')
             ->assertOk();
