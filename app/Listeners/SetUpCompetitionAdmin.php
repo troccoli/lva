@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\CompetitionCreated;
+use App\Helpers\PermissionsHelper;
 use App\Helpers\RolesHelper;
 use App\Jobs\CreateCompetitionAdminRole;
 use App\Jobs\CreateCompetitionPermissions;
@@ -15,7 +16,6 @@ class SetUpCompetitionAdmin
     {
         /** @var Competition $competition */
         $competition = $event->competition;
-        $competitionId = $competition->getId();
 
         CreateCompetitionAdminRole::dispatchNow($competition);
         CreateCompetitionPermissions::dispatchNow($competition);
@@ -23,18 +23,18 @@ class SetUpCompetitionAdmin
         /** @var Role $competitionAdminRole */
         $competitionAdminRole = Role::findByName(RolesHelper::competitionAdminName($competition));
         $competitionAdminRole->givePermissionTo([
-            "edit-competition-$competitionId",
-            "add-divisions-in-competition-$competitionId",
-            "view-divisions-in-competition-$competitionId",
+            PermissionsHelper::editCompetition($competition),
+            PermissionsHelper::addDivision($competition),
+            PermissionsHelper::viewDivisions($competition),
         ]);
 
         /** @var Role $seasonAdminRole */
         $seasonAdminRole = Role::findByName(RolesHelper::seasonAdminName($competition->getSeason()));
         $seasonAdminRole->givePermissionTo([
-            "edit-competition-$competitionId",
-            "delete-competition-$competitionId",
-            "add-divisions-in-competition-$competitionId",
-            "view-divisions-in-competition-$competitionId",
+            PermissionsHelper::editCompetition($competition),
+            PermissionsHelper::deleteCompetition($competition),
+            PermissionsHelper::addDivision($competition),
+            PermissionsHelper::viewDivisions($competition),
         ]);
     }
 }
