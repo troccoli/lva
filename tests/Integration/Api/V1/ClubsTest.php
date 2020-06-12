@@ -16,7 +16,7 @@ class ClubsTest extends ApiTestCase
         $club2 = aClub()->withName('The Spiders')->build();
         $club3 = aClub()->withName('Boston Giants')->build();
 
-        $response = $this->get('/api/v1/clubs')
+        $response = $this->getJson('/api/v1/clubs')
             ->assertOk();
         $data = $response->decodeResponseJson('data');
 
@@ -43,7 +43,7 @@ class ClubsTest extends ApiTestCase
         $venue2 = factory(Venue::class)->create(['name' => 'The Box']);
         $club3 = aClub()->withName('Boston Giants')->withVenue($venue2)->build();
 
-        $response = $this->get('/api/v1/clubs?with[]=venue')
+        $response = $this->getJson('/api/v1/clubs?with[]=venue')
             ->assertOk();
         $data = $response->decodeResponseJson('data');
 
@@ -83,7 +83,7 @@ class ClubsTest extends ApiTestCase
         $team2 = aTeam()->withName('BigFoot')->inClub($club3)->build();
         $team3 = aTeam()->withName('King Kong')->inClub($club3)->build();
 
-        $response = $this->get('/api/v1/clubs?with[]=teams')
+        $response = $this->getJson('/api/v1/clubs?with[]=teams')
             ->assertOk();
         $data = $response->decodeResponseJson('data');
 
@@ -127,7 +127,7 @@ class ClubsTest extends ApiTestCase
 
     public function testGettingAllClubsWhenThereAreNone(): void
     {
-        $response = $this->get('/api/v1/clubs')
+        $response = $this->getJson('/api/v1/clubs')
             ->assertOk();
 
         $this->assertEmpty($response->decodeResponseJson('data'));
@@ -138,7 +138,7 @@ class ClubsTest extends ApiTestCase
         $club = aClub()->withName('Paris St. German')->build();
         aClub()->build();
 
-        $response = $this->get('/api/v1/clubs/' . $club->getId())
+        $response = $this->getJson('/api/v1/clubs/' . $club->getId())
             ->assertOk();
 
         $this->assertEquals([
@@ -149,7 +149,7 @@ class ClubsTest extends ApiTestCase
 
     public function testGettingANonExistingClub(): void
     {
-        $this->get('/api/v1/clubs/1')
+        $this->getJson('/api/v1/clubs/1')
             ->assertNotFound();
     }
 
@@ -159,7 +159,7 @@ class ClubsTest extends ApiTestCase
         $club = aClub()->withName('Paris St. German')->withVenue($venue)->build();
         aClub()->build();
 
-        $response = $this->get('/api/v1/clubs/' . $club->getId() . '?with[]=venue')
+        $response = $this->getJson('/api/v1/clubs/' . $club->getId() . '?with[]=venue')
             ->assertOk();
 
         $this->assertEquals([
@@ -179,7 +179,7 @@ class ClubsTest extends ApiTestCase
         $team2 = aTeam()->withName('Fireball')->inClub($club)->build();
         aClub()->build();
 
-        $response = $this->get('/api/v1/clubs/' . $club->getId() . '?with[]=teams')
+        $response = $this->getJson('/api/v1/clubs/' . $club->getId() . '?with[]=teams')
             ->assertOk();
 
         $data = $response->decodeResponseJson('data');

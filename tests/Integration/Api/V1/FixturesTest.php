@@ -80,7 +80,7 @@ class FixturesTest extends ApiTestCase
     {
         $this->createRoundRobinFixtures();
 
-        $response = $this->get('/api/v1/fixtures')
+        $response = $this->getJson('/api/v1/fixtures')
             ->assertOk();
         $data = $response->decodeResponseJson('data');
 
@@ -92,7 +92,7 @@ class FixturesTest extends ApiTestCase
         // Add some extra fixtures so we can have a few pages
         $this->createRoundRobinFixtures();
 
-        $response = $this->get('/api/v1/fixtures?page=1')
+        $response = $this->getJson('/api/v1/fixtures?page=1')
             ->assertOk();
 
         $this->assertCount(10, $response->decodeResponseJson('data'));
@@ -105,7 +105,7 @@ class FixturesTest extends ApiTestCase
             'total'        => 30,
         ], $response->decodeResponseJson('meta'));
 
-        $response = $this->get('/api/v1/fixtures?perPage=15')
+        $response = $this->getJson('/api/v1/fixtures?perPage=15')
             ->assertOk();
 
         $this->assertCount(15, $response->decodeResponseJson('data'));
@@ -123,10 +123,10 @@ class FixturesTest extends ApiTestCase
     {
         $this->createSampleFixtures();
 
-        $this->get('/api/v1/fixtures?season=0')
+        $this->getJson('/api/v1/fixtures?season=0')
             ->assertNotFound();
 
-        $response = $this->get('/api/v1/fixtures?season=' . $this->season1->getId())
+        $response = $this->getJson('/api/v1/fixtures?season=' . $this->season1->getId())
             ->assertOk();
         $data = $response->decodeResponseJson('data');
 
@@ -139,14 +139,14 @@ class FixturesTest extends ApiTestCase
     {
         $this->createSampleFixtures();
 
-        $this->get('/api/v1/fixtures?competition=0')
+        $this->getJson('/api/v1/fixtures?competition=0')
             ->assertNotFound();
 
-        $response = $this->get('/api/v1/fixtures?competition=' . $this->competition3->getId())
+        $response = $this->getJson('/api/v1/fixtures?competition=' . $this->competition3->getId())
             ->assertOk();
         $this->assertEmpty($response->decodeResponseJson('data'));
 
-        $response = $this->get('/api/v1/fixtures?competition=' . $this->competition2->getId())
+        $response = $this->getJson('/api/v1/fixtures?competition=' . $this->competition2->getId())
             ->assertOk();
         $data = $response->decodeResponseJson('data');
 
@@ -158,14 +158,14 @@ class FixturesTest extends ApiTestCase
     {
         $this->createSampleFixtures();
 
-        $this->get('/api/v1/fixtures?division=0')
+        $this->getJson('/api/v1/fixtures?division=0')
             ->assertNotFound();
 
-        $respone = $this->get('/api/v1/fixtures?division=' . $this->division3->getId())
+        $respone = $this->getJson('/api/v1/fixtures?division=' . $this->division3->getId())
             ->assertOk();
         $this->assertEmpty($respone->decodeResponseJson('data'));
 
-        $respone = $this->get('/api/v1/fixtures?division=' . $this->division1->getId())
+        $respone = $this->getJson('/api/v1/fixtures?division=' . $this->division1->getId())
             ->assertOk();
         $data = $respone->decodeResponseJson('data');
 
@@ -178,14 +178,14 @@ class FixturesTest extends ApiTestCase
     {
         $this->createSampleFixtures();
 
-        $this->get('/api/v1/fixtures?on=01-01-2019')
+        $this->getJson('/api/v1/fixtures?on=01-01-2019')
             ->assertNotFound();
 
-        $response = $this->get('/api/v1/fixtures?on=2019-01-01')
+        $response = $this->getJson('/api/v1/fixtures?on=2019-01-01')
             ->assertOk();
         $this->assertEmpty($response->decodeResponseJson('data'));
 
-        $response = $this->get('/api/v1/fixtures?on=2019-05-18')
+        $response = $this->getJson('/api/v1/fixtures?on=2019-05-18')
             ->assertOk();
         $data = $response->decodeResponseJson('data');
 
@@ -197,14 +197,14 @@ class FixturesTest extends ApiTestCase
     {
         $this->createSampleFixtures();
 
-        $this->get('/api/v1/fixtures?venue=0')
+        $this->getJson('/api/v1/fixtures?venue=0')
             ->assertNotFound();
 
-        $response = $this->get('/api/v1/fixtures?venue=' . $this->venue4->getId())
+        $response = $this->getJson('/api/v1/fixtures?venue=' . $this->venue4->getId())
             ->assertOk();
         $this->assertEmpty($response->decodeResponseJson('data'));
 
-        $response = $this->get('/api/v1/fixtures?venue=' . $this->venue1->getId())
+        $response = $this->getJson('/api/v1/fixtures?venue=' . $this->venue1->getId())
             ->assertOk();
         $data = $response->decodeResponseJson('data');
 
@@ -216,28 +216,28 @@ class FixturesTest extends ApiTestCase
     {
         $this->createSampleFixtures();
 
-        $this->get('/api/v1/fixtures?venue=0&on=01-01-2019')
+        $this->getJson('/api/v1/fixtures?venue=0&on=01-01-2019')
             ->assertNotFound();
 
-        $this->get('/api/v1/fixtures?venue=' . $this->venue4->getId() . '&on=01-01-2019')
+        $this->getJson('/api/v1/fixtures?venue=' . $this->venue4->getId() . '&on=01-01-2019')
             ->assertNotFound();
 
-        $this->get('/api/v1/fixtures?venue=0&on=2019-01-01')
+        $this->getJson('/api/v1/fixtures?venue=0&on=2019-01-01')
             ->assertNotFound();
 
-        $response = $this->get('/api/v1/fixtures?venue=' . $this->venue4->getId() . '&on=2019-01-01')
+        $response = $this->getJson('/api/v1/fixtures?venue=' . $this->venue4->getId() . '&on=2019-01-01')
             ->assertOk();
         $this->assertEmpty($response->decodeResponseJson('data'));
 
-        $response = $this->get('/api/v1/fixtures?venue=' . $this->venue3->getId() . '&on=2019-01-01')
+        $response = $this->getJson('/api/v1/fixtures?venue=' . $this->venue3->getId() . '&on=2019-01-01')
             ->assertOk();
         $this->assertEmpty($response->decodeResponseJson('data'));
 
-        $response = $this->get('/api/v1/fixtures?venue=' . $this->venue4->getId() . '&on=2019-06-09')
+        $response = $this->getJson('/api/v1/fixtures?venue=' . $this->venue4->getId() . '&on=2019-06-09')
             ->assertOk();
         $this->assertEmpty($response->decodeResponseJson('data'));
 
-        $response = $this->get('/api/v1/fixtures?venue=' . $this->venue3->getId() . '&on=2019-06-09')
+        $response = $this->getJson('/api/v1/fixtures?venue=' . $this->venue3->getId() . '&on=2019-06-09')
             ->assertOk();
         $data = $response->decodeResponseJson('data');
 
@@ -249,28 +249,28 @@ class FixturesTest extends ApiTestCase
     {
         $this->createSampleFixtures();
 
-        $this->get('/api/v1/fixtures?division=0&venue=0')
+        $this->getJson('/api/v1/fixtures?division=0&venue=0')
             ->assertNotFound();
 
-        $this->get('/api/v1/fixtures?division=' . $this->division3->getId() . '&venue=0')
+        $this->getJson('/api/v1/fixtures?division=' . $this->division3->getId() . '&venue=0')
             ->assertNotFound();
 
-        $this->get('/api/v1/fixtures?division=0&venue=' . $this->venue4->getId())
+        $this->getJson('/api/v1/fixtures?division=0&venue=' . $this->venue4->getId())
             ->assertNotFound();
 
-        $response = $this->get('/api/v1/fixtures?division=' . $this->division3->getId() . '&venue=' . $this->venue4->getId())
+        $response = $this->getJson('/api/v1/fixtures?division=' . $this->division3->getId() . '&venue=' . $this->venue4->getId())
             ->assertOk();
         $this->assertEmpty($response->decodeResponseJson('data'));
 
-        $response = $this->get('/api/v1/fixtures?division=' . $this->division2->getId() . '&venue=' . $this->venue4->getId())
+        $response = $this->getJson('/api/v1/fixtures?division=' . $this->division2->getId() . '&venue=' . $this->venue4->getId())
             ->assertOk();
         $this->assertEmpty($response->decodeResponseJson('data'));
 
-        $response = $this->get('/api/v1/fixtures?division=' . $this->division3->getId() . '&venue=' . $this->venue2->getId())
+        $response = $this->getJson('/api/v1/fixtures?division=' . $this->division3->getId() . '&venue=' . $this->venue2->getId())
             ->assertOk();
         $this->assertEmpty($response->decodeResponseJson('data'));
 
-        $response = $this->get('/api/v1/fixtures?division=' . $this->division2->getId() . '&venue=' . $this->venue2->getId())
+        $response = $this->getJson('/api/v1/fixtures?division=' . $this->division2->getId() . '&venue=' . $this->venue2->getId())
             ->assertOk();
         $data = $response->decodeResponseJson('data');
 
@@ -282,24 +282,24 @@ class FixturesTest extends ApiTestCase
     {
         $this->createSampleFixtures();
 
-        $this->get('/api/v1/fixtures?competition=0&venue=0')
+        $this->getJson('/api/v1/fixtures?competition=0&venue=0')
             ->assertNotFound();
 
-        $this->get('/api/v1/fixtures?competition=' . $this->competition1->getId() . '&venue=0')
+        $this->getJson('/api/v1/fixtures?competition=' . $this->competition1->getId() . '&venue=0')
             ->assertNotFound();
 
-        $this->get('/api/v1/fixtures?competition=0&venue=' . $this->venue2->getId())
+        $this->getJson('/api/v1/fixtures?competition=0&venue=' . $this->venue2->getId())
             ->assertNotFound();
 
-        $response = $this->get('/api/v1/fixtures?competition=' . $this->competition1->getId() . '&venue=' . $this->venue2->getId())
+        $response = $this->getJson('/api/v1/fixtures?competition=' . $this->competition1->getId() . '&venue=' . $this->venue2->getId())
             ->assertOk();
         $this->assertEmpty($response->decodeResponseJson('data'));
 
-        $response = $this->get('/api/v1/fixtures?competition=' . $this->competition2->getId() . '&venue=' . $this->venue1->getId())
+        $response = $this->getJson('/api/v1/fixtures?competition=' . $this->competition2->getId() . '&venue=' . $this->venue1->getId())
             ->assertOk();
         $this->assertEmpty($response->decodeResponseJson('data'));
 
-        $response = $this->get('/api/v1/fixtures?competition=' . $this->competition1->getId() . '&venue=' . $this->venue1->getId())
+        $response = $this->getJson('/api/v1/fixtures?competition=' . $this->competition1->getId() . '&venue=' . $this->venue1->getId())
             ->assertOk();
         $data = $response->decodeResponseJson('data');
 
@@ -311,14 +311,14 @@ class FixturesTest extends ApiTestCase
     {
         $this->createSampleFixtures();
 
-        $this->get('/api/v1/fixtures?team=0')
+        $this->getJson('/api/v1/fixtures?team=0')
             ->assertNotFound();
 
-        $response = $this->get('/api/v1/fixtures?team=' . $this->team6->getId())
+        $response = $this->getJson('/api/v1/fixtures?team=' . $this->team6->getId())
             ->assertOk();
         $this->assertEmpty($response->decodeResponseJson('data'));
 
-        $response = $this->get('/api/v1/fixtures?team=' . $this->team4->getId())
+        $response = $this->getJson('/api/v1/fixtures?team=' . $this->team4->getId())
             ->assertOk();
         $data = $response->decodeResponseJson('data');
 
@@ -331,14 +331,14 @@ class FixturesTest extends ApiTestCase
     {
         $this->createSampleFixtures();
 
-        $this->get('/api/v1/fixtures?homeTeam=0')
+        $this->getJson('/api/v1/fixtures?homeTeam=0')
             ->assertNotFound();
 
-        $response = $this->get('/api/v1/fixtures?homeTeam=' . $this->team6->getId())
+        $response = $this->getJson('/api/v1/fixtures?homeTeam=' . $this->team6->getId())
             ->assertOk();
         $this->assertEmpty($response->decodeResponseJson('data'));
 
-        $response = $this->get('/api/v1/fixtures?homeTeam=' . $this->team4->getId())
+        $response = $this->getJson('/api/v1/fixtures?homeTeam=' . $this->team4->getId())
             ->assertOk();
         $data = $response->decodeResponseJson('data');
 
@@ -350,14 +350,14 @@ class FixturesTest extends ApiTestCase
     {
         $this->createSampleFixtures();
 
-        $this->get('/api/v1/fixtures?awayTeam=0')
+        $this->getJson('/api/v1/fixtures?awayTeam=0')
             ->assertNotFound();
 
-        $response = $this->get('/api/v1/fixtures?awayTeam=' . $this->team6->getId())
+        $response = $this->getJson('/api/v1/fixtures?awayTeam=' . $this->team6->getId())
             ->assertOk();
         $this->assertEmpty($response->decodeResponseJson('data'));
 
-        $response = $this->get('/api/v1/fixtures?awayTeam=' . $this->team4->getId())
+        $response = $this->getJson('/api/v1/fixtures?awayTeam=' . $this->team4->getId())
             ->assertOk();
         $data = $response->decodeResponseJson('data');
 
@@ -369,20 +369,20 @@ class FixturesTest extends ApiTestCase
     {
         $this->createSampleFixtures();
 
-        $this->get('/api/v1/fixtures?division=0&team=0')
+        $this->getJson('/api/v1/fixtures?division=0&team=0')
             ->assertNotFound();
 
-        $this->get('/api/v1/fixtures?division=' . $this->division3->getId() . '&team=0')
+        $this->getJson('/api/v1/fixtures?division=' . $this->division3->getId() . '&team=0')
             ->assertNotFound();
 
-        $this->get('/api/v1/fixtures?division=0&team=' . $this->venue4->getId())
+        $this->getJson('/api/v1/fixtures?division=0&team=' . $this->venue4->getId())
             ->assertNotFound();
 
-        $response = $this->get('/api/v1/fixtures?division=' . $this->division1->getId() . '&team=' . $this->team3->getId())
+        $response = $this->getJson('/api/v1/fixtures?division=' . $this->division1->getId() . '&team=' . $this->team3->getId())
             ->assertOk();
         $this->assertEmpty($response->decodeResponseJson('data'));
 
-        $response = $this->get('/api/v1/fixtures?division=' . $this->division1->getId() . '&team=' . $this->team1->getId())
+        $response = $this->getJson('/api/v1/fixtures?division=' . $this->division1->getId() . '&team=' . $this->team1->getId())
             ->assertOk();
         $data = $response->decodeResponseJson('data');
 
@@ -394,20 +394,20 @@ class FixturesTest extends ApiTestCase
     {
         $this->createSampleFixtures();
 
-        $this->get('/api/v1/fixtures?division=0&homeTeam=0')
+        $this->getJson('/api/v1/fixtures?division=0&homeTeam=0')
             ->assertNotFound();
 
-        $this->get('/api/v1/fixtures?division=' . $this->division3->getId() . '&homeTeam=0')
+        $this->getJson('/api/v1/fixtures?division=' . $this->division3->getId() . '&homeTeam=0')
             ->assertNotFound();
 
-        $this->get('/api/v1/fixtures?division=0&homeTeam=' . $this->venue4->getId())
+        $this->getJson('/api/v1/fixtures?division=0&homeTeam=' . $this->venue4->getId())
             ->assertNotFound();
 
-        $response = $this->get('/api/v1/fixtures?division=' . $this->division1->getId() . '&homeTeam=' . $this->team3->getId())
+        $response = $this->getJson('/api/v1/fixtures?division=' . $this->division1->getId() . '&homeTeam=' . $this->team3->getId())
             ->assertOk();
         $this->assertEmpty($response->decodeResponseJson('data'));
 
-        $response = $this->get('/api/v1/fixtures?division=' . $this->division1->getId() . '&homeTeam=' . $this->team4->getId())
+        $response = $this->getJson('/api/v1/fixtures?division=' . $this->division1->getId() . '&homeTeam=' . $this->team4->getId())
             ->assertOk();
         $data = $response->decodeResponseJson('data');
 
@@ -419,20 +419,20 @@ class FixturesTest extends ApiTestCase
     {
         $this->createSampleFixtures();
 
-        $this->get('/api/v1/fixtures?division=0&awayTeam=0')
+        $this->getJson('/api/v1/fixtures?division=0&awayTeam=0')
             ->assertNotFound();
 
-        $this->get('/api/v1/fixtures?division=' . $this->division3->getId() . '&awayTeam=0')
+        $this->getJson('/api/v1/fixtures?division=' . $this->division3->getId() . '&awayTeam=0')
             ->assertNotFound();
 
-        $this->get('/api/v1/fixtures?division=0&awayTeam=' . $this->venue4->getId())
+        $this->getJson('/api/v1/fixtures?division=0&awayTeam=' . $this->venue4->getId())
             ->assertNotFound();
 
-        $response = $this->get('/api/v1/fixtures?division=' . $this->division1->getId() . '&awayTeam=' . $this->team3->getId())
+        $response = $this->getJson('/api/v1/fixtures?division=' . $this->division1->getId() . '&awayTeam=' . $this->team3->getId())
             ->assertOk();
         $this->assertEmpty($response->decodeResponseJson('data'));
 
-        $response = $this->get('/api/v1/fixtures?division=' . $this->division1->getId() . '&awayTeam=' . $this->team4->getId())
+        $response = $this->getJson('/api/v1/fixtures?division=' . $this->division1->getId() . '&awayTeam=' . $this->team4->getId())
             ->assertOk();
         $data = $response->decodeResponseJson('data');
 

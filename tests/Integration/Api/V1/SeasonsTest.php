@@ -15,7 +15,7 @@ class SeasonsTest extends ApiTestCase
         $season3 = factory(Season::class)->create(['year' => 2001]);
         $season4 = factory(Season::class)->create(['year' => 1998]);
 
-        $response = $this->get('/api/v1/seasons')
+        $response = $this->getJson('/api/v1/seasons')
             ->assertOk();
 
         $data = $response->decodeResponseJson('data');
@@ -40,7 +40,7 @@ class SeasonsTest extends ApiTestCase
 
     public function testGettingAllSeasonsWhenThereAreNone(): void
     {
-        $response = $this->get('/api/v1/seasons')
+        $response = $this->getJson('/api/v1/seasons')
             ->assertOk();
 
         $this->assertEmpty($response->decodeResponseJson('data'));
@@ -50,7 +50,7 @@ class SeasonsTest extends ApiTestCase
     {
         $season = factory(Season::class)->create(['year' => 2000]);
 
-        $response = $this->get('/api/v1/seasons/' . $season->getId())
+        $response = $this->getJson('/api/v1/seasons/' . $season->getId())
             ->assertOk();
 
         $this->assertEquals([
@@ -61,7 +61,7 @@ class SeasonsTest extends ApiTestCase
 
     public function testGettingANonExistingSeason(): void
     {
-        $this->get('/api/v1/seasons/1')
+        $this->getJson('/api/v1/seasons/1')
             ->assertNotFound();
     }
 
@@ -78,7 +78,7 @@ class SeasonsTest extends ApiTestCase
             'season_id' => $season->getId(),
         ]);
 
-        $response = $this->get('/api/v1/seasons/' . $season->getId() . '?with[]=competitions')
+        $response = $this->getJson('/api/v1/seasons/' . $season->getId() . '?with[]=competitions')
             ->assertOk();
 
         $data = $response->decodeResponseJson('data');
@@ -100,7 +100,7 @@ class SeasonsTest extends ApiTestCase
     {
         $season = factory(Season::class)->create();
 
-        $response = $this->get('/api/v1/seasons/' . $season->getId() . '?with[]=competitions')
+        $response = $this->getJson('/api/v1/seasons/' . $season->getId() . '?with[]=competitions')
             ->assertOk();
 
         $data = $response->decodeResponseJson('data');

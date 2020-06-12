@@ -15,7 +15,7 @@ class VenuesTest extends ApiTestCase
         $venue1 = factory(Venue::class)->create(['name' => 'Olympic Gym']);
         $venue2 = factory(Venue::class)->create(['name' => 'The Box']);
 
-        $response = $this->get('/api/v1/venues')
+        $response = $this->getJson('/api/v1/venues')
             ->assertOk();
         $data = $response->decodeResponseJson('data');
 
@@ -32,7 +32,7 @@ class VenuesTest extends ApiTestCase
 
     public function testGettingAllVenuesWhenThereAreNone(): void
     {
-        $response = $this->get('/api/v1/venues')
+        $response = $this->getJson('/api/v1/venues')
             ->assertOk();
 
         $this->assertEmpty($response->decodeResponseJson('data'));
@@ -47,7 +47,7 @@ class VenuesTest extends ApiTestCase
         $club3 = aClub()->withName('London Sparrows')->withVenue($venue2)->build();
         $club4 = aClub()->withName('Boston Spiders')->withVenue($venue2)->build();
 
-        $response = $this->get('/api/v1/venues?with[]=clubs')
+        $response = $this->getJson('/api/v1/venues?with[]=clubs')
             ->assertOk();
         $data = $response->decodeResponseJson('data');
 
@@ -101,7 +101,7 @@ class VenuesTest extends ApiTestCase
         $venue1 = factory(Venue::class)->create(['name' => 'Olympic Gym']);
         $venue2 = factory(Venue::class)->create(['name' => 'The Box']);
 
-        $response = $this->get('/api/v1/venues?with[]=clubs')
+        $response = $this->getJson('/api/v1/venues?with[]=clubs')
             ->assertOk();
         $data = $response->decodeResponseJson('data');
 
@@ -137,7 +137,7 @@ class VenuesTest extends ApiTestCase
         $venue1 = factory(Venue::class)->create(['name' => 'Olympic Gym']);
         $venue2 = factory(Venue::class)->create(['name' => 'The Box']);
 
-        $response = $this->get('/api/v1/venues/' . $venue2->getId())
+        $response = $this->getJson('/api/v1/venues/' . $venue2->getId())
             ->assertOk();
 
         $this->assertSame([
@@ -148,7 +148,7 @@ class VenuesTest extends ApiTestCase
 
     public function testGettingANonExistingVenue(): void
     {
-        $response = $this->get('/api/v1/venues/1')
+        $response = $this->getJson('/api/v1/venues/1')
             ->assertNotFound();
     }
 
@@ -160,7 +160,7 @@ class VenuesTest extends ApiTestCase
         $club3 = aClub()->withName('The Worker Bees')->withVenue($venue1)->build();
         $venue2 = factory(Venue::class)->create(['name' => 'The Box']);
 
-        $response = $this->get('/api/v1/venues/' . $venue1->getId() . '?with[]=clubs')
+        $response = $this->getJson('/api/v1/venues/' . $venue1->getId() . '?with[]=clubs')
             ->assertOk();
         $data = $response->decodeResponseJson('data');
 
@@ -195,7 +195,7 @@ class VenuesTest extends ApiTestCase
         $club3 = aClub()->withName('The Worker Bees')->withVenue($venue1)->build();
         $venue2 = factory(Venue::class)->create(['name' => 'The Box']);
 
-        $response = $this->get('/api/v1/venues/' . $venue2->getId() . '?with[]=clubs')
+        $response = $this->getJson('/api/v1/venues/' . $venue2->getId() . '?with[]=clubs')
             ->assertOk();
         $data = $response->decodeResponseJson('data');
 

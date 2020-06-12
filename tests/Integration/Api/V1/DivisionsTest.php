@@ -26,7 +26,7 @@ class DivisionsTest extends ApiTestCase
             'display_order' => 1,
         ]);
 
-        $response = $this->get('/api/v1/divisions')
+        $response = $this->getJson('/api/v1/divisions')
             ->assertOk();
 
         $data = $response->decodeResponseJson('data');
@@ -51,7 +51,7 @@ class DivisionsTest extends ApiTestCase
 
     public function testGettingAllDivisionsWhenThereAreNone(): void
     {
-        $response = $this->get('/api/v1/divisions')
+        $response = $this->getJson('/api/v1/divisions')
             ->assertOk();
 
         $this->assertEmpty($response->decodeResponseJson('data'));
@@ -77,7 +77,7 @@ class DivisionsTest extends ApiTestCase
             'competition_id' => $competition2->getId(),
         ]);
 
-        $response = $this->get('/api/v1/divisions?with[]=competition')
+        $response = $this->getJson('/api/v1/divisions?with[]=competition')
             ->assertOk();
 
         $data = $response->decodeResponseJson('data');
@@ -126,7 +126,7 @@ class DivisionsTest extends ApiTestCase
         ]);
         $team3 = aTeam()->withName('London Cubs')->inDivision($division2)->build();
 
-        $response = $this->get('/api/v1/divisions?with[]=teams')
+        $response = $this->getJson('/api/v1/divisions?with[]=teams')
             ->assertOk();
 
         $data = $response->decodeResponseJson('data');
@@ -173,7 +173,7 @@ class DivisionsTest extends ApiTestCase
             'competition_id' => $competition->getId(),
         ]);
 
-        $response = $this->get('/api/v1/divisions/' . $division->getId())
+        $response = $this->getJson('/api/v1/divisions/' . $division->getId())
             ->assertOk();
 
         $this->assertSame([
@@ -185,7 +185,7 @@ class DivisionsTest extends ApiTestCase
 
     public function testGettingANonExistingDivision(): void
     {
-        $this->get('/api/v1/divisions/1')
+        $this->getJson('/api/v1/divisions/1')
             ->assertNotFound();
     }
 
@@ -198,7 +198,7 @@ class DivisionsTest extends ApiTestCase
             'competition_id' => $competition->getId(),
         ]);
 
-        $response = $this->get('/api/v1/divisions/' . $division->getId() . '?with[]=competition')
+        $response = $this->getJson('/api/v1/divisions/' . $division->getId() . '?with[]=competition')
             ->assertOk();
 
         $this->assertSame([
@@ -221,7 +221,7 @@ class DivisionsTest extends ApiTestCase
         $team1 = aTeam()->withName('London Bears')->inDivision($division)->build();
         $team2 = aTeam()->withName('The Giants')->inDivision($division)->build();
 
-        $response = $this->get('/api/v1/divisions/' . $division->getId() . '?with[]=teams')
+        $response = $this->getJson('/api/v1/divisions/' . $division->getId() . '?with[]=teams')
             ->assertOk();
         $data = $response->decodeResponseJson('data');
 
@@ -249,7 +249,7 @@ class DivisionsTest extends ApiTestCase
     {
         $division = factory(Division::class)->create();
 
-        $response = $this->get('/api/v1/divisions/' . $division->getId() . '?with[]=teams')
+        $response = $this->getJson('/api/v1/divisions/' . $division->getId() . '?with[]=teams')
             ->assertOk();
 
         $data = $response->decodeResponseJson('data');

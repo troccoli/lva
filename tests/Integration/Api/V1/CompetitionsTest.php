@@ -29,7 +29,7 @@ class CompetitionsTest extends ApiTestCase
             'season_id' => $season2->getId(),
         ]);
 
-        $response = $this->get('/api/v1/competitions')
+        $response = $this->getJson('/api/v1/competitions')
             ->assertOk();
 
         $data = $response->decodeResponseJson('data');
@@ -60,7 +60,7 @@ class CompetitionsTest extends ApiTestCase
             'season_id' => $season->getId(),
         ]);
 
-        $response = $this->get('/api/v1/competitions?with[]=season')
+        $response = $this->getJson('/api/v1/competitions?with[]=season')
             ->assertOk();
 
         $data = $response->decodeResponseJson('data');
@@ -115,7 +115,7 @@ class CompetitionsTest extends ApiTestCase
             'display_order'  => 1,
         ]);
 
-        $response = $this->get('/api/v1/competitions?with[]=divisions')
+        $response = $this->getJson('/api/v1/competitions?with[]=divisions')
             ->assertOk();
 
         $data = $response->decodeResponseJson('data');
@@ -171,7 +171,7 @@ class CompetitionsTest extends ApiTestCase
             'season_id' => $season->getId(),
         ]);
 
-        $response = $this->get('/api/v1/competitions?season=' . $season->getId())
+        $response = $this->getJson('/api/v1/competitions?season=' . $season->getId())
             ->assertOk();
 
         $data = $response->decodeResponseJson('data');
@@ -188,7 +188,7 @@ class CompetitionsTest extends ApiTestCase
 
     public function testGettingAllCompetitionsWhenThereAreNone(): void
     {
-        $response = $this->get('/api/v1/competitions')
+        $response = $this->getJson('/api/v1/competitions')
             ->assertOk();
 
         $this->assertEmpty($response->decodeResponseJson('data'));
@@ -196,7 +196,7 @@ class CompetitionsTest extends ApiTestCase
 
     public function testGettingAllCompetitionsForNonExistingSeason(): void
     {
-        $this->get('/api/v1/competitions?season=1')
+        $this->getJson('/api/v1/competitions?season=1')
             ->assertNotFound();
     }
 
@@ -208,7 +208,7 @@ class CompetitionsTest extends ApiTestCase
             'season_id' => $season->getId(),
         ]);
 
-        $response = $this->get('/api/v1/competitions/' . $competition->getId())
+        $response = $this->getJson('/api/v1/competitions/' . $competition->getId())
             ->assertOk();
 
         $this->assertEquals([
@@ -219,7 +219,7 @@ class CompetitionsTest extends ApiTestCase
 
     public function testGettingANonExistingCompetition(): void
     {
-        $this->get('/api/v1/competitions/1')
+        $this->getJson('/api/v1/competitions/1')
             ->assertNotFound();
     }
 
@@ -231,7 +231,7 @@ class CompetitionsTest extends ApiTestCase
             'season_id' => $season->getId(),
         ]);
 
-        $response = $this->get('/api/v1/competitions/' . $competition->getId() . '?with[]=season')
+        $response = $this->getJson('/api/v1/competitions/' . $competition->getId() . '?with[]=season')
             ->assertOk();
 
         $this->assertEquals([
@@ -260,7 +260,7 @@ class CompetitionsTest extends ApiTestCase
             'display_order'  => 1,
         ]);
 
-        $response = $this->get('/api/v1/competitions/' . $competition->getId() . '?with[]=divisions')
+        $response = $this->getJson('/api/v1/competitions/' . $competition->getId() . '?with[]=divisions')
             ->assertOk();
         $data = $response->decodeResponseJson('data');
 
@@ -291,7 +291,7 @@ class CompetitionsTest extends ApiTestCase
             'name' => 'London Magic League',
         ]);
 
-        $response = $this->get('/api/v1/competitions/' . $competition->getId() . '?with[]=divisions')
+        $response = $this->getJson('/api/v1/competitions/' . $competition->getId() . '?with[]=divisions')
             ->assertOk();
         $data = $response->decodeResponseJson('data');
 
