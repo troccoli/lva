@@ -2,21 +2,35 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Helpers\PermissionsHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\SeasonResource;
 use App\Models\Season;
+use App\Repositories\AccessibleSeasons;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class SeasonController extends Controller
 {
-    public function all(Request $request): ResourceCollection
+    private AccessibleSeasons $accessibleSeasons;
+
+    public function __construct(AccessibleSeasons $accessibleSeasons)
     {
-        return SeasonResource::collection(Season::all()->sortByDesc('year'));
+        $this->accessibleSeasons = $accessibleSeasons;
     }
 
-    public function get(Request $request, Season $season): SeasonResource
+    public function all(Request $request): ResourceCollection
     {
-        return new SeasonResource($season);
+        return SeasonResource::collection($this->accessibleSeasons->get($request->user())->sortByDesc('year'));
+    }
+
+    public function get(Request $request, Season $season): JsonResource
+    {
+        if ($request->user()->can(PermissionsHelper::viewSeason($season))) {
+            return new SeasonResource($season);
+        }
+
+        return new JsonResource([]);
     }
 }
