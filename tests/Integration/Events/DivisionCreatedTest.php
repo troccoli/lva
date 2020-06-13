@@ -37,12 +37,14 @@ class DivisionCreatedTest extends TestCase
         /** @var Division $division */
         $division = factory(Division::class)->create();
         $divisionId = $division->getId();
+        $competitionId = $division->getCompetition()->getId();
 
         /** @var User $divisionAdmin */
         $divisionAdmin = factory(User::class)->create();
         $divisionAdmin->assignRole(RolesHelper::divisionAdminName($division));
 
-        $this->assertUserCan($divisionAdmin, "edit-division-$divisionId")
+        $this->assertUserCan($divisionAdmin, "view-divisions-in-competition-$competitionId")
+            ->assertUserCan($divisionAdmin, "edit-division-$divisionId")
             ->assertUserCan($divisionAdmin, "add-fixtures-in-division-$divisionId")
             ->assertUserCan($divisionAdmin, "edit-fixtures-in-division-$divisionId")
             ->assertUserCan($divisionAdmin, "delete-fixtures-in-division-$divisionId")

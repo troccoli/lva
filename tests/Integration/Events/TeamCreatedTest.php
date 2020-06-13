@@ -33,12 +33,14 @@ class TeamCreatedTest extends TestCase
         /** @var Team $team */
         $team = factory(Team::class)->create();
         $teamId = $team->getId();
+        $clubId = $team->getClub()->getId();
 
         /** @var User $teamSecretary */
         $teamSecretary = factory(User::class)->create();
         $teamSecretary->assignRole(RolesHelper::teamSecretaryName($team));
 
-        $this->assertUserCan($teamSecretary, "edit-team-$teamId");
+        $this->assertUserCan($teamSecretary, "view-teams-in-club-$clubId")
+            ->assertUserCan($teamSecretary, "edit-team-$teamId");
         $this->assertUserCannot($teamSecretary, "delete-team-$teamId");
 
         /** @var User $clubSecretary */
