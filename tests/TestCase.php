@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Helpers\RolesHelper;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
@@ -19,9 +20,9 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        Role::create(['name' => 'Site Administrator']);
+        Role::create(['name' => RolesHelper::SITE_ADMIN]);
         Permission::create(['name' => 'view-seasons']);
 
-        $this->siteAdmin = factory(User::class)->create()->assignRole('Site Administrator');
+        $this->siteAdmin = factory(User::class)->create()->assignRole(RolesHelper::SITE_ADMIN);
     }
 }

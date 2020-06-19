@@ -12,6 +12,9 @@ use Spatie\Permission\Models\Role;
 
 final class RolesHelper
 {
+    public const SITE_ADMIN = 'Site Administrator';
+    public const REF_ADMIN = 'Referees Administrator';
+
     private const SEASON_ADMIN_TEMPLATE = 'Season %s Administrator';
     private const COMPETITION_ADMIN_TEMPLATE = 'Competition %s Administrator';
     private const DIVISION_ADMIN_TEMPLATE = 'Division %s Administrator';

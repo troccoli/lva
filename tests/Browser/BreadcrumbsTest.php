@@ -2,6 +2,7 @@
 
 namespace Tests\Browser;
 
+use App\Helpers\RolesHelper;
 use App\Models\Division;
 use App\Models\Team;
 use App\Models\User;
@@ -44,7 +45,7 @@ class BreadcrumbsTest extends DuskTestCase
         $breadcrumbs = $this->authPagesBreadcrumbs();
 
         $this->browse(function (Browser $browser) use ($breadcrumbs): void {
-            $browser->loginAs(factory(User::class)->create()->assignRole('Site Administrator'));
+            $browser->loginAs(factory(User::class)->create()->assignRole(RolesHelper::SITE_ADMIN));
             foreach ($breadcrumbs as $url => $crumbs) {
                 $browser->visit($url)
                     ->assertSeeIn('.breadcrumb', strtoupper(implode("\n", $crumbs)));
