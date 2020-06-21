@@ -11,4 +11,17 @@ trait InteractsWithArrays
             $this->assertEquals($value, $actual[$key]);
         }
     }
+
+    private function assertArrayContentByKey(string $key, $value, array $expected, array $actual): void
+    {
+        foreach ($actual as $item) {
+            if (isset($item[$key]) && $item[$key] === $value) {
+                $this->assertArrayContent($expected, $item);
+                return;
+            }
+        }
+
+        $message = sprintf('Cannot find data by \'%s\' => \'%s\' in array', $key, (string) $value);
+        $this->fail($message);
+    }
 }
