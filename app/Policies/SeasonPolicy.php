@@ -25,14 +25,6 @@ class SeasonPolicy
             return true;
         }
 
-        if ($this->hasAnyClubSecretaryRole($user)) {
-            return true;
-        }
-
-        if ($this->hasAnyTeamSecretaryRole($user)) {
-            return true;
-        }
-
         return false;
     }
 
