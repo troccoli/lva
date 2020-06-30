@@ -64,9 +64,7 @@ jobs:
 
       - run:
           name: Run Unit Tests
-          command: |
-            mkdir -p ./logs/phpunit
-            vendor/bin/phpunit -d memory_limit=512M --log-junit logs/phpunit/junit.xml --testdox-html logs/phpunit/testdox.html
+          command: vendor/bin/phpunit --printer PHPUnit\\TextUI\\ResultPrinter
 
       - run:
           name: Update Chrome Driver

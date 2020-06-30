@@ -26,7 +26,7 @@ before_script:
   - php artisan serve &
 
 script:
-  - vendor/bin/phpunit -d memory_limit=512M --log-junit logs/phpunit/junit.xml --testdox-html logs/phpunit/testdox.html
+  - vendor/bin/phpunit --printer PHPUnit\\TextUI\\ResultPrinter
   - php artisan dusk
 
 notifications:
