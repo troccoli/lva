@@ -76,7 +76,7 @@ jobs:
       - name: Dump Autoloader
         run: composer dump-autoload
       - name: Execute Unit tests via PHPUnit
-        run: vendor/bin/phpunit tests/Unit
+        run: vendor/bin/phpunit tests/Unit --printer PHPUnit\\TextUI\\ResultPrinter
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         if: failure()
@@ -116,7 +116,7 @@ jobs:
       - name: Run Laravel Server
         run: php artisan serve &
       - name: Execute Integration tests via PHPUnit
-        run: vendor/bin/phpunit tests/Integration
+        run: vendor/bin/phpunit tests/Integration --printer PHPUnit\\TextUI\\ResultPrinter
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         if: failure()
@@ -161,7 +161,7 @@ jobs:
       - name: Run Laravel Server
         run: php artisan serve &
       - name: Execute Feature tests via PHPUnit
-        run: vendor/bin/phpunit tests/Feature
+        run: vendor/bin/phpunit tests/Feature --printer PHPUnit\\TextUI\\ResultPrinter
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         if: failure()
