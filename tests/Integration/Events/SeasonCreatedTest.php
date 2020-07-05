@@ -23,6 +23,7 @@ class SeasonCreatedTest extends TestCase
     {
         $season = factory(Season::class)->create();
 
+        $this->assertDatabaseHas('permissions', ['name' => "view-season-{$season->getId()}"]);
         $this->assertDatabaseHas('permissions', ['name' => "edit-season-{$season->getId()}"]);
         $this->assertDatabaseHas('permissions', ['name' => "delete-season-{$season->getId()}"]);
         $this->assertDatabaseHas('permissions', ['name' => "add-competition-in-season-{$season->getId()}"]);
@@ -39,7 +40,8 @@ class SeasonCreatedTest extends TestCase
         $user = factory(User::class)->create();
         $user->assignRole(RolesHelper::seasonAdminName($season));
 
-        $this->assertUserCan($user, "edit-season-$seasonId")
+        $this->assertUserCan($user, "view-season-$seasonId")
+            ->assertUserCan($user, "edit-season-$seasonId")
             ->assertUserCan($user, "add-competition-in-season-$seasonId")
             ->assertUserCan($user, "view-competitions-in-season-$seasonId");
 

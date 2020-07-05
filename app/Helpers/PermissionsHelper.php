@@ -15,6 +15,11 @@ final class PermissionsHelper
         return "add-season";
     }
 
+    final public static function viewSeason(Season $season): string
+    {
+        return "view-season-{$season->getId()}";
+    }
+
     final public static function editSeason(Season $season): string
     {
         return "edit-season-{$season->getId()}";

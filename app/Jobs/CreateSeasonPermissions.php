@@ -22,6 +22,7 @@ class CreateSeasonPermissions
     public function handle()
     {
         collect([
+            PermissionsHelper::viewSeason($this->season),
             PermissionsHelper::editSeason($this->season),
             PermissionsHelper::deleteSeason($this->season),
             PermissionsHelper::addCompetition($this->season),

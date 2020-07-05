@@ -40,7 +40,8 @@ class CompetitionCreatedTest extends TestCase
         $competitionAdmin = factory(User::class)->create();
         $competitionAdmin->assignRole(RolesHelper::competitionAdminName($competition));
 
-        $this->assertUserCan($competitionAdmin, "view-competitions-in-season-$seasonId")
+        $this->assertUserCan($competitionAdmin, "view-season-$seasonId")
+            ->assertUserCan($competitionAdmin, "view-competitions-in-season-$seasonId")
             ->assertUserCan($competitionAdmin, "edit-competition-$competitionId")
             ->assertUserCan($competitionAdmin, "add-division-in-competition-$competitionId")
             ->assertUserCan($competitionAdmin, "view-divisions-in-competition-$competitionId");

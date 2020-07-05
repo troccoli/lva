@@ -18,7 +18,7 @@ class CreateSeasonPermissionsTest extends TestCase
 
         $sut->handle();
 
-        $this->assertDatabaseCount('permissions', 5);
+        $this->assertDatabaseHas('permissions', ['name' => 'view-season-123']);
         $this->assertDatabaseHas('permissions', ['name' => 'edit-season-123']);
         $this->assertDatabaseHas('permissions', ['name' => 'delete-season-123']);
         $this->assertDatabaseHas('permissions', ['name' => 'add-competition-in-season-123']);
