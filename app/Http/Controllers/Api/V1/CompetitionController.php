@@ -2,28 +2,42 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Helpers\PermissionsHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CompetitionResource;
 use App\Models\Competition;
 use App\Models\Season;
+use App\Repositories\AccessibleCompetitions;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class CompetitionController extends Controller
 {
-    public function all(Request $request): ResourceCollection
+    private AccessibleCompetitions $accessibleCompetitions;
+
+    public function __construct(AccessibleCompetitions $accessibleCompetitions)
     {
-        $query = Competition::query();
-
-        if ($request->has('season')) {
-            $query->inSeason(Season::findOrFail($request->get('season')));
-        }
-
-        return CompetitionResource::collection($query->get());
+        $this->accessibleCompetitions = $accessibleCompetitions;
     }
 
-    public function get(Request $request, Competition $competition): CompetitionResource
+    public function all(Request $request): ResourceCollection
     {
-        return new CompetitionResource($competition);
+        if ($request->has('season')) {
+            $this->accessibleCompetitions->inSeason(Season::findOrFail($request->get('season')));
+        }
+
+        return CompetitionResource::collection($this->accessibleCompetitions->get($request->user()));
+    }
+
+    public function get(Request $request, Competition $competition): JsonResource
+    {
+        if ($request->user()->can(PermissionsHelper::viewCompetition($competition)) ||
+            $request->user()->can(PermissionsHelper::viewCompetitions($competition->getSeason()))
+       ) {
+            return new CompetitionResource($competition);
+        }
+
+        return new JsonResource([]);
     }
 }
