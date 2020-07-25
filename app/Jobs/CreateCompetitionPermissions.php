@@ -22,6 +22,7 @@ class CreateCompetitionPermissions
     public function handle()
     {
         collect([
+            PermissionsHelper::viewCompetition($this->competition),
             PermissionsHelper::editCompetition($this->competition),
             PermissionsHelper::deleteCompetition($this->competition),
             PermissionsHelper::addDivision($this->competition),

@@ -25,6 +25,7 @@ class SetUpCompetitionAdmin
         $competitionAdminRole->givePermissionTo([
             PermissionsHelper::viewSeason($competition->getSeason()),
             PermissionsHelper::viewCompetitions($competition->getSeason()),
+            PermissionsHelper::viewCompetition($competition),
             PermissionsHelper::editCompetition($competition),
             PermissionsHelper::addDivision($competition),
             PermissionsHelper::viewDivisions($competition),

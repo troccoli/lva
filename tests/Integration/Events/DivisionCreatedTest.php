@@ -46,6 +46,7 @@ class DivisionCreatedTest extends TestCase
 
         $this->assertUserCan($divisionAdmin, "view-season-$seasonId")
             ->assertUserCan($divisionAdmin, "view-divisions-in-competition-$competitionId")
+            ->assertUserCan($divisionAdmin, "view-competition-$competitionId")
             ->assertUserCan($divisionAdmin, "edit-division-$divisionId")
             ->assertUserCan($divisionAdmin, "add-fixtures-in-division-$divisionId")
             ->assertUserCan($divisionAdmin, "edit-fixtures-in-division-$divisionId")

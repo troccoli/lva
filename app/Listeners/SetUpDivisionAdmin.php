@@ -24,6 +24,7 @@ class SetUpDivisionAdmin
         $divisionAdminRole = Role::findByName(RolesHelper::divisionAdminName($division));
         $divisionAdminRole->givePermissionTo([
             PermissionsHelper::viewSeason($division->getCompetition()->getSeason()),
+            PermissionsHelper::viewCompetition($division->getCompetition()),
             PermissionsHelper::viewDivisions($division->getCompetition()),
             PermissionsHelper::editDivision($division),
             PermissionsHelper::addFixtures($division),

@@ -23,6 +23,7 @@ class CompetitionCreatedTest extends TestCase
     {
         $competition = factory(Competition::class)->create();
 
+        $this->assertDatabaseHas('permissions', ['name' => "view-competition-{$competition->getId()}"]);
         $this->assertDatabaseHas('permissions', ['name' => "edit-competition-{$competition->getId()}"]);
         $this->assertDatabaseHas('permissions', ['name' => "delete-competition-{$competition->getId()}"]);
         $this->assertDatabaseHas('permissions', ['name' => "add-division-in-competition-{$competition->getId()}"]);
@@ -42,6 +43,7 @@ class CompetitionCreatedTest extends TestCase
 
         $this->assertUserCan($competitionAdmin, "view-season-$seasonId")
             ->assertUserCan($competitionAdmin, "view-competitions-in-season-$seasonId")
+            ->assertUserCan($competitionAdmin, "view-competition-$competitionId")
             ->assertUserCan($competitionAdmin, "edit-competition-$competitionId")
             ->assertUserCan($competitionAdmin, "add-division-in-competition-$competitionId")
             ->assertUserCan($competitionAdmin, "view-divisions-in-competition-$competitionId");
