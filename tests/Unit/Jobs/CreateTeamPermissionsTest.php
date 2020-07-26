@@ -18,7 +18,8 @@ class CreateTeamPermissionsTest extends TestCase
 
         $sut->handle();
 
-        $this->assertDatabaseCount('permissions', 2);
+        $this->assertDatabaseCount('permissions', 3);
+        $this->assertDatabaseHas('permissions', ['name' => 'view-team-123']);
         $this->assertDatabaseHas('permissions', ['name' => 'edit-team-123']);
         $this->assertDatabaseHas('permissions', ['name' => 'delete-team-123']);
     }

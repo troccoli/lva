@@ -4,7 +4,6 @@ namespace Tests\Integration\Events;
 
 use App\Helpers\RolesHelper;
 use App\Models\Team;
-use App\Models\User;
 use Tests\Concerns\InteractsWithPermissions;
 use Tests\TestCase;
 
@@ -22,10 +21,11 @@ class TeamCreatedTest extends TestCase
 
     public function testTeamPermissionsAreCreated(): void
     {
-        $team = aTeam()->build();
+        $teamId = aTeam()->build()->getId();
 
-        $this->assertDatabaseHas('permissions', ['name' => "edit-team-{$team->getId()}"]);
-        $this->assertDatabaseHas('permissions', ['name' => "delete-team-{$team->getId()}"]);
+        $this->assertDatabaseHas('permissions', ['name' => "view-team-$teamId"]);
+        $this->assertDatabaseHas('permissions', ['name' => "edit-team-$teamId"]);
+        $this->assertDatabaseHas('permissions', ['name' => "delete-team-$teamId"]);
     }
 
     public function testAdminRolesHaveTheCorrectPermissions(): void
@@ -34,18 +34,16 @@ class TeamCreatedTest extends TestCase
         $team = factory(Team::class)->create();
         $teamId = $team->getId();
 
-        /** @var User $teamSecretary */
-        $teamSecretary = factory(User::class)->create();
-        $teamSecretary->assignRole(RolesHelper::teamSecretary($team));
+        $teamSecretary = $this->userWithRole(RolesHelper::teamSecretary($team));
 
-        $this->assertUserCan($teamSecretary, "edit-team-$teamId");
-        $this->assertUserCannot($teamSecretary, "delete-team-$teamId");
+        $this->assertUserCan($teamSecretary, "view-team-$teamId")
+            ->assertUserCan($teamSecretary, "edit-team-$teamId")
+            ->assertUserCannot($teamSecretary, "delete-team-$teamId");
 
-        /** @var User $clubSecretary */
-        $clubSecretary = factory(User::class)->create();
-        $clubSecretary->assignRole(RolesHelper::clubSecretary($team->getClub()));
+        $clubSecretary = $this->userWithRole(RolesHelper::clubSecretary($team->getClub()));
 
-        $this->assertUserCan($clubSecretary, "edit-team-$teamId");
-        $this->assertUserCan($clubSecretary, "delete-team-$teamId");
+        $this->assertUserCan($clubSecretary, "view-team-$teamId")
+            ->assertUserCan($clubSecretary, "edit-team-$teamId")
+            ->assertUserCan($clubSecretary, "delete-team-$teamId");
     }
 }

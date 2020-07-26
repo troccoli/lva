@@ -115,6 +115,11 @@ final class PermissionsHelper
         return "add-team-in-club-{$club->getId()}";
     }
 
+    final public static function viewTeam(Team $team): string
+    {
+        return "view-team-{$team->getId()}";
+    }
+
     final public static function editTeam(Team $team): string
     {
         return "edit-team-{$team->getId()}";

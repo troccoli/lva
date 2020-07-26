@@ -21,9 +21,8 @@ class CreateTeamPermissions
 
     public function handle()
     {
-        $teamId = $this->team->getId();
-
         collect([
+            PermissionsHelper::viewTeam($this->team),
             PermissionsHelper::editTeam($this->team),
             PermissionsHelper::deleteTeam($this->team),
         ])->each(function (string $permission): void {
