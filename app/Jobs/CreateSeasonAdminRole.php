@@ -21,6 +21,6 @@ class CreateSeasonAdminRole
 
     public function handle(): void
     {
-        Role::create(['name' => RolesHelper::seasonAdminName($this->season)]);
+        Role::create(['name' => RolesHelper::seasonAdmin($this->season)]);
     }
 }

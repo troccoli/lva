@@ -27,27 +27,27 @@ class FixturePolicy
     public function create(User $user, Division $division): bool
     {
         return $user->hasAnyRole(
-            RolesHelper::divisionAdminName($division),
-            RolesHelper::competitionAdminName($division->getCompetition()),
-            RolesHelper::seasonAdminName($division->getCompetition()->getSeason())
+            RolesHelper::divisionAdmin($division),
+            RolesHelper::competitionAdmin($division->getCompetition()),
+            RolesHelper::seasonAdmin($division->getCompetition()->getSeason())
         );
     }
 
     public function update(User $user, Division $division): bool
     {
         return $user->hasAnyRole(
-            RolesHelper::divisionAdminName($division),
-            RolesHelper::competitionAdminName($division->getCompetition()),
-            RolesHelper::seasonAdminName($division->getCompetition()->getSeason())
+            RolesHelper::divisionAdmin($division),
+            RolesHelper::competitionAdmin($division->getCompetition()),
+            RolesHelper::seasonAdmin($division->getCompetition()->getSeason())
         );
     }
 
     public function delete(User $user, Division $division): bool
     {
         return $user->hasAnyRole(
-            RolesHelper::divisionAdminName($division),
-            RolesHelper::competitionAdminName($division->getCompetition()),
-            RolesHelper::seasonAdminName($division->getCompetition()->getSeason())
+            RolesHelper::divisionAdmin($division),
+            RolesHelper::competitionAdmin($division->getCompetition()),
+            RolesHelper::seasonAdmin($division->getCompetition()->getSeason())
         );
     }
 }

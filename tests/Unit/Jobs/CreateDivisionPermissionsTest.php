@@ -19,6 +19,7 @@ class CreateDivisionPermissionsTest extends TestCase
         $sut->handle();
 
         $this->assertDatabaseCount('permissions', 7);
+        $this->assertDatabaseHas('permissions', ['name' => 'view-division-123']);
         $this->assertDatabaseHas('permissions', ['name' => 'edit-division-123']);
         $this->assertDatabaseHas('permissions', ['name' => 'delete-division-123']);
         $this->assertDatabaseHas('permissions', ['name' => 'add-fixtures-in-division-123']);

@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers\PermissionsHelper;
 use App\Models\Club;
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -20,13 +21,11 @@ class CreateClubPermissions
 
     public function handle()
     {
-        $clubId = $this->club->getId();
-
         collect([
-            "edit-club-$clubId",
-            "delete-club-$clubId",
-            "add-teams-in-club-$clubId",
-            "view-teams-in-club-$clubId",
+            PermissionsHelper::viewClub($this->club),
+            PermissionsHelper::editClub($this->club),
+            PermissionsHelper::deleteClub($this->club),
+            PermissionsHelper::addTeam($this->club),
         ])->each(function (string $permission): void {
             Permission::create(['name' => $permission]);
         });

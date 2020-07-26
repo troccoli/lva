@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Helpers\RolesHelper;
 use App\Models\User;
 use Closure;
 use Facebook\WebDriver\Chrome\ChromeOptions;
@@ -22,10 +23,9 @@ abstract class DuskTestCase extends BaseTestCase
     {
         parent::setUp();
 
-        Role::create(['name' => 'Site Administrator']);
-        Permission::create(['name' => 'view-seasons']);
+        Role::create(['name' => RolesHelper::SITE_ADMIN]);
 
-        $this->siteAdmin = factory(User::class)->create()->assignRole('Site Administrator');
+        $this->siteAdmin = factory(User::class)->create()->assignRole(RolesHelper::SITE_ADMIN);
     }
 
     /**

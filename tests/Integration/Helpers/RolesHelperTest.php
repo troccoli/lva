@@ -20,7 +20,7 @@ class RolesHelperTest extends TestCase
         $season = factory(Season::class)->create();
         $seasonId = $season->getId();
 
-        $this->assertSame("Season $seasonId Administrator", RolesHelper::seasonAdminName($season));
+        $this->assertSame("Season $seasonId Administrator", RolesHelper::seasonAdmin($season));
     }
 
     public function testItCanCheckIfTheRoleIsSeasonAdministrator(): void
@@ -71,7 +71,7 @@ class RolesHelperTest extends TestCase
         $competition = factory(Competition::class)->create();
         $competitionId = $competition->getId();
 
-        $this->assertSame("Competition $competitionId Administrator", RolesHelper::competitionAdminName($competition));
+        $this->assertSame("Competition $competitionId Administrator", RolesHelper::competitionAdmin($competition));
     }
 
     public function testItCanCheckIfTheRoleIsCompetitionAdministrator(): void
@@ -122,7 +122,7 @@ class RolesHelperTest extends TestCase
         $division = factory(Division::class)->create();
         $divisionId = $division->getId();
 
-        $this->assertSame("Division $divisionId Administrator", RolesHelper::divisionAdminName($division));
+        $this->assertSame("Division $divisionId Administrator", RolesHelper::divisionAdmin($division));
     }
 
     public function testItCanCheckIfTheRoleIsDivisionAdministrator(): void
@@ -173,7 +173,7 @@ class RolesHelperTest extends TestCase
         $club = factory(Club::class)->create();
         $clubId = $club->getId();
 
-        $this->assertSame("Club $clubId Secretary", RolesHelper::clubSecretaryName($club));
+        $this->assertSame("Club $clubId Secretary", RolesHelper::clubSecretary($club));
     }
 
     public function testItCanCheckIfTheRoleIsClubSecretary(): void
@@ -224,7 +224,7 @@ class RolesHelperTest extends TestCase
         $team = factory(Team::class)->create();
         $teamId = $team->getId();
 
-        $this->assertSame("Team $teamId Secretary", RolesHelper::teamSecretaryName($team));
+        $this->assertSame("Team $teamId Secretary", RolesHelper::teamSecretary($team));
     }
 
     public function testItCanCheckIfTheRoleIsTeamSecretary(): void

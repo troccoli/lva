@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers\PermissionsHelper;
 use App\Models\Team;
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -20,11 +21,10 @@ class CreateTeamPermissions
 
     public function handle()
     {
-        $teamId = $this->team->getId();
-
         collect([
-            "edit-team-$teamId",
-            "delete-team-$teamId",
+            PermissionsHelper::viewTeam($this->team),
+            PermissionsHelper::editTeam($this->team),
+            PermissionsHelper::deleteTeam($this->team),
         ])->each(function (string $permission): void {
             Permission::create(['name' => $permission]);
         });

@@ -30,7 +30,7 @@ class CompetitionTest extends TestCase
     {
         /** @var Competition $competition */
         $competition = factory(Competition::class)->create();
-        $this->assertEquals("Competition {$competition->getId()} Administrator", RolesHelper::competitionAdminName($competition));
+        $this->assertEquals("Competition {$competition->getId()} Administrator", RolesHelper::competitionAdmin($competition));
     }
 
     public function testItGetsTheSeason(): void

@@ -43,7 +43,7 @@ class UsersTableSeeder extends Seeder
                 'name' => "Season {$season->getId()} Administrator",
                 'email' => "season-{$season->getId()}-administrator@example.com",
             ]);
-            $user->assignRole(RolesHelper::seasonAdminName($season));
+            $user->assignRole(RolesHelper::seasonAdmin($season));
             $this->advanceProgressBar();
         });
         Competition::all()->each(function (Competition $competition) {
@@ -51,7 +51,7 @@ class UsersTableSeeder extends Seeder
                 'name' => "Competition {$competition->getId()} Administrator",
                 'email' => "competition-{$competition->getId()}-administrator@example.com",
             ]);
-            $user->assignRole(RolesHelper::competitionAdminName($competition));
+            $user->assignRole(RolesHelper::competitionAdmin($competition));
             $this->advanceProgressBar();
         });
         Division::all()->each(function (Division $division) {
@@ -59,7 +59,7 @@ class UsersTableSeeder extends Seeder
                 'name' => "Division {$division->getId()} Administrator",
                 'email' => "division-{$division->getId()}-administrator@example.com",
             ]);
-            $user->assignRole(RolesHelper::divisionAdminName($division));
+            $user->assignRole(RolesHelper::divisionAdmin($division));
             $this->advanceProgressBar();
         });
 
@@ -68,7 +68,7 @@ class UsersTableSeeder extends Seeder
                 'name' => "Club {$club->getId()} Secretary",
                 'email' => "club-{$club->getId()}-secretary@example.com",
             ]);
-            $user->assignRole(RolesHelper::clubSecretaryName($club));
+            $user->assignRole(RolesHelper::clubSecretary($club));
             $this->advanceProgressBar();
         });
         Team::all()->each(function (Team $team) {
@@ -76,7 +76,7 @@ class UsersTableSeeder extends Seeder
                 'name' => "Team {$team->getId()} Secretary",
                 'email' => "team-{$team->getId()}-secretary@example.com",
             ]);
-            $user->assignRole(RolesHelper::teamSecretaryName($team));
+            $user->assignRole(RolesHelper::teamSecretary($team));
             $this->advanceProgressBar();
         });
 

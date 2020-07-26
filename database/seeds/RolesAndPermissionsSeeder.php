@@ -1,13 +1,10 @@
 <?php
 
-use App\Models\Club;
-use App\Models\Competition;
-use App\Models\Division;
-use App\Models\Season;
-use App\Models\Team;
+use App\Helpers\RolesHelper;
+use App\Helpers\PermissionsHelper;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
@@ -18,13 +15,9 @@ class RolesAndPermissionsSeeder extends Seeder
         // Reset cached roles and permissions
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-
-        Permission::create(['name' => 'view-seasons']);
-
-        Role::create(['name' => 'Site Administrator']);
-        Role::create(['name' => 'Referees Administrator']);
-        Role::create(['name' => 'League Administrator'])
-            ->givePermissionTo('view-seasons');
-        Role::create(['name' => 'Division Administrator']);
+        Permission::create(['name' => PermissionsHelper::addSeason()]);
+        Permission::create(['name' => PermissionsHelper::addClub()]);
+        Role::create(['name' => RolesHelper::SITE_ADMIN]);
+        Role::create(['name' => RolesHelper::REF_ADMIN]);
     }
 }

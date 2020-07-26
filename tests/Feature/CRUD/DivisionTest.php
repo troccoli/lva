@@ -129,7 +129,7 @@ class DivisionTest extends TestCase
 
         $this->actingAs(factory(User::class)
             ->create()
-            ->assignRole(RolesHelper::seasonAdminName($division->getCompetition()->getSeason())));
+            ->assignRole(RolesHelper::seasonAdmin($division->getCompetition()->getSeason())));
 
         $this->get("/competitions/$competitionId/divisions")
             ->assertOk();
@@ -161,7 +161,7 @@ class DivisionTest extends TestCase
         /** @var Division $division */
         $division = factory(Division::class)->make(['competition_id' => $competitionId]);
 
-        $this->actingAs(factory(User::class)->create()->assignRole(RolesHelper::competitionAdminName($competition)));
+        $this->actingAs(factory(User::class)->create()->assignRole(RolesHelper::competitionAdmin($competition)));
 
         $this->get("/competitions/$competitionId/divisions")
             ->assertOk();
@@ -190,7 +190,7 @@ class DivisionTest extends TestCase
         /** @var Competition $anotherCompetition */
         $anotherCompetition = factory(Competition::class)->create(['season_id' => $seasonId]);
 
-        $this->actingAs(factory(User::class)->create()->assignRole(RolesHelper::competitionAdminName($anotherCompetition)));
+        $this->actingAs(factory(User::class)->create()->assignRole(RolesHelper::competitionAdmin($anotherCompetition)));
 
         $this->get("/competitions/$competitionId/divisions")
             ->assertForbidden();
@@ -217,7 +217,7 @@ class DivisionTest extends TestCase
         /** @var Competition $yetAnotherCompetition */
         $yetAnotherCompetition = factory(Competition::class)->create(['season_id' => $anotherSeasonId]);
 
-        $this->actingAs(factory(User::class)->create()->assignRole(RolesHelper::competitionAdminName($yetAnotherCompetition)));
+        $this->actingAs(factory(User::class)->create()->assignRole(RolesHelper::competitionAdmin($yetAnotherCompetition)));
 
         $this->get("/competitions/$competitionId/divisions")
             ->assertForbidden();
@@ -247,7 +247,7 @@ class DivisionTest extends TestCase
         /** @var Division $division */
         $division = factory(Division::class)->create(['competition_id' => $competitionId]);
 
-        $this->actingAs(factory(User::class)->create()->assignRole(RolesHelper::divisionAdminName($division)));
+        $this->actingAs(factory(User::class)->create()->assignRole(RolesHelper::divisionAdmin($division)));
 
         $this->get("/competitions/$competitionId/divisions")
             ->assertOk();
@@ -271,7 +271,7 @@ class DivisionTest extends TestCase
         /** @var Division $anotherDivision */
         $anotherDivision = factory(Division::class)->create(['competition_id' => $competitionId]);
 
-        $this->actingAs(factory(User::class)->create()->assignRole(RolesHelper::divisionAdminName($anotherDivision)));
+        $this->actingAs(factory(User::class)->create()->assignRole(RolesHelper::divisionAdmin($anotherDivision)));
 
         $this->get("/competitions/$competitionId/divisions")
             ->assertOk();
@@ -297,7 +297,7 @@ class DivisionTest extends TestCase
         /** @var Division $yetAnotherDivision */
         $yetAnotherDivision = factory(Division::class)->create(['competition_id' => $anotherCompetitionId]);
 
-        $this->actingAs(factory(User::class)->create()->assignRole(RolesHelper::divisionAdminName($yetAnotherDivision)));
+        $this->actingAs(factory(User::class)->create()->assignRole(RolesHelper::divisionAdmin($yetAnotherDivision)));
 
         $this->get("/competitions/$competitionId/divisions")
             ->assertForbidden();

@@ -21,6 +21,6 @@ class CreateDivisionAdminRole
 
     public function handle(): void
     {
-        Role::create(['name' => RolesHelper::divisionAdminName($this->division)]);
+        Role::create(['name' => RolesHelper::divisionAdmin($this->division)]);
     }
 }

@@ -30,7 +30,7 @@ class DivisionTest extends TestCase
     {
         /** @var Division $division */
         $division = factory(Division::class)->create();
-        $this->assertEquals("Division {$division->getId()} Administrator", RolesHelper::divisionAdminName($division));
+        $this->assertEquals("Division {$division->getId()} Administrator", RolesHelper::divisionAdmin($division));
     }
     public function testItGetsTheDisplayingOrder(): void
     {

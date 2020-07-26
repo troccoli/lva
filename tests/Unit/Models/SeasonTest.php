@@ -31,7 +31,7 @@ class SeasonTest extends TestCase
     {
         /** @var Season $season */
         $season = factory(Season::class)->create();
-        $this->assertEquals("Season {$season->getId()} Administrator", RolesHelper::seasonAdminName($season));
+        $this->assertEquals("Season {$season->getId()} Administrator", RolesHelper::seasonAdmin($season));
     }
 
     /**

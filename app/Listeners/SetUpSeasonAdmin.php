@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\SeasonCreated;
+use App\Helpers\PermissionsHelper;
 use App\Helpers\RolesHelper;
 use App\Jobs\CreateSeasonAdminRole;
 use App\Jobs\CreateSeasonPermissions;
@@ -15,17 +16,16 @@ class SetUpSeasonAdmin
     {
         /** @var Season $season */
         $season = $event->season;
-        $seasonId = $season->getId();
 
         CreateSeasonAdminRole::dispatchNow($season);
         CreateSeasonPermissions::dispatchNow($season);
 
         /** @var Role $role */
-        $role = Role::findByName(RolesHelper::seasonAdminName($season));
+        $role = Role::findByName(RolesHelper::seasonAdmin($season));
         $role->givePermissionTo([
-            "edit-season-$seasonId",
-            "add-competitions-in-season-$seasonId",
-            "view-competitions-in-season-$seasonId",
+            PermissionsHelper::viewSeason($season),
+            PermissionsHelper::editSeason($season),
+            PermissionsHelper::addCompetition($season),
         ]);
     }
 }

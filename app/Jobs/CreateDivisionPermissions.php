@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Models\Competition;
+use App\Helpers\PermissionsHelper;
 use App\Models\Division;
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -21,15 +21,14 @@ class CreateDivisionPermissions
 
     public function handle()
     {
-        $divisionId = $this->division->getId();
-
         collect([
-            "edit-division-$divisionId",
-            "delete-division-$divisionId",
-            "add-fixtures-in-division-$divisionId",
-            "edit-fixtures-in-division-$divisionId",
-            "delete-fixtures-in-division-$divisionId",
-            "view-fixtures-in-division-$divisionId",
+            PermissionsHelper::viewDivision($this->division),
+            PermissionsHelper::editDivision($this->division),
+            PermissionsHelper::deleteDivision($this->division),
+            PermissionsHelper::addFixtures($this->division),
+            PermissionsHelper::editFixtures($this->division),
+            PermissionsHelper::deleteFixtures($this->division),
+            PermissionsHelper::viewFixtures($this->division),
         ])->each(function (string $permission): void {
             Permission::create(['name' => $permission]);
         });

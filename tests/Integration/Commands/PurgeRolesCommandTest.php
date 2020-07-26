@@ -21,27 +21,27 @@ class PurgeRolesCommandTest extends TestCase
         $season2 = factory(Season::class)->create(['year' => 2001]);
 
         /** @var User $user1 */
-        $user1 = factory(User::class)->create()->assignRole(RolesHelper::seasonAdminName($season1));
+        $user1 = factory(User::class)->create()->assignRole(RolesHelper::seasonAdmin($season1));
         /** @var User $user2 */
-        $user2 = factory(User::class)->create()->assignRole(RolesHelper::seasonAdminName($season2));
+        $user2 = factory(User::class)->create()->assignRole(RolesHelper::seasonAdmin($season2));
         /** @var User $user3 */
-        $user3 = factory(User::class)->create()->assignRole(RolesHelper::seasonAdminName($season1), RolesHelper::seasonAdminName($season2));
+        $user3 = factory(User::class)->create()->assignRole(RolesHelper::seasonAdmin($season1), RolesHelper::seasonAdmin($season2));
 
         $season2->delete();
 
         $this->artisan('role:purge');
 
-        $this->assertDatabaseHas('roles', ['name' => RolesHelper::seasonAdminName($season1)]);
-        $this->assertDatabaseMissing('roles', ['name' => RolesHelper::seasonAdminName($season2)]);
+        $this->assertDatabaseHas('roles', ['name' => RolesHelper::seasonAdmin($season1)]);
+        $this->assertDatabaseMissing('roles', ['name' => RolesHelper::seasonAdmin($season2)]);
 
         $user1->refresh();
         $user2->refresh();
         $user3->refresh();
 
-        $this->assertTrue($user1->hasRole(RolesHelper::seasonAdminName($season1)));
-        $this->assertFalse($user2->hasRole(RolesHelper::seasonAdminName($season2)));
-        $this->assertTrue($user3->hasRole(RolesHelper::seasonAdminName($season1)));
-        $this->assertFalse($user3->hasRole(RolesHelper::seasonAdminName($season2)));
+        $this->assertTrue($user1->hasRole(RolesHelper::seasonAdmin($season1)));
+        $this->assertFalse($user2->hasRole(RolesHelper::seasonAdmin($season2)));
+        $this->assertTrue($user3->hasRole(RolesHelper::seasonAdmin($season1)));
+        $this->assertFalse($user3->hasRole(RolesHelper::seasonAdmin($season2)));
     }
 
     public function testItPurgesCompetitionAdministratorRoles(): void
@@ -55,27 +55,27 @@ class PurgeRolesCommandTest extends TestCase
         $competition2 = factory(Competition::class)->create(['season_id' => $season->getId()]);
 
         /** @var User $user1 */
-        $user1 = factory(User::class)->create()->assignRole(RolesHelper::competitionAdminName($competition1));
+        $user1 = factory(User::class)->create()->assignRole(RolesHelper::competitionAdmin($competition1));
         /** @var User $user2 */
-        $user2 = factory(User::class)->create()->assignRole(RolesHelper::competitionAdminName($competition2));
+        $user2 = factory(User::class)->create()->assignRole(RolesHelper::competitionAdmin($competition2));
         /** @var User $user3 */
-        $user3 = factory(User::class)->create()->assignRole(RolesHelper::competitionAdminName($competition1), RolesHelper::competitionAdminName($competition2));
+        $user3 = factory(User::class)->create()->assignRole(RolesHelper::competitionAdmin($competition1), RolesHelper::competitionAdmin($competition2));
 
         $competition2->delete();
 
         $this->artisan('role:purge');
 
-        $this->assertDatabaseHas('roles', ['name' => RolesHelper::competitionAdminName($competition1)]);
-        $this->assertDatabaseMissing('roles', ['name' => RolesHelper::competitionAdminName($competition2)]);
+        $this->assertDatabaseHas('roles', ['name' => RolesHelper::competitionAdmin($competition1)]);
+        $this->assertDatabaseMissing('roles', ['name' => RolesHelper::competitionAdmin($competition2)]);
 
         $user1->refresh();
         $user2->refresh();
         $user3->refresh();
 
-        $this->assertTrue($user1->hasRole(RolesHelper::competitionAdminName($competition1)));
-        $this->assertFalse($user2->hasRole(RolesHelper::competitionAdminName($competition2)));
-        $this->assertTrue($user3->hasRole(RolesHelper::competitionAdminName($competition1)));
-        $this->assertFalse($user3->hasRole(RolesHelper::competitionAdminName($competition2)));
+        $this->assertTrue($user1->hasRole(RolesHelper::competitionAdmin($competition1)));
+        $this->assertFalse($user2->hasRole(RolesHelper::competitionAdmin($competition2)));
+        $this->assertTrue($user3->hasRole(RolesHelper::competitionAdmin($competition1)));
+        $this->assertFalse($user3->hasRole(RolesHelper::competitionAdmin($competition2)));
     }
 
     public function testItPurgesDivisionAdministratorRoles(): void
@@ -89,27 +89,27 @@ class PurgeRolesCommandTest extends TestCase
         $division2 = factory(Division::class)->create(['competition_id' => $competition->getId()]);
 
         /** @var User $user1 */
-        $user1 = factory(User::class)->create()->assignRole(RolesHelper::divisionAdminName($division1));
+        $user1 = factory(User::class)->create()->assignRole(RolesHelper::divisionAdmin($division1));
         /** @var User $user2 */
-        $user2 = factory(User::class)->create()->assignRole(RolesHelper::divisionAdminName($division2));
+        $user2 = factory(User::class)->create()->assignRole(RolesHelper::divisionAdmin($division2));
         /** @var User $user3 */
-        $user3 = factory(User::class)->create()->assignRole(RolesHelper::divisionAdminName($division1), RolesHelper::divisionAdminName($division2));
+        $user3 = factory(User::class)->create()->assignRole(RolesHelper::divisionAdmin($division1), RolesHelper::divisionAdmin($division2));
 
         $division2->delete();
 
         $this->artisan('role:purge');
 
-        $this->assertDatabaseHas('roles', ['name' => RolesHelper::divisionAdminName($division1)]);
-        $this->assertDatabaseMissing('roles', ['name' => RolesHelper::divisionAdminName($division2)]);
+        $this->assertDatabaseHas('roles', ['name' => RolesHelper::divisionAdmin($division1)]);
+        $this->assertDatabaseMissing('roles', ['name' => RolesHelper::divisionAdmin($division2)]);
 
         $user1->refresh();
         $user2->refresh();
         $user3->refresh();
 
-        $this->assertTrue($user1->hasRole(RolesHelper::divisionAdminName($division1)));
-        $this->assertFalse($user2->hasRole(RolesHelper::divisionAdminName($division2)));
-        $this->assertTrue($user3->hasRole(RolesHelper::divisionAdminName($division1)));
-        $this->assertFalse($user3->hasRole(RolesHelper::divisionAdminName($division2)));
+        $this->assertTrue($user1->hasRole(RolesHelper::divisionAdmin($division1)));
+        $this->assertFalse($user2->hasRole(RolesHelper::divisionAdmin($division2)));
+        $this->assertTrue($user3->hasRole(RolesHelper::divisionAdmin($division1)));
+        $this->assertFalse($user3->hasRole(RolesHelper::divisionAdmin($division2)));
     }
 
     public function testItPurgesClubSecretariesRoles(): void
@@ -120,29 +120,29 @@ class PurgeRolesCommandTest extends TestCase
         $club2 = aClub()->build();
 
         /** @var User $user1 */
-        $user1 = factory(User::class)->create()->assignRole(RolesHelper::clubSecretaryName($club1));
+        $user1 = factory(User::class)->create()->assignRole(RolesHelper::clubSecretary($club1));
         /** @var User $user2 */
-        $user2 = factory(User::class)->create()->assignRole(RolesHelper::clubSecretaryName($club2));
+        $user2 = factory(User::class)->create()->assignRole(RolesHelper::clubSecretary($club2));
         /** @var User $user3 */
         $user3 = factory(User::class)->create()->assignRole(
-            RolesHelper::clubSecretaryName($club1),
-            RolesHelper::clubSecretaryName($club2));
+            RolesHelper::clubSecretary($club1),
+            RolesHelper::clubSecretary($club2));
 
         $club2->delete();
 
         $this->artisan('role:purge');
 
-        $this->assertDatabaseHas('roles', ['name' => RolesHelper::clubSecretaryName($club1)]);
-        $this->assertDatabaseMissing('roles', ['name' => RolesHelper::clubSecretaryName($club2)]);
+        $this->assertDatabaseHas('roles', ['name' => RolesHelper::clubSecretary($club1)]);
+        $this->assertDatabaseMissing('roles', ['name' => RolesHelper::clubSecretary($club2)]);
 
         $user1->refresh();
         $user2->refresh();
         $user3->refresh();
 
-        $this->assertTrue($user1->hasRole(RolesHelper::clubSecretaryName($club1)));
-        $this->assertFalse($user2->hasRole(RolesHelper::clubSecretaryName($club2)));
-        $this->assertTrue($user3->hasRole(RolesHelper::clubSecretaryName($club1)));
-        $this->assertFalse($user3->hasRole(RolesHelper::clubSecretaryName($club2)));
+        $this->assertTrue($user1->hasRole(RolesHelper::clubSecretary($club1)));
+        $this->assertFalse($user2->hasRole(RolesHelper::clubSecretary($club2)));
+        $this->assertTrue($user3->hasRole(RolesHelper::clubSecretary($club1)));
+        $this->assertFalse($user3->hasRole(RolesHelper::clubSecretary($club2)));
     }
 
     public function testItPurgesTeamSecretaryRoles(): void
@@ -156,29 +156,29 @@ class PurgeRolesCommandTest extends TestCase
         $team2 = aTeam()->inClub($club)->build();
 
         /** @var User $user1 */
-        $user1 = factory(User::class)->create()->assignRole(RolesHelper::teamSecretaryName($team1));
+        $user1 = factory(User::class)->create()->assignRole(RolesHelper::teamSecretary($team1));
         /** @var User $user2 */
-        $user2 = factory(User::class)->create()->assignRole(RolesHelper::teamSecretaryName($team2));
+        $user2 = factory(User::class)->create()->assignRole(RolesHelper::teamSecretary($team2));
         /** @var User $user3 */
         $user3 = factory(User::class)->create()->assignRole(
-            RolesHelper::teamSecretaryName($team1),
-            RolesHelper::teamSecretaryName($team2)
+            RolesHelper::teamSecretary($team1),
+            RolesHelper::teamSecretary($team2)
         );
 
         $team2->delete();
 
         $this->artisan('role:purge');
 
-        $this->assertDatabaseHas('roles', ['name' => RolesHelper::teamSecretaryName($team1)]);
-        $this->assertDatabaseMissing('roles', ['name' => RolesHelper::teamSecretaryName($team2)]);
+        $this->assertDatabaseHas('roles', ['name' => RolesHelper::teamSecretary($team1)]);
+        $this->assertDatabaseMissing('roles', ['name' => RolesHelper::teamSecretary($team2)]);
 
         $user1->refresh();
         $user2->refresh();
         $user3->refresh();
 
-        $this->assertTrue($user1->hasRole(RolesHelper::teamSecretaryName($team1)));
-        $this->assertFalse($user2->hasRole(RolesHelper::teamSecretaryName($team2)));
-        $this->assertTrue($user3->hasRole(RolesHelper::teamSecretaryName($team1)));
-        $this->assertFalse($user3->hasRole(RolesHelper::teamSecretaryName($team2)));
+        $this->assertTrue($user1->hasRole(RolesHelper::teamSecretary($team1)));
+        $this->assertFalse($user2->hasRole(RolesHelper::teamSecretary($team2)));
+        $this->assertTrue($user3->hasRole(RolesHelper::teamSecretary($team1)));
+        $this->assertFalse($user3->hasRole(RolesHelper::teamSecretary($team2)));
     }
 }
