@@ -35,6 +35,11 @@ final class PermissionsHelper
         return "add-competition-in-season-{$season->getId()}";
     }
 
+    final public static function viewCompetition(Competition $competition): string
+    {
+        return "view-competition-{$competition->getId()}";
+    }
+
     final public static function editCompetition(Competition $competition): string
     {
         return "edit-competition-{$competition->getId()}";
@@ -43,11 +48,6 @@ final class PermissionsHelper
     final public static function deleteCompetition(Competition $competition): string
     {
         return "delete-competition-{$competition->getId()}";
-    }
-
-    final public static function viewDivisions(Competition $competition): string
-    {
-        return "view-divisions-in-competition-{$competition->getId()}";
     }
 
     final public static function addDivision(Competition $competition): string

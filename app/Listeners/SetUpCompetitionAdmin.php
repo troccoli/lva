@@ -23,18 +23,18 @@ class SetUpCompetitionAdmin
         /** @var Role $competitionAdminRole */
         $competitionAdminRole = Role::findByName(RolesHelper::competitionAdmin($competition));
         $competitionAdminRole->givePermissionTo([
+            PermissionsHelper::viewCompetition($competition),
             PermissionsHelper::editCompetition($competition),
             PermissionsHelper::addDivision($competition),
-            PermissionsHelper::viewDivisions($competition),
         ]);
 
         /** @var Role $seasonAdminRole */
         $seasonAdminRole = Role::findByName(RolesHelper::seasonAdmin($competition->getSeason()));
         $seasonAdminRole->givePermissionTo([
+            PermissionsHelper::viewCompetition($competition),
             PermissionsHelper::editCompetition($competition),
             PermissionsHelper::deleteCompetition($competition),
             PermissionsHelper::addDivision($competition),
-            PermissionsHelper::viewDivisions($competition),
         ]);
     }
 }

@@ -22,10 +22,10 @@ class CreateCompetitionPermissions
     public function handle()
     {
         collect([
+            PermissionsHelper::viewCompetition($this->competition),
             PermissionsHelper::editCompetition($this->competition),
             PermissionsHelper::deleteCompetition($this->competition),
             PermissionsHelper::addDivision($this->competition),
-            PermissionsHelper::viewDivisions($this->competition),
         ])->each(function (string $permission): void {
             Permission::create(['name' => $permission]);
         });
