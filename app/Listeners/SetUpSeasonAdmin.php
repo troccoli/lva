@@ -23,9 +23,9 @@ class SetUpSeasonAdmin
         /** @var Role $role */
         $role = Role::findByName(RolesHelper::seasonAdmin($season));
         $role->givePermissionTo([
+            PermissionsHelper::viewSeason($season),
             PermissionsHelper::editSeason($season),
             PermissionsHelper::addCompetition($season),
-            PermissionsHelper::viewCompetitions($season),
         ]);
     }
 }

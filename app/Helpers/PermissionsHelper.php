@@ -15,6 +15,11 @@ final class PermissionsHelper
         return "add-season";
     }
 
+    final public static function viewSeason(Season $season): string
+    {
+        return "view-season-{$season->getId()}";
+    }
+
     final public static function editSeason(Season $season): string
     {
         return "edit-season-{$season->getId()}";
@@ -23,11 +28,6 @@ final class PermissionsHelper
     final public static function deleteSeason(Season $season): string
     {
         return "delete-season-{$season->getId()}";
-    }
-
-    final public static function viewCompetitions(Season $season): string
-    {
-        return "view-competitions-in-season-{$season->getId()}";
     }
 
     final public static function addCompetition(Season $season): string
