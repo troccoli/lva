@@ -21,6 +21,6 @@ class CreateCompetitionAdminRole
 
     public function handle(): void
     {
-        Role::create(['name' => RolesHelper::competitionAdminName($this->competition)]);
+        Role::create(['name' => RolesHelper::competitionAdmin($this->competition)]);
     }
 }

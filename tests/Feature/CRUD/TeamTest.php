@@ -130,7 +130,7 @@ class TeamTest extends TestCase
         /** @var Team $team */
         $team = aTeam()->inClub($club)->buildWithoutSaving();
 
-        $this->actingAs(factory(User::class)->create()->assignRole(RolesHelper::clubSecretaryName($club)));
+        $this->actingAs(factory(User::class)->create()->assignRole(RolesHelper::clubSecretary($club)));
 
         $this->get("/clubs/$clubId/teams")
             ->assertOk();
@@ -164,7 +164,7 @@ class TeamTest extends TestCase
         $team = aTeam()->inClub($club)->build();
         $teamId = $team->getId();
 
-        $this->actingAs(factory(User::class)->create()->assignRole(RolesHelper::teamSecretaryName($team)));
+        $this->actingAs(factory(User::class)->create()->assignRole(RolesHelper::teamSecretary($team)));
 
         $this->get("/clubs/$clubId/teams")
             ->assertOk();

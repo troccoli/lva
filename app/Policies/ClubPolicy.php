@@ -24,7 +24,7 @@ class ClubPolicy
 
     public function update(User $user, Club $club): bool
     {
-        return $user->hasRole(RolesHelper::clubSecretaryName($club));
+        return $user->hasRole(RolesHelper::clubSecretary($club));
     }
 
     public function delete(User $user, Club $club): bool

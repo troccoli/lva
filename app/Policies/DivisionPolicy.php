@@ -15,11 +15,11 @@ class DivisionPolicy
 
     public function viewAny(User $user, Competition $competition): bool
     {
-        if ($user->hasRole(RolesHelper::seasonAdminName($competition->getSeason()))) {
+        if ($user->hasRole(RolesHelper::seasonAdmin($competition->getSeason()))) {
             return true;
         }
 
-        if ($user->hasRole(RolesHelper::competitionAdminName($competition))) {
+        if ($user->hasRole(RolesHelper::competitionAdmin($competition))) {
             return true;
         }
 
@@ -28,32 +28,32 @@ class DivisionPolicy
 
     public function create(User $user, Competition $competition): bool
     {
-        if ($user->hasRole(RolesHelper::seasonAdminName($competition->getSeason()))) {
+        if ($user->hasRole(RolesHelper::seasonAdmin($competition->getSeason()))) {
             return true;
         }
 
-        return $user->hasRole(RolesHelper::competitionAdminName($competition));
+        return $user->hasRole(RolesHelper::competitionAdmin($competition));
     }
 
     public function update(User $user, Division $division): bool
     {
-        if ($user->hasRole(RolesHelper::seasonAdminName($division->getCompetition()->getSeason()))) {
+        if ($user->hasRole(RolesHelper::seasonAdmin($division->getCompetition()->getSeason()))) {
             return true;
         }
 
-        if ($user->hasRole(RolesHelper::competitionAdminName($division->getCompetition()))) {
+        if ($user->hasRole(RolesHelper::competitionAdmin($division->getCompetition()))) {
             return true;
         }
 
-        return $user->hasRole(RolesHelper::divisionAdminName($division));
+        return $user->hasRole(RolesHelper::divisionAdmin($division));
     }
 
     public function delete(User $user, Division $division): bool
     {
-        if ($user->hasRole(RolesHelper::seasonAdminName($division->getCompetition()->getSeason()))) {
+        if ($user->hasRole(RolesHelper::seasonAdmin($division->getCompetition()->getSeason()))) {
             return true;
         }
 
-        return $user->hasRole(RolesHelper::competitionAdminName($division->getCompetition()));
+        return $user->hasRole(RolesHelper::competitionAdmin($division->getCompetition()));
     }
 }

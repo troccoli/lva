@@ -20,7 +20,7 @@ class SetUpClubSecretary
         CreateClubSecretaryRole::dispatchNow($club);
         CreateClubPermissions::dispatchNow($club);
 
-        $role = Role::findByName(RolesHelper::clubSecretaryName($club));
+        $role = Role::findByName(RolesHelper::clubSecretary($club));
         $role->givePermissionTo([
             "edit-club-$clubId",
             "add-teams-in-club-$clubId",

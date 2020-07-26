@@ -14,7 +14,7 @@ class TeamPolicy
 
     public function viewAny(User $user, Club $club): bool
     {
-        if ($user->hasRole(RolesHelper::clubSecretaryName($club))) {
+        if ($user->hasRole(RolesHelper::clubSecretary($club))) {
             return true;
         }
 
@@ -23,19 +23,19 @@ class TeamPolicy
 
     public function create(User $user, Club $club): bool
     {
-        return $user->hasRole(RolesHelper::clubSecretaryName($club));
+        return $user->hasRole(RolesHelper::clubSecretary($club));
     }
 
     public function update(User $user, Team $team): bool
     {
         return $user->hasAnyRole(
-            RolesHelper::clubSecretaryName($team->getClub()),
-            RolesHelper::teamSecretaryName($team)
+            RolesHelper::clubSecretary($team->getClub()),
+            RolesHelper::teamSecretary($team)
         );
     }
 
     public function delete(User $user, Team $team): bool
     {
-        return $user->hasRole(RolesHelper::clubSecretaryName($team->getClub()));
+        return $user->hasRole(RolesHelper::clubSecretary($team->getClub()));
     }
 }

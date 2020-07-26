@@ -21,7 +21,7 @@ class SetUpDivisionAdmin
         CreateDivisionPermissions::dispatchNow($division);
 
         /** @var Role $divisionAdminRole */
-        $divisionAdminRole = Role::findByName(RolesHelper::divisionAdminName($division));
+        $divisionAdminRole = Role::findByName(RolesHelper::divisionAdmin($division));
         $divisionAdminRole->givePermissionTo([
             "edit-division-$divisionId",
             "add-fixtures-in-division-$divisionId",
@@ -30,7 +30,7 @@ class SetUpDivisionAdmin
             "view-fixtures-in-division-$divisionId",
         ]);
 
-        $competitionAdminRole = Role::findByName(RolesHelper::competitionAdminName($division->getCompetition()));
+        $competitionAdminRole = Role::findByName(RolesHelper::competitionAdmin($division->getCompetition()));
         $competitionAdminRole->givePermissionTo([
             "edit-division-$divisionId",
             "delete-division-$divisionId",
@@ -40,7 +40,7 @@ class SetUpDivisionAdmin
             "view-fixtures-in-division-$divisionId",
         ]);
 
-        $seasonAdminRole = Role::findByName(RolesHelper::seasonAdminName($division->getCompetition()->getSeason()));
+        $seasonAdminRole = Role::findByName(RolesHelper::seasonAdmin($division->getCompetition()->getSeason()));
         $seasonAdminRole->givePermissionTo([
             "edit-division-$divisionId",
             "delete-division-$divisionId",

@@ -21,12 +21,12 @@ class SetUpTeamSecretary
         CreateTeamPermissions::dispatchNow($team);
 
         /** @var Role $teamSecretaryRole */
-        $teamSecretaryRole = Role::findByName(RolesHelper::teamSecretaryName($team));
+        $teamSecretaryRole = Role::findByName(RolesHelper::teamSecretary($team));
         $teamSecretaryRole->givePermissionTo([
             "edit-team-$teamId",
         ]);
 
-        $clubSecretaryRole = Role::findByName(RolesHelper::clubSecretaryName($team->getClub()));
+        $clubSecretaryRole = Role::findByName(RolesHelper::clubSecretary($team->getClub()));
         $clubSecretaryRole->givePermissionTo([
             "edit-team-$teamId",
             "delete-team-$teamId",

@@ -37,7 +37,7 @@ class SeasonCreatedTest extends TestCase
 
         /** @var User $user */
         $user = factory(User::class)->create();
-        $user->assignRole(RolesHelper::seasonAdminName($season));
+        $user->assignRole(RolesHelper::seasonAdmin($season));
 
         $this->assertUserCan($user, "edit-season-$seasonId")
             ->assertUserCan($user, "add-competitions-in-season-$seasonId")

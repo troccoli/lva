@@ -31,7 +31,7 @@ class TeamTest extends TestCase
     {
         /** @var Team $team */
         $team = factory(Team::class)->create();
-        $this->assertEquals("Team {$team->getId()} Secretary", RolesHelper::teamSecretaryName($team));
+        $this->assertEquals("Team {$team->getId()} Secretary", RolesHelper::teamSecretary($team));
     }
 
     public function testItGetsTheClub(): void

@@ -55,7 +55,7 @@ class FixtureTest extends TestCase
         $season = factory(Season::class)->create();
 
         $this
-            ->actingAs(factory(User::class)->create()->assignRole(RolesHelper::seasonAdminName($season)))
+            ->actingAs(factory(User::class)->create()->assignRole(RolesHelper::seasonAdmin($season)))
             ->get('/fixtures')
             ->assertOk();
     }
@@ -66,7 +66,7 @@ class FixtureTest extends TestCase
         $competition = factory(Competition::class)->create();
 
         $this
-            ->actingAs(factory(User::class)->create()->assignRole(RolesHelper::competitionAdminName($competition)))
+            ->actingAs(factory(User::class)->create()->assignRole(RolesHelper::competitionAdmin($competition)))
             ->get('/fixtures')
             ->assertOk();
     }
@@ -77,7 +77,7 @@ class FixtureTest extends TestCase
         $division = factory(Division::class)->create();
 
         $this
-            ->actingAs(factory(User::class)->create()->assignRole(RolesHelper::divisionAdminName($division)))
+            ->actingAs(factory(User::class)->create()->assignRole(RolesHelper::divisionAdmin($division)))
             ->get('/fixtures')
             ->assertOk();
     }

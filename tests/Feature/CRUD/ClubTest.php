@@ -123,7 +123,7 @@ class ClubTest extends TestCase
         /** @var Club $club */
         $club = factory(Club::class)->create();
 
-        $this->be(factory(User::class)->create()->assignRole(RolesHelper::clubSecretaryName($club)));
+        $this->be(factory(User::class)->create()->assignRole(RolesHelper::clubSecretary($club)));
 
         $this->get('/clubs')
             ->assertOk();

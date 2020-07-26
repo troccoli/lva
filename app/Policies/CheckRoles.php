@@ -15,7 +15,7 @@ trait CheckRoles
     public function hasAnySeasonAdminRole(User $user): bool
     {
         return $user->hasRole(Season::all()->map(function (Season $season): string {
-            return RolesHelper::seasonAdminName($season);
+            return RolesHelper::seasonAdmin($season);
         })->toArray());
     }
 
@@ -26,7 +26,7 @@ trait CheckRoles
             : Competition::all();
 
         return $user->hasRole($competitions->map(function (Competition $competition): string {
-            return RolesHelper::competitionAdminName($competition);
+            return RolesHelper::competitionAdmin($competition);
         })->toArray());
     }
 
@@ -37,14 +37,14 @@ trait CheckRoles
             : Division::all();
 
         return $user->hasRole($divisions->map(function (Division $division): string {
-            return RolesHelper::divisionAdminName($division);
+            return RolesHelper::divisionAdmin($division);
         })->toArray());
     }
 
     public function hasAnyClubSecretaryRole(User $user): bool
     {
         return $user->hasRole(Club::all()->map(function (Club $club): string {
-            return RolesHelper::clubSecretaryName($club);
+            return RolesHelper::clubSecretary($club);
         })->toArray());
     }
 
@@ -55,7 +55,7 @@ trait CheckRoles
             : Team::all();
 
         return $user->hasRole($teams->map(function (Team $team): string {
-            return RolesHelper::teamSecretaryName($team);
+            return RolesHelper::teamSecretary($team);
         })->toArray());
     }
 }

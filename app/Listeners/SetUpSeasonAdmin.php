@@ -21,7 +21,7 @@ class SetUpSeasonAdmin
         CreateSeasonPermissions::dispatchNow($season);
 
         /** @var Role $role */
-        $role = Role::findByName(RolesHelper::seasonAdminName($season));
+        $role = Role::findByName(RolesHelper::seasonAdmin($season));
         $role->givePermissionTo([
             "edit-season-$seasonId",
             "add-competitions-in-season-$seasonId",

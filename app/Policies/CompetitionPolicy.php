@@ -14,7 +14,7 @@ class CompetitionPolicy
 
     public function viewAny(User $user, Season $season): bool
     {
-        if ($user->hasRole(RolesHelper::seasonAdminName($season))) {
+        if ($user->hasRole(RolesHelper::seasonAdmin($season))) {
             return true;
         }
 
@@ -27,16 +27,16 @@ class CompetitionPolicy
 
     public function create(User $user, Season $season): bool
     {
-        return $user->hasRole(RolesHelper::seasonAdminName($season));
+        return $user->hasRole(RolesHelper::seasonAdmin($season));
     }
 
     public function update(User $user, Competition $competition): bool
     {
-        if ($user->hasRole(RolesHelper::seasonAdminName($competition->getSeason()))) {
+        if ($user->hasRole(RolesHelper::seasonAdmin($competition->getSeason()))) {
             return true;
         }
 
-        if ($user->hasRole(RolesHelper::competitionAdminName($competition))) {
+        if ($user->hasRole(RolesHelper::competitionAdmin($competition))) {
             return true;
         }
 
@@ -45,6 +45,6 @@ class CompetitionPolicy
 
     public function delete(User $user, Competition $competition): bool
     {
-        return $user->hasRole(RolesHelper::seasonAdminName($competition->getSeason()));
+        return $user->hasRole(RolesHelper::seasonAdmin($competition->getSeason()));
     }
 }

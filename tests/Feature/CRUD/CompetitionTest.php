@@ -127,7 +127,7 @@ class CompetitionTest extends TestCase
         $competition = factory(Competition::class)->create(['season_id' => $seasonId]);
         $competitionId = $competition->getId();
 
-        $this->actingAs(factory(User::class)->create()->assignRole(RolesHelper::competitionAdminName($competition)));
+        $this->actingAs(factory(User::class)->create()->assignRole(RolesHelper::competitionAdmin($competition)));
 
         $this->get("/seasons/$seasonId/competitions")
             ->assertOk();
@@ -190,7 +190,7 @@ class CompetitionTest extends TestCase
         $competition = factory(Competition::class)->make();
         $seasonId = $competition->getSeason()->getId();
 
-        $this->actingAs(factory(User::class)->create()->assignRole(RolesHelper::seasonAdminName($competition->getSeason())));
+        $this->actingAs(factory(User::class)->create()->assignRole(RolesHelper::seasonAdmin($competition->getSeason())));
 
         $this->get("/seasons/$seasonId/competitions")
             ->assertOk();

@@ -16,7 +16,7 @@ class ClubCreatedTest extends TestCase
     {
         $club = factory(Club::class)->create();
 
-        $this->assertDatabaseHas('roles', ['name' => RolesHelper::clubSecretaryName($club)]);
+        $this->assertDatabaseHas('roles', ['name' => RolesHelper::clubSecretary($club)]);
     }
 
     public function testClubPermissionsAreCreated(): void
@@ -37,7 +37,7 @@ class ClubCreatedTest extends TestCase
 
         /** @var User $user */
         $user = factory(User::class)->create();
-        $user->assignRole(RolesHelper::clubSecretaryName($club));
+        $user->assignRole(RolesHelper::clubSecretary($club));
 
         $this->assertUserCan($user, "edit-club-$clubId")
             ->assertUserCan($user, "add-teams-in-club-$clubId")

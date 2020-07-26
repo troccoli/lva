@@ -21,6 +21,6 @@ class CreateClubSecretaryRole
 
     public function handle(): void
     {
-        Role::create(['name' => RolesHelper::clubSecretaryName($this->club)]);
+        Role::create(['name' => RolesHelper::clubSecretary($this->club)]);
     }
 }

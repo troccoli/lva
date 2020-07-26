@@ -21,7 +21,7 @@ final class RolesHelper
     private const CLUB_SECRETARY_TEMPLATE = 'Club %s Secretary';
     private const TEAM_SECRETARY_TEMPLATE = 'Team %s Secretary';
 
-    final public static function seasonAdminName(Season $season): string
+    final public static function seasonAdmin(Season $season): string
     {
         return sprintf(self::SEASON_ADMIN_TEMPLATE, $season->getId());
     }
@@ -40,7 +40,7 @@ final class RolesHelper
         return null;
     }
 
-    final public static function competitionAdminName(Competition $competition): string
+    final public static function competitionAdmin(Competition $competition): string
     {
         return sprintf(self::COMPETITION_ADMIN_TEMPLATE, $competition->getId());
     }
@@ -59,7 +59,7 @@ final class RolesHelper
         return null;
     }
 
-    final public static function divisionAdminName(Division $competition): string
+    final public static function divisionAdmin(Division $competition): string
     {
         return sprintf(self::DIVISION_ADMIN_TEMPLATE, $competition->getId());
     }
@@ -78,7 +78,7 @@ final class RolesHelper
         return null;
     }
 
-    final public static function clubSecretaryName(Club $club): string
+    final public static function clubSecretary(Club $club): string
     {
         return sprintf(self::CLUB_SECRETARY_TEMPLATE, $club->getId());
     }
@@ -97,7 +97,7 @@ final class RolesHelper
         return null;
     }
 
-    final public static function teamSecretaryName(Team $team): string
+    final public static function teamSecretary(Team $team): string
     {
         return sprintf(self::TEAM_SECRETARY_TEMPLATE, $team->getId());
     }

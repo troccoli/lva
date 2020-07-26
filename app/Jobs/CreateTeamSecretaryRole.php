@@ -21,6 +21,6 @@ class CreateTeamSecretaryRole
 
     public function handle(): void
     {
-        Role::create(['name' => RolesHelper::teamSecretaryName($this->team)]);
+        Role::create(['name' => RolesHelper::teamSecretary($this->team)]);
     }
 }

@@ -44,7 +44,7 @@ class SeasonPolicy
 
     public function update(User $user, Season $season): bool
     {
-        return $user->hasRole(RolesHelper::seasonAdminName($season));
+        return $user->hasRole(RolesHelper::seasonAdmin($season));
     }
 
     public function delete(User $user, Season $season): bool

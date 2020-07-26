@@ -17,7 +17,7 @@ class TeamCreatedTest extends TestCase
         /** @var Team $team */
         $team = factory(Team::class)->create();
 
-        $this->assertDatabaseHas('roles', ['name' => RolesHelper::teamSecretaryName($team)]);
+        $this->assertDatabaseHas('roles', ['name' => RolesHelper::teamSecretary($team)]);
     }
 
     public function testTeamPermissionsAreCreated(): void
@@ -36,14 +36,14 @@ class TeamCreatedTest extends TestCase
 
         /** @var User $teamSecretary */
         $teamSecretary = factory(User::class)->create();
-        $teamSecretary->assignRole(RolesHelper::teamSecretaryName($team));
+        $teamSecretary->assignRole(RolesHelper::teamSecretary($team));
 
         $this->assertUserCan($teamSecretary, "edit-team-$teamId");
         $this->assertUserCannot($teamSecretary, "delete-team-$teamId");
 
         /** @var User $clubSecretary */
         $clubSecretary = factory(User::class)->create();
-        $clubSecretary->assignRole(RolesHelper::clubSecretaryName($team->getClub()));
+        $clubSecretary->assignRole(RolesHelper::clubSecretary($team->getClub()));
 
         $this->assertUserCan($clubSecretary, "edit-team-$teamId");
         $this->assertUserCan($clubSecretary, "delete-team-$teamId");
