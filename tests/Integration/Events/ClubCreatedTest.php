@@ -4,7 +4,6 @@ namespace Tests\Integration\Events;
 
 use App\Helpers\RolesHelper;
 use App\Models\Club;
-use App\Models\User;
 use Tests\Concerns\InteractsWithPermissions;
 use Tests\TestCase;
 
@@ -21,28 +20,27 @@ class ClubCreatedTest extends TestCase
 
     public function testClubPermissionsAreCreated(): void
     {
-        $club = aClub()->build();
+        $clubId = aClub()->build()->getId();
 
-        $this->assertDatabaseHas('permissions', ['name' => "edit-club-{$club->getId()}"]);
-        $this->assertDatabaseHas('permissions', ['name' => "delete-club-{$club->getId()}"]);
-        $this->assertDatabaseHas('permissions', ['name' => "add-team-in-club-{$club->getId()}"]);
-        $this->assertDatabaseHas('permissions', ['name' => "view-teams-in-club-{$club->getId()}"]);
+        $this->assertDatabaseHas('permissions', ['name' => "view-club-$clubId"]);
+        $this->assertDatabaseHas('permissions', ['name' => "edit-club-$clubId"]);
+        $this->assertDatabaseHas('permissions', ['name' => "delete-club-$clubId"]);
+        $this->assertDatabaseHas('permissions', ['name' => "add-team-in-club-$clubId"]);
     }
 
     public function testClubSecretaryRoleHasTheCorrectPermissions(): void
     {
-        /** @var Club $club */
-        $club = factory(Club::class)->create();
+        $club = aClub()->build();
         $clubId = $club->getId();
 
-        /** @var User $user */
-        $user = factory(User::class)->create();
-        $user->assignRole(RolesHelper::clubSecretary($club));
+        $user = $this->userWithRole(RolesHelper::clubSecretary($club));
 
-        $this->assertUserCan($user, "edit-club-$clubId")
+        $this->assertUserCan($user, "view-club-$clubId")
+            ->assertUserCan($user, "edit-club-$clubId")
             ->assertUserCan($user, "add-team-in-club-$clubId")
-            ->assertUserCan($user, "view-teams-in-club-$clubId");
+            ->assertUserCannot($user, "delete-club-$clubId");
 
-        $this->assertUserCannot($user, "delete-club-$clubId");
+        $this->assertUserCan($this->siteAdmin, "add-club");
+        $this->assertUserCan($this->siteAdmin, "delete-club-$club");
     }
 }

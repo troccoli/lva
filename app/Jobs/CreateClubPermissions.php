@@ -22,10 +22,10 @@ class CreateClubPermissions
     public function handle()
     {
         collect([
+            PermissionsHelper::viewClub($this->club),
             PermissionsHelper::editClub($this->club),
             PermissionsHelper::deleteClub($this->club),
             PermissionsHelper::addTeam($this->club),
-            PermissionsHelper::viewTeams($this->club),
         ])->each(function (string $permission): void {
             Permission::create(['name' => $permission]);
         });

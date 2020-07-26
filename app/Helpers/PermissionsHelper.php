@@ -90,6 +90,16 @@ final class PermissionsHelper
         return "delete-fixtures-in-division-{$division->getId()}";
     }
 
+    final public static function addClub(): string
+    {
+        return "add-club";
+    }
+
+    final public static function viewClub(Club $club): string
+    {
+        return "view-club-{$club->getId()}";
+    }
+
     final public static function editClub(Club $club): string
     {
         return "edit-club-{$club->getId()}";
@@ -98,11 +108,6 @@ final class PermissionsHelper
     final public static function deleteClub(Club $club): string
     {
         return "delete-club-{$club->getId()}";
-    }
-
-    final public static function viewTeams(Club $club): string
-    {
-        return "view-teams-in-club-{$club->getId()}";
     }
 
     final public static function addTeam(Club $club): string

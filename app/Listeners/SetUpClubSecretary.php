@@ -22,9 +22,9 @@ class SetUpClubSecretary
 
         $role = Role::findByName(RolesHelper::clubSecretary($club));
         $role->givePermissionTo([
+            PermissionsHelper::viewClub($club),
             PermissionsHelper::editClub($club),
             PermissionsHelper::addTeam($club),
-            PermissionsHelper::viewTeams($club),
         ]);
     }
 }

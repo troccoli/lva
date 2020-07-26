@@ -16,6 +16,7 @@ class RolesAndPermissionsSeeder extends Seeder
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         Permission::create(['name' => PermissionsHelper::addSeason()]);
+        Permission::create(['name' => PermissionsHelper::addClub()]);
         Role::create(['name' => RolesHelper::SITE_ADMIN]);
         Role::create(['name' => RolesHelper::REF_ADMIN]);
     }
