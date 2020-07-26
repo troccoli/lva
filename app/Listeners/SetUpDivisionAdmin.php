@@ -23,6 +23,7 @@ class SetUpDivisionAdmin
         /** @var Role $divisionAdminRole */
         $divisionAdminRole = Role::findByName(RolesHelper::divisionAdmin($division));
         $divisionAdminRole->givePermissionTo([
+            PermissionsHelper::viewDivision($division),
             PermissionsHelper::editDivision($division),
             PermissionsHelper::addFixtures($division),
             PermissionsHelper::editFixtures($division),
@@ -32,6 +33,7 @@ class SetUpDivisionAdmin
 
         $competitionAdminRole = Role::findByName(RolesHelper::competitionAdmin($division->getCompetition()));
         $competitionAdminRole->givePermissionTo([
+            PermissionsHelper::viewDivision($division),
             PermissionsHelper::editDivision($division),
             PermissionsHelper::deleteDivision($division),
             PermissionsHelper::addFixtures($division),
@@ -42,6 +44,7 @@ class SetUpDivisionAdmin
 
         $seasonAdminRole = Role::findByName(RolesHelper::seasonAdmin($division->getCompetition()->getSeason()));
         $seasonAdminRole->givePermissionTo([
+            PermissionsHelper::viewDivision($division),
             PermissionsHelper::editDivision($division),
             PermissionsHelper::deleteDivision($division),
             PermissionsHelper::addFixtures($division),

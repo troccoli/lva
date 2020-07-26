@@ -55,6 +55,11 @@ final class PermissionsHelper
         return "add-division-in-competition-{$competition->getId()}";
     }
 
+    final public static function viewDivision(Division $division): string
+    {
+        return "view-division-{$division->getId()}";
+    }
+
     final public static function editDivision(Division $division): string
     {
         return "edit-division-{$division->getId()}";

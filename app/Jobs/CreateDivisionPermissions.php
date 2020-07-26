@@ -22,6 +22,7 @@ class CreateDivisionPermissions
     public function handle()
     {
         collect([
+            PermissionsHelper::viewDivision($this->division),
             PermissionsHelper::editDivision($this->division),
             PermissionsHelper::deleteDivision($this->division),
             PermissionsHelper::addFixtures($this->division),
