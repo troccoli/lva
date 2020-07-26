@@ -22,7 +22,6 @@ abstract class TestCase extends BaseTestCase
         parent::setUp();
 
         Role::create(['name' => RolesHelper::SITE_ADMIN]);
-        Permission::create(['name' => 'view-seasons']);
 
         $this->siteAdmin = $this->userWithRole(RolesHelper::SITE_ADMIN);
     }

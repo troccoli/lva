@@ -16,9 +16,7 @@ class RolesAndPermissionsSeeder extends Seeder
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         /* todo: this permission and roles are redundant and will be removed */
-        Permission::create(['name' => 'view-seasons']);
-        Role::create(['name' => 'League Administrator'])
-            ->givePermissionTo('view-seasons');
+        Role::create(['name' => 'League Administrator']);
         Role::create(['name' => 'Division Administrator']);
         /* ------ */
 
