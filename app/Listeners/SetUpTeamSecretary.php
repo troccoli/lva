@@ -25,6 +25,7 @@ class SetUpTeamSecretary
         $teamSecretaryRole->givePermissionTo([
             PermissionsHelper::viewTeam($team),
             PermissionsHelper::editTeam($team),
+            PermissionsHelper::viewClub($team->getClub()),
         ]);
 
         $clubSecretaryRole = Role::findByName(RolesHelper::clubSecretary($team->getClub()));

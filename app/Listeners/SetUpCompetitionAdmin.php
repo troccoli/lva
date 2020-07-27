@@ -26,6 +26,7 @@ class SetUpCompetitionAdmin
             PermissionsHelper::viewCompetition($competition),
             PermissionsHelper::editCompetition($competition),
             PermissionsHelper::addDivision($competition),
+            PermissionsHelper::viewSeason($competition->getSeason()),
         ]);
 
         /** @var Role $seasonAdminRole */
