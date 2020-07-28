@@ -33,7 +33,8 @@ class CompetitionController extends Controller
     {
         $this->authorize('create', [Competition::class, $season]);
 
-        $this->validate($request,
+        $this->validate(
+            $request,
             [
                 'name' => [
                     'required',
@@ -41,10 +42,12 @@ class CompetitionController extends Controller
                         return $query->where('season_id', $season->getId());
                     }),
                 ],
-            ], [
+            ],
+            [
                 'name.required' => __('The name is required.'),
                 'name.unique'   => __('The competition already exists in this season.'),
-            ]);
+            ]
+        );
 
         Competition::create([
             'season_id' => $season->getId(),
@@ -67,21 +70,26 @@ class CompetitionController extends Controller
     {
         $this->authorize('update', $competition);
 
-        $this->validate($request,
+        $this->validate(
+            $request,
             [
                 'name' => [
                     'required',
                     Rule::unique('competitions')
                         ->ignore($competition)
                         ->where(function (Builder $query) use ($competition): Builder {
-                            return $query->where('season_id', $competition->getSeason()->getId()
+                            return $query->where(
+                                'season_id',
+                                $competition->getSeason()->getId()
                             );
                         }),
                 ],
-            ], [
+            ],
+            [
                 'name.required' => __('The name is required.'),
                 'name.unique'   => __('The competition already exists in this season.'),
-            ]);
+            ]
+        );
 
         $competition->update($request->only('name'));
 

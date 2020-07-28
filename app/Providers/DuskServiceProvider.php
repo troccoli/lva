@@ -31,7 +31,8 @@ class DuskServiceProvider extends ServiceProvider
             $actual = $this->resolver->findOrFail($selector)->getAttribute($attribute);
 
             PHPUnit::assertEquals(
-                $value, $actual,
+                $value,
+                $actual,
                 "Expected attribute [{$attribute}] does not equal actual attribute [{$actual}]."
             );
 

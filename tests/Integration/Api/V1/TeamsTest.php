@@ -168,8 +168,10 @@ class TeamsTest extends ApiTestCase
                                 ], $division);
                                 break;
                             default:
-                                $this->assertTrue(false,
-                                    "Unexpected division {$division['id]']} in team {$team['id']}");
+                                $this->assertTrue(
+                                    false,
+                                    "Unexpected division {$division['id]']} in team {$team['id']}"
+                                );
                                 break;
                         }
                     }
@@ -196,8 +198,10 @@ class TeamsTest extends ApiTestCase
                                 ], $division);
                                 break;
                             default:
-                                $this->assertTrue(false,
-                                    "Unexpected division {$division['id]']} in team {$team['id']}");
+                                $this->assertTrue(
+                                    false,
+                                    "Unexpected division {$division['id]']} in team {$team['id']}"
+                                );
                                 break;
                         }
                     }

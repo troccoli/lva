@@ -29,16 +29,19 @@ class ClubController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $this->validate($request,
+        $this->validate(
+            $request,
             [
                 'name' => 'required|unique:clubs',
                 'venue_id' => 'present|nullable|exists:venues,id'
-            ], [
+            ],
+            [
                 'name.required' => __('The name is required.'),
                 'name.unique'   => __('The club already exists.'),
                 'venue_id.present' => __('The venue is required.'),
                 'venue_id.exists' => __('The venue does not exist.'),
-            ]);
+            ]
+        );
 
         Club::create($request->only('name', 'venue_id'));
 
@@ -54,16 +57,19 @@ class ClubController extends Controller
 
     public function update(Request $request, Club $club): RedirectResponse
     {
-        $this->validate($request,
+        $this->validate(
+            $request,
             [
                 'name' => 'required|unique:clubs,name,' . $club->getId(),
                 'venue_id' => 'present|nullable|exists:venues,id',
-            ], [
+            ],
+            [
                 'name.required' => __('The name is required.'),
                 'name.unique'   => __('The club already exists.'),
                 'venue_id.present' => __('The venue is required.'),
                 'venue_id.exists' => __('The venue does not exist.'),
-            ]);
+            ]
+        );
 
         $club->update($request->only('name', 'venue_id'));
 

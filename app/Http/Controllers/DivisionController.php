@@ -32,7 +32,8 @@ class DivisionController extends Controller
     {
         $this->authorize('create', [Division::class, $competition]);
 
-        $this->validate($request,
+        $this->validate(
+            $request,
             [
                 'competition_id' => 'required|exists:competitions,id',
                 'name'           => [
@@ -49,14 +50,16 @@ class DivisionController extends Controller
                         return $query->where('competition_id', $competition->getId());
                     }),
                 ],
-            ], [
+            ],
+            [
                 'name.required'          => __('The name is required.'),
                 'name.unique'            => __('The division already exists in this competition.'),
                 'display_order.required' => __('The order is required.'),
                 'display_order.integer'  => __('The order must be a positive number.'),
                 'display_order.min'      => __('The order must be a positive number.'),
                 'display_order.unique'   => __('The order is already used for another division.'),
-            ]);
+            ]
+        );
 
         Division::create($request->only('competition_id', 'name', 'display_order'));
 
@@ -76,7 +79,8 @@ class DivisionController extends Controller
     {
         $this->authorize('update', $division);
 
-        $this->validate($request,
+        $this->validate(
+            $request,
             [
                 'name'          => [
                     'required',
@@ -104,7 +108,8 @@ class DivisionController extends Controller
                 'display_order.integer'  => __('The order must be a positive number.'),
                 'display_order.min'      => __('The order must be a positive number.'),
                 'display_order.unique'   => __('The order is already used for another division.'),
-            ]);
+            ]
+        );
 
         $division->update($request->only('name', 'display_order'));
 

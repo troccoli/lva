@@ -291,8 +291,10 @@ class TeamTest extends TestCase
             'name'    => 'London Scarlets',
         ]);
 
-        $this->put("/clubs/$clubId/teams/" . $team->getId(),
-            ['name' => 'London Bees', 'venue_id' => $sobellSC->getId()])
+        $this->put(
+            "/clubs/$clubId/teams/" . $team->getId(),
+            ['name' => 'London Bees', 'venue_id' => $sobellSC->getId()]
+        )
             ->assertSessionHasNoErrors();
         $this->assertDatabaseHas('teams', [
             'club_id'  => $clubId,

@@ -26,13 +26,16 @@ class VenueController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $this->validate($request,
+        $this->validate(
+            $request,
             [
                 'name' => 'required|unique:venues',
-            ], [
+            ],
+            [
                 'name.required' => __('The name is required.'),
                 'name.unique'   => __('The venue already exists.'),
-            ]);
+            ]
+        );
 
         Venue::create($request->only('name'));
 
@@ -51,13 +54,16 @@ class VenueController extends Controller
 
     public function update(Request $request, Venue $venue): RedirectResponse
     {
-        $this->validate($request,
+        $this->validate(
+            $request,
             [
                 'name' => 'required|unique:venues,name,' . $venue->getId(),
-            ], [
+            ],
+            [
                 'name.required' => __('The name is required.'),
                 'name.unique'   => __('The venue already exists.'),
-            ]);
+            ]
+        );
 
         $venue->update($request->only('name'));
 
