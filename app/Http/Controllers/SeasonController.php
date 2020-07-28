@@ -26,14 +26,17 @@ class SeasonController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $this->validate($request,
+        $this->validate(
+            $request,
             [
                 'year' => 'required|integer|unique:seasons',
-            ], [
+            ],
+            [
                 'year.required' => __('The year is required.'),
                 'year.integer' => __('The year is not valid.'),
                 'year.unique' => __('The season already exists.'),
-            ]);
+            ]
+        );
 
         Season::create($request->only('year'));
 
@@ -47,14 +50,17 @@ class SeasonController extends Controller
 
     public function update(Request $request, Season $season): RedirectResponse
     {
-        $this->validate($request,
+        $this->validate(
+            $request,
             [
                 'year' => 'required|integer|unique:seasons,year,' . $season->getId(),
-            ], [
+            ],
+            [
                 'year.required' => __('The year is required.'),
                 'year.integer' => __('The year is not valid.'),
                 'year.unique' => __('The season already exists.'),
-            ]);
+            ]
+        );
 
         $season->update($request->only('year'));
 

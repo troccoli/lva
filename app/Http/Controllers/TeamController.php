@@ -35,7 +35,8 @@ class TeamController extends Controller
     {
         $this->authorize('create', [Team::class, $club]);
 
-        $this->validate($request,
+        $this->validate(
+            $request,
             [
                 'club_id' => 'required|exists:clubs,id',
                 'name' => [
@@ -45,12 +46,14 @@ class TeamController extends Controller
                     }),
                 ],
                 'venue_id' => 'present|nullable|exists:venues,id'
-            ], [
+            ],
+            [
                 'name.required' => __('The name is required.'),
                 'name.unique'   => __('The team already exists in this club.'),
                 'venue_id.present' => __('The venue is required.'),
                 'venue_id.exists' => __('The venue does not exist.'),
-            ]);
+            ]
+        );
 
         Team::create($request->only('club_id', 'name', 'venue_id'));
 
@@ -72,24 +75,29 @@ class TeamController extends Controller
     {
         $this->authorize('update', $team);
 
-        $this->validate($request,
+        $this->validate(
+            $request,
             [
                 'name' => [
                     'required',
                     Rule::unique('teams')
                         ->ignore($team)
                         ->where(function (Builder $query) use ($team): Builder {
-                            return $query->where('club_id', $team->getClub()->getId()
+                            return $query->where(
+                                'club_id',
+                                $team->getClub()->getId()
                             );
                         }),
                 ],
                 'venue_id' => 'present|nullable|exists:venues,id',
-            ], [
+            ],
+            [
                 'name.required' => __('The name is required.'),
                 'name.unique'   => __('The team already exists in this club.'),
                 'venue_id.present' => __('The venue is required.'),
                 'venue_id.exists' => __('The venue does not exist.'),
-            ]);
+            ]
+        );
 
         $team->update($request->only('name', 'venue_id'));
 

@@ -49,15 +49,21 @@ abstract class DuskTestCase extends BaseTestCase
 
         if (config('testing.use_selenium')) {
             return RemoteWebDriver::create(
-                'http://selenium:4444/wd/hub', DesiredCapabilities::chrome()->setCapability(
-                ChromeOptions::CAPABILITY, $options
-            ));
+                'http://selenium:4444/wd/hub',
+                DesiredCapabilities::chrome()->setCapability(
+                    ChromeOptions::CAPABILITY,
+                    $options
+                )
+            );
         }
 
         return RemoteWebDriver::create(
-            'http://localhost:9515', DesiredCapabilities::chrome()->setCapability(
-            ChromeOptions::CAPABILITY, $options
-        ));
+            'http://localhost:9515',
+            DesiredCapabilities::chrome()->setCapability(
+                ChromeOptions::CAPABILITY,
+                $options
+            )
+        );
     }
 
     public function browse(Closure $callback)

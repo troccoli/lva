@@ -126,7 +126,8 @@ class PurgeRolesCommandTest extends TestCase
         /** @var User $user3 */
         $user3 = factory(User::class)->create()->assignRole(
             RolesHelper::clubSecretary($club1),
-            RolesHelper::clubSecretary($club2));
+            RolesHelper::clubSecretary($club2)
+        );
 
         $club2->delete();
 

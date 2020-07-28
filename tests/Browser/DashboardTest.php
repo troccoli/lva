@@ -46,10 +46,14 @@ class DashboardTest extends DuskTestCase
             $browser->visit('/dashboard')
                 ->within('@raw-data-panel', function (Browser $panel): void {
                     $panel->assertSeeIn('.card-header', 'RAW DATA')
-                        ->assertSeeIn('.card-body',
-                            'From here you can access the raw data for your competitions, teams, venues, etc.')
-                        ->assertSeeIn('.card-body',
-                            'If you need to start a new season, or move teams between divisions, please use the')
+                        ->assertSeeIn(
+                            '.card-body',
+                            'From here you can access the raw data for your competitions, teams, venues, etc.'
+                        )
+                        ->assertSeeIn(
+                            '.card-body',
+                            'If you need to start a new season, or move teams between divisions, please use the'
+                        )
                         ->assertSeeIn('.card-body', 'Manage Data panel below');
                 });
 
