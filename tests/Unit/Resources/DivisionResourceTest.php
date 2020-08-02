@@ -10,6 +10,7 @@ use App\Models\Division;
 use Illuminate\Foundation\Testing\WithoutEvents;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\MissingValue;
+use Mockery;
 use Tests\Concerns\InteractsWithArrays;
 use Tests\TestCase;
 
@@ -17,12 +18,13 @@ class DivisionResourceTest extends TestCase
 {
     use InteractsWithArrays, WithoutEvents;
 
-    private $division;
+    private Division $division;
 
     protected function setUp(): void
     {
         parent::setUp();
 
+        /** @var Competition $competition */
         $competition = factory(Competition::class)->create();
         $this->division = factory(Division::class)->create([
             'name'           => 'DIV1BM',
@@ -34,7 +36,7 @@ class DivisionResourceTest extends TestCase
 
     public function testItReturnTheCorrectFields(): void
     {
-        $request = \Mockery::mock(Request::class, [
+        $request = Mockery::mock(Request::class, [
             'query' => [],
         ]);
 
@@ -54,7 +56,7 @@ class DivisionResourceTest extends TestCase
 
     public function testItReturnTheCorrectFieldsWhenCompetitionIsLoaded(): void
     {
-        $request = \Mockery::mock(Request::class, [
+        $request = Mockery::mock(Request::class, [
             'query' => ['competition'],
         ]);
 
@@ -74,7 +76,7 @@ class DivisionResourceTest extends TestCase
 
     public function testItReturnTheCorrectFieldsWhenTeamsAreLoaded(): void
     {
-        $request = \Mockery::mock(Request::class, [
+        $request = Mockery::mock(Request::class, [
             'query' => ['teams'],
         ]);
 

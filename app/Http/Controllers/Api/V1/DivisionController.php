@@ -2,30 +2,40 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Helpers\PermissionsHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DivisionResource;
 use App\Models\Competition;
 use App\Models\Division;
-use App\Models\Season;
+use App\Repositories\AccessibleDivisions;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
-use Illuminate\Support\Str;
 
 class DivisionController extends Controller
 {
-    public function all(Request $request, Competition $competition): ResourceCollection
+    private AccessibleDivisions $accessibleDivisions;
+
+    public function __construct(AccessibleDivisions $accessibleDivisions)
     {
-        $query = Division::query();
-
-        if ($request->has('competition')) {
-            $query->inCompetition(Competition::findOrFail($request->get('competition')));
-        }
-
-        return DivisionResource::collection($query->get());
+        $this->accessibleDivisions = $accessibleDivisions;
     }
 
-    public function get(Request $request, Division $division): DivisionResource
+    public function all(Request $request): ResourceCollection
     {
-        return new DivisionResource($division);
+        if ($request->has('competition')) {
+            $this->accessibleDivisions->inCompetition(Competition::findOrFail($request->input('competition')));
+        }
+
+        return DivisionResource::collection($this->accessibleDivisions->get($request->user()));
+    }
+
+    public function get(Request $request, Division $division): JsonResource
+    {
+        if ($request->user()->can(PermissionsHelper::viewDivision($division))) {
+            return new DivisionResource($division);
+        }
+
+        return new JsonResource([]);
     }
 }
