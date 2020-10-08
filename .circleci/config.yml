@@ -1,13 +1,19 @@
-version: 2.0
+version: 2.1
+
+workflows:
+  my-workflow:
+    jobs:
+      - build:
+          context:
+            - docker-hub-creds
 
 jobs:
   build:
-#    branches:
-#      only:
-#        - master
-
     docker:
       - image: circleci/php:7.4.6-node-browsers
+        auth:
+          username: troccoli
+          password: $DOCKERHUB_PASSWORD
 
     steps:
       - run:
