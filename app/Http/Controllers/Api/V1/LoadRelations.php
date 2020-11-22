@@ -8,22 +8,23 @@ trait LoadRelations
 {
     private function loadRelations(Request $request)
     {
-        $relationsAllowed = [];
         if (property_exists($this, 'relationsAllowed')) {
-            $relationsAllowed = $this->relationsAllowed;
+            $relationsAllowed = collect($this->relationsAllowed);
         } elseif (method_exists($this, 'getRelationsAllowed')) {
             $relationsAllowed = $this->getRelationsAllowed();
+        } else {
+            $relationsAllowed = collect([]);
         }
 
-        collect($request->query('with', []))
+        $relationsRequested = collect($request->query('with', []))
             ->map(function (string $relation): string {
                 return trim(strtolower($relation));
-            })
-            ->filter(function (string $relation) use ($relationsAllowed): bool {
-                return collect($relationsAllowed)->contains($relation);
-            })
-            ->each(function (string $relation) use ($request): void {
-                $this->resource->load($relation);
             });
+
+        $relationsAllowed->each(function (string $relation): void {
+            $this->resource->unsetRelation($relation);
+        })->intersect($relationsRequested)->each(function (string $relation): void {
+            $this->resource->load($relation);
+        });
     }
 }

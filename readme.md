@@ -21,7 +21,7 @@ use a package to build forms in blade component, but instead I choose to create 
 So, if you see something that looks different, or notice some inconsistencies, please remember that most likely
 that is on purpose. I will try and document them as I go along.
 
-- [Test Data](./docs/tests.md)
+- [Test Strategy and Data](./docs/tests.md)
 - [API](./docs/api.md)
 - [Views](./docs/views.md)
 - [Roles and Permissions](./docs/roles-and-permissions.md)
@@ -86,7 +86,8 @@ the testing database. This is a SQLite database, which means that you can simply
 lva-web container: `touch database/database.sqlite`.
 
 Both PhpUnit and Laravel Dusk must be run inside the lva-web container. To run PhpUnit use the command
-`./vendor/bin/phpunit`, and to run Laravel Dusk use the command `php artisan dusk`.
+`docker-compose exec lva-web ./vendor/bin/phpunit`, and to run Laravel Dusk use the command
+`docker-compose exec lva-web php artisan dusk`.
 
 ## Contributing
 

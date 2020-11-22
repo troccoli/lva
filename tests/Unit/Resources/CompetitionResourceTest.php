@@ -8,10 +8,13 @@ use App\Http\Resources\SeasonResource;
 use App\Models\Competition;
 use App\Models\Division;
 use App\Models\Season;
+use App\Models\User;
+use App\Repositories\AccessibleDivisions;
 use Illuminate\Foundation\Testing\WithoutEvents;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\MissingValue;
+use Mockery;
 use Tests\Concerns\InteractsWithArrays;
 use Tests\TestCase;
 
@@ -19,7 +22,8 @@ class CompetitionResourceTest extends TestCase
 {
     use InteractsWithArrays, WithoutEvents;
 
-    private $competition;
+    private Competition $competition;
+    private AccessibleDivisions $accessibleDivisions;
 
     protected function setUp(): void
     {
@@ -27,17 +31,22 @@ class CompetitionResourceTest extends TestCase
 
         $season = factory(Season::class)->create();
         $this->competition = factory(Competition::class)->create([
-            'name'      => 'London Super League',
+            'name' => 'London Super League',
             'season_id' => $season->getId(),
         ]);
         factory(Division::class)->times(3)->create([
             'competition_id' => $this->competition->getId(),
         ]);
+
+        $this->accessibleDivisions = Mockery::mock(AccessibleDivisions::class);
+        $this->app->bind(AccessibleDivisions::class, function () {
+            return $this->accessibleDivisions;
+        });
     }
 
     public function testItReturnTheCorrectFields(): void
     {
-        $request = \Mockery::mock(Request::class, [
+        $request = Mockery::mock(Request::class, [
             'query' => [],
         ]);
 
@@ -45,7 +54,7 @@ class CompetitionResourceTest extends TestCase
         $resourceArray = $resource->toArray($request);
 
         $this->assertArrayContent([
-            'id'   => $this->competition->getId(),
+            'id' => $this->competition->getId(),
             'name' => 'London Super League',
         ], $resourceArray);
 
@@ -57,7 +66,7 @@ class CompetitionResourceTest extends TestCase
 
     public function testItReturnTheCorrectFieldsWhenSeasonIsLoaded(): void
     {
-        $request = \Mockery::mock(Request::class, [
+        $request = Mockery::mock(Request::class, [
             'query' => ['season'],
         ]);
 
@@ -65,7 +74,7 @@ class CompetitionResourceTest extends TestCase
         $resourceArray = $resource->toArray($request);
 
         $this->assertArrayContent([
-            'id'   => $this->competition->getId(),
+            'id' => $this->competition->getId(),
             'name' => 'London Super League',
         ], $resourceArray);
 
@@ -77,15 +86,19 @@ class CompetitionResourceTest extends TestCase
 
     public function testItReturnTheCorrectFieldsWhenDivisionsAreLoaded(): void
     {
-        $request = \Mockery::mock(Request::class, [
+        $request = Mockery::mock(Request::class, [
             'query' => ['divisions'],
+            'user' => Mockery::mock(User::class),
         ]);
+        $this->accessibleDivisions
+            ->shouldReceive('inCompetition')->with($this->competition)->andReturnSelf()
+            ->shouldReceive('get')->andReturn($this->competition->getDivisions());
 
         $resource = new CompetitionResource($this->competition);
         $resourceArray = $resource->toArray($request);
 
         $this->assertArrayContent([
-            'id'   => $this->competition->getId(),
+            'id' => $this->competition->getId(),
             'name' => 'London Super League',
         ], $resourceArray);
 

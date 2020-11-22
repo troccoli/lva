@@ -6,6 +6,9 @@ use App\Http\Resources\CompetitionResource;
 use App\Http\Resources\SeasonResource;
 use App\Models\Competition;
 use App\Models\Season;
+use App\Models\User;
+use App\Repositories\AccessibleCompetitions;
+use Illuminate\Foundation\Testing\WithoutEvents;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Tests\Concerns\InteractsWithArrays;
@@ -13,9 +16,10 @@ use Tests\TestCase;
 
 class SeasonResourceTest extends TestCase
 {
-    use InteractsWithArrays;
+    use InteractsWithArrays, WithoutEvents;
 
-    private $season;
+    private Season $season;
+    private AccessibleCompetitions $accessibleCompetitions;
 
     protected function setUp(): void
     {
@@ -25,6 +29,12 @@ class SeasonResourceTest extends TestCase
         factory(Competition::class)->create([
             'season_id' => $this->season->getId(),
         ]);
+
+        $this->accessibleCompetitions = \Mockery::mock(AccessibleCompetitions::class);
+
+        $this->app->bind(AccessibleCompetitions::class, function () {
+            return $this->accessibleCompetitions;
+        });
     }
 
     public function testItReturnTheCorrectFields(): void
@@ -37,7 +47,7 @@ class SeasonResourceTest extends TestCase
         $resourceArray = $resource->toArray($request);
 
         $this->assertArrayContent([
-            'id'   => $this->season->getId(),
+            'id' => $this->season->getId(),
             'name' => '2014/15',
         ], $resourceArray);
 
@@ -50,13 +60,17 @@ class SeasonResourceTest extends TestCase
     {
         $request = \Mockery::mock(Request::class, [
             'query' => ['competitions'],
+            'user' => \Mockery::mock(User::class),
         ]);
+        $this->accessibleCompetitions
+            ->shouldReceive('inSeason')->andReturnSelf()
+            ->shouldReceive('get')->andReturn($this->season->getCompetitions());
 
         $resource = new SeasonResource($this->season);
         $resourceArray = $resource->toArray($request);
 
         $this->assertArrayContent([
-            'id'   => $this->season->getId(),
+            'id' => $this->season->getId(),
             'name' => '2014/15',
         ], $resourceArray);
 

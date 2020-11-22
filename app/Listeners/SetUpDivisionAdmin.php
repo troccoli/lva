@@ -29,6 +29,8 @@ class SetUpDivisionAdmin
             PermissionsHelper::editFixtures($division),
             PermissionsHelper::deleteFixtures($division),
             PermissionsHelper::viewFixtures($division),
+            PermissionsHelper::viewCompetition($division->getCompetition()),
+            PermissionsHelper::viewSeason($division->getCompetition()->getSeason()),
         ]);
 
         $competitionAdminRole = Role::findByName(RolesHelper::competitionAdmin($division->getCompetition()));

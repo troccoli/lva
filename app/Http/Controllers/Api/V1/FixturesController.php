@@ -10,78 +10,53 @@ use App\Models\Fixture;
 use App\Models\Season;
 use App\Models\Team;
 use App\Models\Venue;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Collection;
 
 class FixturesController extends Controller
 {
     public function all(Request $request): ResourceCollection
     {
+        $this->validate($request, [
+            'season' => 'sometimes|exists:seasons,id',
+            'competition' => 'sometimes|exists:competitions,id',
+            'division' => 'sometimes|exists:divisions,id',
+            'at' => 'sometimes|exists:venues,id',
+            'on' => 'sometimes|date_format:Y-m-d',
+            'team' => 'sometimes|exists:teams,id',
+            'homeTeam' => 'sometimes|exists:teams,id',
+            'awayTeam' => 'sometimes|exists:teams,id',
+        ]);
+
         $query = Fixture::query();
 
         if ($request->has('season')) {
-            /** @var Season $season */
-            $season = Season::findOrFail($request->get('season'));
-            $divisionsInSeason = $season->getCompetitions()->reduce(function (
-                Collection $divisions,
-                Competition $competition
-            ): Collection {
-                return $divisions->merge($competition->getDivisions());
-            }, new Collection())
-                ->pluck('id');
-            $query->whereIn('division_id', $divisionsInSeason);
+            $query->inSeason(Season::findOrFail($request->input('season')));
         } elseif ($request->has('competition')) {
-            /** @var Competition $competition */
-            $competition = Competition::findOrFail($request->get('competition'));
-            $divisionsInCompetition = $competition->getDivisions()->pluck('id');
-            $query->whereIn('division_id', $divisionsInCompetition);
+            $query->inCompetition(Competition::findOrFail($request->input('competition')));
         } elseif ($request->has('division')) {
-            /** @var Division $division */
-            $division = Division::findOrFail($request->get('division'));
-            $query->where('division_id', $division->getId());
+            $query->inDivision(Division::findOrFail($request->input('division')));
         }
 
         if ($request->has('on')) {
-            try {
-                $date = Carbon::createFromFormat('Y-m-d', $request->get('on'));
-            } catch (\InvalidArgumentException $e) {
-                throw new ModelNotFoundException();
-            }
-            $query->where('match_date', $date->setTime(0, 0, 0));
+            $query->on(Carbon::parse($request->input('on')));
         }
 
-        if ($request->has('venue')) {
-            /** @var Venue $venue */
-            $venue = Venue::findOrFail($request->get('venue'));
-            $query->where('venue_id', $venue->getId());
+        if ($request->has('at')) {
+            $query->at(Venue::findOrFail($request->input('at')));
         }
 
         if ($request->has('team')) {
-            /** @var Team $team */
-            $team = Team::findOrFail($request->get('team'));
-            $query->where(function (Builder $query) use ($team): Builder {
-                return $query->where('home_team_id', $team->getId())
-                    ->orWhere('away_team_id', $team->getId());
-            });
+            $query->forTeam(Team::findOrFail($request->input('team')));
         } elseif ($request->has('homeTeam')) {
-            /** @var Team $homeTeam */
-            $homeTeam = Team::findOrFail($request->get('homeTeam'));
-            $query->where('home_team_id', $homeTeam->getId());
+            $query->forHomeTeam(Team::findOrFail($request->input('homeTeam')));
         } elseif ($request->has('awayTeam')) {
-            /** @var Team $awayTeam */
-            $awayTeam = Team::findOrFail($request->get('awayTeam'));
-            $query->where('away_team_id', $awayTeam->getId());
+            $query->forAwayTeam(Team::findOrFail($request->input('awayTeam')));
         }
 
-        $query->with(['division', 'venue', 'homeTeam', 'awayTeam'])
-            ->orderBy('match_number');
-
         if ($request->hasAny(['page', 'perPage'])) {
-            $perPage = $request->get('perPage', 10);
+            $perPage = (int) $request->get('perPage', 10);
 
             return FixtureResource::collection($query->paginate($perPage));
         }
