@@ -1,10 +1,14 @@
 language: php
 
 php:
-  - 7.4.6
+  - 7.4.12
 
 addons:
   chrome: stable
+
+branches:
+  only:
+    - master
 
 install:
   - cp .env.ci .env
