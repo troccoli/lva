@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/troccoli/lva.svg?branch=master)](https://travis-ci.org/troccoli/lva)
 [![CircleCI](https://circleci.com/gh/troccoli/lva.svg?style=shield)](https://app.circleci.com/pipelines/github/troccoli/lva?branch=master)
-[![Actions](https://github.com/troccoli/lva/actions)](https://github.com/troccoli/lva/workflows/lva/badge.svg)
+![](https://github.com/troccoli/lva/workflows/lva/badge.svg)
 [![StyleCI](https://github.styleci.io/repos/50941713/shield)](https://github.styleci.io/repos/50941713)
 ![GitHub](https://img.shields.io/github/license/troccoli/lva?color=blue)
 
