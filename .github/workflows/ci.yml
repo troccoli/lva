@@ -263,10 +263,11 @@ jobs:
         run: php artisan serve &
       - name: Run Laravel Dusk Tests
         id: laravel-dusk
+        continue-on-error: true
         run: php artisan dusk
       - name: Upload logs
         uses: actions/upload-artifact@v2
-        if: ${{ steps.laravel-dusk.outcome == 'failure' }}
+        if: ${{ steps.laravel-dusk.outcome == 'failure'}}
         with:
           name: ${{ env.job-name }}-log
           path: ./storage/logs/*.log
@@ -276,3 +277,6 @@ jobs:
         with:
           name: ${{ env.job-name }}-screenshots
           path: ./tests/Browser/screenshots
+      - name: Sanity check
+        if: ${{ steps.laravel-dusk.outcome == 'failure'}}
+        run: exit 2
