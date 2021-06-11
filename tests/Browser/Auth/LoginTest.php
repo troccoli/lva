@@ -3,8 +3,8 @@
 namespace Tests\Browser\Auth;
 
 use App\Models\User;
-use Tests\DuskTestCase;
 use Laravel\Dusk\Browser;
+use Tests\DuskTestCase;
 
 class LoginTest extends DuskTestCase
 {
@@ -15,12 +15,12 @@ class LoginTest extends DuskTestCase
     {
         $this->browse(function (Browser $browser): void {
             $browser->visit('/login')
-                ->type('email', 'tom@example.org')
-                ->type('password', 'password')
-                ->press('LOGIN')
-                ->assertPathIs('/login')
-                ->assertSee('These credentials do not match our records.')
-                ->assertGuest();
+                    ->type('email', 'tom@example.org')
+                    ->type('password', 'password')
+                    ->press('LOGIN')
+                    ->assertPathIs('/login')
+                    ->assertSee('These credentials do not match our records.')
+                    ->assertGuest();
         });
     }
 
@@ -29,22 +29,24 @@ class LoginTest extends DuskTestCase
      */
     public function testLoggingInForExistingUser(): void
     {
-        $this->browse(function (Browser $browser): void {
-            $user = factory(User::class)->create(['email' => 'john@example.com']);
-            $browser->visit('/login')
-                ->type('email', 'john@example.com')
-                ->type('password', 'secret')
-                ->press('LOGIN')
-                ->assertPathIs('/login')
-                ->assertSee('These credentials do not match our records.')
-                ->assertGuest();
-            $browser->visit('/login')
-                ->type('email', 'john@example.com')
-                ->type('password', 'password')
-                ->press('LOGIN')
-                ->assertPathIs('/dashboard')
-                ->assertAuthenticatedAs($user);
-        });
+        $this->browse(
+            function (Browser $browser): void {
+                $user = User::factory()->create(['email' => 'john@example.com']);
+                $browser->visit('/login')
+                        ->type('email', 'john@example.com')
+                        ->type('password', 'secret')
+                        ->press('LOGIN')
+                        ->assertPathIs('/login')
+                        ->assertSee('These credentials do not match our records.')
+                        ->assertGuest();
+                $browser->visit('/login')
+                        ->type('email', 'john@example.com')
+                        ->type('password', 'password')
+                        ->press('LOGIN')
+                        ->assertPathIs('/dashboard')
+                        ->assertAuthenticatedAs($user);
+            }
+        );
     }
 
     /**
@@ -52,15 +54,17 @@ class LoginTest extends DuskTestCase
      */
     public function testLoggingInForUnverifiedUsers(): void
     {
-        $this->browse(function (Browser $browser): void {
-            factory(User::class)->state('unverified')->create(['email' => 'john@example.com']);
-            $browser->visit('/login')
-                ->type('email', 'john@example.com')
-                ->type('password', 'password')
-                ->press('LOGIN')
-                ->assertSee('Verify your email address!')
-                ->assertPathIs('/email/verify')
-                ->assertAuthenticated();
-        });
+        $this->browse(
+            function (Browser $browser): void {
+                User::factory()->unverified()->create(['email' => 'john@example.com']);
+                $browser->visit('/login')
+                        ->type('email', 'john@example.com')
+                        ->type('password', 'password')
+                        ->press('LOGIN')
+                        ->assertSee('Verify your email address!')
+                        ->assertPathIs('/email/verify')
+                        ->assertAuthenticated();
+            }
+        );
     }
 }

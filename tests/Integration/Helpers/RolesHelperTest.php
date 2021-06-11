@@ -9,7 +9,6 @@ use App\Models\Division;
 use App\Models\Season;
 use App\Models\Team;
 use Spatie\Permission\Models\Role;
-use Tests\Builders\TestModelFactory;
 use Tests\TestCase;
 
 class RolesHelperTest extends TestCase
@@ -17,7 +16,7 @@ class RolesHelperTest extends TestCase
     public function testItReturnsTheSeasonAdministratorRoleName(): void
     {
         /** @var Season $season */
-        $season = factory(Season::class)->create();
+        $season = Season::factory()->create();
         $seasonId = $season->getId();
 
         $this->assertSame("Season $seasonId Administrator", RolesHelper::seasonAdmin($season));
@@ -25,11 +24,11 @@ class RolesHelperTest extends TestCase
 
     public function testItCanCheckIfTheRoleIsSeasonAdministrator(): void
     {
-        $seasonAdmin = TestModelFactory::aRole()
+        $seasonAdmin = aRole()
             ->named('Season 1 Administrator')
             ->build();
-        $siteAdmin = TestModelFactory::aRole()
-            ->named('Site Administrator')
+        $siteAdmin = aRole()
+            ->named('Useless Role')
             ->build();
 
         $this->assertTrue(RolesHelper::isSeasonAdmin($seasonAdmin));
@@ -39,7 +38,7 @@ class RolesHelperTest extends TestCase
     public function testItGetsTheSeasonFromTheSeasonAdministratorRole(): void
     {
         /** @var Season $season */
-        $season = factory(Season::class)->create()->refresh();
+        $season = Season::factory()->create();
         $seasonId = $season->getId();
         /** @var Role $role */
         $role = Role::findByName("Season $seasonId Administrator");
@@ -49,7 +48,7 @@ class RolesHelperTest extends TestCase
 
     public function testItDoesNotGetTheSeasonIfTheSeasonDoesNotExist(): void
     {
-        $role = TestModelFactory::aRole()
+        $role = aRole()
             ->named('Season 1 Administrator')
             ->build();
 
@@ -58,7 +57,7 @@ class RolesHelperTest extends TestCase
 
     public function testItDoesNotGetTheSeasonIfTheRoleIsNotSeasonAdministrator(): void
     {
-        $role = TestModelFactory::aRole()
+        $role = aRole()
             ->named('Competition 1 Administrator')
             ->build();
 
@@ -68,7 +67,7 @@ class RolesHelperTest extends TestCase
     public function testItReturnsTheCompetitionAdministratorRoleName(): void
     {
         /** @var Competition $competition */
-        $competition = factory(Competition::class)->create();
+        $competition = Competition::factory()->create();
         $competitionId = $competition->getId();
 
         $this->assertSame("Competition $competitionId Administrator", RolesHelper::competitionAdmin($competition));
@@ -76,11 +75,11 @@ class RolesHelperTest extends TestCase
 
     public function testItCanCheckIfTheRoleIsCompetitionAdministrator(): void
     {
-        $competitionAdmin = TestModelFactory::aRole()
+        $competitionAdmin = aRole()
             ->named('Competition 1 Administrator')
             ->build();
-        $siteAdmin = TestModelFactory::aRole()
-            ->named('Site Administrator')
+        $siteAdmin = aRole()
+            ->named('Useless Role')
             ->build();
 
         $this->assertTrue(RolesHelper::isCompetitionAdmin($competitionAdmin));
@@ -90,7 +89,7 @@ class RolesHelperTest extends TestCase
     public function testItGetsTheCompetitionFromTheCompetitionAdministratorRole(): void
     {
         /** @var Competition $competition */
-        $competition = factory(Competition::class)->create()->refresh();
+        $competition = Competition::factory()->create();
         $competitionId = $competition->getId();
         /** @var Role $role */
         $role = Role::findByName("Competition $competitionId Administrator");
@@ -100,7 +99,7 @@ class RolesHelperTest extends TestCase
 
     public function testItDoesNotGetTheCompetitionIfTheCompetitionDoesNotExist(): void
     {
-        $role = TestModelFactory::aRole()
+        $role = aRole()
             ->named('Competition 1 Administrator')
             ->build();
 
@@ -109,7 +108,7 @@ class RolesHelperTest extends TestCase
 
     public function testItDoesNotGetTheCompetitionIfTheRoleIsNotCompetitionAdministrator(): void
     {
-        $role = TestModelFactory::aRole()
+        $role = aRole()
             ->named('Season 1 Administrator')
             ->build();
 
@@ -119,7 +118,7 @@ class RolesHelperTest extends TestCase
     public function testItReturnsTheDivisionAdministratorRoleName(): void
     {
         /** @var Division $division */
-        $division = factory(Division::class)->create();
+        $division = Division::factory()->create();
         $divisionId = $division->getId();
 
         $this->assertSame("Division $divisionId Administrator", RolesHelper::divisionAdmin($division));
@@ -127,11 +126,11 @@ class RolesHelperTest extends TestCase
 
     public function testItCanCheckIfTheRoleIsDivisionAdministrator(): void
     {
-        $divisionAdministrator = TestModelFactory::aRole()
+        $divisionAdministrator = aRole()
             ->named('Division 1 Administrator')
             ->build();
-        $siteAdmin = TestModelFactory::aRole()
-            ->named('Site Administrator')
+        $siteAdmin = aRole()
+            ->named('Useless Role')
             ->build();
 
         $this->assertTrue(RolesHelper::isDivisionAdmin($divisionAdministrator));
@@ -141,7 +140,7 @@ class RolesHelperTest extends TestCase
     public function testItGetsTheDivisionFromTheDivisionAdministratorRole(): void
     {
         /** @var Division $division */
-        $division = factory(Division::class)->create()->refresh();
+        $division = Division::factory()->create();
         $divisionId = $division->getId();
         /** @var Role $role */
         $role = Role::findByName("Division $divisionId Administrator");
@@ -151,7 +150,7 @@ class RolesHelperTest extends TestCase
 
     public function testItDoesNotGetTheDivisionIfTheDivisionDoesNotExist(): void
     {
-        $role = TestModelFactory::aRole()
+        $role = aRole()
             ->named('Division 1 Administrator')
             ->build();
 
@@ -160,7 +159,7 @@ class RolesHelperTest extends TestCase
 
     public function testItDoesNotGetTheDivisionIfTheRoleIsNotDivisionAdministrator(): void
     {
-        $role = TestModelFactory::aRole()
+        $role = aRole()
             ->named('Season 1 Administrator')
             ->build();
 
@@ -170,7 +169,7 @@ class RolesHelperTest extends TestCase
     public function testItReturnsTheClubSecretaryRoleName(): void
     {
         /** @var Club $club */
-        $club = factory(Club::class)->create();
+        $club = Club::factory()->create();
         $clubId = $club->getId();
 
         $this->assertSame("Club $clubId Secretary", RolesHelper::clubSecretary($club));
@@ -178,11 +177,11 @@ class RolesHelperTest extends TestCase
 
     public function testItCanCheckIfTheRoleIsClubSecretary(): void
     {
-        $clubSecretary = TestModelFactory::aRole()
+        $clubSecretary = aRole()
             ->named('Club 1 Secretary')
             ->build();
-        $siteAdmin = TestModelFactory::aRole()
-            ->named('Site Administrator')
+        $siteAdmin = aRole()
+            ->named('Useless Role')
             ->build();
 
         $this->assertTrue(RolesHelper::isClubSecretary($clubSecretary));
@@ -192,7 +191,7 @@ class RolesHelperTest extends TestCase
     public function testItGetsTheClubFromTheClubSecretaryRole(): void
     {
         /** @var Club $club */
-        $club = factory(Club::class)->create()->refresh();
+        $club = Club::factory()->create();
         $clubId = $club->getId();
         /** @var Role $role */
         $role = Role::findByName("Club $clubId Secretary");
@@ -202,7 +201,7 @@ class RolesHelperTest extends TestCase
 
     public function testItDoesNotGetTheClubIfTheClubDoesNotExist(): void
     {
-        $role = TestModelFactory::aRole()
+        $role = aRole()
             ->named('Club 1 Secretary')
             ->build();
 
@@ -211,7 +210,7 @@ class RolesHelperTest extends TestCase
 
     public function testItDoesNotGetTheClubIfTheRoleIsNotClubSecretary(): void
     {
-        $role = TestModelFactory::aRole()
+        $role = aRole()
             ->named('Season 1 Administrator')
             ->build();
 
@@ -221,7 +220,7 @@ class RolesHelperTest extends TestCase
     public function testItReturnsTheTeamSecretaryRoleName(): void
     {
         /** @var Team $team */
-        $team = factory(Team::class)->create();
+        $team = Team::factory()->create();
         $teamId = $team->getId();
 
         $this->assertSame("Team $teamId Secretary", RolesHelper::teamSecretary($team));
@@ -229,11 +228,11 @@ class RolesHelperTest extends TestCase
 
     public function testItCanCheckIfTheRoleIsTeamSecretary(): void
     {
-        $teamSecretary = TestModelFactory::aRole()
+        $teamSecretary = aRole()
             ->named('Team 1 Secretary')
             ->build();
-        $siteAdmin = TestModelFactory::aRole()
-            ->named('Site Administrator')
+        $siteAdmin = aRole()
+            ->named('Useless Role')
             ->build();
 
         $this->assertTrue(RolesHelper::isTeamSecretary($teamSecretary));
@@ -243,7 +242,7 @@ class RolesHelperTest extends TestCase
     public function testItGetsTheTeamFromTheTeamSecretaryRole(): void
     {
         /** @var Team $team */
-        $team = factory(Team::class)->create()->refresh();
+        $team = Team::factory()->create();
         $teamId = $team->getId();
         /** @var Role $role */
         $role = Role::findByName("Team $teamId Secretary");
@@ -253,7 +252,7 @@ class RolesHelperTest extends TestCase
 
     public function testItDoesNotGetTheTeamIfTheTeamDoesNotExist(): void
     {
-        $role = TestModelFactory::aRole()
+        $role = aRole()
             ->named('Team 1 Secretary')
             ->build();
 
@@ -262,7 +261,7 @@ class RolesHelperTest extends TestCase
 
     public function testItDoesNotGetTheTeamIfTheRoleIsNotTeamSecretary(): void
     {
-        $role = TestModelFactory::aRole()
+        $role = aRole()
             ->named('Season 1 Administrator')
             ->build();
 

@@ -14,15 +14,15 @@ class DeleteRoleTest extends TestCase
     public function testItRemovesTheRoleForAllUsersAndDeletesIt(): void
     {
         $user = \Mockery::mock(User::class)
-            ->shouldReceive('removeRole')->once()->andReturnTrue()
-            ->getMock();
+                        ->shouldReceive('removeRole')->once()->andReturnTrue()
+                        ->getMock();
 
         \Mockery::mock(User::class)->shouldNotHaveReceived('getAttribute');
 
         $role = \Mockery::mock(Role::class)
-            ->shouldReceive('getAttribute')->with('users')->andReturn(EloquentCollection::make([$user]))
-            ->shouldReceive('delete')->once()->andReturnTrue()
-            ->getMock();
+                        ->shouldReceive('getAttribute')->with('users')->andReturn(EloquentCollection::make([$user]))
+                        ->shouldReceive('delete')->once()->andReturnTrue()
+                        ->getMock();
 
         $sut = new DeleteRole(Collection::make([$role]));
 

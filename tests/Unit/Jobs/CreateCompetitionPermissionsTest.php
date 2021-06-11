@@ -10,9 +10,12 @@ class CreateCompetitionPermissionsTest extends TestCase
 {
     public function testItCreatesTheCompetitionPermissions(): void
     {
-        $competition = \Mockery::mock(Competition::class, [
-            'getId' => '123',
-        ]);
+        $competition = \Mockery::mock(
+            Competition::class,
+            [
+                'getId' => '123',
+            ]
+        );
 
         $sut = new CreateCompetitionPermissions($competition);
 

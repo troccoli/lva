@@ -10,9 +10,12 @@ class CreateSeasonPermissionsTest extends TestCase
 {
     public function testItCreatesTheSeasonPermissions(): void
     {
-        $season = \Mockery::mock(Season::class, [
-            'getId' => '123',
-        ]);
+        $season = \Mockery::mock(
+            Season::class,
+            [
+                'getId' => '123',
+            ]
+        );
 
         $sut = new CreateSeasonPermissions($season);
 

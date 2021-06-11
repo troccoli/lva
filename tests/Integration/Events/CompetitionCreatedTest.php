@@ -13,7 +13,8 @@ class CompetitionCreatedTest extends TestCase
 
     public function testCompetitionAdminRoleIsCreated(): void
     {
-        $competition = factory(Competition::class)->create();
+        /** @var Competition $competition */
+        $competition = Competition::factory()->create();
 
         $this->assertDatabaseHas('roles', ['name' => RolesHelper::competitionAdmin($competition)]);
     }
@@ -21,7 +22,7 @@ class CompetitionCreatedTest extends TestCase
     public function testCompetitionPermissionsAreCreated(): void
     {
         /** @var Competition $competition */
-        $competition = factory(Competition::class)->create();
+        $competition = Competition::factory()->create();
         $competitionId = $competition->getId();
 
         $this->assertDatabaseHas('permissions', ['name' => "view-competition-$competitionId"]);
@@ -33,23 +34,23 @@ class CompetitionCreatedTest extends TestCase
     public function testAdminRolesHaveTheCorrectPermissions(): void
     {
         /** @var Competition $competition */
-        $competition = factory(Competition::class)->create();
+        $competition = Competition::factory()->create();
         $competitionId = $competition->getId();
         $seasonId = $competition->getSeason()->getId();
 
         $competitionAdmin = $this->userWithRole(RolesHelper::competitionAdmin($competition));
 
         $this->assertUserCan($competitionAdmin, "view-competition-$competitionId")
-            ->assertUserCan($competitionAdmin, "edit-competition-$competitionId")
-            ->assertUserCan($competitionAdmin, "add-division-in-competition-$competitionId")
-            ->assertUserCan($competitionAdmin, "view-season-$seasonId");
+             ->assertUserCan($competitionAdmin, "edit-competition-$competitionId")
+             ->assertUserCan($competitionAdmin, "add-division-in-competition-$competitionId")
+             ->assertUserCan($competitionAdmin, "view-season-$seasonId");
         $this->assertUserCannot($competitionAdmin, "delete-competition-$competitionId");
 
         $seasonAdmin = $this->userWithRole(RolesHelper::seasonAdmin($competition->getSeason()));
 
         $this->assertUserCan($seasonAdmin, "view-competition-$competitionId")
-            ->assertUserCan($seasonAdmin, "edit-competition-$competitionId")
-            ->assertUserCan($seasonAdmin, "add-division-in-competition-$competitionId")
-            ->assertUserCan($seasonAdmin, "delete-competition-$competitionId");
+             ->assertUserCan($seasonAdmin, "edit-competition-$competitionId")
+             ->assertUserCan($seasonAdmin, "add-division-in-competition-$competitionId")
+             ->assertUserCan($seasonAdmin, "delete-competition-$competitionId");
     }
 }

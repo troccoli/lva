@@ -15,611 +15,704 @@ class DivisionTest extends TestCase
 {
     public function testAccessForGuests(): void
     {
-        /** @var Division $division */
-        $division = factory(Division::class)->create();
+        $division = Division::factory()->create();
         $competition = $division->getCompetition();
 
         $this->get("/competitions/{$competition->getId()}/divisions")
-            ->assertRedirect('/login');
+             ->assertRedirect('/login');
 
         $this->get("/competitions/{$competition->getId()}/divisions/create")
-            ->assertRedirect('/login');
+             ->assertRedirect('/login');
 
         $this->post("/competitions/{$competition->getId()}/divisions")
-            ->assertRedirect('/login');
+             ->assertRedirect('/login');
 
         $this->get("/competitions/{$competition->getId()}/divisions/{$division->getId()}/edit")
-            ->assertRedirect('/login');
+             ->assertRedirect('/login');
 
         $this->put("/competitions/{$competition->getId()}/divisions/{$division->getId()}")
-            ->assertRedirect('/login');
+             ->assertRedirect('/login');
 
         $this->delete("/competitions/{$competition->getId()}/divisions/{$division->getId()}")
-            ->assertRedirect('/login');
+             ->assertRedirect('/login');
     }
 
     public function testAccessForUsersWithoutThePermission(): void
     {
-        /** @var Division $division */
-        $division = factory(Division::class)->create();
+        $division = Division::factory()->create();
         $competition = $division->getCompetition();
 
-        $this->be(factory(User::class)->create());
+        $this->be(User::factory()->create());
 
         $this->get("/competitions/{$competition->getId()}/divisions")
-            ->assertForbidden();
+             ->assertForbidden();
 
         $this->get("/competitions/{$competition->getId()}/divisions/create")
-            ->assertForbidden();
+             ->assertForbidden();
 
         $this->post("/competitions/{$competition->getId()}/divisions")
-            ->assertForbidden();
+             ->assertForbidden();
 
         $this->get("/competitions/{$competition->getId()}/divisions/{$division->getId()}/edit")
-            ->assertForbidden();
+             ->assertForbidden();
 
         $this->put("/competitions/{$competition->getId()}/divisions/{$division->getId()}")
-            ->assertForbidden();
+             ->assertForbidden();
 
         $this->delete("/competitions/{$competition->getId()}/divisions/{$division->getId()}")
-            ->assertForbidden();
+             ->assertForbidden();
     }
 
     public function testAccessForSiteAdministrators(): void
     {
-        /** @var Division $division */
-        $division = factory(Division::class)->make();
+        $division = Division::factory()->make();
         $competitionId = $division->getCompetition()->getId();
 
         $this->be($this->siteAdmin);
 
         $this->get("/competitions/$competitionId/divisions")
-            ->assertOk();
+             ->assertOk();
 
         $this->get("/competitions/$competitionId/divisions/create")
-            ->assertOk();
+             ->assertOk();
 
         $this->post("/competitions/$competitionId/divisions", $division->toArray())
-            ->assertRedirect("/competitions/$competitionId/divisions");
+             ->assertRedirect("/competitions/$competitionId/divisions");
 
         $division = Division::first();
 
         $this->get("/competitions/$competitionId/divisions/{$division->getId()}/edit")
-            ->assertOk();
+             ->assertOk();
 
         $this->put("/competitions/$competitionId/divisions/{$division->getId()}", $division->toArray())
-            ->assertRedirect("/competitions/$competitionId/divisions");
+             ->assertRedirect("/competitions/$competitionId/divisions");
 
         $this->delete("/competitions/$competitionId/divisions/{$division->getId()}")
-            ->assertRedirect("/competitions/$competitionId/divisions");
+             ->assertRedirect("/competitions/$competitionId/divisions");
     }
 
     public function testAccessForUnverifiedUsers(): void
     {
-        /** @var Division $division */
-        $division = factory(Division::class)->create();
+        $division = Division::factory()->create();
         $competition = $division->getCompetition();
 
-        $this->be(factory(User::class)->state('unverified')->create());
+        $this->be(User::factory()->unverified()->create());
 
         $this->get("/competitions/{$competition->getId()}/divisions")
-            ->assertRedirect('/email/verify');
+             ->assertRedirect('/email/verify');
 
         $this->get("/competitions/{$competition->getId()}/divisions/create")
-            ->assertRedirect('/email/verify');
+             ->assertRedirect('/email/verify');
 
         $this->post("/competitions/{$competition->getId()}/divisions")
-            ->assertRedirect('/email/verify');
+             ->assertRedirect('/email/verify');
 
         $this->get("/competitions/{$competition->getId()}/divisions/create")
-            ->assertRedirect('/email/verify');
+             ->assertRedirect('/email/verify');
 
         $this->put("/competitions/{$competition->getId()}/divisions/{$division->getId()}")
-            ->assertRedirect('/email/verify');
+             ->assertRedirect('/email/verify');
 
         $this->delete("/competitions/{$competition->getId()}/divisions/{$division->getId()}")
-            ->assertRedirect('/email/verify');
+             ->assertRedirect('/email/verify');
     }
 
     public function testAccessForSeasonAdministrators(): void
     {
-        /** @var Division $division */
-        $division = factory(Division::class)->make();
-        $competitionId = $division->getCompetition()->getId();
+        $division = Division::factory()->make();
+        $competition = $division->getCompetition();
 
-        $this->actingAs(factory(User::class)
-            ->create()
-            ->assignRole(RolesHelper::seasonAdmin($division->getCompetition()->getSeason())));
+        $seasonAdmin = User::factory()
+                           ->create()
+                           ->assignRole(RolesHelper::seasonAdmin($division->getCompetition()->getSeason()));
+        $this->be($seasonAdmin);
 
-        $this->get("/competitions/$competitionId/divisions")
-            ->assertOk();
+        $this->get("/competitions/{$competition->getId()}/divisions")
+             ->assertOk();
 
-        $this->get("/competitions/$competitionId/divisions/create")
-            ->assertOk();
+        $this->get("/competitions/{$competition->getId()}/divisions/create")
+             ->assertOk();
 
-        $this->post("/competitions/$competitionId/divisions", $division->toArray())
-            ->assertRedirect("/competitions/$competitionId/divisions");
+        $this->post("/competitions/{$competition->getId()}/divisions", $division->toArray())
+             ->assertRedirect("/competitions/{$competition->getId()}/divisions");
 
         $division = Division::first();
 
-        $this->get("/competitions/$competitionId/divisions/" . $division->getId() . '/edit')
-            ->assertOk();
+        $this->get("/competitions/{$competition->getId()}/divisions/{$division->getId()}/edit")
+             ->assertOk();
 
-        $this->put("/competitions/$competitionId/divisions/" . $division->getId(), $division->toArray())
-            ->assertRedirect("/competitions/$competitionId/divisions");
+        $this->put("/competitions/{$competition->getId()}/divisions/{$division->getId()}", $division->toArray())
+             ->assertRedirect("/competitions/{$competition->getId()}/divisions");
 
-        $this->delete("/competitions/$competitionId/divisions/" . $division->getId())
-            ->assertRedirect("/competitions/$competitionId/divisions");
+        $this->delete("/competitions/{$competition->getId()}/divisions/{$division->getId()}")
+             ->assertRedirect("/competitions/{$competition->getId()}/divisions");
     }
 
     public function testAccessForCompetitionAdministrators(): void
     {
-        $seasonId = factory(Season::class)->create(['year' => 2000])->getId();
+        $season = Season::factory()->create(['year' => 2000]);
         /** @var Competition $competition */
-        $competition = factory(Competition::class)->create(['season_id' => $seasonId]);
-        $competitionId = $competition->getId();
-        /** @var Division $division */
-        $division = factory(Division::class)->make(['competition_id' => $competitionId]);
+        $competition = Competition::factory()->for($season)->create();
+        $division = Division::factory()->for($competition)->make();
 
-        $this->actingAs(factory(User::class)->create()->assignRole(RolesHelper::competitionAdmin($competition)));
+        $this->be(User::factory()->create()->assignRole(RolesHelper::competitionAdmin($competition)));
 
-        $this->get("/competitions/$competitionId/divisions")
-            ->assertOk();
+        $this->get("/competitions/{$competition->getId()}/divisions")
+             ->assertOk();
 
-        $this->get("/competitions/$competitionId/divisions/create")
-            ->assertOk();
+        $this->get("/competitions/{$competition->getId()}/divisions/create")
+             ->assertOk();
 
-        $this->post("/competitions/$competitionId/divisions", $division->toArray())
-            ->assertRedirect("/competitions/$competitionId/divisions");
+        $this->post("/competitions/{$competition->getId()}/divisions", $division->toArray())
+             ->assertRedirect("/competitions/{$competition->getId()}/divisions");
 
         $division = Division::first();
 
-        $this->get("/competitions/$competitionId/divisions/" . $division->getId() . '/edit')
-            ->assertOk();
+        $this->get("/competitions/{$competition->getId()}/divisions/{$division->getId()}/edit")
+             ->assertOk();
 
-        $this->put("/competitions/$competitionId/divisions/" . $division->getId(), $division->toArray())
-            ->assertRedirect("/competitions/$competitionId/divisions");
+        $this->put("/competitions/{$competition->getId()}/divisions/{$division->getId()}", $division->toArray())
+             ->assertRedirect("/competitions/{$competition->getId()}/divisions");
 
-        $this->delete("/competitions/$competitionId/divisions/" . $division->getId())
-            ->assertRedirect("/competitions/$competitionId/divisions");
+        $this->delete("/competitions/{$competition->getId()}/divisions/{$division->getId()}")
+             ->assertRedirect("/competitions/{$competition->getId()}/divisions");
 
         // Recreate a division so the rest of the test can work
-        $division = factory(Division::class)->create(['competition_id' => $competitionId]);
+        $division = Division::factory()->for($competition)->create();
 
         // Competition Admin for a different competition in the same season
         /** @var Competition $anotherCompetition */
-        $anotherCompetition = factory(Competition::class)->create(['season_id' => $seasonId]);
+        $anotherCompetition = Competition::factory()->for($season)->create();
 
-        $this->actingAs(factory(User::class)->create()->assignRole(RolesHelper::competitionAdmin($anotherCompetition)));
+        $this->be(User::factory()->create()->assignRole(RolesHelper::competitionAdmin($anotherCompetition)));
 
-        $this->get("/competitions/$competitionId/divisions")
-            ->assertForbidden();
+        $this->get("/competitions/{$competition->getId()}/divisions")
+             ->assertForbidden();
 
-        $this->get("/competitions/$competitionId/divisions/create")
-            ->assertForbidden();
+        $this->get("/competitions/{$competition->getId()}/divisions/create")
+             ->assertForbidden();
 
-        $this->post("/competitions/$competitionId/divisions", $division->toArray())
-            ->assertForbidden();
+        $this->post("/competitions/{$competition->getId()}/divisions", $division->toArray())
+             ->assertForbidden();
 
-        $r = $this->get("/competitions/$competitionId/divisions/" . $division->getId() . '/edit');
+        $this->get("/competitions/{$competition->getId()}/divisions/{$division->getId()}/edit")
+             ->assertForbidden();
 
-        $this->get("/competitions/$competitionId/divisions/" . $division->getId() . '/edit')
-            ->assertForbidden();
+        $this->put("/competitions/{$competition->getId()}/divisions/{$division->getId()}", $division->toArray())
+             ->assertForbidden();
 
-        $this->put("/competitions/$competitionId/divisions/" . $division->getId(), $division->toArray())
-            ->assertForbidden();
-
-        $this->delete("/competitions/$competitionId/divisions/" . $division->getId())
-            ->assertForbidden();
+        $this->delete("/competitions/{$competition->getId()}/divisions/{$division->getId()}")
+             ->assertForbidden();
 
         // Competition Admin for a different competition in a different season
-        $anotherSeasonId = factory(Season::class)->create(['year' => 2001])->getId();
+        $anotherSeason = Season::factory()->create(['year' => 2001]);
         /** @var Competition $yetAnotherCompetition */
-        $yetAnotherCompetition = factory(Competition::class)->create(['season_id' => $anotherSeasonId]);
+        $yetAnotherCompetition = Competition::factory()->for($anotherSeason)->create();
 
-        $this->actingAs(factory(User::class)->create()->assignRole(RolesHelper::competitionAdmin($yetAnotherCompetition)));
+        $this->be(User::factory()->create()->assignRole(RolesHelper::competitionAdmin($yetAnotherCompetition)));
 
-        $this->get("/competitions/$competitionId/divisions")
-            ->assertForbidden();
+        $this->get("/competitions/{$competition->getId()}/divisions")
+             ->assertForbidden();
 
-        $this->get("/competitions/$competitionId/divisions/create")
-            ->assertForbidden();
+        $this->get("/competitions/{$competition->getId()}/divisions/create")
+             ->assertForbidden();
 
-        $this->post("/competitions/$competitionId/divisions", $division->toArray())
-            ->assertForbidden();
+        $this->post("/competitions/{$competition->getId()}/divisions", $division->toArray())
+             ->assertForbidden();
 
-        $this->get("/competitions/$competitionId/divisions/" . $division->getId() . '/edit')
-            ->assertForbidden();
+        $this->get("/competitions/{$competition->getId()}/divisions/{$division->getId()}/edit")
+             ->assertForbidden();
 
-        $this->put("/competitions/$competitionId/divisions/" . $division->getId(), $division->toArray())
-            ->assertForbidden();
+        $this->put("/competitions/{$competition->getId()}/divisions/{$division->getId()}", $division->toArray())
+             ->assertForbidden();
 
-        $this->delete("/competitions/$competitionId/divisions/" . $division->getId())
-            ->assertForbidden();
+        $this->delete("/competitions/{$competition->getId()}/divisions/{$division->getId()}")
+             ->assertForbidden();
     }
 
     public function testAccessForDivisionAdministrators(): void
     {
-        $seasonId = factory(Season::class)->create(['year' => 2000])->getId();
-        /** @var Competition $competition */
-        $competition = factory(Competition::class)->create(['season_id' => $seasonId]);
-        $competitionId = $competition->getId();
+        $season = Season::factory()->create(['year' => 2000]);
+        $competition = Competition::factory()->for($season)->create();
         /** @var Division $division */
-        $division = factory(Division::class)->create(['competition_id' => $competitionId]);
+        $division = Division::factory()->for($competition)->create();
 
-        $this->actingAs(factory(User::class)->create()->assignRole(RolesHelper::divisionAdmin($division)));
+        $this->be(User::factory()->create()->assignRole(RolesHelper::divisionAdmin($division)));
 
-        $this->get("/competitions/$competitionId/divisions")
-            ->assertOk();
+        $this->get("/competitions/{$competition->getId()}/divisions")
+             ->assertOk();
 
-        $this->get("/competitions/$competitionId/divisions/create")
-            ->assertForbidden();
+        $this->get("/competitions/{$competition->getId()}/divisions/create")
+             ->assertForbidden();
 
-        $this->post("/competitions/$competitionId/divisions", $division->toArray())
-            ->assertForbidden();
+        $this->post("/competitions/{$competition->getId()}/divisions", $division->toArray())
+             ->assertForbidden();
 
-        $this->get("/competitions/$competitionId/divisions/" . $division->getId() . '/edit')
-            ->assertOk();
+        $this->get("/competitions/{$competition->getId()}/divisions/{$division->getId()}/edit")
+             ->assertOk();
 
-        $this->put("/competitions/$competitionId/divisions/" . $division->getId(), $division->toArray())
-            ->assertRedirect("/competitions/$competitionId/divisions");
+        $this->put("/competitions/{$competition->getId()}/divisions/{$division->getId()}", $division->toArray())
+             ->assertRedirect("/competitions/{$competition->getId()}/divisions");
 
-        $this->delete("/competitions/$competitionId/divisions/" . $division->getId())
-            ->assertForbidden();
+        $this->delete("/competitions/{$competition->getId()}/divisions/{$division->getId()}")
+             ->assertForbidden();
 
         // Division Administrator for another division in the same competition
         /** @var Division $anotherDivision */
-        $anotherDivision = factory(Division::class)->create(['competition_id' => $competitionId]);
+        $anotherDivision = Division::factory()->for($competition)->create();
 
-        $this->actingAs(factory(User::class)->create()->assignRole(RolesHelper::divisionAdmin($anotherDivision)));
+        $this->be(User::factory()->create()->assignRole(RolesHelper::divisionAdmin($anotherDivision)));
 
-        $this->get("/competitions/$competitionId/divisions")
-            ->assertOk();
+        $this->get("/competitions/{$competition->getId()}/divisions")
+             ->assertOk();
 
-        $this->get("/competitions/$competitionId/divisions/create")
-            ->assertForbidden();
+        $this->get("/competitions/{$competition->getId()}/divisions/create")
+             ->assertForbidden();
 
-        $this->post("/competitions/$competitionId/divisions", $division->toArray())
-            ->assertForbidden();
+        $this->post("/competitions/{$competition->getId()}/divisions", $division->toArray())
+             ->assertForbidden();
 
-        $this->get("/competitions/$competitionId/divisions/" . $division->getId() . '/edit')
-            ->assertForbidden();
+        $this->get("/competitions/{$competition->getId()}/divisions/{$division->getId()}/edit")
+             ->assertForbidden();
 
-        $this->put("/competitions/$competitionId/divisions/" . $division->getId(), $division->toArray())
-            ->assertForbidden();
+        $this->put("/competitions/{$competition->getId()}/divisions/{$division->getId()}", $division->toArray())
+             ->assertForbidden();
 
-        $this->delete("/competitions/$competitionId/divisions/" . $division->getId())
-            ->assertForbidden();
+        $this->delete("/competitions/{$competition->getId()}/divisions/{$division->getId()}")
+             ->assertForbidden();
 
         // Division Administrator in another competition and season
-        $anotherSeasonId = factory(Season::class)->create(['year' => 2001])->getId();
-        $anotherCompetitionId = factory(Competition::class)->create(['season_id' => $anotherSeasonId])->getId();
+        $anotherSeason = Season::factory()->create(['year' => 2001]);
+        $anotherCompetition = Competition::factory()->for($anotherSeason)->create();
         /** @var Division $yetAnotherDivision */
-        $yetAnotherDivision = factory(Division::class)->create(['competition_id' => $anotherCompetitionId]);
+        $yetAnotherDivision = Division::factory()->for($anotherCompetition)->create();
 
-        $this->actingAs(factory(User::class)->create()->assignRole(RolesHelper::divisionAdmin($yetAnotherDivision)));
+        $this->be(User::factory()->create()->assignRole(RolesHelper::divisionAdmin($yetAnotherDivision)));
 
-        $this->get("/competitions/$competitionId/divisions")
-            ->assertForbidden();
+        $this->get("/competitions/{$competition->getId()}/divisions")
+             ->assertForbidden();
 
-        $this->get("/competitions/$competitionId/divisions/create")
-            ->assertForbidden();
+        $this->get("/competitions/{$competition->getId()}/divisions/create")
+             ->assertForbidden();
 
-        $this->post("/competitions/$competitionId/divisions", $division->toArray())
-            ->assertForbidden();
+        $this->post("/competitions/{$competition->getId()}/divisions", $division->toArray())
+             ->assertForbidden();
 
-        $this->get("/competitions/$competitionId/divisions/" . $division->getId() . '/edit')
-            ->assertForbidden();
+        $this->get("/competitions/{$competition->getId()}/divisions/{$division->getId()}/edit")
+             ->assertForbidden();
 
-        $this->put("/competitions/$competitionId/divisions/" . $division->getId(), $division->toArray())
-            ->assertForbidden();
+        $this->put("/competitions/{$competition->getId()}/divisions/{$division->getId()}", $division->toArray())
+             ->assertForbidden();
 
-        $this->delete("/competitions/$competitionId/divisions/" . $division->getId())
-            ->assertForbidden();
+        $this->delete("/competitions/{$competition->getId()}/divisions/{$division->getId()}")
+             ->assertForbidden();
     }
 
     public function testAddingADivision(): void
     {
         $this->be($this->siteAdmin);
 
-        $this->post("/competitions/1/divisions", [])
-            ->assertNotFound();
+        $this->post('/competitions/1/divisions', [])
+             ->assertNotFound();
         $this->assertDatabaseMissing('divisions', ['name' => 'MP', 'display_order' => 1]);
 
-        /** @var Competition $competition */
-        $competition = factory(Competition::class)->create();
+        $competition = Competition::factory()->create();
 
-        $this->post("/competitions/{$competition->getId()}/divisions", [
-            'competition_id' => $competition->getId(),
-        ])
-            ->assertSessionHasErrors('name', 'The name is required.')
-            ->assertSessionHasErrors('display_order', 'The order is required.');
-        $this->assertDatabaseMissing('divisions', [
-            'competition_id' => $competition->getId(),
-            'name'           => 'MP',
-            'display_order'  => 1,
-        ]);
+        $this->post(
+            "/competitions/{$competition->getId()}/divisions",
+            [
+                'competition_id' => $competition->getId(),
+            ]
+        )
+             ->assertSessionHasErrors('name', 'The name is required.')
+             ->assertSessionHasErrors('display_order', 'The order is required.');
+        $this->assertDatabaseMissing(
+            'divisions',
+            [
+                'competition_id' => $competition->getId(),
+                'name' => 'MP',
+                'display_order' => 1,
+            ]
+        );
 
-        $this->post("/competitions/{$competition->getId()}/divisions", [
-            'competition_id' => $competition->getId(),
-            'name'           => 'MP',
-            'display_order'  => 'A',
-        ])
-            ->assertSessionHasErrors('display_order', 'The order must be a positive number.');
-        $this->assertDatabaseMissing('divisions', [
-            'competition_id' => $competition->getId(),
-            'name'           => 'MP',
-            'display_order'  => 1,
-        ]);
+        $this->post(
+            "/competitions/{$competition->getId()}/divisions",
+            [
+                'competition_id' => $competition->getId(),
+                'name' => 'MP',
+                'display_order' => 'A',
+            ]
+        )
+             ->assertSessionHasErrors('display_order', 'The order must be a positive number.');
+        $this->assertDatabaseMissing(
+            'divisions',
+            [
+                'competition_id' => $competition->getId(),
+                'name' => 'MP',
+                'display_order' => 1,
+            ]
+        );
 
-        $this->post("/competitions/{$competition->getId()}/divisions", [
-            'competition_id' => $competition->getId(),
-            'name'           => 'MP',
-            'display_order'  => -1,
-        ])
-            ->assertSessionHasErrors('display_order', 'The order must be a positive number.');
-        $this->assertDatabaseMissing('divisions', [
-            'competition_id' => $competition->getId(),
-            'name'           => 'MP',
+        $this->post(
+            "/competitions/{$competition->getId()}/divisions",
+            [
+                'competition_id' => $competition->getId(),
+                'name' => 'MP',
+                'display_order' => -1,
+            ]
+        )
+             ->assertSessionHasErrors('display_order', 'The order must be a positive number.');
+        $this->assertDatabaseMissing(
+            'divisions',
+            [
+                'competition_id' => $competition->getId(),
+                'name' => 'MP',
 
-            'display_order' => 1,
-        ]);
+                'display_order' => 1,
+            ]
+        );
 
-        $this->post("/competitions/{$competition->getId()}/divisions", [
-            'competition_id' => $competition->getId(),
-            'name'           => 'MP',
-            'display_order'  => 0,
-        ])
-            ->assertSessionHasErrors('display_order', 'The order must be a positive number.');
-        $this->assertDatabaseMissing('divisions', [
-            'competition_id' => $competition->getId(),
-            'name'           => 'MP',
-            'display_order'  => 1,
-        ]);
+        $this->post(
+            "/competitions/{$competition->getId()}/divisions",
+            [
+                'competition_id' => $competition->getId(),
+                'name' => 'MP',
+                'display_order' => 0,
+            ]
+        )
+             ->assertSessionHasErrors('display_order', 'The order must be a positive number.');
+        $this->assertDatabaseMissing(
+            'divisions',
+            [
+                'competition_id' => $competition->getId(),
+                'name' => 'MP',
+                'display_order' => 1,
+            ]
+        );
 
-        $this->post("/competitions/{$competition->getId()}/divisions", [
-            'competition_id' => $competition->getId(),
-            'name'           => 'MP',
-            'display_order'  => 1,
-        ])
-            ->assertSessionHasNoErrors();
-        $this->assertDatabaseHas('divisions', [
-            'competition_id' => $competition->getId(),
-            'name'           => 'MP',
-            'display_order'  => 1,
-        ]);
+        $this->post(
+            "/competitions/{$competition->getId()}/divisions",
+            [
+                'competition_id' => $competition->getId(),
+                'name' => 'MP',
+                'display_order' => 1,
+            ]
+        )
+             ->assertSessionHasNoErrors();
+        $this->assertDatabaseHas(
+            'divisions',
+            [
+                'competition_id' => $competition->getId(),
+                'name' => 'MP',
+                'display_order' => 1,
+            ]
+        );
 
-        $this->post("/competitions/{$competition->getId()}/divisions", [
-            'competition_id' => $competition->getId(),
-            'name'           => 'MP',
-            'display_order'  => 1,
-        ])
-            ->assertSessionHasErrors('name', 'The division already exists.');
-        $this->assertDatabaseHas('divisions', [
-            'competition_id' => $competition->getId(),
-            'name'           => 'MP',
-            'display_order'  => 1,
-        ]);
+        $this->post(
+            "/competitions/{$competition->getId()}/divisions",
+            [
+                'competition_id' => $competition->getId(),
+                'name' => 'MP',
+                'display_order' => 1,
+            ]
+        )
+             ->assertSessionHasErrors('name', 'The division already exists.');
+        $this->assertDatabaseHas(
+            'divisions',
+            [
+                'competition_id' => $competition->getId(),
+                'name' => 'MP',
+                'display_order' => 1,
+            ]
+        );
 
-        $this->post("/competitions/{$competition->getId()}/divisions", [
-            'competition_id' => $competition->getId(),
-            'name'           => 'DIV1M',
-            'display_order'  => 1,
-        ])
-            ->assertSessionHasErrors('display_order', 'The order is already used for another division.');
-        $this->assertDatabaseHas('divisions', [
-            'competition_id' => $competition->getId(),
-            'name'           => 'MP',
-            'display_order'  => 1,
-        ]);
-        $this->assertDatabaseMissing('divisions', [
-            'competition_id' => $competition->getId(),
-            'name'           => 'DIV1M',
+        $this->post(
+            "/competitions/{$competition->getId()}/divisions",
+            [
+                'competition_id' => $competition->getId(),
+                'name' => 'DIV1M',
+                'display_order' => 1,
+            ]
+        )
+             ->assertSessionHasErrors('display_order', 'The order is already used for another division.');
+        $this->assertDatabaseHas(
+            'divisions',
+            [
+                'competition_id' => $competition->getId(),
+                'name' => 'MP',
+                'display_order' => 1,
+            ]
+        );
+        $this->assertDatabaseMissing(
+            'divisions',
+            [
+                'competition_id' => $competition->getId(),
+                'name' => 'DIV1M',
 
-            'display_order' => 1,
-        ]);
+                'display_order' => 1,
+            ]
+        );
 
-        $this->post("/competitions/{$competition->getId()}/divisions", [
-            'competition_id' => $competition->getId(),
-            'name'           => 'MP',
-            'display_order'  => 2,
-        ])
-            ->assertSessionHasErrors('name', 'The division already exists.');
-        $this->assertDatabaseHas('divisions', [
-            'competition_id' => $competition->getId(),
-            'name'           => 'MP',
-            'display_order'  => 1,
-        ]);
-        $this->assertDatabaseMissing('divisions', [
-            'competition_id' => $competition->getId(),
-            'name'           => 'MP',
-            'display_order'  => 2,
-        ]);
+        $this->post(
+            "/competitions/{$competition->getId()}/divisions",
+            [
+                'competition_id' => $competition->getId(),
+                'name' => 'MP',
+                'display_order' => 2,
+            ]
+        )
+             ->assertSessionHasErrors('name', 'The division already exists.');
+        $this->assertDatabaseHas(
+            'divisions',
+            [
+                'competition_id' => $competition->getId(),
+                'name' => 'MP',
+                'display_order' => 1,
+            ]
+        );
+        $this->assertDatabaseMissing(
+            'divisions',
+            [
+                'competition_id' => $competition->getId(),
+                'name' => 'MP',
+                'display_order' => 2,
+            ]
+        );
 
-        factory(Division::class)->create(['name' => 'DIV1M', 'display_order' => 1]);
+        Division::factory()->create(['name' => 'DIV1M', 'display_order' => 1]);
 
-        $this->post("/competitions/{$competition->getId()}/divisions", [
-            'competition_id' => $competition->getId(),
-            'name'           => 'DIV1M',
-            'display_order'  => 2,
-        ])
-            ->assertSessionHasNoErrors();
-        $this->assertDatabaseHas('divisions', [
-            'competition_id' => $competition->getId(),
-            'name'           => 'DIV1M',
-            'display_order'  => 2,
-        ]);
+        $this->post(
+            "/competitions/{$competition->getId()}/divisions",
+            [
+                'competition_id' => $competition->getId(),
+                'name' => 'DIV1M',
+                'display_order' => 2,
+            ]
+        )
+             ->assertSessionHasNoErrors();
+        $this->assertDatabaseHas(
+            'divisions',
+            [
+                'competition_id' => $competition->getId(),
+                'name' => 'DIV1M',
+                'display_order' => 2,
+            ]
+        );
     }
 
     public function testEditingADivision(): void
     {
         $this->be($this->siteAdmin);
 
-        $this->put("/competitions/1/divisions/1", [])
-            ->assertNotFound();
+        $this->put('/competitions/1/divisions/1', [])
+             ->assertNotFound();
 
-        /** @var Competition $competition */
-        $competition = factory(Competition::class)->create();
+        $competition = Competition::factory()->create();
 
         $this->put("/competitions/{$competition->getId()}/divisions/1", [])
-            ->assertNotFound();
+             ->assertNotFound();
 
-        /** @var Division $division */
-        $division = factory(Division::class)->create([
-            'competition_id' => $competition->getId(),
-            'name'           => 'MP',
-            'display_order'  => 1,
-        ]);
+        $division = Division::factory()->for($competition)->create(['name' => 'MP', 'display_order' => 1]);
 
         $this->put("/competitions/{$competition->getId()}/divisions/{$division->getId()}", [])
-            ->assertSessionHasErrors('name', 'The name is required.')
-            ->assertSessionHasErrors('display_order', 'The order is required.');
+             ->assertSessionHasErrors('name', 'The name is required.')
+             ->assertSessionHasErrors('display_order', 'The order is required.');
         $this->assertDatabaseHas('divisions', ['name' => 'MP', 'display_order' => 1]);
 
-        $this->put("/competitions/{$competition->getId()}/divisions/{$division->getId()}", [
-            'name'          => 'MP',
-            'display_order' => 'A',
-        ])
-            ->assertSessionHasErrors('display_order', 'The order must be a positive number.');
-        $this->assertDatabaseHas('divisions', [
-            'competition_id' => $competition->getId(),
-            'name'           => 'MP',
-            'display_order'  => 1,
-        ]);
+        $this->put(
+            "/competitions/{$competition->getId()}/divisions/{$division->getId()}",
+            [
+                'name' => 'MP',
+                'display_order' => 'A',
+            ]
+        )
+             ->assertSessionHasErrors('display_order', 'The order must be a positive number.');
+        $this->assertDatabaseHas(
+            'divisions',
+            [
+                'competition_id' => $competition->getId(),
+                'name' => 'MP',
+                'display_order' => 1,
+            ]
+        );
 
-        $this->put("/competitions/{$competition->getId()}/divisions/{$division->getId()}", [
-            'name'          => 'MP',
-            'display_order' => 0,
-        ])
-            ->assertSessionHasErrors('display_order', 'The order must be a positive number.');
-        $this->assertDatabaseHas('divisions', [
-            'competition_id' => $competition->getId(),
-            'name'           => 'MP',
-            'display_order'  => 1,
-        ]);
+        $this->put(
+            "/competitions/{$competition->getId()}/divisions/{$division->getId()}",
+            [
+                'name' => 'MP',
+                'display_order' => 0,
+            ]
+        )
+             ->assertSessionHasErrors('display_order', 'The order must be a positive number.');
+        $this->assertDatabaseHas(
+            'divisions',
+            [
+                'competition_id' => $competition->getId(),
+                'name' => 'MP',
+                'display_order' => 1,
+            ]
+        );
 
-        $this->put("/competitions/{$competition->getId()}/divisions/{$division->getId()}", [
-            'name'          => 'MP',
-            'display_order' => -1,
-        ])
-            ->assertSessionHasErrors('display_order', 'The order must be a positive number.');
-        $this->assertDatabaseHas('divisions', [
-            'competition_id' => $competition->getId(),
-            'name'           => 'MP',
-            'display_order'  => 1,
-        ]);
+        $this->put(
+            "/competitions/{$competition->getId()}/divisions/{$division->getId()}",
+            [
+                'name' => 'MP',
+                'display_order' => -1,
+            ]
+        )
+             ->assertSessionHasErrors('display_order', 'The order must be a positive number.');
+        $this->assertDatabaseHas(
+            'divisions',
+            [
+                'competition_id' => $competition->getId(),
+                'name' => 'MP',
+                'display_order' => 1,
+            ]
+        );
 
-        $this->put("/competitions/{$competition->getId()}/divisions/{$division->getId()}", [
-            'name'          => 'DIV1M',
-            'display_order' => 1,
-        ])
-            ->assertSessionHasNoErrors();
-        $this->assertDatabaseHas('divisions', [
-            'competition_id' => $competition->getId(),
-            'name'           => 'DIV1M',
-            'display_order'  => 1,
-        ]);
+        $this->put(
+            "/competitions/{$competition->getId()}/divisions/{$division->getId()}",
+            [
+                'name' => 'DIV1M',
+                'display_order' => 1,
+            ]
+        )
+             ->assertSessionHasNoErrors();
+        $this->assertDatabaseHas(
+            'divisions',
+            [
+                'competition_id' => $competition->getId(),
+                'name' => 'DIV1M',
+                'display_order' => 1,
+            ]
+        );
 
-        $this->put("/competitions/{$competition->getId()}/divisions/{$division->getId()}", [
-            'name'          => 'DIV1M',
-            'display_order' => 1,
-        ])
-            ->assertSessionHasNoErrors();
-        $this->assertDatabaseHas('divisions', [
-            'competition_id' => $competition->getId(),
-            'name'           => 'DIV1M',
-            'display_order'  => 1,
-        ]);
+        $this->put(
+            "/competitions/{$competition->getId()}/divisions/{$division->getId()}",
+            [
+                'name' => 'DIV1M',
+                'display_order' => 1,
+            ]
+        )
+             ->assertSessionHasNoErrors();
+        $this->assertDatabaseHas(
+            'divisions',
+            [
+                'competition_id' => $competition->getId(),
+                'name' => 'DIV1M',
+                'display_order' => 1,
+            ]
+        );
 
-        factory(Division::class)->create([
-            'competition_id' => $competition->getId(),
-            'name'           => 'DIV2M',
-            'display_order'  => 2,
-        ]);
+        Division::factory()->for($competition)->create(['name' => 'DIV2M', 'display_order' => 2]);
 
-        $this->put("/competitions/{$competition->getId()}/divisions/{$division->getId()}", [
-            'name'          => 'DIV2M',
-            'display_order' => 1,
-        ])
-            ->assertSessionHasErrors('name', 'The division already exists in this competition.');
-        $this->assertDatabaseHas('divisions', [
-            'competition_id' => $competition->getId(),
-            'name'           => 'DIV1M',
-            'display_order'  => 1,
-        ]);
+        $this->put(
+            "/competitions/{$competition->getId()}/divisions/{$division->getId()}",
+            [
+                'name' => 'DIV2M',
+                'display_order' => 1,
+            ]
+        )
+             ->assertSessionHasErrors('name', 'The division already exists in this competition.');
+        $this->assertDatabaseHas(
+            'divisions',
+            [
+                'competition_id' => $competition->getId(),
+                'name' => 'DIV1M',
+                'display_order' => 1,
+            ]
+        );
 
-        $this->put("/competitions/{$competition->getId()}/divisions/{$division->getId()}", [
-            'name'          => 'DIV2M',
-            'display_order' => 2,
-        ])
-            ->assertSessionHasErrors('display_order', 'The order is already used for another division.');
-        $this->assertDatabaseHas('divisions', [
-            'competition_id' => $competition->getId(),
-            'name'           => 'DIV1M',
-            'display_order'  => 1,
-        ]);
+        $this->put(
+            "/competitions/{$competition->getId()}/divisions/{$division->getId()}",
+            [
+                'name' => 'DIV2M',
+                'display_order' => 2,
+            ]
+        )
+             ->assertSessionHasErrors('display_order', 'The order is already used for another division.');
+        $this->assertDatabaseHas(
+            'divisions',
+            [
+                'competition_id' => $competition->getId(),
+                'name' => 'DIV1M',
+                'display_order' => 1,
+            ]
+        );
 
-        $div1W = factory(Division::class)->create(['name' => 'DIV1W', 'display_order' => 2]);
+        $div1W = Division::factory()->create(['name' => 'DIV1W', 'display_order' => 2]);
 
-        $this->put("/competitions/{$competition->getId()}/divisions/{$division->getId()}", [
-            'name'          => 'DIV1W',
-            'display_order' => 1,
-        ])
-            ->assertSessionHasNoErrors();
-        $this->assertDatabaseHas('divisions', [
-            'competition_id' => $competition->getId(),
-            'name'           => 'DIV1W',
-            'display_order'  => 1,
-        ])->assertDatabaseHas('divisions', [
-            'competition_id' => $competition->getId(),
-            'name'           => 'DIV2M',
-            'display_order'  => 2,
-        ])->assertDatabaseHas('divisions', [
-            'competition_id' => $div1W->getCompetition()->getId(),
-            'name'           => 'DIV1W',
-            'display_order'  => 2,
-        ]);
+        $this->put(
+            "/competitions/{$competition->getId()}/divisions/{$division->getId()}",
+            [
+                'name' => 'DIV1W',
+                'display_order' => 1,
+            ]
+        )
+             ->assertSessionHasNoErrors();
+        $this->assertDatabaseHas(
+            'divisions',
+            [
+                'competition_id' => $competition->getId(),
+                'name' => 'DIV1W',
+                'display_order' => 1,
+            ]
+        )->assertDatabaseHas(
+            'divisions',
+            [
+                'competition_id' => $competition->getId(),
+                'name' => 'DIV2M',
+                'display_order' => 2,
+            ]
+        )->assertDatabaseHas(
+            'divisions',
+            [
+                'competition_id' => $div1W->getCompetition()->getId(),
+                'name' => 'DIV1W',
+                'display_order' => 2,
+            ]
+        );
     }
 
     public function testDeletingADivision(): void
     {
         $this->be($this->siteAdmin);
 
-        $this->delete("/competitions/1/divisions/1")
-            ->assertNotFound();
+        $this->delete('/competitions/1/divisions/1')
+             ->assertNotFound();
 
-        $competition = factory(Competition::class)->create();
+        $competition = Competition::factory()->create();
 
         $this->delete("/competitions/{$competition->getId()}/divisions/1")
-            ->assertNotFound();
+             ->assertNotFound();
 
-        /** @var Division $division */
-        $division = factory(Division::class)->create([
-            'competition_id' => $competition->getId(),
-            'name' => 'MP',
-            'display_order' => 1,
-        ]);
+        $division = Division::factory()->for($competition)->create(['name' => 'MP', 'display_order' => 1]);
 
         $this->delete("/competitions/{$competition->getId()}/divisions/{$division->getId()}")
-            ->assertSessionHasNoErrors();
-        $this->assertDatabaseMissing('divisions', [
-            'id' => $division->getId(),
-            'deleted_at' => null,
-        ]);
+             ->assertSessionHasNoErrors();
+        $this->assertDatabaseMissing(
+            'divisions',
+            [
+                'id' => $division->getId(),
+                'deleted_at' => null,
+            ]
+        );
     }
 
     public function testAddingDivisionWillDispatchTheEvent(): void
     {
         Event::fake();
 
-        $this->be($this->siteAdmin);
-        $competitionId = factory(Competition::class)->create()->getId();
-
-        $this->post("/competitions/$competitionId/divisions", [
-            'competition_id' => $competitionId,
-            'name' => 'MP',
-            'display_order' => 1,
-        ]);
+        $competition = Competition::factory()->create();
+        $this->actingAs($this->siteAdmin)
+             ->post(
+                 "/competitions/{$competition->getId()}/divisions",
+                 [
+                     'competition_id' => $competition->getId(),
+                     'name' => 'MP',
+                     'display_order' => 1,
+                 ]
+             );
 
         Event::assertDispatched(DivisionCreated::class);
     }

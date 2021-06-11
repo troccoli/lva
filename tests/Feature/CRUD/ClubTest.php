@@ -14,225 +14,217 @@ class ClubTest extends TestCase
 {
     public function testAccessForGuests(): void
     {
-        /** @var Club $club */
-        $club = aClub()->build();
+        $club = Club::factory()->create();
 
         $this->get('/clubs')
-            ->assertRedirect('/login');
+             ->assertRedirect('/login');
 
         $this->get('/clubs/create')
-            ->assertRedirect('/login');
+             ->assertRedirect('/login');
 
         $this->post('/clubs')
-            ->assertRedirect('/login');
+             ->assertRedirect('/login');
 
-        $this->get('/clubs/' . $club->getId() . '/edit')
-            ->assertRedirect('/login');
+        $this->get("/clubs/{$club->getId()}/edit")
+             ->assertRedirect('/login');
 
-        $this->put('/clubs/' . $club->getId())
-            ->assertRedirect('/login');
+        $this->put("/clubs/{$club->getId()}")
+             ->assertRedirect('/login');
 
-        $this->delete('/clubs/' . $club->getId())
-            ->assertRedirect('/login');
+        $this->delete("/clubs/{$club->getId()}")
+             ->assertRedirect('/login');
     }
 
     public function testAccessForUsersWithoutAnyCorrectRoles(): void
     {
-        /** @var Club $club */
-        $club = aClub()->build();
+        $club = Club::factory()->create();
 
-        $this->actingAs(factory(User::class)->create());
+        $this->be(User::factory()->create());
 
         $this->get('/clubs')
-            ->assertForbidden();
+             ->assertForbidden();
 
         $this->get('/clubs/create')
-            ->assertForbidden();
+             ->assertForbidden();
 
         $this->post('/clubs', $club->toArray())
-            ->assertForbidden();
+             ->assertForbidden();
 
-        $club = Club::first();
+        $this->get("/clubs/{$club->getId()}/edit")
+             ->assertForbidden();
 
-        $this->get('/clubs/' . $club->getId() . '/edit')
-            ->assertForbidden();
+        $this->put("/clubs/{$club->getId()}", $club->toArray())
+             ->assertForbidden();
 
-        $this->put('/clubs/' . $club->getId(), $club->toArray())
-            ->assertForbidden();
-
-        $this->delete('/clubs/' . $club->getId())
-            ->assertForbidden();
+        $this->delete("/clubs/{$club->getId()}")
+             ->assertForbidden();
     }
 
     public function testAccessForSiteAdministrators(): void
     {
-        /** @var Club $club */
-        $club = aClub()->buildWithoutSaving();
+        $club = Club::factory()->make();
 
-        $this->actingAs($this->siteAdmin);
+        $this->be($this->siteAdmin);
 
         $this->get('/clubs')
-            ->assertOk();
+             ->assertOk();
 
         $this->get('/clubs/create')
-            ->assertOk();
+             ->assertOk();
 
         $this->post('/clubs', $club->toArray())
-            ->assertRedirect('/clubs');
+             ->assertRedirect('/clubs');
 
         $club = Club::first();
 
-        $this->get('/clubs/' . $club->getId() . '/edit')
-            ->assertOk();
+        $this->get("/clubs/{$club->getId()}/edit")
+             ->assertOk();
 
-        $this->put('/clubs/' . $club->getId(), $club->toArray())
-            ->assertRedirect('clubs');
+        $this->put("/clubs/{$club->getId()}", $club->toArray())
+             ->assertRedirect('clubs');
 
-        $this->delete('/clubs/' . $club->getId())
-            ->assertRedirect('clubs');
+        $this->delete("/clubs/{$club->getId()}")
+             ->assertRedirect('clubs');
     }
 
     public function testAccessForUnverifiedUsers(): void
     {
-        /** @var Club $club */
-        $club = aClub()->build();
+        $club = Club::factory()->create();
 
-        $this->actingAs(factory(User::class)->state('unverified')->create());
+        $this->be(User::factory()->unverified()->create());
 
         $this->get('/clubs')
-            ->assertRedirect('/email/verify');
+             ->assertRedirect('/email/verify');
 
         $this->get('/clubs/create')
-            ->assertRedirect('/email/verify');
+             ->assertRedirect('/email/verify');
 
         $this->post('/clubs')
-            ->assertRedirect('/email/verify');
+             ->assertRedirect('/email/verify');
 
-        $this->get('/clubs/' . $club->getId() . '/edit')
-            ->assertRedirect('/email/verify');
+        $this->get("/clubs/{$club->getId()}/edit")
+             ->assertRedirect('/email/verify');
 
-        $this->put('/clubs/' . $club->getId())
-            ->assertRedirect('/email/verify');
+        $this->put("/clubs/{$club->getId()}")
+             ->assertRedirect('/email/verify');
 
-        $this->delete('/clubs/' . ($club->getId()))
-            ->assertRedirect('/email/verify');
+        $this->delete("/clubs/{$club->getId()}")
+             ->assertRedirect('/email/verify');
     }
 
     public function testAccessForClubSecretaries(): void
     {
         /** @var Club $club */
-        $club = factory(Club::class)->create();
+        $club = Club::factory()->create();
 
-        $this->be(factory(User::class)->create()->assignRole(RolesHelper::clubSecretary($club)));
+        $this->be(User::factory()->create()->assignRole(RolesHelper::clubSecretary($club)));
 
         $this->get('/clubs')
-            ->assertOk();
+             ->assertOk();
 
         $this->get('/clubs/create')
-            ->assertForbidden();
+             ->assertForbidden();
 
         $this->post('/clubs', $club->toArray())
-            ->assertForbidden();
+             ->assertForbidden();
 
-        $this->get('/clubs/' . $club->getId() . '/edit')
-            ->assertOk();
+        $this->get("/clubs/{$club->getId()}/edit")
+             ->assertOk();
 
-        $this->put('/clubs/' . $club->getId(), $club->toArray())
-            ->assertRedirect('clubs');
+        $this->put("/clubs/{$club->getId()}", $club->toArray())
+             ->assertRedirect('clubs');
 
-        $this->delete('/clubs/' . $club->getId())
-            ->assertForbidden();
+        $this->delete("/clubs/{$club->getId()}")
+             ->assertForbidden();
 
-        $anotherClub = factory(Club::class)->create();
+        $anotherClub = Club::factory()->create();
 
-        $this->get('/clubs/' . $anotherClub->getId() . '/edit')
-            ->assertForbidden();
+        $this->get("/clubs/{$anotherClub->getId()}/edit")
+             ->assertForbidden();
 
-        $this->put('/clubs/' . $anotherClub->getId(), $club->toArray())
-            ->assertForbidden();
+        $this->put("/clubs/{$anotherClub->getId()}", $club->toArray())
+             ->assertForbidden();
     }
 
     public function testAddingAClub(): void
     {
-        $this->actingAs($this->siteAdmin);
+        $this->be($this->siteAdmin);
 
         $this->post('/clubs', [])
-            ->assertSessionHasErrors('name', 'The name is required.')
-            ->assertSessionHasErrors('venue_id', 'The venue is required.');
+             ->assertSessionHasErrors('name', 'The name is required.')
+             ->assertSessionHasErrors('venue_id', 'The venue is required.');
         $this->assertDatabaseMissing('clubs', ['name' => 'London Giants']);
 
         $this->post('/clubs', ['name' => 'London Giants', 'venue_id' => null])
-            ->assertSessionHasNoErrors();
+             ->assertSessionHasNoErrors();
         $this->assertDatabaseHas('clubs', ['name' => 'London Giants', 'venue_id' => null]);
 
         $this->post('/clubs', ['name' => 'London Giants'])
-            ->assertSessionHasErrors('name', 'The club already exists.');
+             ->assertSessionHasErrors('name', 'The club already exists.');
         $this->assertDatabaseHas('clubs', ['name' => 'London Giants']);
 
         $this->post('/clubs', ['name' => 'Global Warriors', 'venue_id' => 1])
-            ->assertSessionHasErrors('venue_id', 'The venue does not exist.');
+             ->assertSessionHasErrors('venue_id', 'The venue does not exist.');
         $this->assertDatabaseMissing('clubs', ['name' => 'Global Warriors', 'venue_id' => null]);
 
-        $venue = factory(Venue::class)->create();
+        $venue = Venue::factory()->create();
         $this->post('/clubs', ['name' => 'Global Warriors', 'venue_id' => $venue->getId()])
-            ->assertSessionHasNoErrors();
+             ->assertSessionHasNoErrors();
         $this->assertDatabaseHas('clubs', ['name' => 'Global Warriors', 'venue_id' => $venue->getId()]);
     }
 
     public function testEditingAClub(): void
     {
-        $this->actingAs($this->siteAdmin);
+        $this->be($this->siteAdmin);
 
         $this->put('/clubs/1')
-            ->assertNotFound();
+             ->assertNotFound();
 
-        /** @var Club $club */
-        $club = aClub()->withName('Boston Scarlets')->build();
+        $club = Club::factory()->create(['name' => 'Boston Scarlets']);
         $venueId = $club->getVenue()->getId();
 
-        $this->put('/clubs/' . $club->getId(), [])
-            ->assertSessionHasErrors('name', 'The name is required.')
-            ->assertSessionHasErrors('venue_id', 'The venue is required.');
+        $this->put("/clubs/{$club->getId()}", [])
+             ->assertSessionHasErrors('name', 'The name is required.')
+             ->assertSessionHasErrors('venue_id', 'The venue is required.');
         $this->assertDatabaseHas('clubs', ['name' => 'Boston Scarlets', 'venue_id' => $venueId]);
 
-        $this->put('/clubs/' . $club->getId(), ['name' => 'Boston Former Scarlets', 'venue_id' => 0])
-            ->assertSessionHasErrors('venue_id', 'The venue does not exist.');
+        $this->put("/clubs/{$club->getId()}", ['name' => 'Boston Former Scarlets', 'venue_id' => 0])
+             ->assertSessionHasErrors('venue_id', 'The venue does not exist.');
         $this->assertDatabaseHas('clubs', ['name' => 'Boston Scarlets', 'venue_id' => $venueId]);
 
-        $this->put('/clubs/' . $club->getId(), ['name' => 'Boston Former Scarlets', 'venue_id' => $venueId])
-            ->assertSessionHasNoErrors();
+        $this->put("/clubs/{$club->getId()}", ['name' => 'Boston Former Scarlets', 'venue_id' => $venueId])
+             ->assertSessionHasNoErrors();
         $this->assertDatabaseMissing('clubs', ['name' => 'Boston Scarlets'])
-            ->assertDatabaseHas('clubs', ['name' => 'Boston Former Scarlets', 'venue_id' => $venueId]);
+             ->assertDatabaseHas('clubs', ['name' => 'Boston Former Scarlets', 'venue_id' => $venueId]);
 
-        aClub()->withName('London Giants')->build();
+        Club::factory()->create(['name' => 'London Giants']);
 
-        $this->put('/clubs/' . $club->getId(), ['name' => 'London Giants', 'venue_id' => $venueId])
-            ->assertSessionHasErrors('name', 'The club already exists.');
+        $this->put("/clubs/{$club->getId()}", ['name' => 'London Giants', 'venue_id' => $venueId])
+             ->assertSessionHasErrors('name', 'The club already exists.');
         $this->assertDatabaseHas('clubs', ['name' => 'Boston Former Scarlets', 'venue_id' => $venueId]);
 
-        $newVenueId = factory(Venue::class)->create()->getId();
+        $newVenue = Venue::factory()->create();
 
-        $this->put('/clubs/' . $club->getId(), ['name' => 'Boston Former Scarlets', 'venue_id' => $newVenueId])
-            ->assertSessionHasNoErrors();
-        $this->assertDatabaseHas('clubs', ['name' => 'Boston Former Scarlets', 'venue_id' => $newVenueId]);
+        $this->put("/clubs/{$club->getId()}", ['name' => 'Boston Former Scarlets', 'venue_id' => $newVenue->getId()])
+             ->assertSessionHasNoErrors();
+        $this->assertDatabaseHas('clubs', ['name' => 'Boston Former Scarlets', 'venue_id' => $newVenue->getId()]);
 
-        $this->put('/clubs/' . $club->getId(), ['name' => 'Boston Former Scarlets', 'venue_id' => null])
-            ->assertSessionHasNoErrors();
+        $this->put("/clubs/{$club->getId()}", ['name' => 'Boston Former Scarlets', 'venue_id' => null])
+             ->assertSessionHasNoErrors();
         $this->assertDatabaseHas('clubs', ['name' => 'Boston Former Scarlets', 'venue_id' => null]);
     }
 
     public function testDeletingAClub(): void
     {
-        $this->actingAs($this->siteAdmin);
+        $this->be($this->siteAdmin);
 
         $this->delete('/clubs/1')
-            ->assertNotFound();
+             ->assertNotFound();
 
-        /** @var Club $club */
-        $club = aClub()->build();
+        $club = club::factory()->create();
 
-        $this->delete('/clubs/' . $club->getId())
-            ->assertSessionHasNoErrors();
+        $this->delete("/clubs/{$club->getId()}")
+             ->assertSessionHasNoErrors();
         $this->assertDatabaseMissing('clubs', ['id' => $club->getId()]);
     }
 
@@ -240,9 +232,8 @@ class ClubTest extends TestCase
     {
         Event::fake();
 
-        $this->actingAs($this->siteAdmin);
-
-        $this->post('/clubs', ['name' => 'London Giants', 'venue_id' => null]);
+        $this->actingAs($this->siteAdmin)
+             ->post('/clubs', ['name' => 'London Giants', 'venue_id' => null]);
 
         Event::assertDispatched(ClubCreated::class);
     }

@@ -2,92 +2,119 @@
 
 namespace Tests\Integration\Api\V1;
 
+use App\Models\Club;
+use App\Models\User;
 use App\Models\Venue;
-use Tests\ApiTestCase;
+use Laravel\Passport\Passport;
 use Tests\Concerns\InteractsWithArrays;
+use Tests\TestCase;
 
-class VenuesTest extends ApiTestCase
+class VenuesTest extends TestCase
 {
     use InteractsWithArrays;
 
     public function testGettingAllVenues(): void
     {
-        $venue1 = factory(Venue::class)->create(['name' => 'Olympic Gym']);
-        $venue2 = factory(Venue::class)->create(['name' => 'The Box']);
+        $venue1 = Venue::factory()->create(['name' => 'Olympic Gym']);
+        $venue2 = Venue::factory()->create(['name' => 'The Box']);
 
         $response = $this->get('/api/v1/venues')
-            ->assertOk();
-        $data = $response->decodeResponseJson('data');
+                         ->assertOk();
+        $venues = $response->json('data');
 
-        $this->assertCount(2, $data);
-        $this->assertContains([
-            'id'   => $venue1->getId(),
-            'name' => 'Olympic Gym',
-        ], $data);
-        $this->assertContains([
-            'id'   => $venue2->getId(),
-            'name' => 'The Box',
-        ], $data);
+        $this->assertCount(2, $venues);
+        $this->assertContains(
+            [
+                'id' => $venue1->getId(),
+                'name' => 'Olympic Gym',
+            ],
+            $venues
+        );
+        $this->assertContains(
+            [
+                'id' => $venue2->getId(),
+                'name' => 'The Box',
+            ],
+            $venues
+        );
     }
 
     public function testGettingAllVenuesWhenThereAreNone(): void
     {
         $response = $this->get('/api/v1/venues')
-            ->assertOk();
+                         ->assertOk();
 
-        $this->assertEmpty($response->decodeResponseJson('data'));
+        $this->assertEmpty($response->json('data'));
     }
 
     public function testGettingAllVenusWithTheirClubs(): void
     {
-        $venue1 = factory(Venue::class)->create(['name' => 'Olympic Gym']);
-        $club1 = aClub()->withName('The Giants')->withVenue($venue1)->build();
-        $club2 = aClub()->withName('The Minions')->withVenue($venue1)->build();
-        $venue2 = factory(Venue::class)->create(['name' => 'The Box']);
-        $club3 = aClub()->withName('London Sparrows')->withVenue($venue2)->build();
-        $club4 = aClub()->withName('Boston Spiders')->withVenue($venue2)->build();
+        $venue1 = Venue::factory()->create(['name' => 'Olympic Gym']);
+        $club1 = Club::factory()->for($venue1)->create(['name' => 'The Giants']);
+        $club2 = Club::factory()->for($venue1)->create(['name' => 'The Minions']);
+        $venue2 = Venue::factory()->create(['name' => 'The Box']);
+        $club3 = Club::factory()->for($venue2)->create(['name' => 'London Sparrows']);
+        $club4 = Club::factory()->for($venue2)->create(['name' => 'Boston Spiders']);
 
         $response = $this->get('/api/v1/venues?with[]=clubs')
-            ->assertOk();
-        $data = $response->decodeResponseJson('data');
+                         ->assertOk();
+        $venues = $response->json('data');
 
-        $this->assertCount(2, $data);
-        foreach ($data as $venue) {
+        $this->assertCount(2, $venues);
+        foreach ($venues as $venue) {
             $this->assertArrayHasKey('id', $venue);
             switch ($venue['id']) {
                 case $venue1->getId():
-                    $this->assertArrayContent([
-                        'id'   => $venue1->getId(),
-                        'name' => 'Olympic Gym',
-                    ], $venue);
+                    $this->assertArrayContent(
+                        [
+                            'id' => $venue1->getId(),
+                            'name' => 'Olympic Gym',
+                        ],
+                        $venue
+                    );
                     $this->assertArrayHasKey('clubs', $venue);
                     $clubs = $venue['clubs'];
                     $this->assertCount(2, $clubs);
-                    $this->assertContains([
-                        'id'   => $club1->getId(),
-                        'name' => 'The Giants',
-                    ], $clubs);
-                    $this->assertContains([
-                        'id'   => $club2->getId(),
-                        'name' => 'The Minions',
-                    ], $clubs);
+                    $this->assertContains(
+                        [
+                            'id' => $club1->getId(),
+                            'name' => 'The Giants',
+                        ],
+                        $clubs
+                    );
+                    $this->assertContains(
+                        [
+                            'id' => $club2->getId(),
+                            'name' => 'The Minions',
+                        ],
+                        $clubs
+                    );
                     break;
                 case $venue2->getId():
-                    $this->assertArrayContent([
-                        'id'   => $venue2->getId(),
-                        'name' => 'The Box',
-                    ], $venue);
+                    $this->assertArrayContent(
+                        [
+                            'id' => $venue2->getId(),
+                            'name' => 'The Box',
+                        ],
+                        $venue
+                    );
                     $this->assertArrayHasKey('clubs', $venue);
                     $clubs = $venue['clubs'];
                     $this->assertCount(2, $clubs);
-                    $this->assertContains([
-                        'id'   => $club3->getId(),
-                        'name' => 'London Sparrows',
-                    ], $clubs);
-                    $this->assertContains([
-                        'id'   => $club4->getId(),
-                        'name' => 'Boston Spiders',
-                    ], $clubs);
+                    $this->assertContains(
+                        [
+                            'id' => $club3->getId(),
+                            'name' => 'London Sparrows',
+                        ],
+                        $clubs
+                    );
+                    $this->assertContains(
+                        [
+                            'id' => $club4->getId(),
+                            'name' => 'Boston Spiders',
+                        ],
+                        $clubs
+                    );
                     break;
                 default:
                     $this->assertTrue(false, "Unexpected venue {$venue['id']}");
@@ -98,30 +125,36 @@ class VenuesTest extends ApiTestCase
 
     public function testGettingAllVenuesWithTheirClubsWhenThereAreNone(): void
     {
-        $venue1 = factory(Venue::class)->create(['name' => 'Olympic Gym']);
-        $venue2 = factory(Venue::class)->create(['name' => 'The Box']);
+        $venue1 = Venue::factory()->create(['name' => 'Olympic Gym']);
+        $venue2 = Venue::factory()->create(['name' => 'The Box']);
 
         $response = $this->get('/api/v1/venues?with[]=clubs')
-            ->assertOk();
-        $data = $response->decodeResponseJson('data');
+                         ->assertOk();
+        $venues = $response->json('data');
 
-        $this->assertCount(2, $data);
-        foreach ($data as $venue) {
+        $this->assertCount(2, $venues);
+        foreach ($venues as $venue) {
             $this->assertArrayHasKey('id', $venue);
             switch ($venue['id']) {
                 case $venue1->getId():
-                    $this->assertArrayContent([
-                        'id'   => $venue1->getId(),
-                        'name' => 'Olympic Gym',
-                    ], $venue);
+                    $this->assertArrayContent(
+                        [
+                            'id' => $venue1->getId(),
+                            'name' => 'Olympic Gym',
+                        ],
+                        $venue
+                    );
                     $this->assertArrayHasKey('clubs', $venue);
                     $this->assertEmpty($venue['clubs']);
                     break;
                 case $venue2->getId():
-                    $this->assertArrayContent([
-                        'id'   => $venue2->getId(),
-                        'name' => 'The Box',
-                    ], $venue);
+                    $this->assertArrayContent(
+                        [
+                            'id' => $venue2->getId(),
+                            'name' => 'The Box',
+                        ],
+                        $venue
+                    );
                     $this->assertArrayHasKey('clubs', $venue);
                     $this->assertEmpty($venue['clubs']);
                     break;
@@ -134,77 +167,101 @@ class VenuesTest extends ApiTestCase
 
     public function testGettingOneVenue(): void
     {
-        $venue1 = factory(Venue::class)->create(['name' => 'Olympic Gym']);
-        $venue2 = factory(Venue::class)->create(['name' => 'The Box']);
+        Venue::factory()->create(['name' => 'Olympic Gym']);
+        $venue2 = Venue::factory()->create(['name' => 'The Box']);
 
-        $response = $this->get('/api/v1/venues/' . $venue2->getId())
-            ->assertOk();
+        $response = $this->get("/api/v1/venues/{$venue2->getId()}")
+                         ->assertOk();
 
-        $this->assertSame([
-            'id'   => $venue2->getId(),
-            'name' => 'The Box',
-        ], $response->decodeResponseJson('data'));
+        $this->assertSame(
+            [
+                'id' => $venue2->getId(),
+                'name' => 'The Box',
+            ],
+            $response->json('data')
+        );
     }
 
     public function testGettingANonExistingVenue(): void
     {
-        $response = $this->get('/api/v1/venues/1')
-            ->assertNotFound();
+        $this->get('/api/v1/venues/1')->assertNotFound();
     }
 
     public function testGettingOneVenueWithItsClubs(): void
     {
-        $venue1 = factory(Venue::class)->create(['name' => 'Olympic Gym']);
-        $club1 = aClub()->withName('The Giants')->withVenue($venue1)->build();
-        $club2 = aClub()->withName('The Minions')->withVenue($venue1)->build();
-        $club3 = aClub()->withName('The Worker Bees')->withVenue($venue1)->build();
-        $venue2 = factory(Venue::class)->create(['name' => 'The Box']);
+        $venue1 = Venue::factory()->create(['name' => 'Olympic Gym']);
+        $club1 = Club::factory()->for($venue1)->create(['name' => 'The Giants']);
+        $club2 = Club::factory()->for($venue1)->create(['name' => 'The Minions']);
+        $club3 = Club::factory()->for($venue1)->create(['name' => 'The Worker Bees']);
+        Venue::factory()->create(['name' => 'The Box']);
 
-        $response = $this->get('/api/v1/venues/' . $venue1->getId() . '?with[]=clubs')
-            ->assertOk();
-        $data = $response->decodeResponseJson('data');
+        $response = $this->get("/api/v1/venues/{$venue1->getId()}?with[]=clubs")
+                         ->assertOk();
+        $venues = $response->json('data');
 
-        $this->assertArrayContent([
-            'id'   => $venue1->getId(),
-            'name' => 'Olympic Gym',
-        ], $data);
+        $this->assertArrayContent(
+            [
+                'id' => $venue1->getId(),
+                'name' => 'Olympic Gym',
+            ],
+            $venues
+        );
 
-        $this->assertArrayHasKey('clubs', $data);
-        $clubs = $data['clubs'];
+        $this->assertArrayHasKey('clubs', $venues);
+        $clubs = $venues['clubs'];
 
         $this->assertCount(3, $clubs);
-        $this->assertContains([
-            'id'   => $club1->getId(),
-            'name' => 'The Giants',
-        ], $clubs);
-        $this->assertContains([
-            'id'   => $club2->getId(),
-            'name' => 'The Minions',
-        ], $clubs);
-        $this->assertContains([
-            'id'   => $club3->getId(),
-            'name' => 'The Worker Bees',
-        ], $clubs);
+        $this->assertContains(
+            [
+                'id' => $club1->getId(),
+                'name' => 'The Giants',
+            ],
+            $clubs
+        );
+        $this->assertContains(
+            [
+                'id' => $club2->getId(),
+                'name' => 'The Minions',
+            ],
+            $clubs
+        );
+        $this->assertContains(
+            [
+                'id' => $club3->getId(),
+                'name' => 'The Worker Bees',
+            ],
+            $clubs
+        );
     }
 
     public function testGettingOneVenueWithItsClubsWhenThereAreNone(): void
     {
-        $venue1 = factory(Venue::class)->create(['name' => 'Olympic Gym']);
-        $club1 = aClub()->withName('The Giants')->withVenue($venue1)->build();
-        $club2 = aClub()->withName('The Minions')->withVenue($venue1)->build();
-        $club3 = aClub()->withName('The Worker Bees')->withVenue($venue1)->build();
-        $venue2 = factory(Venue::class)->create(['name' => 'The Box']);
+        $venue1 = Venue::factory()->create(['name' => 'Olympic Gym']);
+        Club::factory()->for($venue1)->create(['name' => 'The Giants']);
+        Club::factory()->for($venue1)->create(['name' => 'The Minions']);
+        Club::factory()->for($venue1)->create(['name' => 'The Worker Bees']);
+        $venue2 = Venue::factory()->create(['name' => 'The Box']);
 
-        $response = $this->get('/api/v1/venues/' . $venue2->getId() . '?with[]=clubs')
-            ->assertOk();
-        $data = $response->decodeResponseJson('data');
+        $response = $this->get("/api/v1/venues/{$venue2->getId()}?with[]=clubs")
+                         ->assertOk();
+        $venues = $response->json('data');
 
-        $this->assertArrayContent([
-            'id'   => $venue2->getId(),
-            'name' => 'The Box',
-        ], $data);
+        $this->assertArrayContent(
+            [
+                'id' => $venue2->getId(),
+                'name' => 'The Box',
+            ],
+            $venues
+        );
 
-        $this->assertArrayHasKey('clubs', $data);
-        $this->assertEmpty($data['clubs']);
+        $this->assertArrayHasKey('clubs', $venues);
+        $this->assertEmpty($venues['clubs']);
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Passport::actingAs(User::factory()->create());
     }
 }

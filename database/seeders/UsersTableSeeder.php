@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use App\Helpers\RolesHelper;
 use App\Models\Club;
 use App\Models\Competition;
@@ -18,28 +20,28 @@ class UsersTableSeeder extends Seeder
     {
         $this->initProgressBar(Role::count() + 1);
 
-        factory(User::class)->create([
-            'name' => "Test User",
-            'email' => "test-user@example.com",
+        User::factory()->create([
+            'name' => 'Test User',
+            'email' => 'test-user@example.com',
         ]);
         $this->advanceProgressBar();
 
-        $user = factory(User::class)->create([
-            'name' => "Site Administrator",
-            'email' => "site-administrator@example.com",
+        $user = User::factory()->create([
+            'name' => 'Site Administrator',
+            'email' => 'site-administrator@example.com',
         ]);
-        $user->assignRole("Site Administrator");
+        $user->assignRole('Site Administrator');
         $this->advanceProgressBar();
 
-        $user = factory(User::class)->create([
-            'name' => "Referees Administrator",
-            'email' => "referees-administrator@example.com",
+        $user = User::factory()->create([
+            'name' => 'Referees Administrator',
+            'email' => 'referees-administrator@example.com',
         ]);
-        $user->assignRole("Referees Administrator");
+        $user->assignRole('Referees Administrator');
         $this->advanceProgressBar();
 
         Season::all()->each(function (Season $season) {
-            $user = factory(User::class)->create([
+            $user = User::factory()->create([
                 'name' => "Season {$season->getId()} Administrator",
                 'email' => "season-{$season->getId()}-administrator@example.com",
             ]);
@@ -47,7 +49,7 @@ class UsersTableSeeder extends Seeder
             $this->advanceProgressBar();
         });
         Competition::all()->each(function (Competition $competition) {
-            $user = factory(User::class)->create([
+            $user = User::factory()->create([
                 'name' => "Competition {$competition->getId()} Administrator",
                 'email' => "competition-{$competition->getId()}-administrator@example.com",
             ]);
@@ -55,7 +57,7 @@ class UsersTableSeeder extends Seeder
             $this->advanceProgressBar();
         });
         Division::all()->each(function (Division $division) {
-            $user = factory(User::class)->create([
+            $user = User::factory()->create([
                 'name' => "Division {$division->getId()} Administrator",
                 'email' => "division-{$division->getId()}-administrator@example.com",
             ]);
@@ -64,7 +66,7 @@ class UsersTableSeeder extends Seeder
         });
 
         Club::all()->each(function (Club $club) {
-            $user = factory(User::class)->create([
+            $user = User::factory()->create([
                 'name' => "Club {$club->getId()} Secretary",
                 'email' => "club-{$club->getId()}-secretary@example.com",
             ]);
@@ -72,7 +74,7 @@ class UsersTableSeeder extends Seeder
             $this->advanceProgressBar();
         });
         Team::all()->each(function (Team $team) {
-            $user = factory(User::class)->create([
+            $user = User::factory()->create([
                 'name' => "Team {$team->getId()} Secretary",
                 'email' => "team-{$team->getId()}-secretary@example.com",
             ]);

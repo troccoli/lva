@@ -1,16 +1,29 @@
 <?php
 
-/* @var $factory \Illuminate\Database\Eloquent\Factory */
+namespace Database\Factories;
 
 use App\Models\Club;
 use App\Models\Venue;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Club::class, function (Faker $faker) {
-    return [
-        'name' => $faker->unique()->state,
-        'venue_id' => function () {
-            return factory(Venue::class)->create()->getId();
-        }
-    ];
-});
+class ClubFactory extends Factory
+{
+    protected $model = Club::class;
+
+    public function definition(): array
+    {
+        return [
+            'name' => $this->faker->unique()->state(),
+            'venue_id' => Venue::factory(),
+        ];
+    }
+
+    public function withoutVenue()
+    {
+        return $this->state(function (array $attributes): array {
+            return [
+                'venue_id' => null,
+            ];
+        });
+    }
+}

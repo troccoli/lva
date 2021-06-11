@@ -10,9 +10,12 @@ class CreateCompetitionAdminRoleTest extends TestCase
 {
     public function testItCreatesTheCompetitionAdminRole(): void
     {
-        $competition = \Mockery::mock(Competition::class, [
-            'getId' => '123'
-        ]);
+        $competition = \Mockery::mock(
+            Competition::class,
+            [
+                'getId' => '123',
+            ]
+        );
 
         $sut = new CreateCompetitionAdminRole($competition);
 

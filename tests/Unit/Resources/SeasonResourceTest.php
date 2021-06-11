@@ -11,6 +11,7 @@ use App\Repositories\AccessibleCompetitions;
 use Illuminate\Foundation\Testing\WithoutEvents;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Event;
 use Tests\Concerns\InteractsWithArrays;
 use Tests\TestCase;
 
@@ -21,35 +22,25 @@ class SeasonResourceTest extends TestCase
     private Season $season;
     private AccessibleCompetitions $accessibleCompetitions;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->season = factory(Season::class)->create(['year' => 2014]);
-        factory(Competition::class)->create([
-            'season_id' => $this->season->getId(),
-        ]);
-
-        $this->accessibleCompetitions = \Mockery::mock(AccessibleCompetitions::class);
-
-        $this->app->bind(AccessibleCompetitions::class, function () {
-            return $this->accessibleCompetitions;
-        });
-    }
-
     public function testItReturnTheCorrectFields(): void
     {
-        $request = \Mockery::mock(Request::class, [
-            'query' => [],
-        ]);
+        $request = \Mockery::mock(
+            Request::class,
+            [
+                'query' => [],
+            ]
+        );
 
         $resource = new SeasonResource($this->season);
         $resourceArray = $resource->toArray($request);
 
-        $this->assertArrayContent([
-            'id' => $this->season->getId(),
-            'name' => '2014/15',
-        ], $resourceArray);
+        $this->assertArrayContent(
+            [
+                'id' => $this->season->getId(),
+                'name' => '2014/15',
+            ],
+            $resourceArray
+        );
 
         $this->assertInstanceOf(AnonymousResourceCollection::class, $resourceArray['competitions']);
         $this->assertEquals(CompetitionResource::class, $resourceArray['competitions']->collects);
@@ -58,10 +49,13 @@ class SeasonResourceTest extends TestCase
 
     public function testItReturnTheCorrectFieldsWhenCompetitionsAreLoaded(): void
     {
-        $request = \Mockery::mock(Request::class, [
-            'query' => ['competitions'],
-            'user' => \Mockery::mock(User::class),
-        ]);
+        $request = \Mockery::mock(
+            Request::class,
+            [
+                'query' => ['competitions'],
+                'user' => \Mockery::mock(User::class),
+            ]
+        );
         $this->accessibleCompetitions
             ->shouldReceive('inSeason')->andReturnSelf()
             ->shouldReceive('get')->andReturn($this->season->getCompetitions());
@@ -69,13 +63,40 @@ class SeasonResourceTest extends TestCase
         $resource = new SeasonResource($this->season);
         $resourceArray = $resource->toArray($request);
 
-        $this->assertArrayContent([
-            'id' => $this->season->getId(),
-            'name' => '2014/15',
-        ], $resourceArray);
+        $this->assertArrayContent(
+            [
+                'id' => $this->season->getId(),
+                'name' => '2014/15',
+            ],
+            $resourceArray
+        );
 
         $this->assertInstanceOf(AnonymousResourceCollection::class, $resourceArray['competitions']);
         $this->assertEquals(CompetitionResource::class, $resourceArray['competitions']->collects);
         $this->assertCount(1, $resourceArray['competitions']->collection);
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // No need to create roles every time we create a model
+        Event::fake();
+
+        $this->season = Season::factory()->create(['year' => 2014]);
+        Competition::factory()->create(
+            [
+                'season_id' => $this->season->getId(),
+            ]
+        );
+
+        $this->accessibleCompetitions = \Mockery::mock(AccessibleCompetitions::class);
+
+        $this->app->bind(
+            AccessibleCompetitions::class,
+            function () {
+                return $this->accessibleCompetitions;
+            }
+        );
     }
 }

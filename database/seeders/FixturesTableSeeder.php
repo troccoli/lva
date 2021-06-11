@@ -1,6 +1,9 @@
 <?php
 
+namespace Database\Seeders;
+
 use App\Models\Division;
+use App\Models\Fixture;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
@@ -29,17 +32,20 @@ class FixturesTableSeeder extends Seeder
                     $homeTeam = $teams->get($match[0]);
                     $awayTeam = $teams->get($match[1]);
 
-                    aFixture()
-                        ->inDivision($division)
-                        ->number($matchNumber++)
-                        ->on($matchDate, $matchTime)
-                        ->between($homeTeam, $awayTeam)
-                        ->at($homeTeam->getVenue())
-                        ->build();
+                    Fixture::factory()
+                        ->create([
+                            'division_id' => $division->getId(),
+                            'match_number' => $matchNumber++,
+                            'match_date' => $matchDate,
+                            'match_time' => $matchTime,
+                            'home_team_id' => $homeTeam->getId(),
+                            'away_team_id' => $awayTeam->getId(),
+                            'venue_id' => $homeTeam->getVenue()->getId(),
+                        ]);
                 }
                 $matchDate->addDay();
-            };
-        };
+            }
+        }
         $this->finishProgressBar();
     }
 
@@ -56,10 +62,10 @@ class FixturesTableSeeder extends Seeder
         return $matchDate;
     }
 
-    private function buildRounds(Collection $teams): Schedule
+    private function buildRounds(Collection $teams): \Schedule
     {
         $rounds = (($count = count($teams)) % 2 === 0 ? $count - 1 : $count) * 2;
-        $scheduler = new ScheduleBuilder($teams->keys()->toArray(), $rounds);
+        $scheduler = new \ScheduleBuilder($teams->keys()->toArray(), $rounds);
 
         return $scheduler->build();
     }

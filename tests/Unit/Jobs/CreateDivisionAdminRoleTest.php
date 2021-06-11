@@ -10,9 +10,12 @@ class CreateDivisionAdminRoleTest extends TestCase
 {
     public function testItCreatesTheDivisionAdminRole(): void
     {
-        $division = \Mockery::mock(Division::class, [
-            'getId' => '246'
-        ]);
+        $division = \Mockery::mock(
+            Division::class,
+            [
+                'getId' => '246',
+            ]
+        );
 
         $sut = new CreateDivisionAdminRole($division);
 

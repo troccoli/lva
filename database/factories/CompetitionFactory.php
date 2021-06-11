@@ -1,17 +1,20 @@
 <?php
 
-/** @var Factory $factory */
+namespace Database\Factories;
 
 use App\Models\Competition;
 use App\Models\Season;
-use Faker\Generator as Faker;
-use Illuminate\Database\Eloquent\Factory;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Competition::class, function (Faker $faker) {
-    return [
-        'season_id' => function () {
-            return factory(Season::class)->create()->id;
-        },
-        'name' => $faker->unique()->company(),
-    ];
-});
+class CompetitionFactory extends Factory
+{
+    protected $model = Competition::class;
+
+    public function definition(): array
+    {
+        return [
+            'season_id' => Season::factory(),
+            'name' => $this->faker->unique()->company(),
+        ];
+    }
+}

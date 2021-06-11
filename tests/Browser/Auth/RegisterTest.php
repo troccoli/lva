@@ -3,8 +3,8 @@
 namespace Tests\Browser\Auth;
 
 use App\Models\User;
-use Tests\DuskTestCase;
 use Laravel\Dusk\Browser;
+use Tests\DuskTestCase;
 
 class RegisterTest extends DuskTestCase
 {
@@ -15,13 +15,13 @@ class RegisterTest extends DuskTestCase
     {
         $this->browse(function (Browser $browser): void {
             $browser->visit('/register')
-                ->type('name', 'Tom')
-                ->type('email', 'tom@example.org')
-                ->type('password', 'password')
-                ->type('password_confirmation', 'password')
-                ->press('REGISTER')
-                ->assertPathIs('/email/verify')
-                ->assertAuthenticated();
+                    ->type('name', 'Tom')
+                    ->type('email', 'tom@example.org')
+                    ->type('password', 'password')
+                    ->type('password_confirmation', 'password')
+                    ->press('REGISTER')
+                    ->assertPathIs('/email/verify')
+                    ->assertAuthenticated();
         });
     }
 
@@ -31,16 +31,16 @@ class RegisterTest extends DuskTestCase
     public function testRegisteringForExistingUser(): void
     {
         $this->browse(function (Browser $browser): void {
-            factory(User::class)->create(['email' => 'john@example.com']);
+            User::factory()->create(['email' => 'john@example.com']);
             $browser->visit('/register')
-                ->type('name', 'Tom')
-                ->type('email', 'john@example.com')
-                ->type('password', 'password')
-                ->type('password_confirmation', 'password')
-                ->press('REGISTER')
-                ->assertPathIs('/register')
-                ->assertSee('The email has already been taken.')
-                ->assertGuest();
+                    ->type('name', 'Tom')
+                    ->type('email', 'john@example.com')
+                    ->type('password', 'password')
+                    ->type('password_confirmation', 'password')
+                    ->press('REGISTER')
+                    ->assertPathIs('/register')
+                    ->assertSee('The email has already been taken.')
+                    ->assertGuest();
         });
     }
 }

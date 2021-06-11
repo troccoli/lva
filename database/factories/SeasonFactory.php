@@ -1,19 +1,18 @@
 <?php
 
-/** @var Factory $factory */
+namespace Database\Factories;
 
 use App\Models\Season;
-use Faker\Generator as Faker;
-use Illuminate\Database\Eloquent\Factory;
-use Illuminate\Support\Carbon;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Season::class, function (Faker $faker) {
-    return [
-        'year' => $faker->unique()->year(),
-    ];
-});
-$factory->state(Season::class, 'last-year', function (Faker $faker) {
-    return [
-        'created_at' => Carbon::now()->subYear(),
-    ];
-});
+class SeasonFactory extends Factory
+{
+    protected $model = Season::class;
+
+    public function definition(): array
+    {
+        return [
+            'year' => $this->faker->unique()->year(),
+        ];
+    }
+}

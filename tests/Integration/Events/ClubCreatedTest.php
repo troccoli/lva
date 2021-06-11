@@ -13,14 +13,16 @@ class ClubCreatedTest extends TestCase
 
     public function testClubSecretaryRoleIsCreated(): void
     {
-        $club = factory(Club::class)->create();
-
+        /** @var Club $club */
+        $club = Club::factory()->create();
         $this->assertDatabaseHas('roles', ['name' => RolesHelper::clubSecretary($club)]);
     }
 
     public function testClubPermissionsAreCreated(): void
     {
-        $clubId = aClub()->build()->getId();
+        /** @var Club $club */
+        $club = Club::factory()->create();
+        $clubId = $club->getId();
 
         $this->assertDatabaseHas('permissions', ['name' => "view-club-$clubId"]);
         $this->assertDatabaseHas('permissions', ['name' => "edit-club-$clubId"]);
@@ -30,17 +32,18 @@ class ClubCreatedTest extends TestCase
 
     public function testClubSecretaryRoleHasTheCorrectPermissions(): void
     {
-        $club = aClub()->build();
+        /** @var Club $club */
+        $club = Club::factory()->create();
         $clubId = $club->getId();
 
         $user = $this->userWithRole(RolesHelper::clubSecretary($club));
 
         $this->assertUserCan($user, "view-club-$clubId")
-            ->assertUserCan($user, "edit-club-$clubId")
-            ->assertUserCan($user, "add-team-in-club-$clubId")
-            ->assertUserCannot($user, "delete-club-$clubId");
+             ->assertUserCan($user, "edit-club-$clubId")
+             ->assertUserCan($user, "add-team-in-club-$clubId")
+             ->assertUserCannot($user, "delete-club-$clubId");
 
-        $this->assertUserCan($this->siteAdmin, "add-club");
-        $this->assertUserCan($this->siteAdmin, "delete-club-$club");
+        $this->assertUserCan($this->siteAdmin, 'add-club');
+        $this->assertUserCan($this->siteAdmin, "delete-club-$clubId");
     }
 }

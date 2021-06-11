@@ -10,9 +10,12 @@ class CreateClubSecretaryRoleTest extends TestCase
 {
     public function testItCreatesTheClubAdminRole(): void
     {
-        $club = \Mockery::mock(Club::class, [
-            'getId' => '357',
-        ]);
+        $club = \Mockery::mock(
+            Club::class,
+            [
+                'getId' => '357',
+            ]
+        );
 
         $sut = new CreateClubSecretaryRole($club);
 

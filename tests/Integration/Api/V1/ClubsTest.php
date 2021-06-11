@@ -2,103 +2,128 @@
 
 namespace Tests\Integration\Api\V1;
 
+use App\Models\Club;
+use App\Models\Team;
+use App\Models\User;
 use App\Models\Venue;
-use Tests\ApiTestCase;
+use Laravel\Passport\Passport;
 use Tests\Concerns\InteractsWithArrays;
+use Tests\TestCase;
 
-class ClubsTest extends ApiTestCase
+class ClubsTest extends TestCase
 {
     use InteractsWithArrays;
 
     public function testGettingAllClubs(): void
     {
-        $club1 = aClub()->withName('London Bears')->build();
-        $club2 = aClub()->withName('The Spiders')->build();
-        $club3 = aClub()->withName('Boston Giants')->build();
+        $club1 = Club::factory()->create(['name' => 'London Bears']);
+        $club2 = Club::factory()->create(['name' => 'The Spiders']);
+        $club3 = Club::factory()->create(['name' => 'Boston Giants']);
 
         $response = $this->get('/api/v1/clubs')
-            ->assertOk();
-        $data = $response->decodeResponseJson('data');
+                         ->assertOk();
+        $clubs = $response->json('data');
 
-        $this->assertCount(3, $data);
-        $this->assertContains([
-            'id'   => $club1->getId(),
-            'name' => 'London Bears',
-        ], $data);
-        $this->assertContains([
-            'id'   => $club2->getId(),
-            'name' => 'The Spiders',
-        ], $data);
-        $this->assertContains([
-            'id'   => $club3->getId(),
-            'name' => 'Boston Giants',
-        ], $data);
+        $this->assertCount(3, $clubs);
+        $this->assertContains(
+            [
+                'id' => $club1->getId(),
+                'name' => 'London Bears',
+            ],
+            $clubs
+        );
+        $this->assertContains(
+            [
+                'id' => $club2->getId(),
+                'name' => 'The Spiders',
+            ],
+            $clubs
+        );
+        $this->assertContains(
+            [
+                'id' => $club3->getId(),
+                'name' => 'Boston Giants',
+            ],
+            $clubs
+        );
     }
 
     public function testGettingAllClubsWithTheirVenues(): void
     {
-        $venue1 = factory(Venue::class)->create(['name' => 'Olympic Stadium']);
-        $club1 = aClub()->withName('London Bears')->withVenue($venue1)->build();
-        $club2 = aClub()->withName('The Spiders')->withVenue($venue1)->build();
-        $venue2 = factory(Venue::class)->create(['name' => 'The Box']);
-        $club3 = aClub()->withName('Boston Giants')->withVenue($venue2)->build();
+        $venue1 = Venue::factory()->create(['name' => 'Olympic Stadium']);
+        $club1 = Club::factory()->for($venue1)->create(['name' => 'London Bears']);
+        $club2 = Club::factory()->for($venue1)->create(['name' => 'The Spiders']);
+        $venue2 = Venue::factory()->create(['name' => 'The Box']);
+        $club3 = Club::factory()->for($venue2)->create(['name' => 'Boston Giants']);
 
         $response = $this->get('/api/v1/clubs?with[]=venue')
-            ->assertOk();
-        $data = $response->decodeResponseJson('data');
+                         ->assertOk();
+        $clubs = $response->json('data');
 
-        $this->assertCount(3, $data);
-        $this->assertContains([
-            'id'    => $club1->getId(),
-            'name'  => 'London Bears',
-            'venue' => [
-                'id'   => $venue1->getId(),
-                'name' => 'Olympic Stadium',
+        $this->assertCount(3, $clubs);
+        $this->assertContains(
+            [
+                'id' => $club1->getId(),
+                'name' => 'London Bears',
+                'venue' => [
+                    'id' => $venue1->getId(),
+                    'name' => 'Olympic Stadium',
+                ],
             ],
-        ], $data);
-        $this->assertContains([
-            'id'    => $club2->getId(),
-            'name'  => 'The Spiders',
-            'venue' => [
-                'id'   => $venue1->getId(),
-                'name' => 'Olympic Stadium',
+            $clubs
+        );
+        $this->assertContains(
+            [
+                'id' => $club2->getId(),
+                'name' => 'The Spiders',
+                'venue' => [
+                    'id' => $venue1->getId(),
+                    'name' => 'Olympic Stadium',
+                ],
             ],
-        ], $data);
-        $this->assertContains([
-            'id'    => $club3->getId(),
-            'name'  => 'Boston Giants',
-            'venue' => [
-                'id'   => $venue2->getId(),
-                'name' => 'The Box',
+            $clubs
+        );
+        $this->assertContains(
+            [
+                'id' => $club3->getId(),
+                'name' => 'Boston Giants',
+                'venue' => [
+                    'id' => $venue2->getId(),
+                    'name' => 'The Box',
+                ],
             ],
-        ], $data);
+            $clubs
+        );
     }
 
     public function testGettingAllClubsWithTheirTeams(): void
     {
-        $club1 = aClub()->withName('London Bears')->build();
-        $team1 = aTeam()->withName('Big Bears')->inClub($club1)->build();
-        $club2 = aClub()->withName('The Spiders')->build();
-        $club3 = aClub()->withName('Boston Giants')->build();
-        $team2 = aTeam()->withName('BigFoot')->inClub($club3)->build();
-        $team3 = aTeam()->withName('King Kong')->inClub($club3)->build();
+        $club1 = Club::factory()->create(['name' => 'London Bears']);
+        $team1 = Team::factory()->for($club1)->create(['name' => 'Big Bears']);
+        $club2 = Club::factory()->create(['name' => 'The Spiders']);
+        $club3 = Club::factory()->create(['name' => 'Boston Giants']);
+        $team2 = Team::factory()->for($club3)->create(['name' => 'BigFoot']);
+        $team3 = Team::factory()->for($club3)->create(['name' => 'King Kong']);
 
         $response = $this->get('/api/v1/clubs?with[]=teams')
-            ->assertOk();
-        $data = $response->decodeResponseJson('data');
+                         ->assertOk();
+        $clubs = $response->json('data');
 
-        $this->assertCount(3, $data);
-        foreach ($data as $club) {
+        $this->assertCount(3, $clubs);
+        foreach ($clubs as $club) {
             $this->assertArrayHasKey('id', $club);
             switch ($club['id']) {
                 case $club1->getId():
                     $this->assertArrayHasKey('teams', $club);
                     $teams = $club['teams'];
                     $this->assertCount(1, $teams);
-                    $this->assertContains([
-                        'id'   => $team1->getId(),
-                        'name' => 'Big Bears',
-                    ], $teams);
+                    $this->assertContains(
+                        [
+                            'id' => $team1->getId(),
+                            'name' => 'Big Bears',
+                        ],
+                        $teams
+                    );
                     break;
                 case $club2->getId():
                     $this->assertArrayHasKey('teams', $club);
@@ -109,14 +134,20 @@ class ClubsTest extends ApiTestCase
                     $this->assertArrayHasKey('teams', $club);
                     $teams = $club['teams'];
                     $this->assertCount(2, $teams);
-                    $this->assertContains([
-                        'id'   => $team2->getId(),
-                        'name' => 'BigFoot',
-                    ], $teams);
-                    $this->assertContains([
-                        'id'   => $team3->getId(),
-                        'name' => 'King Kong',
-                    ], $teams);
+                    $this->assertContains(
+                        [
+                            'id' => $team2->getId(),
+                            'name' => 'BigFoot',
+                        ],
+                        $teams
+                    );
+                    $this->assertContains(
+                        [
+                            'id' => $team3->getId(),
+                            'name' => 'King Kong',
+                        ],
+                        $teams
+                    );
                     break;
                 default:
                     $this->assertTrue(false, "Unexpected club {$club['id']}");
@@ -128,78 +159,104 @@ class ClubsTest extends ApiTestCase
     public function testGettingAllClubsWhenThereAreNone(): void
     {
         $response = $this->get('/api/v1/clubs')
-            ->assertOk();
+                         ->assertOk();
 
-        $this->assertEmpty($response->decodeResponseJson('data'));
+        $this->assertEmpty($response->json('data'));
     }
 
     public function testGettingOneClub(): void
     {
-        $club = aClub()->withName('Paris St. German')->build();
-        aClub()->build();
+        $club = Club::factory()->create(['name' => 'Paris St. German']);
+        Club::factory()->create();
 
-        $response = $this->get('/api/v1/clubs/' . $club->getId())
-            ->assertOk();
+        $response = $this->get("/api/v1/clubs/{$club->getId()}")
+                         ->assertOk();
 
-        $this->assertEquals([
-            'id'   => $club->getId(),
-            'name' => 'Paris St. German',
-        ], $response->decodeResponseJson('data'));
+        $clubs = $response->json('data');
+
+        $this->assertEquals(
+            [
+                'id' => $club->getId(),
+                'name' => 'Paris St. German',
+            ],
+            $clubs
+        );
     }
 
     public function testGettingANonExistingClub(): void
     {
         $this->get('/api/v1/clubs/1')
-            ->assertNotFound();
+             ->assertNotFound();
     }
 
     public function testGettingOneClubWithItsVenue(): void
     {
-        $venue = factory(Venue::class)->create(['name' => 'Sobell SC']);
-        $club = aClub()->withName('Paris St. German')->withVenue($venue)->build();
-        aClub()->build();
+        $venue = Venue::factory()->create(['name' => 'Sobell SC']);
+        $club = Club::factory()->for($venue)->create(['name' => 'Paris St. German']);
+        Club::factory()->create();
 
-        $response = $this->get('/api/v1/clubs/' . $club->getId() . '?with[]=venue')
-            ->assertOk();
+        $response = $this->get("/api/v1/clubs/{$club->getId()}?with[]=venue")
+                         ->assertOk();
 
-        $this->assertEquals([
-            'id'    => $club->getId(),
-            'name'  => 'Paris St. German',
-            'venue' => [
-                'id'   => $venue->getId(),
-                'name' => 'Sobell SC',
+        $clubs = $response->json('data');
+
+        $this->assertEquals(
+            [
+                'id' => $club->getId(),
+                'name' => 'Paris St. German',
+                'venue' => [
+                    'id' => $venue->getId(),
+                    'name' => 'Sobell SC',
+                ],
             ],
-        ], $response->decodeResponseJson('data'));
+            $clubs
+        );
     }
 
     public function testGettingOneClubWithItsTeams(): void
     {
-        $club = aClub()->withName('Paris St. German')->build();
-        $team1 = aTeam()->withName('Spikers')->inClub($club)->build();
-        $team2 = aTeam()->withName('Fireball')->inClub($club)->build();
-        aClub()->build();
+        $club = Club::factory()->create(['name' => 'Paris St. German']);
+        $team1 = Team::factory()->for($club)->create(['name' => 'Spikers']);
+        $team2 = Team::factory()->for($club)->create(['name' => 'Fireball']);
+        Club::factory()->create();
 
-        $response = $this->get('/api/v1/clubs/' . $club->getId() . '?with[]=teams')
-            ->assertOk();
+        $response = $this->get("/api/v1/clubs/{$club->getId()}?with[]=teams")
+                         ->assertOk();
 
-        $data = $response->decodeResponseJson('data');
+        $clubs = $response->json('data');
 
-        $this->assertArrayContent([
-            'id' => $club->getId(),
-            'name' => 'Paris St. German',
-        ], $data);
+        $this->assertArrayContent(
+            [
+                'id' => $club->getId(),
+                'name' => 'Paris St. German',
+            ],
+            $clubs
+        );
 
-        $this->assertArrayHasKey('teams', $data);
-        $teams = $data['teams'];
+        $this->assertArrayHasKey('teams', $clubs);
+        $teams = $clubs['teams'];
 
         $this->assertCount(2, $teams);
-        $this->assertContains([
-            'id'   => $team1->getId(),
-            'name' => 'Spikers',
-        ], $teams);
-        $this->assertContains([
-            'id'   => $team2->getId(),
-            'name' => 'Fireball',
-        ], $teams);
+        $this->assertContains(
+            [
+                'id' => $team1->getId(),
+                'name' => 'Spikers',
+            ],
+            $teams
+        );
+        $this->assertContains(
+            [
+                'id' => $team2->getId(),
+                'name' => 'Fireball',
+            ],
+            $teams
+        );
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Passport::actingAs(User::factory()->create());
     }
 }

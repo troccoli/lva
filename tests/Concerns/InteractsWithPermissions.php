@@ -3,7 +3,6 @@
 namespace Tests\Concerns;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 
 trait InteractsWithPermissions
 {

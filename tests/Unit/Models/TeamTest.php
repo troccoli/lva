@@ -8,130 +8,142 @@ use App\Models\Division;
 use App\Models\Fixture;
 use App\Models\Team;
 use App\Models\Venue;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class TeamTest extends TestCase
 {
     public function testItGetsTheId(): void
     {
-        /** @var Team $team */
-        $team = aTeam()->build();
+        $team = Team::factory()->create();
         $this->assertEquals($team->id, $team->getId());
     }
 
     public function testItGetsTheName(): void
     {
-        /** @var Team $team */
-        $team = aTeam()->build();
+        $team = Team::factory()->create();
         $this->assertEquals($team->name, $team->getName());
     }
 
     public function testItGetsTheNameOfTheSecretaryRole(): void
     {
         /** @var Team $team */
-        $team = factory(Team::class)->create();
+        $team = Team::factory()->create();
         $this->assertEquals("Team {$team->getId()} Secretary", RolesHelper::teamSecretary($team));
     }
 
     public function testItGetsTheClub(): void
     {
-        $club = factory(Club::class)->create();
-        /** @var Team $team */
-        $team = aTeam()->inClub($club)->build();
+        $club = Club::factory()->create();
+        $team = Team::factory()->for($club)->create();
         $this->assertEquals($club->getId(), $team->getClub()->getId());
     }
 
     public function testItGetsTheVenue(): void
     {
-        $venue = factory(Venue::class)->create();
-        $team = aTeam()->withVenue($venue)->build();
+        $venue = Venue::factory()->create();
+        $team = Team::factory()->for($venue)->create();
 
         $this->assertEquals($venue->getId(), $team->getVenue()->getId());
 
-        $club = aClub()->withVenue($venue)->build();
-        $team = aTeam()->inClub($club)->build();
+        $club = Club::factory()->for($venue)->create();
+        $team = Team::factory()->for($club)->create();
 
         $this->assertEquals($venue->getId(), $team->getVenue()->getId());
     }
 
     public function testItGetsTheVenueFromTheClub(): void
     {
-        $venue = factory(Venue::class)->create();
-        $club = aClub()->withVenue($venue)->build();
-        $team = aTeam()->inClub($club)->build();
+        $venue = Venue::factory()->create();
+        $club = Club::factory()->for($venue)->create();
+        $team = Team::factory()->for($club)->create();
 
         $this->assertEquals($venue->getId(), $team->getVenue()->getId());
     }
 
     public function testItGetsTheVenueId(): void
     {
-        $venue = factory(Venue::class)->create();
-        $team = aTeam()->withVenue($venue)->build();
+        $venue = Venue::factory()->create();
+        $team = Team::factory()->for($venue)->create();
 
         $this->assertSame($venue->getId(), $team->getVenueId());
     }
 
     public function testItDoesNotGetTheVenueIdFromTheClub(): void
     {
-        $venue = factory(Venue::class)->create();
-        $club = aClub()->withVenue($venue)->build();
-        $team = aTeam()->inClub($club)->build();
+        $venue = Venue::factory()->create();
+        $club = Club::factory()->for($venue)->create();
+        $team = Team::factory()->for($club)->create();
 
         $this->assertNull($team->getVenueId());
     }
 
     public function testItGetsTheDivisions(): void
     {
-        /** @var Team $team */
-        $team = aTeam()->build();
-        $divisions = collect([
-            factory(Division::class)->create(),
-            factory(Division::class)->create(),
-            factory(Division::class)->create(),
-        ])->each(function (Division $division) use ($team): void {
-            $division->teams()->attach($team);
-        });
+        $team = Team::factory()->create();
+        $divisions = collect(
+            [
+                Division::factory()->create(),
+                Division::factory()->create(),
+                Division::factory()->create(),
+            ]
+        )->each(
+            function (Division $division) use ($team): void {
+                $division->teams()->attach($team);
+            }
+        );
 
-        // Other divisions
-        factory(Division::class)->create();
-        factory(Division::class)->create();
-        factory(Division::class)->create();
-        factory(Division::class)->create();
+        Division::factory()->create();
+        Division::factory()->create();
+        Division::factory()->create();
+        Division::factory()->create();
 
         $teamDivisions = $team->getDivisions();
 
         $this->assertCount(3, $teamDivisions);
-        $divisions->each(function (Division $division) use ($teamDivisions): void {
-            $this->assertContains($division->getId(), $teamDivisions->pluck('id'));
-        });
+        $divisions->each(
+            function (Division $division) use ($teamDivisions): void {
+                $this->assertContains($division->getId(), $teamDivisions->pluck('id'));
+            }
+        );
     }
 
     public function testItGetsTheFixtures(): void
     {
-        $team = aTeam()->build();
-        $fixtures = collect([
-            aFixture()->between($team, aTeam()->build())->build(),
-            aFixture()->between($team, aTeam()->build())->build(),
-            aFixture()->between($team, aTeam()->build())->build(),
-            aFixture()->between($team, aTeam()->build())->build(),
-            aFixture()->between($team, aTeam()->build())->build(),
-            aFixture()->between(aTeam()->build(), $team)->build(),
-            aFixture()->between(aTeam()->build(), $team)->build(),
-            aFixture()->between(aTeam()->build(), $team)->build(),
-        ]);
+        /** @var Team $team */
+        $team = Team::factory()->create();
+        $fixtures = collect(
+            [
+                Fixture::factory()->between($team, Team::factory()->create())->create(),
+                Fixture::factory()->between($team, Team::factory()->create())->create(),
+                Fixture::factory()->between($team, Team::factory()->create())->create(),
+                Fixture::factory()->between($team, Team::factory()->create())->create(),
+                Fixture::factory()->between($team, Team::factory()->create())->create(),
+                Fixture::factory()->between(Team::factory()->create(), $team)->create(),
+                Fixture::factory()->between(Team::factory()->create(), $team)->create(),
+                Fixture::factory()->between(Team::factory()->create(), $team)->create(),
+            ]
+        );
 
-        // Other fixtures
-        aFixture()->build();
-        aFixture()->build();
-        aFixture()->build();
+        Fixture::factory()->create();
+        Fixture::factory()->create();
+        Fixture::factory()->create();
 
-        /** @var Collection $teamFixtures */
         $teamFixtures = $team->getFixtures();
 
         $this->assertCount(8, $teamFixtures);
-        $fixtures->each(function (Fixture $fixture) use ($teamFixtures): void {
-            $this->assertContains($fixture->getId(), $teamFixtures->pluck('id'));
-        });
+        $fixtures->each(
+            function (Fixture $fixture) use ($teamFixtures): void {
+                $this->assertContains($fixture->getId(), $teamFixtures->pluck('id'));
+            }
+        );
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // No need to create roles every time we create a model
+        Event::fake();
     }
 }
