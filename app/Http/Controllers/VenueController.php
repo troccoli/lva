@@ -57,7 +57,7 @@ class VenueController extends Controller
         $this->validate(
             $request,
             [
-                'name' => 'required|unique:venues,name,' . $venue->getId(),
+                'name' => 'required|unique:venues,name,'.$venue->getId(),
             ],
             [
                 'name.required' => __('The name is required.'),

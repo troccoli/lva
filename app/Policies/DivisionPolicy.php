@@ -5,7 +5,6 @@ namespace App\Policies;
 use App\Helpers\RolesHelper;
 use App\Models\Competition;
 use App\Models\Division;
-use App\Models\Season;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 

@@ -40,7 +40,7 @@ class SeasonController extends Controller
 
         Season::create($request->only('year'));
 
-        return redirect()->route('seasons.index') ->withToastSuccess(__('Season added!'));
+        return redirect()->route('seasons.index')->withToastSuccess(__('Season added!'));
     }
 
     public function edit(Season $season): View
@@ -53,7 +53,7 @@ class SeasonController extends Controller
         $this->validate(
             $request,
             [
-                'year' => 'required|integer|unique:seasons,year,' . $season->getId(),
+                'year' => 'required|integer|unique:seasons,year,'.$season->getId(),
             ],
             [
                 'year.required' => __('The year is required.'),
