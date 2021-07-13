@@ -19,7 +19,7 @@
         }
     ],
     "require": {
-        "php": "^7.4",
+        "php": "^8.0",
         "diglactic/laravel-breadcrumbs": "^6.1",
         "doctrine/dbal": "^2.10",
         "fakerphp/faker": "^1.14",
@@ -39,11 +39,11 @@
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.3",
         "beyondcode/laravel-dump-server": "^1.0",
-        "codedungeon/phpunit-result-printer": "^0.28.0",
         "facade/ignition": "^2.3.6",
         "fakerphp/faker": "^1.14",
         "filp/whoops": "^2.0",
         "laravel/dusk": "^6.0",
+        "laravel/sail": "^1.8",
         "mockery/mockery": "^1.4.0",
         "nunomaduro/collision": "^5.0",
         "phpunit/phpunit": "^9.0"

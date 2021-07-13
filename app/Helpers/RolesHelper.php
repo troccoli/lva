@@ -116,7 +116,7 @@ final class RolesHelper
         return null;
     }
 
-    final private static function buildPattern(string $template): string
+    private static function buildPattern(string $template): string
     {
         return '/^'.Str::replaceFirst('%s', '(\d+)', $template).'$/';
     }

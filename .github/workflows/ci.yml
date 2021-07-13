@@ -3,8 +3,8 @@ name: lva
 on: [push]
 
 env:
-  node-modules-cache-name: cache-node-modules-2
-  composer-packages-cache-name: cache-composer-packages-2
+  node-modules-cache-name: cache-node-modules
+  composer-packages-cache-name: cache-composer-packages
   build-artifacts: build-artifacts
 
 jobs:
@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         operating-system: [ 'ubuntu-latest' ]
-        php-versions: [ '7.4' ]
+        php-versions: [ '8.0' ]
     steps:
       - name: Setup PHP ${{ matrix.php-versoons }}
         uses: shivammathur/setup-php@v2
@@ -27,7 +27,7 @@ jobs:
     strategy:
       matrix:
         operating-system: [ 'ubuntu-latest' ]
-        php-versions: [ '7.4' ]
+        php-versions: [ '8.0' ]
     steps:
       - uses: actions/checkout@v2
       - name: Setup PHP ${{ matrix.php-versoons }}
@@ -68,7 +68,7 @@ jobs:
     strategy:
       matrix:
         operating-system: [ 'ubuntu-latest' ]
-        php-versions: [ '7.4' ]
+        php-versions: [ '8.0' ]
     needs: [build]
     steps:
       - uses: actions/checkout@v2
@@ -114,7 +114,7 @@ jobs:
     strategy:
       matrix:
         operating-system: [ 'ubuntu-latest' ]
-        php-versions: [ '7.4' ]
+        php-versions: [ '8.0' ]
     needs: [build]
     steps:
       - uses: actions/checkout@v2
@@ -162,7 +162,7 @@ jobs:
     strategy:
       matrix:
         operating-system: [ 'ubuntu-latest' ]
-        php-versions: [ '7.4' ]
+        php-versions: [ '8.0' ]
     needs: [build]
     steps:
       - uses: actions/checkout@v2
@@ -215,7 +215,7 @@ jobs:
     strategy:
       matrix:
         operating-system: [ 'ubuntu-latest' ]
-        php-versions: [ '7.4' ]
+        php-versions: [ '8.0' ]
     needs: [build]
     steps:
       - uses: actions/checkout@v2
