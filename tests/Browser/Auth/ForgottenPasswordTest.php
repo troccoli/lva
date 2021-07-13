@@ -11,7 +11,7 @@ class ForgottenPasswordTest extends DuskTestCase
     /**
      * @throws \Throwable
      */
-    public function testRequestingResetForNonExistingUser(): void
+    public function testRequestingResetForNonExistingUser (): void
     {
         $this->browse(function (Browser $browser): void {
             $browser->visit('/password/reset')
@@ -25,7 +25,7 @@ class ForgottenPasswordTest extends DuskTestCase
     /**
      * @throws \Throwable
      */
-    public function testRequestingResetForExistingUser(): void
+    public function testRequestingResetForExistingUser (): void
     {
         $this->browse(function (Browser $browser): void {
             factory(User::class)->create(['email' => 'john@example.com']);
@@ -40,7 +40,7 @@ class ForgottenPasswordTest extends DuskTestCase
     /**
      * @throws \Throwable
      */
-    public function testRequestingResetForUnverifiedUser(): void
+    public function testRequestingResetForUnverifiedUser (): void
     {
         $this->browse(function (Browser $browser): void {
             factory(User::class)->state('unverified')->create(['email' => 'john@example.com']);
