@@ -16,7 +16,7 @@ class DuskServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        if (!$this->app->environment('production')) {
+        if (! $this->app->environment('production')) {
             Browser::macro('vuetifySelect', function (string $selector, string $value) {
                 $xpath = "//div[contains(concat(' ', normalize-space(@class), ' '), 'v-menu__content') and contains(concat(' ', normalize-space(@class), ' '), 'menuable__content__active')]//div[text()='$value']";
                 $this->with("$selector", function (Browser $element) {

@@ -28,7 +28,7 @@ final class RolesHelper
 
     final public static function isSeasonAdmin(Role $role): bool
     {
-        return (bool)preg_match(self::buildPattern(self::SEASON_ADMIN_TEMPLATE), $role->name);
+        return (bool) preg_match(self::buildPattern(self::SEASON_ADMIN_TEMPLATE), $role->name);
     }
 
     final public static function findSeason(Role $role): ?Season
@@ -47,7 +47,7 @@ final class RolesHelper
 
     final public static function isCompetitionAdmin(Role $role): bool
     {
-        return (bool)preg_match(self::buildPattern(self::COMPETITION_ADMIN_TEMPLATE), $role->name);
+        return (bool) preg_match(self::buildPattern(self::COMPETITION_ADMIN_TEMPLATE), $role->name);
     }
 
     final public static function findCompetition(Role $role): ?Competition
@@ -66,7 +66,7 @@ final class RolesHelper
 
     final public static function isDivisionAdmin(Role $role): bool
     {
-        return (bool)preg_match(self::buildPattern(self::DIVISION_ADMIN_TEMPLATE), $role->name);
+        return (bool) preg_match(self::buildPattern(self::DIVISION_ADMIN_TEMPLATE), $role->name);
     }
 
     final public static function findDivision(Role $role): ?Division
@@ -85,7 +85,7 @@ final class RolesHelper
 
     final public static function isClubSecretary(Role $role): bool
     {
-        return (bool)preg_match(self::buildPattern(self::CLUB_SECRETARY_TEMPLATE), $role->name);
+        return (bool) preg_match(self::buildPattern(self::CLUB_SECRETARY_TEMPLATE), $role->name);
     }
 
     final public static function findClub(Role $role): ?Club
@@ -104,7 +104,7 @@ final class RolesHelper
 
     final public static function isTeamSecretary(Role $role): bool
     {
-        return (bool)preg_match(self::buildPattern(self::TEAM_SECRETARY_TEMPLATE), $role->name);
+        return (bool) preg_match(self::buildPattern(self::TEAM_SECRETARY_TEMPLATE), $role->name);
     }
 
     final public static function findTeam(Role $role): ?Team
@@ -118,6 +118,6 @@ final class RolesHelper
 
     final private static function buildPattern(string $template): string
     {
-        return '/^' . Str::replaceFirst('%s', '(\d+)', $template) . '$/';
+        return '/^'.Str::replaceFirst('%s', '(\d+)', $template).'$/';
     }
 }
