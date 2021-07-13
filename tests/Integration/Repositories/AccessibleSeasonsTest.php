@@ -3,22 +3,17 @@
 namespace Tests\Integration\Repositories;
 
 use App\Helpers\RolesHelper;
+use App\Models\Club;
 use App\Models\Competition;
 use App\Models\Division;
 use App\Models\Season;
+use App\Models\Team;
 use App\Repositories\AccessibleSeasons;
 use Tests\TestCase;
 
 class AccessibleSeasonsTest extends TestCase
 {
     private $sut;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->sut = new AccessibleSeasons();
-    }
 
     public function testItReturnsNoSeasonsIfThereAreNone(): void
     {
@@ -27,9 +22,9 @@ class AccessibleSeasonsTest extends TestCase
 
     public function testItReturnsAllSeasonsForSiteAdministrators(): void
     {
-        factory(Season::class)->create(['year' => 2000]);
-        factory(Season::class)->create(['year' => 2002]);
-        factory(Season::class)->create(['year' => 2001]);
+        Season::factory()->create(['year' => 2000]);
+        Season::factory()->create(['year' => 2002]);
+        Season::factory()->create(['year' => 2001]);
 
         $seasons = $this->sut->get($this->siteAdmin);
 
@@ -42,9 +37,9 @@ class AccessibleSeasonsTest extends TestCase
     public function testItReturnsOnlyOneSeasonsForSeasonAdministrators(): void
     {
         /** @var Season $season1 */
-        $season1 = factory(Season::class)->create(['year' => 2000]);
-        factory(Season::class)->create(['year' => 2002]);
-        factory(Season::class)->create(['year' => 2001]);
+        $season1 = Season::factory()->create(['year' => 2000]);
+        Season::factory()->create(['year' => 2002]);
+        Season::factory()->create(['year' => 2001]);
 
         $season1Admin = $this->userWithRole(RolesHelper::seasonAdmin($season1));
 
@@ -55,14 +50,11 @@ class AccessibleSeasonsTest extends TestCase
 
     public function testItReturnsOnlyOneSeasonForCompetitionAdministrators(): void
     {
-        /** @var Season $season1 */
-        $season1 = factory(Season::class)->create(['year' => 2000]);
+        $season1 = Season::factory()->create(['year' => 2000]);
         /** @var Competition $competition1 */
-        $competition1 = factory(Competition::class)->create([
-            'season_id' => $season1->getId(),
-        ]);
-        factory(Season::class)->create(['year' => 2002]);
-        factory(Season::class)->create(['year' => 2001]);
+        $competition1 = Competition::factory()->for($season1)->create();
+        Season::factory()->create(['year' => 2002]);
+        Season::factory()->create(['year' => 2001]);
 
         $competition1Admin = $this->userWithRole(RolesHelper::competitionAdmin($competition1));
 
@@ -73,18 +65,12 @@ class AccessibleSeasonsTest extends TestCase
 
     public function testItReturnsOnlyOneSeasonForDivisionAdministrators(): void
     {
-        /** @var Season $season1 */
-        $season1 = factory(Season::class)->create(['year' => 2000]);
-        /** @var Competition $competition1 */
-        $competition1 = factory(Competition::class)->create([
-            'season_id' => $season1->getId(),
-        ]);
+        $season1 = Season::factory()->create(['year' => 2000]);
+        $competition1 = Competition::factory()->for($season1)->create();
         /** @var Division $division1 */
-        $division1 = factory(Division::class)->create([
-            'competition_id' => $competition1->getId(),
-        ]);
-        factory(Season::class)->create(['year' => 2002]);
-        factory(Season::class)->create(['year' => 2001]);
+        $division1 = Division::factory()->for($competition1)->create();
+        Season::factory()->create(['year' => 2002]);
+        Season::factory()->create(['year' => 2001]);
 
         $division1Admin = $this->userWithRole(RolesHelper::divisionAdmin($division1));
 
@@ -95,11 +81,12 @@ class AccessibleSeasonsTest extends TestCase
 
     public function testItReturnsNoSeasonsForClubSecretaries(): void
     {
-        factory(Season::class)->create(['year' => 2000]);
-        factory(Season::class)->create(['year' => 2002]);
-        factory(Season::class)->create(['year' => 2001]);
+        Season::factory()->create(['year' => 2000]);
+        Season::factory()->create(['year' => 2002]);
+        Season::factory()->create(['year' => 2001]);
 
-        $club = aClub()->build();
+        /** @var Club $club */
+        $club = Club::factory()->create();
         $clubSecretary = $this->userWithRole(RolesHelper::clubSecretary($club));
 
         $this->assertEmpty($this->sut->get($clubSecretary));
@@ -107,13 +94,21 @@ class AccessibleSeasonsTest extends TestCase
 
     public function testItReturnsNoSeasonsForTeamSecretaries(): void
     {
-        factory(Season::class)->create(['year' => 2000]);
-        factory(Season::class)->create(['year' => 2002]);
-        factory(Season::class)->create(['year' => 2001]);
+        Season::factory()->create(['year' => 2000]);
+        Season::factory()->create(['year' => 2002]);
+        Season::factory()->create(['year' => 2001]);
 
-        $team = aTeam()->build();
+        /** @var Team $team */
+        $team = Team::factory()->create();
         $teamSecretary = $this->userWithRole(RolesHelper::teamSecretary($team));
 
         $this->assertEmpty($this->sut->get($teamSecretary));
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->sut = new AccessibleSeasons();
     }
 }

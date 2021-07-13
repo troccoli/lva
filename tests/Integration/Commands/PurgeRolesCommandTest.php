@@ -15,17 +15,15 @@ class PurgeRolesCommandTest extends TestCase
 {
     public function testItPurgesSeasonAdministratorRoles(): void
     {
-        /** @var Season $season1 */
-        $season1 = factory(Season::class)->create(['year' => 2000]);
-        /** @var Season $season2 */
-        $season2 = factory(Season::class)->create(['year' => 2001]);
+        $season1 = Season::factory()->create(['year' => 2000]);
+        $season2 = Season::factory()->create(['year' => 2001]);
 
-        /** @var User $user1 */
-        $user1 = factory(User::class)->create()->assignRole(RolesHelper::seasonAdmin($season1));
-        /** @var User $user2 */
-        $user2 = factory(User::class)->create()->assignRole(RolesHelper::seasonAdmin($season2));
-        /** @var User $user3 */
-        $user3 = factory(User::class)->create()->assignRole(RolesHelper::seasonAdmin($season1), RolesHelper::seasonAdmin($season2));
+        $user1 = User::factory()->create()->assignRole(RolesHelper::seasonAdmin($season1));
+        $user2 = User::factory()->create()->assignRole(RolesHelper::seasonAdmin($season2));
+        $user3 = User::factory()->create()->assignRole(
+            RolesHelper::seasonAdmin($season1),
+            RolesHelper::seasonAdmin($season2)
+        );
 
         $season2->delete();
 
@@ -46,20 +44,17 @@ class PurgeRolesCommandTest extends TestCase
 
     public function testItPurgesCompetitionAdministratorRoles(): void
     {
-        /** @var Season $season */
-        $season = factory(Season::class)->create();
+        $season = Season::factory()->create();
 
-        /** @var Competition $competition1 */
-        $competition1 = factory(Competition::class)->create(['season_id' => $season->getId()]);
-        /** @var Competition $competition2 */
-        $competition2 = factory(Competition::class)->create(['season_id' => $season->getId()]);
+        $competition1 = Competition::factory()->create(['season_id' => $season->getId()]);
+        $competition2 = Competition::factory()->create(['season_id' => $season->getId()]);
 
-        /** @var User $user1 */
-        $user1 = factory(User::class)->create()->assignRole(RolesHelper::competitionAdmin($competition1));
-        /** @var User $user2 */
-        $user2 = factory(User::class)->create()->assignRole(RolesHelper::competitionAdmin($competition2));
-        /** @var User $user3 */
-        $user3 = factory(User::class)->create()->assignRole(RolesHelper::competitionAdmin($competition1), RolesHelper::competitionAdmin($competition2));
+        $user1 = User::factory()->create()->assignRole(RolesHelper::competitionAdmin($competition1));
+        $user2 = User::factory()->create()->assignRole(RolesHelper::competitionAdmin($competition2));
+        $user3 = User::factory()->create()->assignRole(
+            RolesHelper::competitionAdmin($competition1),
+            RolesHelper::competitionAdmin($competition2)
+        );
 
         $competition2->delete();
 
@@ -80,20 +75,17 @@ class PurgeRolesCommandTest extends TestCase
 
     public function testItPurgesDivisionAdministratorRoles(): void
     {
-        /** @var Competition $competition */
-        $competition = factory(Competition::class)->create();
+        $competition = Competition::factory()->create();
 
-        /** @var Division $division1 */
-        $division1 = factory(Division::class)->create(['competition_id' => $competition->getId()]);
-        /** @var Division $division2 */
-        $division2 = factory(Division::class)->create(['competition_id' => $competition->getId()]);
+        $division1 = Division::factory()->create(['competition_id' => $competition->getId()]);
+        $division2 = Division::factory()->create(['competition_id' => $competition->getId()]);
 
-        /** @var User $user1 */
-        $user1 = factory(User::class)->create()->assignRole(RolesHelper::divisionAdmin($division1));
-        /** @var User $user2 */
-        $user2 = factory(User::class)->create()->assignRole(RolesHelper::divisionAdmin($division2));
-        /** @var User $user3 */
-        $user3 = factory(User::class)->create()->assignRole(RolesHelper::divisionAdmin($division1), RolesHelper::divisionAdmin($division2));
+        $user1 = User::factory()->create()->assignRole(RolesHelper::divisionAdmin($division1));
+        $user2 = User::factory()->create()->assignRole(RolesHelper::divisionAdmin($division2));
+        $user3 = User::factory()->create()->assignRole(
+            RolesHelper::divisionAdmin($division1),
+            RolesHelper::divisionAdmin($division2)
+        );
 
         $division2->delete();
 
@@ -114,17 +106,12 @@ class PurgeRolesCommandTest extends TestCase
 
     public function testItPurgesClubSecretariesRoles(): void
     {
-        /** @var Club $club1 */
-        $club1 = aClub()->build();
-        /** @var Club $club2 */
-        $club2 = aClub()->build();
+        $club1 = Club::factory()->create();
+        $club2 = Club::factory()->create();
 
-        /** @var User $user1 */
-        $user1 = factory(User::class)->create()->assignRole(RolesHelper::clubSecretary($club1));
-        /** @var User $user2 */
-        $user2 = factory(User::class)->create()->assignRole(RolesHelper::clubSecretary($club2));
-        /** @var User $user3 */
-        $user3 = factory(User::class)->create()->assignRole(
+        $user1 = User::factory()->create()->assignRole(RolesHelper::clubSecretary($club1));
+        $user2 = User::factory()->create()->assignRole(RolesHelper::clubSecretary($club2));
+        $user3 = User::factory()->create()->assignRole(
             RolesHelper::clubSecretary($club1),
             RolesHelper::clubSecretary($club2)
         );
@@ -148,20 +135,14 @@ class PurgeRolesCommandTest extends TestCase
 
     public function testItPurgesTeamSecretaryRoles(): void
     {
-        /** @var Club $club */
-        $club = aClub()->build();
+        $club = Club::factory()->create();
 
-        /** @var Team $team1 */
-        $team1 = aTeam()->inClub($club)->build();
-        /** @var Team $team2 */
-        $team2 = aTeam()->inClub($club)->build();
+        $team1 = Team::factory()->for($club)->create();
+        $team2 = Team::factory()->for($club)->create();
 
-        /** @var User $user1 */
-        $user1 = factory(User::class)->create()->assignRole(RolesHelper::teamSecretary($team1));
-        /** @var User $user2 */
-        $user2 = factory(User::class)->create()->assignRole(RolesHelper::teamSecretary($team2));
-        /** @var User $user3 */
-        $user3 = factory(User::class)->create()->assignRole(
+        $user1 = User::factory()->create()->assignRole(RolesHelper::teamSecretary($team1));
+        $user2 = User::factory()->create()->assignRole(RolesHelper::teamSecretary($team2));
+        $user3 = User::factory()->create()->assignRole(
             RolesHelper::teamSecretary($team1),
             RolesHelper::teamSecretary($team2)
         );

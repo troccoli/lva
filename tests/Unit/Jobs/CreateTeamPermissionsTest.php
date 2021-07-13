@@ -10,9 +10,12 @@ class CreateTeamPermissionsTest extends TestCase
 {
     public function testItCreatesTheClubPermissions(): void
     {
-        $team = \Mockery::mock(Team::class, [
-            'getId' => '123',
-        ]);
+        $team = \Mockery::mock(
+            Team::class,
+            [
+                'getId' => '123',
+            ]
+        );
 
         $sut = new CreateTeamPermissions($team);
 

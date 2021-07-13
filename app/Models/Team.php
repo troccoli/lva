@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Events\TeamCreated;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -13,6 +14,8 @@ use Illuminate\Support\Collection;
 
 class Team extends Model
 {
+    use HasFactory;
+
     protected $fillable = ['club_id', 'name', 'venue_id'];
 
     protected $dispatchesEvents = [
@@ -49,7 +52,7 @@ class Team extends Model
      * as the venue relationship is retrieved directly using
      * $this->venue in WhenLoaded() method
      */
-    public function getVenueAttribute():? Venue
+    public function getVenueAttribute(): ?Venue
     {
         if ($this->venue_id === null) {
             return $this->getClub()->getVenue();
@@ -57,12 +60,13 @@ class Team extends Model
 
         return Venue::find($this->venue_id);
     }
-    public function getVenue():? Venue
+
+    public function getVenue(): ?Venue
     {
         return $this->venue;
     }
 
-    public function getVenueId():? string
+    public function getVenueId(): ?string
     {
         return $this->venue_id;
     }

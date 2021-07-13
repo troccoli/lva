@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\CRUD;
 
+use App\Models\Club;
 use App\Models\User;
 use App\Models\Venue;
 use Tests\TestCase;
@@ -11,118 +12,114 @@ class VenueTest extends TestCase
 {
     public function testAccessForGuests(): void
     {
-        /** @var Venue $venue */
-        $venue = factory(Venue::class)->create();
+        $venue = Venue::factory()->create();
 
         $this->get('/venues')
-            ->assertRedirect('/login');
+             ->assertRedirect('/login');
 
-        $this->get('/venues/' . $venue->getId())
-            ->assertRedirect('/login');
+        $this->get("/venues/{$venue->getId()}")
+             ->assertRedirect('/login');
 
         $this->get('/venues/create')
-            ->assertRedirect('/login');
+             ->assertRedirect('/login');
 
         $this->post('/venues')
-            ->assertRedirect('/login');
+             ->assertRedirect('/login');
 
-        $this->get('/venues/' . $venue->getId() . '/edit')
-            ->assertRedirect('/login');
+        $this->get("/venues/{$venue->getId()}/edit")
+             ->assertRedirect('/login');
 
-        $this->put('/venues/' . $venue->getId())
-            ->assertRedirect('/login');
+        $this->put("/venues/{$venue->getId()}")
+             ->assertRedirect('/login');
 
-        $this->delete('/venues/' . $venue->getId())
-            ->assertRedirect('/login');
+        $this->delete("/venues/{$venue->getId()}")
+             ->assertRedirect('/login');
     }
 
     public function testAccessForUsersWithoutAnyCorrectRoles(): void
     {
-        /** @var Venue $venue */
-        $venue = factory(Venue::class)->create();
+        $venue = Venue::factory()->create();
 
-        $this->be(factory(User::class)->create());
+        $this->be(User::factory()->create());
 
         $this->get('/venues')
-            ->assertForbidden();
+             ->assertForbidden();
 
-        $this->get('/venues/' . $venue->getId())
-            ->assertForbidden();
+        $this->get("/venues/{$venue->getId()}")
+             ->assertForbidden();
 
         $this->get('/venues/create')
-            ->assertForbidden();
+             ->assertForbidden();
 
         $this->post('/venues')
-            ->assertForbidden();
+             ->assertForbidden();
 
-        $this->get('/venues/' . $venue->getId() . '/edit')
-            ->assertForbidden();
+        $this->get("/venues/{$venue->getId()}/edit")
+             ->assertForbidden();
 
-        $this->put('/venues/' . $venue->getId())
-            ->assertForbidden();
+        $this->put("/venues/{$venue->getId()}")
+             ->assertForbidden();
 
-        $this->delete('/venues/' . $venue->getId())
-            ->assertForbidden();
+        $this->delete("/venues/{$venue->getId()}")
+             ->assertForbidden();
     }
 
     public function testAccessForSiteAdministrators(): void
     {
-        /** @var Venue $venue */
-        $venue = factory(Venue::class)->make();
+        $venue = Venue::factory()->make();
 
         $this->be($this->siteAdmin);
 
         $this->get('/venues')
-            ->assertOk();
+             ->assertOk();
 
         $this->get('/venues/create')
-            ->assertOk();
+             ->assertOk();
 
         $this->post('/venues', $venue->toArray())
-            ->assertRedirect('/venues');
+             ->assertRedirect('/venues');
 
         $venue = Venue::first();
 
-        $this->get('/venues/' . $venue->getId())
-            ->assertOk();
+        $this->get("/venues/{$venue->getId()}")
+             ->assertOk();
 
-        $this->get('/venues/' . $venue->getId() . '/edit')
-            ->assertOk();
+        $this->get("/venues/{$venue->getId()}/edit")
+             ->assertOk();
 
-        $this->put('/venues/' . $venue->getId(), $venue->toArray())
-            ->assertRedirect('venues');
+        $this->put("/venues/{$venue->getId()}", $venue->toArray())
+             ->assertRedirect('venues');
 
-        $this->delete('/venues/' . $venue->getId())
-            ->assertRedirect('venues');
+        $this->delete("/venues/{$venue->getId()}")
+             ->assertRedirect('venues');
     }
 
     public function testAccessForUnverifiedUsers(): void
     {
-        /** @var Venue $venue */
-        $venue = factory(Venue::class)->create();
+        $venue = Venue::factory()->create();
 
-        $this->be(factory(User::class)->state('unverified')->create());
+        $this->be(User::factory()->unverified()->create());
 
         $this->get('/venues')
-            ->assertRedirect('/email/verify');
+             ->assertRedirect('/email/verify');
 
-        $this->get('/venues/' . $venue->getId())
-            ->assertRedirect('/email/verify');
+        $this->get("/venues/{$venue->getId()}")
+             ->assertRedirect('/email/verify');
 
         $this->get('/venues/create')
-            ->assertRedirect('/email/verify');
+             ->assertRedirect('/email/verify');
 
         $this->post('/venues')
-            ->assertRedirect('/email/verify');
+             ->assertRedirect('/email/verify');
 
-        $this->get('/venues/' . $venue->getId() . '/edit')
-            ->assertRedirect('/email/verify');
+        $this->get("/venues/{$venue->getId()}/edit")
+             ->assertRedirect('/email/verify');
 
-        $this->put('/venues/' . $venue->getId())
-            ->assertRedirect('/email/verify');
+        $this->put("/venues/{$venue->getId()}")
+             ->assertRedirect('/email/verify');
 
-        $this->delete('/venues/' . ($venue->getId()))
-            ->assertRedirect('/email/verify');
+        $this->delete("/venues/{$venue->getId()}")
+             ->assertRedirect('/email/verify');
     }
 
     public function testAddingAVenue(): void
@@ -130,15 +127,15 @@ class VenueTest extends TestCase
         $this->be($this->siteAdmin);
 
         $this->post('/venues', [])
-            ->assertSessionHasErrors('name', 'The name is required.');
+             ->assertSessionHasErrors('name', 'The name is required.');
         $this->assertDatabaseMissing('venues', ['name' => 'Olympic Stadium']);
 
         $this->post('/venues', ['name' => 'Olympic Stadium'])
-            ->assertSessionHasNoErrors();
+             ->assertSessionHasNoErrors();
         $this->assertDatabaseHas('venues', ['name' => 'Olympic Stadium']);
 
         $this->post('/venues', ['name' => 'Olympic Stadium'])
-            ->assertSessionHasErrors('name', 'The venue already exists.');
+             ->assertSessionHasErrors('name', 'The venue already exists.');
         $this->assertDatabaseHas('venues', ['name' => 'Olympic Stadium']);
     }
 
@@ -149,25 +146,24 @@ class VenueTest extends TestCase
     {
         $this->be($this->siteAdmin);
 
-        $this->put('/venues/' . Uuid::generate()->string)
-            ->assertNotFound();
+        $this->put('/venues/'.Uuid::generate()->string)
+             ->assertNotFound();
 
-        /** @var Venue $venue */
-        $venue = factory(Venue::class)->create(['name' => 'Olympic Stadium']);
+        $venue = Venue::factory()->create(['name' => 'Olympic Stadium']);
 
-        $this->put('/venues/' . $venue->getId(), [])
-            ->assertSessionHasErrors('name', 'The name is required.');
+        $this->put("/venues/{$venue->getId()}", [])
+             ->assertSessionHasErrors('name', 'The name is required.');
         $this->assertDatabaseHas('venues', ['name' => 'Olympic Stadium']);
 
-        $this->put('/venues/' . $venue->getId(), ['name' => 'Sobell S.C.'])
-            ->assertSessionHasNoErrors();
+        $this->put("/venues/{$venue->getId()}", ['name' => 'Sobell S.C.'])
+             ->assertSessionHasNoErrors();
         $this->assertDatabaseMissing('venues', ['name' => 'Olympic Stadium'])
-            ->assertDatabaseHas('venues', ['name' => 'Sobell S.C.']);
+             ->assertDatabaseHas('venues', ['name' => 'Sobell S.C.']);
 
-        factory(Venue::class)->create(['name' => 'University of Westminster']);
+        Venue::factory()->create(['name' => 'University of Westminster']);
 
-        $this->put('/venues/' . $venue->getId(), ['name' => 'University of Westminster'])
-            ->assertSessionHasErrors('name', 'The venue already exists.');
+        $this->put("/venues/{$venue->getId()}", ['name' => 'University of Westminster'])
+             ->assertSessionHasErrors('name', 'The venue already exists.');
         $this->assertDatabaseHas('venues', ['name' => 'Sobell S.C.']);
     }
 
@@ -178,16 +174,15 @@ class VenueTest extends TestCase
     {
         $this->be($this->siteAdmin);
 
-        $this->delete('/venues/' . Uuid::generate()->string)
-            ->assertNotFound();
+        $this->delete('/venues/'.Uuid::generate()->string)
+             ->assertNotFound();
 
-        /** @var Venue $venue */
-        $venue = factory(Venue::class)->create(['name' => 'Olympic Stadium']);
-        aClub()->withName('West Ham FC')->withVenue($venue)->build();
+        $venue = Venue::factory()->create(['name' => 'Olympic Stadium']);
+        Club::factory()->for($venue)->create(['name' => 'West Ham VC']);
 
-        $this->delete('/venues/' . $venue->getId())
-            ->assertSessionHasNoErrors();
+        $this->delete("/venues/{$venue->getId()}")
+             ->assertSessionHasNoErrors();
         $this->assertDatabaseMissing('venues', ['name' => 'Olympic Stadium'])
-            ->assertDatabaseHas('clubs', ['name' => 'West Ham FC', 'venue_id' => null]);
+             ->assertDatabaseHas('clubs', ['name' => 'West Ham VC', 'venue_id' => null]);
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\Helpers\PermissionsHelper;
-use App\Helpers\RolesHelper;
 use App\Models\Season;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;

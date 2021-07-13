@@ -10,9 +10,12 @@ class CreateTeamSecretaryRoleTest extends TestCase
 {
     public function testItCreatesTheTeamAdminRole(): void
     {
-        $team = \Mockery::mock(Team::class, [
-            'getId' => '456',
-        ]);
+        $team = \Mockery::mock(
+            Team::class,
+            [
+                'getId' => '456',
+            ]
+        );
 
         $sut = new CreateTeamSecretaryRole($team);
 

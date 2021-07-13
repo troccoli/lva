@@ -10,20 +10,20 @@ class DashboardTest extends TestCase
     public function testAccessForGuests(): void
     {
         $this->get('/dashboard')
-            ->assertRedirect('/login');
+             ->assertRedirect('/login');
     }
 
     public function testAccessForAuthenticatedUsers(): void
     {
-        $this->actingAs(factory(User::class)->create())
-            ->get('/dashboard')
-            ->assertOk();
+        $this->actingAs(User::factory()->create())
+             ->get('/dashboard')
+             ->assertOk();
     }
 
     public function testAccessForUnverifiedUsers(): void
     {
-        $this->actingAs(factory(User::class)->state('unverified')->create())
-            ->get('/dashboard')
-            ->assertRedirect('/email/verify');
+        $this->actingAs(User::factory()->unverified()->create())
+             ->get('/dashboard')
+             ->assertRedirect('/email/verify');
     }
 }

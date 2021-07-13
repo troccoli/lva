@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Events\ClubCreated;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,6 +12,8 @@ use Illuminate\Support\Collection;
 
 class Club extends Model
 {
+    use HasFactory;
+
     protected $fillable = ['name', 'venue_id'];
 
     protected $dispatchesEvents = [
@@ -42,12 +45,12 @@ class Club extends Model
         return $this->belongsTo(Venue::class);
     }
 
-    public function getVenue():? Venue
+    public function getVenue(): ?Venue
     {
         return $this->venue;
     }
 
-    public function getVenueId():? string
+    public function getVenueId(): ?string
     {
         return $this->venue_id;
     }

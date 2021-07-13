@@ -5,75 +5,87 @@ namespace Tests\Unit\Models;
 use App\Models\Club;
 use App\Models\Fixture;
 use App\Models\Venue;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class VenueTest extends TestCase
 {
     public function testItGetsTheId(): void
     {
-        /** @var Venue $venue */
-        $venue = factory(Venue::class)->create();
+        $venue = Venue::factory()->create();
         $this->assertEquals($venue->id, $venue->getId());
     }
 
     public function testItGetsTheName(): void
     {
-        /** @var Venue $venue */
-        $venue = factory(Venue::class)->create();
+        $venue = Venue::factory()->create();
         $this->assertEquals($venue->name, $venue->getName());
     }
 
     public function testItGetsTheClubs(): void
     {
-        /** @var Venue $venue */
-        $venue = factory(Venue::class)->create();
+        $venue = Venue::factory()->create();
 
-        $clubs = collect([
-            aClub()->withVenue($venue)->build(),
-            aClub()->withVenue($venue)->build(),
-            aClub()->withVenue($venue)->build(),
-        ]);
+        $clubs = collect(
+            [
+                Club::factory()->for($venue)->create(),
+                Club::factory()->for($venue)->create(),
+                Club::factory()->for($venue)->create(),
+            ]
+        );
 
-        // Other clubs
-        $anotherVenue = factory(Venue::class)->create();
-        aClub()->withVenue($anotherVenue)->build();
-        aClub()->withVenue($anotherVenue)->build();
-        aClub()->withVenue($anotherVenue)->build();
-        aClub()->withVenue($anotherVenue)->build();
-        aClub()->withVenue($anotherVenue)->build();
+        $anotherVenue = Venue::factory()->create();
+        Club::factory()->for($anotherVenue)->create();
+        Club::factory()->for($anotherVenue)->create();
+        Club::factory()->for($anotherVenue)->create();
+        Club::factory()->for($anotherVenue)->create();
+        Club::factory()->for($anotherVenue)->create();
 
         $this->assertCount(3, $venue->getClubs());
-        $clubs->each(function (Club $club) use ($venue): void {
-            $this->assertTrue($venue->getClubs()->contains($club));
-        });
+        $clubs->each(
+            function (Club $club) use ($venue): void {
+                $this->assertTrue($venue->getClubs()->contains($club));
+            }
+        );
     }
 
     public function testItGetsTheFixtures(): void
     {
-        $venue = factory(Venue::class)->create();
-        $fixtures = collect([
-            aFixture()->at($venue)->build(),
-            aFixture()->at($venue)->build(),
-            aFixture()->at($venue)->build(),
-            aFixture()->at($venue)->build(),
-            aFixture()->at($venue)->build(),
-        ]);
+        /** @var Venue $venue */
+        $venue = Venue::factory()->create();
+        $fixtures = collect(
+            [
+                Fixture::factory()->at($venue)->create(),
+                Fixture::factory()->at($venue)->create(),
+                Fixture::factory()->at($venue)->create(),
+                Fixture::factory()->at($venue)->create(),
+                Fixture::factory()->at($venue)->create(),
+            ]
+        );
 
-        // Other fixtures
-        $anotherVenue = factory(Venue::class)->create();
-        aFixture()->at($anotherVenue)->build();
-        aFixture()->at($anotherVenue)->build();
-        aFixture()->at($anotherVenue)->build();
-        aFixture()->at($anotherVenue)->build();
+        /** @var Venue $anotherVenue */
+        $anotherVenue = Venue::factory()->create();
+        Fixture::factory()->at($anotherVenue)->create();
+        Fixture::factory()->at($anotherVenue)->create();
+        Fixture::factory()->at($anotherVenue)->create();
+        Fixture::factory()->at($anotherVenue)->create();
 
-        /** @var Collection $fixturesAtVenue */
         $fixturesAtVenue = $venue->getFixtures();
 
         $this->assertCount(5, $fixturesAtVenue);
 
-        $fixtures->each(function (Fixture $fixture) use ($fixturesAtVenue): void {
-            $this->assertContains($fixture->getId(), $fixturesAtVenue->pluck('id'));
-        });
+        $fixtures->each(
+            function (Fixture $fixture) use ($fixturesAtVenue): void {
+                $this->assertContains($fixture->getId(), $fixturesAtVenue->pluck('id'));
+            }
+        );
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // No need to create roles every time we create a model
+        Event::fake();
     }
 }

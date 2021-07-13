@@ -1,13 +1,20 @@
 <?php
 
-/* @var $factory \Illuminate\Database\Eloquent\Factory */
+namespace Database\Factories;
 
 use App\Models\Venue;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
-$factory->define(Venue::class, function (Faker $faker) {
-    return [
-        'id' => $faker->unique()->uuid,
-        'name' => str_replace("\n", ' ', $faker->unique()->address),
-    ];
-});
+class VenueFactory extends Factory
+{
+    protected $model = Venue::class;
+
+    public function definition(): array
+    {
+        return [
+            'id' => $this->faker->unique()->uuid(),
+            'name' => Str::replace("\n", ' ', $this->faker->unique()->address()),
+        ];
+    }
+}

@@ -5,7 +5,6 @@ namespace App\Http\Resources;
 use App\Http\Controllers\Api\V1\LoadRelations;
 use App\Models\Team;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Http\Resources\MissingValue;
 
 class TeamResource extends JsonResource
 {

@@ -10,26 +10,26 @@ class HomepageTest extends TestCase
     public function testAccessForGuests(): void
     {
         $this->get('/')
-            ->assertOk();
+             ->assertOk();
     }
 
     public function testAccessForAuthenticatedUsers(): void
     {
-        $this->actingAs(factory(User::class)->create())
-            ->get('/')
-            ->assertOk();
+        $this->actingAs(User::factory()->create())
+             ->get('/')
+             ->assertOk();
     }
 
     public function testAccessForUnverifiedUsers(): void
     {
-        $this->actingAs(factory(User::class)->state('unverified')->create())
-            ->get('/')
-            ->assertOk();
+        $this->actingAs(User::factory()->unverified()->create())
+             ->get('/')
+             ->assertOk();
     }
 
     public function testBreadcrumbs(): void
     {
         $this->get('/')
-            ->assertSeeTextInOrder(['Home']);
+             ->assertSeeTextInOrder(['Home']);
     }
 }

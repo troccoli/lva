@@ -3,9 +3,11 @@
 namespace Tests\Integration\Api\V1;
 
 use App\Helpers\RolesHelper;
+use App\Models\Club;
 use App\Models\Competition;
 use App\Models\Division;
 use App\Models\Season;
+use App\Models\Team;
 use Laravel\Passport\Passport;
 use Tests\Concerns\InteractsWithArrays;
 use Tests\TestCase;
@@ -16,35 +18,38 @@ class SeasonsTest extends TestCase
 
     public function testTheSeasonsAreOrderedByYear(): void
     {
-        $season1 = factory(Season::class)->create(['year' => 2000]);
-        $season2 = factory(Season::class)->create(['year' => 2001]);
-        $season3 = factory(Season::class)->create(['year' => 1999]);
-        $season4 = factory(Season::class)->create(['year' => 1998]);
+        $season1 = Season::factory()->create(['year' => 2000]);
+        $season2 = Season::factory()->create(['year' => 2001]);
+        $season3 = Season::factory()->create(['year' => 1999]);
+        $season4 = Season::factory()->create(['year' => 1998]);
 
         Passport::actingAs($this->siteAdmin);
 
         $response = $this->getJson('/api/v1/seasons')
-            ->assertOk();
+                         ->assertOk();
 
-        $data = $response->decodeResponseJson('data');
-        $this->assertSame([
+        $data = $response->json('data');
+        $this->assertSame(
             [
-                'id' => $season2->getId(),
-                'name' => '2001/02',
+                [
+                    'id' => $season2->getId(),
+                    'name' => '2001/02',
+                ],
+                [
+                    'id' => $season1->getId(),
+                    'name' => '2000/01',
+                ],
+                [
+                    'id' => $season3->getId(),
+                    'name' => '1999/00',
+                ],
+                [
+                    'id' => $season4->getId(),
+                    'name' => '1998/99',
+                ],
             ],
-            [
-                'id' => $season1->getId(),
-                'name' => '2000/01',
-            ],
-            [
-                'id' => $season3->getId(),
-                'name' => '1999/00',
-            ],
-            [
-                'id' => $season4->getId(),
-                'name' => '1998/99',
-            ],
-        ], $data);
+            $data
+        );
     }
 
     public function testGettingAllSeasonsWhenThereAreNone(): void
@@ -52,9 +57,9 @@ class SeasonsTest extends TestCase
         Passport::actingAs($this->siteAdmin);
 
         $response = $this->getJson('/api/v1/seasons')
-            ->assertOk();
+                         ->assertOk();
 
-        $this->assertEmpty($response->decodeResponseJson('data'));
+        $this->assertEmpty($response->json('data'));
     }
 
     public function testGettingANonExistingSeason(): void
@@ -62,7 +67,7 @@ class SeasonsTest extends TestCase
         Passport::actingAs($this->siteAdmin);
 
         $this->getJson('/api/v1/seasons/1')
-            ->assertNotFound();
+             ->assertNotFound();
     }
 
     /**********************
@@ -72,145 +77,180 @@ class SeasonsTest extends TestCase
     /* - all seasons => all seasons */
     public function testGettingAllSeasonsAsSiteAdministrator(): void
     {
-        /** @var Season $season1 */
-        $season1 = factory(Season::class)->create(['year' => 2000]);
-        /** @var Season $season2 */
-        $season2 = factory(Season::class)->create(['year' => 2001]);
+        $season1 = Season::factory()->create(['year' => 2000]);
+        $season2 = Season::factory()->create(['year' => 2001]);
 
         Passport::actingAs($this->siteAdmin);
 
         $response = $this->getJson('/api/v1/seasons')
-            ->assertOk();
+                         ->assertOk();
 
-        $data = $response->decodeResponseJson('data');
+        $data = $response->json('data');
         $this->assertCount(2, $data);
-        $this->assertContains([
-            'id' => $season1->getId(),
-            'name' => '2000/01',
-        ], $data);
-        $this->assertContains([
-            'id' => $season2->getId(),
-            'name' => '2001/02',
-        ], $data);
+        $this->assertContains(
+            [
+                'id' => $season1->getId(),
+                'name' => '2000/01',
+            ],
+            $data
+        );
+        $this->assertContains(
+            [
+                'id' => $season2->getId(),
+                'name' => '2001/02',
+            ],
+            $data
+        );
     }
 
     /* - all seasons with competitions => all seasons and their competitions */
     public function testGettingAllSeasonsWithCompetitionsAsSiteAdministrator(): void
     {
-        /** @var Season $season1 */
-        $season1 = factory(Season::class)->create(['year' => 2000]);
-        /** @var Season $season2 */
-        $season2 = factory(Season::class)->create(['year' => 2001]);
+        $season1 = Season::factory()->create(['year' => 2000]);
+        $season2 = Season::factory()->create(['year' => 2001]);
 
-        /** @var Competition $competition1_season1 */
-        $competition1_season1 = factory(Competition::class)->create(['season_id' => $season1->getId()]);
-        /** @var Competition $competition2_season1 */
-        $competition2_season1 = factory(Competition::class)->create(['season_id' => $season1->getId()]);
-        /** @var Competition $competition1_season2 */
-        $competition1_season2 = factory(Competition::class)->create(['season_id' => $season2->getId()]);
-        /** @var Competition $competition2_season2 */
-        $competition2_season2 = factory(Competition::class)->create(['season_id' => $season2->getId()]);
+        $competition1 = Competition::factory()->for($season1)->create();
+        $competition2 = Competition::factory()->for($season1)->create();
+        $competition3 = Competition::factory()->for($season2)->create();
+        $competition4 = Competition::factory()->for($season2)->create();
 
         Passport::actingAs($this->siteAdmin);
 
         $response = $this->getJson('/api/v1/seasons?with[]=competitions')
-            ->assertOk();
+                         ->assertOk();
 
-        $data = $response->decodeResponseJson('data');
-        $data = $this->keyArrayBy($data, 'id');
+        $seasons = $response->json('data');
+        $seasons = $this->keyArrayBy($seasons, 'id');
 
-        $this->assertCount(2, $data);
+        $this->assertCount(2, $seasons);
 
-        $season1Data = $data[$season1->getId()];
-        $this->assertArrayContent([
-            'id' => $season1->getId(),
-            'name' => '2000/01',
-        ], $season1Data);
+        $season1Data = $seasons[$season1->getId()];
+        $this->assertArrayContent(
+            [
+                'id' => $season1->getId(),
+                'name' => '2000/01',
+            ],
+            $season1Data
+        );
         $this->assertArrayHasKey('competitions', $season1Data);
         $season1Competitions = $season1Data['competitions'];
         $this->assertCount(2, $season1Competitions);
-        $this->assertArrayContentByKey('id', $competition1_season1->getId(), [
-            'id' => $competition1_season1->getId(),
-            'name' => $competition1_season1->getName(),
-        ], $season1Competitions);
-        $this->assertArrayContentByKey('id', $competition2_season1->getId(), [
-            'id' => $competition2_season1->getId(),
-            'name' => $competition2_season1->getName(),
-        ], $season1Competitions);
+        $this->assertArrayContentByKey(
+            'id',
+            $competition1->getId(),
+            [
+                'id' => $competition1->getId(),
+                'name' => $competition1->getName(),
+            ],
+            $season1Competitions
+        );
+        $this->assertArrayContentByKey(
+            'id',
+            $competition2->getId(),
+            [
+                'id' => $competition2->getId(),
+                'name' => $competition2->getName(),
+            ],
+            $season1Competitions
+        );
 
-        $season2Data = $data[$season2->getId()];
-        $this->assertArrayContent([
-            'id' => $season2->getId(),
-            'name' => '2001/02',
-        ], $season2Data);
+        $season2Data = $seasons[$season2->getId()];
+        $this->assertArrayContent(
+            [
+                'id' => $season2->getId(),
+                'name' => '2001/02',
+            ],
+            $season2Data
+        );
         $this->assertArrayHasKey('competitions', $season2Data);
         $season2Competitions = $season2Data['competitions'];
         $this->assertCount(2, $season2Competitions);
-        $this->assertArrayContentByKey('id', $competition1_season2->getId(), [
-            'id' => $competition1_season2->getId(),
-            'name' => $competition1_season2->getName(),
-        ], $season2Competitions);
-        $this->assertArrayContentByKey('id', $competition2_season2->getId(), [
-            'id' => $competition2_season2->getId(),
-            'name' => $competition2_season2->getName(),
-        ], $season2Competitions);
+        $this->assertArrayContentByKey(
+            'id',
+            $competition3->getId(),
+            [
+                'id' => $competition3->getId(),
+                'name' => $competition3->getName(),
+            ],
+            $season2Competitions
+        );
+        $this->assertArrayContentByKey(
+            'id',
+            $competition4->getId(),
+            [
+                'id' => $competition4->getId(),
+                'name' => $competition4->getName(),
+            ],
+            $season2Competitions
+        );
     }
 
     /* - season 1 => only season 1 */
     public function testGettingOneSeasonAsSiteAdministrator(): void
     {
-        /** @var Season $season1 */
-        $season1 = factory(Season::class)->create(['year' => 2000]);
-        factory(Season::class)->create(['year' => 2001]);
+        $season1 = Season::factory()->create(['year' => 2000]);
+        Season::factory()->create(['year' => 2001]);
 
         Passport::actingAs($this->siteAdmin);
 
-        $response = $this->getJson('/api/v1/seasons/' . $season1->getId())
-            ->assertOk();
+        $response = $this->getJson("/api/v1/seasons/{$season1->getId()}")
+                         ->assertOk();
 
-        $data = $response->decodeResponseJson('data');
-        $this->assertSame([
-            'id' => $season1->getId(),
-            'name' => '2000/01',
-        ], $data);
+        $data = $response->json('data');
+        $this->assertSame(
+            [
+                'id' => $season1->getId(),
+                'name' => '2000/01',
+            ],
+            $data
+        );
     }
 
     /* - season 1 with competitions => only season 1 and its competitions */
     public function testGettingOneSeasonWithCompetitionsAsSiteAdministrator(): void
     {
-        /** @var Season $season1 */
-        $season1 = factory(Season::class)->create(['year' => 2000]);
-        /** @var Season $season2 */
-        $season2 = factory(Season::class)->create(['year' => 2001]);
+        $season1 = Season::factory()->create(['year' => 2000]);
+        $season2 = Season::factory()->create(['year' => 2001]);
 
-        /** @var Competition $competition1_season1 */
-        $competition1_season1 = factory(Competition::class)->create(['season_id' => $season1->getId()]);
-        /** @var Competition $competition2_season1 */
-        $competition2_season1 = factory(Competition::class)->create(['season_id' => $season1->getId()]);
-        factory(Competition::class)->create(['season_id' => $season2->getId()]);
-        factory(Competition::class)->create(['season_id' => $season2->getId()]);
+        $competition1 = Competition::factory()->for($season1)->create();
+        $competition2 = Competition::factory()->for($season1)->create();
+        Competition::factory()->for($season2)->create();
+        Competition::factory()->for($season2)->create();
 
         Passport::actingAs($this->siteAdmin);
 
-        $response = $this->getJson('/api/v1/seasons/' . $season1->getId() . '?with[]=competitions')
-            ->assertOk();
+        $response = $this->getJson("/api/v1/seasons/{$season1->getId()}?with[]=competitions")
+                         ->assertOk();
 
-        $data = $response->decodeResponseJson('data');
-        $this->assertArrayContent([
-            'id' => $season1->getId(),
-            'name' => '2000/01',
-        ], $data);
-        $this->assertArrayHasKey('competitions', $data);
-        $season1Competitions = $data['competitions'];
+        $seasons = $response->json('data');
+        $this->assertArrayContent(
+            [
+                'id' => $season1->getId(),
+                'name' => '2000/01',
+            ],
+            $seasons
+        );
+        $this->assertArrayHasKey('competitions', $seasons);
+        $season1Competitions = $seasons['competitions'];
         $this->assertCount(2, $season1Competitions);
-        $this->assertArrayContentByKey('id', $competition1_season1->getId(), [
-            'id' => $competition1_season1->getId(),
-            'name' => $competition1_season1->getName(),
-        ], $season1Competitions);
-        $this->assertArrayContentByKey('id', $competition2_season1->getId(), [
-            'id' => $competition2_season1->getId(),
-            'name' => $competition2_season1->getName(),
-        ], $season1Competitions);
+        $this->assertArrayContentByKey(
+            'id',
+            $competition1->getId(),
+            [
+                'id' => $competition1->getId(),
+                'name' => $competition1->getName(),
+            ],
+            $season1Competitions
+        );
+        $this->assertArrayContentByKey(
+            'id',
+            $competition2->getId(),
+            [
+                'id' => $competition2->getId(),
+                'name' => $competition2->getName(),
+            ],
+            $season1Competitions
+        );
     }
 
     /************************
@@ -221,63 +261,76 @@ class SeasonsTest extends TestCase
     public function testGettingAllSeasonsAsSeasonAdministrator(): void
     {
         /** @var Season $season1 */
-        $season1 = factory(Season::class)->create(['year' => 2000]);
-        factory(Season::class)->create(['year' => 2001]);
+        $season1 = Season::factory()->create(['year' => 2000]);
+        Season::factory()->create(['year' => 2001]);
 
         Passport::actingAs($this->userWithRole(RolesHelper::seasonAdmin($season1)));
 
         $response = $this->getJson('/api/v1/seasons')
-            ->assertOk();
+                         ->assertOk();
 
-        $data = $response->decodeResponseJson('data');
-        $this->assertCount(1, $data);
-        $this->assertContains([
-            'id' => $season1->getId(),
-            'name' => '2000/01',
-        ], $data);
+        $seasons = $response->json('data');
+        $this->assertCount(1, $seasons);
+        $this->assertContains(
+            [
+                'id' => $season1->getId(),
+                'name' => '2000/01',
+            ],
+            $seasons
+        );
     }
 
     /* - all seasons with competitions => only season 1 its competitions */
     public function testGettingAllSeasonsWithCompetitionsAsSeasonAdministrator(): void
     {
         /** @var Season $season1 */
-        $season1 = factory(Season::class)->create(['year' => 2000]);
-        /** @var Season $season2 */
-        $season2 = factory(Season::class)->create(['year' => 2001]);
+        $season1 = Season::factory()->create(['year' => 2000]);
+        $season2 = Season::factory()->create(['year' => 2001]);
 
-        /** @var Competition $competition1_season1 */
-        $competition1_season1 = factory(Competition::class)->create(['season_id' => $season1->getId()]);
-        /** @var Competition $competition2_season1 */
-        $competition2_season1 = factory(Competition::class)->create(['season_id' => $season1->getId()]);
-        factory(Competition::class)->create(['season_id' => $season2->getId()]);
-        factory(Competition::class)->create(['season_id' => $season2->getId()]);
+        $competition1 = Competition::factory()->for($season1)->create();
+        $competition2 = Competition::factory()->for($season1)->create();
+        Competition::factory()->for($season2)->create();
+        Competition::factory()->for($season2)->create();
 
         Passport::actingAs($this->userWithRole(RolesHelper::seasonAdmin($season1)));
 
         $response = $this->getJson('/api/v1/seasons?with[]=competitions')
-            ->assertOk();
+                         ->assertOk();
 
-        $data = $response->decodeResponseJson('data');
-        $data = $this->keyArrayBy($data, 'id');
+        $seasons = $response->json('data');
+        $seasons = $this->keyArrayBy($seasons, 'id');
 
-        $this->assertCount(1, $data);
+        $this->assertCount(1, $seasons);
 
-        $season1Data = $data[$season1->getId()];
-        $this->assertArrayContent([
-            'id' => $season1->getId(),
-            'name' => '2000/01',
-        ], $season1Data);
+        $season1Data = $seasons[$season1->getId()];
+        $this->assertArrayContent(
+            [
+                'id' => $season1->getId(),
+                'name' => '2000/01',
+            ],
+            $season1Data
+        );
         $this->assertArrayHasKey('competitions', $season1Data);
         $season1Competitions = $season1Data['competitions'];
         $this->assertCount(2, $season1Competitions);
-        $this->assertArrayContentByKey('id', $competition1_season1->getId(), [
-            'id' => $competition1_season1->getId(),
-            'name' => $competition1_season1->getName(),
-        ], $season1Competitions);
-        $this->assertArrayContentByKey('id', $competition2_season1->getId(), [
-            'id' => $competition2_season1->getId(),
-            'name' => $competition2_season1->getName(),
-        ], $season1Competitions);
+        $this->assertArrayContentByKey(
+            'id',
+            $competition1->getId(),
+            [
+                'id' => $competition1->getId(),
+                'name' => $competition1->getName(),
+            ],
+            $season1Competitions
+        );
+        $this->assertArrayContentByKey(
+            'id',
+            $competition2->getId(),
+            [
+                'id' => $competition2->getId(),
+                'name' => $competition2->getName(),
+            ],
+            $season1Competitions
+        );
     }
 
     /*
@@ -287,26 +340,27 @@ class SeasonsTest extends TestCase
     public function testGettingOneSeasonAsSeasonAdministrator(): void
     {
         /** @var Season $season1 */
-        $season1 = factory(Season::class)->create(['year' => 2000]);
-        /** @var Season $season2 */
-        $season2 = factory(Season::class)->create(['year' => 2001]);
+        $season1 = Season::factory()->create(['year' => 2000]);
+        $season2 = Season::factory()->create(['year' => 2001]);
 
         Passport::actingAs($this->userWithRole(RolesHelper::seasonAdmin($season1)));
 
-        $response = $this->getJson('/api/v1/seasons/' . $season1->getId())
-            ->assertOk();
+        $response = $this->getJson("/api/v1/seasons/{$season1->getId()}")
+                         ->assertOk();
 
-        $data = $response->decodeResponseJson('data');
-        $this->assertSame([
-            'id' => $season1->getId(),
-            'name' => '2000/01',
-        ], $data);
+        $seasons = $response->json('data');
+        $this->assertSame(
+            [
+                'id' => $season1->getId(),
+                'name' => '2000/01',
+            ],
+            $seasons
+        );
 
-        $response = $this->getJson('/api/v1/seasons/' . $season2->getId())
-            ->assertOk();
+        $response = $this->getJson("/api/v1/seasons/{$season2->getId()}")
+                         ->assertOk();
 
-        $data = $response->decodeResponseJson('data');
-        $this->assertEmpty($data);
+        $this->assertEmpty($response->json('data'));
     }
 
     /*
@@ -316,44 +370,53 @@ class SeasonsTest extends TestCase
     public function testGettingOneSeasonWithCompetitionsAsSeasonAdministrator(): void
     {
         /** @var Season $season1 */
-        $season1 = factory(Season::class)->create(['year' => 2000]);
-        /** @var Season $season2 */
-        $season2 = factory(Season::class)->create(['year' => 2001]);
+        $season1 = Season::factory()->create(['year' => 2000]);
+        $season2 = Season::factory()->create(['year' => 2001]);
 
-        /** @var Competition $competition1_season1 */
-        $competition1_season1 = factory(Competition::class)->create(['season_id' => $season1->getId()]);
-        /** @var Competition $competition2_season1 */
-        $competition2_season1 = factory(Competition::class)->create(['season_id' => $season1->getId()]);
-        factory(Competition::class)->create(['season_id' => $season2->getId()]);
-        factory(Competition::class)->create(['season_id' => $season2->getId()]);
+        $competition1 = Competition::factory()->for($season1)->create();
+        $competition2 = Competition::factory()->for($season1)->create();
+        Competition::factory()->for($season2)->create();
+        Competition::factory()->for($season2)->create();
 
         Passport::actingAs($this->userWithRole(RolesHelper::seasonAdmin($season1)));
 
-        $response = $this->getJson('/api/v1/seasons/' . $season1->getId() . '?with[]=competitions')
-            ->assertOk();
+        $response = $this->getJson("/api/v1/seasons/{$season1->getId()}?with[]=competitions")
+                         ->assertOk();
 
-        $data = $response->decodeResponseJson('data');
-        $this->assertArrayContent([
-            'id' => $season1->getId(),
-            'name' => '2000/01',
-        ], $data);
-        $this->assertArrayHasKey('competitions', $data);
-        $season1Competitions = $data['competitions'];
+        $seasons = $response->json('data');
+        $this->assertArrayContent(
+            [
+                'id' => $season1->getId(),
+                'name' => '2000/01',
+            ],
+            $seasons
+        );
+        $this->assertArrayHasKey('competitions', $seasons);
+        $season1Competitions = $seasons['competitions'];
         $this->assertCount(2, $season1Competitions);
-        $this->assertArrayContentByKey('id', $competition1_season1->getId(), [
-            'id' => $competition1_season1->getId(),
-            'name' => $competition1_season1->getName(),
-        ], $season1Competitions);
-        $this->assertArrayContentByKey('id', $competition2_season1->getId(), [
-            'id' => $competition2_season1->getId(),
-            'name' => $competition2_season1->getName(),
-        ], $season1Competitions);
+        $this->assertArrayContentByKey(
+            'id',
+            $competition1->getId(),
+            [
+                'id' => $competition1->getId(),
+                'name' => $competition1->getName(),
+            ],
+            $season1Competitions
+        );
+        $this->assertArrayContentByKey(
+            'id',
+            $competition2->getId(),
+            [
+                'id' => $competition2->getId(),
+                'name' => $competition2->getName(),
+            ],
+            $season1Competitions
+        );
 
-        $response = $this->getJson('/api/v1/seasons/' . $season2->getId() . '?with[]=competitions')
-            ->assertOk();
+        $response = $this->getJson("/api/v1/seasons/{$season2->getId()}?with[]=competitions")
+                         ->assertOk();
 
-        $data = $response->decodeResponseJson('data');
-        $this->assertEmpty($data);
+        $this->assertEmpty($response->json('data'));
     }
 
     /*****************************
@@ -363,67 +426,73 @@ class SeasonsTest extends TestCase
     /* - all seasons => only season 1 */
     public function testGettingAllSeasonsAsCompetitionAdministrator(): void
     {
-        /** @var Season $season1 */
-        $season1 = factory(Season::class)->create(['year' => 2000]);
-        /** @var Season $season2 */
-        $season2 = factory(Season::class)->create(['year' => 2001]);
+        $season1 = Season::factory()->create(['year' => 2000]);
+        $season2 = Season::factory()->create(['year' => 2001]);
 
-        /** @var Competition $competition1_season1 */
-        $competition1_season1 = factory(Competition::class)->create(['season_id' => $season1->getId()]);
-        factory(Competition::class)->create(['season_id' => $season1->getId()]);
-        factory(Competition::class)->create(['season_id' => $season2->getId()]);
-        factory(Competition::class)->create(['season_id' => $season2->getId()]);
+        /** @var Competition $competition1 */
+        $competition1 = Competition::factory()->for($season1)->create();
+        Competition::factory()->for($season1)->create();
+        Competition::factory()->for($season2)->create();
+        Competition::factory()->for($season2)->create();
 
-        Passport::actingAs($this->userWithRole(RolesHelper::competitionAdmin($competition1_season1)));
+        Passport::actingAs($this->userWithRole(RolesHelper::competitionAdmin($competition1)));
 
         $response = $this->getJson('/api/v1/seasons')
-            ->assertOk();
+                         ->assertOk();
 
-        $data = $response->decodeResponseJson('data');
-        $this->assertCount(1, $data);
-        $this->assertContains([
-            'id' => $season1->getId(),
-            'name' => '2000/01',
-        ], $data);
+        $seasons = $response->json('data');
+        $this->assertCount(1, $seasons);
+        $this->assertContains(
+            [
+                'id' => $season1->getId(),
+                'name' => '2000/01',
+            ],
+            $seasons
+        );
     }
 
     /* - all seasons with competitions => only season 1 with competition 1 */
     public function testGettingAllSeasonsWithCompetitionsAsCompetitionAdministrator(): void
     {
-        /** @var Season $season1 */
-        $season1 = factory(Season::class)->create(['year' => 2000]);
-        /** @var Season $season2 */
-        $season2 = factory(Season::class)->create(['year' => 2001]);
+        $season1 = Season::factory()->create(['year' => 2000]);
+        $season2 = Season::factory()->create(['year' => 2001]);
 
-        /** @var Competition $competition1_season1 */
-        $competition1_season1 = factory(Competition::class)->create(['season_id' => $season1->getId()]);
-        /** @var Competition $competition2_season1 */
-        $competition2_season1 = factory(Competition::class)->create(['season_id' => $season1->getId()]);
-        factory(Competition::class)->create(['season_id' => $season2->getId()]);
-        factory(Competition::class)->create(['season_id' => $season2->getId()]);
+        /** @var Competition $competition1 */
+        $competition1 = Competition::factory()->for($season1)->create();
+        Competition::factory()->for($season1)->create();
+        Competition::factory()->for($season2)->create();
+        Competition::factory()->for($season2)->create();
 
-        Passport::actingAs($this->userWithRole(RolesHelper::competitionAdmin($competition1_season1)));
+        Passport::actingAs($this->userWithRole(RolesHelper::competitionAdmin($competition1)));
 
         $response = $this->getJson('/api/v1/seasons?with[]=competitions')
-            ->assertOk();
+                         ->assertOk();
 
-        $data = $response->decodeResponseJson('data');
-        $data = $this->keyArrayBy($data, 'id');
+        $seasons = $response->json('data');
+        $seasons = $this->keyArrayBy($seasons, 'id');
 
-        $this->assertCount(1, $data);
+        $this->assertCount(1, $seasons);
 
-        $season1Data = $data[$season1->getId()];
-        $this->assertArrayContent([
-            'id' => $season1->getId(),
-            'name' => '2000/01',
-        ], $season1Data);
+        $season1Data = $seasons[$season1->getId()];
+        $this->assertArrayContent(
+            [
+                'id' => $season1->getId(),
+                'name' => '2000/01',
+            ],
+            $season1Data
+        );
         $this->assertArrayHasKey('competitions', $season1Data);
         $season1Competitions = $season1Data['competitions'];
         $this->assertCount(1, $season1Competitions);
-        $this->assertArrayContentByKey('id', $competition1_season1->getId(), [
-            'id' => $competition1_season1->getId(),
-            'name' => $competition1_season1->getName(),
-        ], $season1Competitions);
+        $this->assertArrayContentByKey(
+            'id',
+            $competition1->getId(),
+            [
+                'id' => $competition1->getId(),
+                'name' => $competition1->getName(),
+            ],
+            $season1Competitions
+        );
     }
 
     /*
@@ -432,33 +501,33 @@ class SeasonsTest extends TestCase
      */
     public function testGettingOneSeasonAsCompetitionAdministrator(): void
     {
-        /** @var Season $season1 */
-        $season1 = factory(Season::class)->create(['year' => 2000]);
-        /** @var Season $season2 */
-        $season2 = factory(Season::class)->create(['year' => 2001]);
+        $season1 = Season::factory()->create(['year' => 2000]);
+        $season2 = Season::factory()->create(['year' => 2001]);
 
-        /** @var Competition $competition1_season1 */
-        $competition1_season1 = factory(Competition::class)->create(['season_id' => $season1->getId()]);
-        factory(Competition::class)->create(['season_id' => $season1->getId()]);
-        factory(Competition::class)->create(['season_id' => $season2->getId()]);
-        factory(Competition::class)->create(['season_id' => $season2->getId()]);
+        /** @var Competition $competition1 */
+        $competition1 = Competition::factory()->for($season1)->create();
+        Competition::factory()->for($season1)->create();
+        Competition::factory()->for($season2)->create();
+        Competition::factory()->for($season2)->create();
 
-        Passport::actingAs($this->userWithRole(RolesHelper::competitionAdmin($competition1_season1)));
+        Passport::actingAs($this->userWithRole(RolesHelper::competitionAdmin($competition1)));
 
-        $response = $this->getJson('/api/v1/seasons/' . $season1->getId())
-            ->assertOk();
+        $response = $this->getJson("/api/v1/seasons/{$season1->getId()}")
+                         ->assertOk();
 
-        $data = $response->decodeResponseJson('data');
-        $this->assertSame([
-            'id' => $season1->getId(),
-            'name' => '2000/01',
-        ], $data);
+        $seasons = $response->json('data');
+        $this->assertSame(
+            [
+                'id' => $season1->getId(),
+                'name' => '2000/01',
+            ],
+            $seasons
+        );
 
-        $response = $this->getJson('/api/v1/seasons/' . $season2->getId())
-            ->assertOk();
+        $response = $this->getJson("/api/v1/seasons/{$season2->getId()}")
+                         ->assertOk();
 
-        $data = $response->decodeResponseJson('data');
-        $this->assertEmpty($data);
+        $this->assertEmpty($response->json('data'));
     }
 
     /*
@@ -467,41 +536,45 @@ class SeasonsTest extends TestCase
      */
     public function testGettingOneSeasonWithCompetitionsAsCompetitionAdministrator(): void
     {
-        /** @var Season $season1 */
-        $season1 = factory(Season::class)->create(['year' => 2000]);
-        /** @var Season $season2 */
-        $season2 = factory(Season::class)->create(['year' => 2001]);
+        $season1 = Season::factory()->create(['year' => 2000]);
+        $season2 = Season::factory()->create(['year' => 2001]);
 
-        /** @var Competition $competition1_season1 */
-        $competition1_season1 = factory(Competition::class)->create(['season_id' => $season1->getId()]);
-        /** @var Competition $competition2_season1 */
-        $competition2_season1 = factory(Competition::class)->create(['season_id' => $season1->getId()]);
-        factory(Competition::class)->create(['season_id' => $season2->getId()]);
-        factory(Competition::class)->create(['season_id' => $season2->getId()]);
+        /** @var Competition $competition1 */
+        $competition1 = Competition::factory()->for($season1)->create();
+        Competition::factory()->for($season1)->create();
+        Competition::factory()->for($season2)->create();
+        Competition::factory()->for($season2)->create();
 
-        Passport::actingAs($this->userWithRole(RolesHelper::competitionAdmin($competition1_season1)));
+        Passport::actingAs($this->userWithRole(RolesHelper::competitionAdmin($competition1)));
 
-        $response = $this->getJson('/api/v1/seasons/' . $season1->getId() . '?with[]=competitions')
-            ->assertOk();
+        $response = $this->getJson("/api/v1/seasons/{$season1->getId()}?with[]=competitions")
+                         ->assertOk();
 
-        $data = $response->decodeResponseJson('data');
-        $this->assertArrayContent([
-            'id' => $season1->getId(),
-            'name' => '2000/01',
-        ], $data);
-        $this->assertArrayHasKey('competitions', $data);
-        $season1Competitions = $data['competitions'];
+        $seasons = $response->json('data');
+        $this->assertArrayContent(
+            [
+                'id' => $season1->getId(),
+                'name' => '2000/01',
+            ],
+            $seasons
+        );
+        $this->assertArrayHasKey('competitions', $seasons);
+        $season1Competitions = $seasons['competitions'];
         $this->assertCount(1, $season1Competitions);
-        $this->assertArrayContentByKey('id', $competition1_season1->getId(), [
-            'id' => $competition1_season1->getId(),
-            'name' => $competition1_season1->getName(),
-        ], $season1Competitions);
+        $this->assertArrayContentByKey(
+            'id',
+            $competition1->getId(),
+            [
+                'id' => $competition1->getId(),
+                'name' => $competition1->getName(),
+            ],
+            $season1Competitions
+        );
 
-        $response = $this->getJson('/api/v1/seasons/' . $season2->getId() . '?with[]=competitions')
-            ->assertOk();
+        $response = $this->getJson("/api/v1/seasons/{$season2->getId()}?with[]=competitions")
+                         ->assertOk();
 
-        $data = $response->decodeResponseJson('data');
-        $this->assertEmpty($data);
+        $this->assertEmpty($response->json('data'));
     }
 
     /**************************
@@ -511,72 +584,77 @@ class SeasonsTest extends TestCase
     /* - all season => only season 1 */
     public function testGettingAllSeasonsAsDivisionAdministrator(): void
     {
-        /** @var Season $season1 */
-        $season1 = factory(Season::class)->create(['year' => 2000]);
-        /** @var Season $season2 */
-        $season2 = factory(Season::class)->create(['year' => 2001]);
+        $season1 = Season::factory()->create(['year' => 2000]);
+        $season2 = Season::factory()->create(['year' => 2001]);
 
-        /** @var Competition $competition1_season1 */
-        $competition1_season1 = factory(Competition::class)->create(['season_id' => $season1->getId()]);
-        factory(Competition::class)->create(['season_id' => $season1->getId()]);
-        factory(Competition::class)->create(['season_id' => $season2->getId()]);
-        factory(Competition::class)->create(['season_id' => $season2->getId()]);
+        $competition1 = Competition::factory()->for($season1)->create();
+        Competition::factory()->for($season1)->create();
+        Competition::factory()->for($season2)->create();
+        Competition::factory()->for($season2)->create();
 
         /** @var Division $division1 */
-        $division1 = factory(Division::class)->create(['competition_id' => $competition1_season1]);
+        $division1 = Division::factory()->for($competition1)->create();
 
         Passport::actingAs($this->userWithRole(RolesHelper::divisionAdmin($division1)));
 
         $response = $this->getJson('/api/v1/seasons')
-            ->assertOk();
+                         ->assertOk();
 
-        $data = $response->decodeResponseJson('data');
-        $this->assertCount(1, $data);
-        $this->assertContains([
-            'id' => $season1->getId(),
-            'name' => '2000/01',
-        ], $data);
+        $seasons = $response->json('data');
+        $this->assertCount(1, $seasons);
+        $this->assertContains(
+            [
+                'id' => $season1->getId(),
+                'name' => '2000/01',
+            ],
+            $seasons
+        );
     }
 
     /* - all seasons with competitions => only season 1 with competition 1 */
     public function testGettingAllSeasonsWithCompetitionsAsDivisionAdministrator(): void
     {
-        /** @var Season $season1 */
-        $season1 = factory(Season::class)->create(['year' => 2000]);
-        /** @var Season $season2 */
-        $season2 = factory(Season::class)->create(['year' => 2001]);
+        $season1 = Season::factory()->create(['year' => 2000]);
+        $season2 = Season::factory()->create(['year' => 2001]);
 
-        /** @var Competition $competition1_season1 */
-        $competition1_season1 = factory(Competition::class)->create(['season_id' => $season1->getId()]);
-        factory(Competition::class)->create(['season_id' => $season1->getId()]);
-        factory(Competition::class)->create(['season_id' => $season2->getId()]);
-        factory(Competition::class)->create(['season_id' => $season2->getId()]);
+        $competition1 = Competition::factory()->for($season1)->create();
+        Competition::factory()->for($season1)->create();
+        Competition::factory()->for($season2)->create();
+        Competition::factory()->for($season2)->create();
 
         /** @var Division $division1 */
-        $division1 = factory(Division::class)->create(['competition_id' => $competition1_season1]);
+        $division1 = Division::factory()->for($competition1)->create();
 
         Passport::actingAs($this->userWithRole(RolesHelper::divisionAdmin($division1)));
 
         $response = $this->getJson('/api/v1/seasons?with[]=competitions')
-            ->assertOk();
+                         ->assertOk();
 
-        $data = $response->decodeResponseJson('data');
-        $data = $this->keyArrayBy($data, 'id');
+        $seasons = $response->json('data');
+        $seasons = $this->keyArrayBy($seasons, 'id');
 
-        $this->assertCount(1, $data);
+        $this->assertCount(1, $seasons);
 
-        $season1Data = $data[$season1->getId()];
-        $this->assertArrayContent([
-            'id' => $season1->getId(),
-            'name' => '2000/01',
-        ], $season1Data);
+        $season1Data = $seasons[$season1->getId()];
+        $this->assertArrayContent(
+            [
+                'id' => $season1->getId(),
+                'name' => '2000/01',
+            ],
+            $season1Data
+        );
         $this->assertArrayHasKey('competitions', $season1Data);
         $season1Competitions = $season1Data['competitions'];
         $this->assertCount(1, $season1Competitions);
-        $this->assertArrayContentByKey('id', $competition1_season1->getId(), [
-            'id' => $competition1_season1->getId(),
-            'name' => $competition1_season1->getName(),
-        ], $season1Competitions);
+        $this->assertArrayContentByKey(
+            'id',
+            $competition1->getId(),
+            [
+                'id' => $competition1->getId(),
+                'name' => $competition1->getName(),
+            ],
+            $season1Competitions
+        );
     }
 
     /*
@@ -585,36 +663,35 @@ class SeasonsTest extends TestCase
      */
     public function testGettingOneSeasonAsDivisionAdministrator(): void
     {
-        /** @var Season $season1 */
-        $season1 = factory(Season::class)->create(['year' => 2000]);
-        /** @var Season $season2 */
-        $season2 = factory(Season::class)->create(['year' => 2001]);
+        $season1 = Season::factory()->create(['year' => 2000]);
+        $season2 = Season::factory()->create(['year' => 2001]);
 
-        /** @var Competition $competition1_season1 */
-        $competition1_season1 = factory(Competition::class)->create(['season_id' => $season1->getId()]);
-        factory(Competition::class)->create(['season_id' => $season1->getId()]);
-        factory(Competition::class)->create(['season_id' => $season2->getId()]);
-        factory(Competition::class)->create(['season_id' => $season2->getId()]);
+        $competition1 = Competition::factory()->for($season1)->create();
+        Competition::factory()->for($season1)->create();
+        Competition::factory()->for($season2)->create();
+        Competition::factory()->for($season2)->create();
 
         /** @var Division $division1 */
-        $division1 = factory(Division::class)->create(['competition_id' => $competition1_season1]);
+        $division1 = Division::factory()->for($competition1)->create();
 
         Passport::actingAs($this->userWithRole(RolesHelper::divisionAdmin($division1)));
 
-        $response = $this->getJson('/api/v1/seasons/' . $season1->getId())
-            ->assertOk();
+        $response = $this->getJson("/api/v1/seasons/{$season1->getId()}")
+                         ->assertOk();
 
-        $data = $response->decodeResponseJson('data');
-        $this->assertSame([
-            'id' => $season1->getId(),
-            'name' => '2000/01',
-        ], $data);
+        $seasons = $response->json('data');
+        $this->assertSame(
+            [
+                'id' => $season1->getId(),
+                'name' => '2000/01',
+            ],
+            $seasons
+        );
 
-        $response = $this->getJson('/api/v1/seasons/' . $season2->getId())
-            ->assertOk();
+        $response = $this->getJson("/api/v1/seasons/{$season2->getId()}")
+                         ->assertOk();
 
-        $data = $response->decodeResponseJson('data');
-        $this->assertEmpty($data);
+        $this->assertEmpty($response->json('data'));
     }
 
     /*
@@ -623,43 +700,47 @@ class SeasonsTest extends TestCase
      */
     public function testGettingOneSeasonWithCompetitionsAsDivisionAdministrator(): void
     {
-        /** @var Season $season1 */
-        $season1 = factory(Season::class)->create(['year' => 2000]);
-        /** @var Season $season2 */
-        $season2 = factory(Season::class)->create(['year' => 2001]);
+        $season1 = Season::factory()->create(['year' => 2000]);
+        $season2 = Season::factory()->create(['year' => 2001]);
 
-        /** @var Competition $competition1_season1 */
-        $competition1_season1 = factory(Competition::class)->create(['season_id' => $season1->getId()]);
-        factory(Competition::class)->create(['season_id' => $season1->getId()]);
-        factory(Competition::class)->create(['season_id' => $season2->getId()]);
-        factory(Competition::class)->create(['season_id' => $season2->getId()]);
+        $competition1 = Competition::factory()->for($season1)->create();
+        Competition::factory()->for($season1)->create();
+        Competition::factory()->for($season2)->create();
+        Competition::factory()->for($season2)->create();
 
         /** @var Division $division1 */
-        $division1 = factory(Division::class)->create(['competition_id' => $competition1_season1]);
+        $division1 = Division::factory()->for($competition1)->create();
 
         Passport::actingAs($this->userWithRole(RolesHelper::divisionAdmin($division1)));
 
-        $response = $this->getJson('/api/v1/seasons/' . $season1->getId() . '?with[]=competitions')
-            ->assertOk();
+        $response = $this->getJson("/api/v1/seasons/{$season1->getId()}?with[]=competitions")
+                         ->assertOk();
 
-        $data = $response->decodeResponseJson('data');
-        $this->assertArrayContent([
-            'id' => $season1->getId(),
-            'name' => '2000/01',
-        ], $data);
-        $this->assertArrayHasKey('competitions', $data);
-        $season1Competitions = $data['competitions'];
+        $seasons = $response->json('data');
+        $this->assertArrayContent(
+            [
+                'id' => $season1->getId(),
+                'name' => '2000/01',
+            ],
+            $seasons
+        );
+        $this->assertArrayHasKey('competitions', $seasons);
+        $season1Competitions = $seasons['competitions'];
         $this->assertCount(1, $season1Competitions);
-        $this->assertArrayContentByKey('id', $competition1_season1->getId(), [
-            'id' => $competition1_season1->getId(),
-            'name' => $competition1_season1->getName(),
-        ], $season1Competitions);
+        $this->assertArrayContentByKey(
+            'id',
+            $competition1->getId(),
+            [
+                'id' => $competition1->getId(),
+                'name' => $competition1->getName(),
+            ],
+            $season1Competitions
+        );
 
-        $response = $this->getJson('/api/v1/seasons/' . $season2->getId() . '?with[]=competitions')
-            ->assertOk();
+        $response = $this->getJson("/api/v1/seasons/{$season2->getId()}?with[]=competitions")
+                         ->assertOk();
 
-        $data = $response->decodeResponseJson('data');
-        $this->assertEmpty($data);
+        $this->assertEmpty($response->json('data'));
     }
 
     /******************
@@ -669,75 +750,77 @@ class SeasonsTest extends TestCase
     /* - all seasons => no data */
     public function testGettingAllSeasonsAsClubSecretary(): void
     {
-        factory(Season::class)->create(['year' => 2000]);
-        factory(Season::class)->create(['year' => 2001]);
+        Season::factory()->create(['year' => 2000]);
+        Season::factory()->create(['year' => 2001]);
 
-        $club = aClub()->build();
+        /** @var Club $club */
+        $club = Club::factory()->create();
 
         Passport::actingAs($this->userWithRole(RolesHelper::clubSecretary($club)));
 
         $response = $this->getJson('/api/v1/seasons')
-            ->assertOk();
+                         ->assertOk();
 
-        $this->assertEmpty($response->decodeResponseJson('data'));
+        $this->assertEmpty($response->json('data'));
     }
 
     /* - all seasons with competitions => no data */
     public function testGettingAllSeasonsWithCompetitionsAsClubSecretary(): void
     {
-        $season1 = factory(Season::class)->create(['year' => 2000]);
-        $season2 = factory(Season::class)->create(['year' => 2001]);
+        $season1 = Season::factory()->create(['year' => 2000]);
+        $season2 = Season::factory()->create(['year' => 2001]);
 
-        factory(Competition::class)->create(['season_id' => $season1->getId()]);
-        factory(Competition::class)->create(['season_id' => $season1->getId()]);
-        factory(Competition::class)->create(['season_id' => $season2->getId()]);
-        factory(Competition::class)->create(['season_id' => $season2->getId()]);
+        Competition::factory()->for($season1)->create();
+        Competition::factory()->for($season1)->create();
+        Competition::factory()->for($season2)->create();
+        Competition::factory()->for($season2)->create();
 
-        $club = aClub()->build();
+        /** @var Club $club */
+        $club = Club::factory()->create();
 
         Passport::actingAs($this->userWithRole(RolesHelper::clubSecretary($club)));
 
         $response = $this->getJson('/api/v1/seasons?with[]=competitions')
-            ->assertOk();
+                         ->assertOk();
 
-        $this->assertEmpty($response->decodeResponseJson('data'));
+        $this->assertEmpty($response->json('data'));
     }
 
     /* - season 1 => no data */
     public function testGettingOneSeasonAsClubSecretary(): void
     {
-        /** @var Season $season1 */
-        $season1 = factory(Season::class)->create(['year' => 2000]);
-        factory(Season::class)->create(['year' => 2001]);
+        $season1 = Season::factory()->create(['year' => 2000]);
+        Season::factory()->create(['year' => 2001]);
 
-        $club = aClub()->build();
+        /** @var Club $club */
+        $club = Club::factory()->create();
 
         Passport::actingAs($this->userWithRole(RolesHelper::clubSecretary($club)));
 
-        $response = $this->getJson('/api/v1/seasons/' . $season1->getId())
-            ->assertOk();
+        $response = $this->getJson("/api/v1/seasons/{$season1->getId()}")
+                         ->assertOk();
 
-        $this->assertEmpty($response->decodeResponseJson('data'));
+        $this->assertEmpty($response->json('data'));
     }
 
     /* - season 1 with competitions => no data */
     public function testGettingOneSeasonWithCompetitionsAsClubSecretary(): void
     {
-        /** @var Season $season1 */
-        $season1 = factory(Season::class)->create(['year' => 2000]);
-        factory(Season::class)->create(['year' => 2001]);
+        $season1 = Season::factory()->create(['year' => 2000]);
+        Season::factory()->create(['year' => 2001]);
 
-        factory(Competition::class)->create(['season_id' => $season1->getId()]);
-        factory(Competition::class)->create(['season_id' => $season1->getId()]);
+        Competition::factory()->for($season1)->create();
+        Competition::factory()->for($season1)->create();
 
-        $club = aClub()->build();
+        /** @var Club $club */
+        $club = Club::factory()->create();
 
         Passport::actingAs($this->userWithRole(RolesHelper::clubSecretary($club)));
 
-        $response = $this->getJson('/api/v1/seasons/' . $season1->getId() . '?with[]=competitions')
-            ->assertOk();
+        $response = $this->getJson("/api/v1/seasons/{$season1->getId()}?with[]=competitions")
+                         ->assertOk();
 
-        $this->assertEmpty($response->decodeResponseJson('data'));
+        $this->assertEmpty($response->json('data'));
     }
 
     /******************
@@ -747,74 +830,76 @@ class SeasonsTest extends TestCase
     /* - all seasons => no data */
     public function testGettingAllSeasonsAsTeamSecretary(): void
     {
-        factory(Season::class)->create(['year' => 2000]);
-        factory(Season::class)->create(['year' => 2001]);
+        Season::factory()->create(['year' => 2000]);
+        Season::factory()->create(['year' => 2001]);
 
-        $team = aTeam()->build();
+        /** @var Team $team */
+        $team = Team::factory()->create();
 
         Passport::actingAs($this->userWithRole(RolesHelper::teamSecretary($team)));
 
         $response = $this->getJson('/api/v1/seasons')
-            ->assertOk();
+                         ->assertOk();
 
-        $this->assertEmpty($response->decodeResponseJson('data'));
+        $this->assertEmpty($response->json('data'));
     }
 
     /* - all seasons with competitions => no data */
     public function testGettingAllSeasonsWithCompetitionsAsTeamSecretary(): void
     {
-        $season1 = factory(Season::class)->create(['year' => 2000]);
-        $season2 = factory(Season::class)->create(['year' => 2001]);
+        $season1 = Season::factory()->create(['year' => 2000]);
+        $season2 = Season::factory()->create(['year' => 2001]);
 
-        factory(Competition::class)->create(['season_id' => $season1->getId()]);
-        factory(Competition::class)->create(['season_id' => $season1->getId()]);
-        factory(Competition::class)->create(['season_id' => $season2->getId()]);
-        factory(Competition::class)->create(['season_id' => $season2->getId()]);
+        Competition::factory()->for($season1)->create();
+        Competition::factory()->for($season1)->create();
+        Competition::factory()->for($season2)->create();
+        Competition::factory()->for($season2)->create();
 
-        $team = aTeam()->build();
+        /** @var Team $team */
+        $team = Team::factory()->create();
 
         Passport::actingAs($this->userWithRole(RolesHelper::teamSecretary($team)));
 
         $response = $this->getJson('/api/v1/seasons?with[]=competitions')
-            ->assertOk();
+                         ->assertOk();
 
-        $this->assertEmpty($response->decodeResponseJson('data'));
+        $this->assertEmpty($response->json('data'));
     }
 
     /* - season 1 => no data */
     public function testGettingOneSeasonAsTeamSecretary(): void
     {
-        /** @var Season $season1 */
-        $season1 = factory(Season::class)->create(['year' => 2000]);
-        factory(Season::class)->create(['year' => 2001]);
+        $season1 = Season::factory()->create(['year' => 2000]);
+        Season::factory()->create(['year' => 2001]);
 
-        $team = aTeam()->build();
+        /** @var Team $team */
+        $team = Team::factory()->create();
 
         Passport::actingAs($this->userWithRole(RolesHelper::teamSecretary($team)));
 
-        $response = $this->getJson('/api/v1/seasons/' . $season1->getId())
-            ->assertOk();
+        $response = $this->getJson("/api/v1/seasons/{$season1->getId()}")
+                         ->assertOk();
 
-        $this->assertEmpty($response->decodeResponseJson('data'));
+        $this->assertEmpty($response->json('data'));
     }
 
     /* - season 1 => no data */
     public function testGettingOneSeasonWithCompetitionsAsTeamSecretary(): void
     {
-        /** @var Season $season1 */
-        $season1 = factory(Season::class)->create(['year' => 2000]);
-        factory(Season::class)->create(['year' => 2001]);
+        $season1 = Season::factory()->create(['year' => 2000]);
+        Season::factory()->create(['year' => 2001]);
 
-        factory(Competition::class)->create(['season_id' => $season1->getId()]);
-        factory(Competition::class)->create(['season_id' => $season1->getId()]);
+        Competition::factory()->for($season1)->create();
+        Competition::factory()->for($season1)->create();
 
-        $team = aTeam()->build();
+        /** @var Team $team */
+        $team = Team::factory()->create();
 
         Passport::actingAs($this->userWithRole(RolesHelper::teamSecretary($team)));
 
-        $response = $this->getJson('/api/v1/seasons/' . $season1->getId() . '?with[]=competitions')
-            ->assertOk();
+        $response = $this->getJson("/api/v1/seasons/{$season1->getId()}?with[]=competitions")
+                         ->assertOk();
 
-        $this->assertEmpty($response->decodeResponseJson('data'));
+        $this->assertEmpty($response->json('data'));
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\ConsoleOutput;
 

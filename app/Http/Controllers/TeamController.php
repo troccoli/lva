@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Team;
 use App\Models\Club;
+use App\Models\Team;
 use App\Models\Venue;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\RedirectResponse;
@@ -45,7 +45,7 @@ class TeamController extends Controller
                         return $query->where('club_id', $club->getId());
                     }),
                 ],
-                'venue_id' => 'present|nullable|exists:venues,id'
+                'venue_id' => 'present|nullable|exists:venues,id',
             ],
             [
                 'name.required' => __('The name is required.'),

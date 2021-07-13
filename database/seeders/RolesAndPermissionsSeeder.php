@@ -1,15 +1,15 @@
 <?php
 
-use App\Helpers\RolesHelper;
+namespace Database\Seeders;
+
 use App\Helpers\PermissionsHelper;
+use App\Helpers\RolesHelper;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
-    use SeederProgressBar;
-
     public function run()
     {
         // Reset cached roles and permissions

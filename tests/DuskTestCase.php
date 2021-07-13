@@ -10,23 +10,14 @@ use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\TestCase as BaseTestCase;
-use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 abstract class DuskTestCase extends BaseTestCase
 {
-    use CreatesApplication, DatabaseMigrations;
+    use CreatesApplication;
+    use DatabaseMigrations;
 
     protected User $siteAdmin;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        Role::create(['name' => RolesHelper::SITE_ADMIN]);
-
-        $this->siteAdmin = factory(User::class)->create()->assignRole(RolesHelper::SITE_ADMIN);
-    }
 
     /**
      * @beforeClass
@@ -36,16 +27,33 @@ abstract class DuskTestCase extends BaseTestCase
         static::startChromeDriver();
     }
 
+    public function browse(Closure $callback)
+    {
+        parent::browse($callback);
+        static::$browsers->first()->driver->manage()->deleteAllCookies();
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Role::create(['name' => RolesHelper::SITE_ADMIN]);
+
+        $this->siteAdmin = User::factory()->create()->assignRole(RolesHelper::SITE_ADMIN);
+    }
+
     protected function driver(): RemoteWebDriver
     {
-        $options = (new ChromeOptions)->addArguments([
-            'disable-gpu',
-            'headless',
-            'no-sandbox',
-            'ignore-ssl-errors',
-            'whitelisted-ips=""',
-            'window-size=1920,1080',
-        ]);
+        $options = (new ChromeOptions())->addArguments(
+            [
+                'disable-gpu',
+                'headless',
+                'no-sandbox',
+                'ignore-ssl-errors',
+                'whitelisted-ips=""',
+                'window-size=1920,1080',
+            ]
+        );
 
         if (config('testing.use_selenium')) {
             return RemoteWebDriver::create(
@@ -64,11 +72,5 @@ abstract class DuskTestCase extends BaseTestCase
                 $options
             )
         );
-    }
-
-    public function browse(Closure $callback)
-    {
-        parent::browse($callback);
-        static::$browsers->first()->driver->manage()->deleteAllCookies();
     }
 }

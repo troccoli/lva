@@ -17,6 +17,7 @@ trait InteractsWithArrays
         foreach ($actual as $item) {
             if (isset($item[$key]) && $item[$key] === $value) {
                 $this->assertArrayContent($expected, $item);
+
                 return;
             }
         }

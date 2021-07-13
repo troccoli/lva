@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use App\Models\Competition;
 use App\Models\Division;
 use App\Models\Season;
@@ -10,8 +12,6 @@ class DivisionsTeamsTableSeeder extends Seeder
 {
     public function run(): void
     {
-        $seasons = Season::all();
-
         Season::each(function (Season $season): void {
             /** @var Competition $competition */
             $competition = $season->getCompetitions()->first();

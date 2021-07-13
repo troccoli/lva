@@ -7,30 +7,27 @@ use App\Models\Competition;
 use App\Models\Division;
 use App\Models\Fixture;
 use App\Models\Season;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Foundation\Testing\WithoutEvents;
+use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class SeasonTest extends TestCase
 {
     public function testItGetsTheId(): void
     {
-        /** @var Season $season */
-        $season = factory(Season::class)->create();
+        $season = Season::factory()->create();
         $this->assertEquals($season->id, $season->getId());
     }
 
     public function testItGetsTheYear(): void
     {
-        /** @var Season $season */
-        $season = factory(Season::class)->create();
+        $season = Season::factory()->create();
         $this->assertEquals($season->year, $season->getYear());
     }
 
     public function testItGetsTheNameOfTheAdminRole(): void
     {
         /** @var Season $season */
-        $season = factory(Season::class)->create();
+        $season = Season::factory()->create();
         $this->assertEquals("Season {$season->getId()} Administrator", RolesHelper::seasonAdmin($season));
     }
 
@@ -39,8 +36,7 @@ class SeasonTest extends TestCase
      */
     public function testItGetsTheName(int $year, string $expectedName): void
     {
-        /** @var Season $season */
-        $season = factory(Season::class)->create(['year' => $year]);
+        $season = Season::factory()->create(['year' => $year]);
         $this->assertEquals($expectedName, $season->getName());
     }
 
@@ -58,47 +54,62 @@ class SeasonTest extends TestCase
 
     public function testItGetsTheCompetitions(): void
     {
-        /** @var Season $season */
-        $season = factory(Season::class)->create();
-        $competitions = factory(Competition::class)->times(3)->create(['season_id' => $season->getId()]);
-        $season2 = factory(Season::class)->create();
-        factory(Competition::class)->times(7)->create(['season_id' => $season2->getId()]);
+        $season = Season::factory()->create();
+        $competitions = Competition::factory()->count(3)->create(['season_id' => $season->getId()]);
+        $season2 = Season::factory()->create();
+        Competition::factory()->count(7)->create(['season_id' => $season2->getId()]);
 
         $this->assertCount(3, $season->getCompetitions());
-        $competitions->each(function (Competition $competition) use ($season): void {
-            $this->assertTrue($season->getCompetitions()->contains($competition));
-        });
+        $competitions->each(
+            function (Competition $competition) use ($season): void {
+                $this->assertTrue($season->getCompetitions()->contains($competition));
+            }
+        );
     }
 
     public function testItGetsTheFixtures(): void
     {
-        $season = factory(Season::class)->create();
-        $competition1 = factory(Competition::class)->create(['season_id' => $season->getId()]);
-        $competition2 = factory(Competition::class)->create(['season_id' => $season->getId()]);
-        $division1A = factory(Division::class)->create(['competition_id' => $competition1->getId()]);
-        $division2A = factory(Division::class)->create(['competition_id' => $competition2->getId()]);
-        $division2B = factory(Division::class)->create(['competition_id' => $competition2->getId()]);
-        $fixtures = collect([
-            aFixture()->inDivision($division1A)->build(),
-            aFixture()->inDivision($division1A)->build(),
-            aFixture()->inDivision($division2A)->build(),
-            aFixture()->inDivision($division2B)->build(),
-            aFixture()->inDivision($division2B)->build(),
-            aFixture()->inDivision($division2B)->build(),
-        ]);
+        $season = Season::factory()->create();
+        $competition1 = Competition::factory()->create(['season_id' => $season->getId()]);
+        $competition2 = Competition::factory()->create(['season_id' => $season->getId()]);
+        /** @var Division $division1A */
+        $division1A = Division::factory()->create(['competition_id' => $competition1->getId()]);
+        /** @var Division $division2A */
+        $division2A = Division::factory()->create(['competition_id' => $competition2->getId()]);
+        /** @var Division $division2B */
+        $division2B = Division::factory()->create(['competition_id' => $competition2->getId()]);
+        $fixtures = collect(
+            [
+                Fixture::factory()->inDivision($division1A)->create(),
+                Fixture::factory()->inDivision($division1A)->create(),
+                Fixture::factory()->inDivision($division2A)->create(),
+                Fixture::factory()->inDivision($division2B)->create(),
+                Fixture::factory()->inDivision($division2B)->create(),
+                Fixture::factory()->inDivision($division2B)->create(),
+            ]
+        );
 
-        // Other fixtures
-        $anotherDivision = factory(Division::class)->create();
-        aFixture()->inDivision($anotherDivision)->build();
-        aFixture()->inDivision($anotherDivision)->build();
-        aFixture()->inDivision($anotherDivision)->build();
+        /** @var Division $anotherDivision */
+        $anotherDivision = Division::factory()->create();
+        Fixture::factory()->inDivision($anotherDivision)->create();
+        Fixture::factory()->inDivision($anotherDivision)->create();
+        Fixture::factory()->inDivision($anotherDivision)->create();
 
-        /** @var Collection $seasonFixtures */
         $seasonFixtures = $season->getFixtures();
 
         $this->assertCount(6, $seasonFixtures);
-        $fixtures->each(function (Fixture $fixture) use ($seasonFixtures): void {
-            $this->assertContains($fixture->getId(), $seasonFixtures->pluck('id'));
-        });
+        $fixtures->each(
+            function (Fixture $fixture) use ($seasonFixtures): void {
+                $this->assertContains($fixture->getId(), $seasonFixtures->pluck('id'));
+            }
+        );
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // No need to create roles every time we create a model
+        Event::fake();
     }
 }

@@ -1,17 +1,21 @@
 <?php
 
-/* @var $factory \Illuminate\Database\Eloquent\Factory */
+namespace Database\Factories;
 
 use App\Models\Competition;
 use App\Models\Division;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Division::class, function (Faker $faker) {
-    return [
-        'competition_id' => function () {
-            return factory(Competition::class)->create()->id;
-        },
-        'name' => $faker->unique()->company,
-        'display_order' => $faker->unique()->numberBetween(1, 1000)
-    ];
-});
+class DivisionFactory extends Factory
+{
+    protected $model = Division::class;
+
+    public function definition(): array
+    {
+        return [
+            'competition_id' => Competition::factory(),
+            'name' => $this->faker->unique()->company(),
+            'display_order' => $this->faker->unique()->numberBetween(1, 1000),
+        ];
+    }
+}

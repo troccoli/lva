@@ -33,7 +33,7 @@ class ClubController extends Controller
             $request,
             [
                 'name' => 'required|unique:clubs',
-                'venue_id' => 'present|nullable|exists:venues,id'
+                'venue_id' => 'present|nullable|exists:venues,id',
             ],
             [
                 'name.required' => __('The name is required.'),
@@ -60,7 +60,7 @@ class ClubController extends Controller
         $this->validate(
             $request,
             [
-                'name' => 'required|unique:clubs,name,' . $club->getId(),
+                'name' => 'required|unique:clubs,name,'.$club->getId(),
                 'venue_id' => 'present|nullable|exists:venues,id',
             ],
             [

@@ -12,7 +12,7 @@ final class PermissionsHelper
 {
     final public static function addSeason(): string
     {
-        return "add-season";
+        return 'add-season';
     }
 
     final public static function viewSeason(Season $season): string
@@ -92,7 +92,7 @@ final class PermissionsHelper
 
     final public static function addClub(): string
     {
-        return "add-club";
+        return 'add-club';
     }
 
     final public static function viewClub(Club $club): string

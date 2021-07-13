@@ -10,9 +10,12 @@ class CreateDivisionPermissionsTest extends TestCase
 {
     public function testItCreatesTheDivisionPermissions(): void
     {
-        $division = \Mockery::mock(Division::class, [
-            'getId' => '123',
-        ]);
+        $division = \Mockery::mock(
+            Division::class,
+            [
+                'getId' => '123',
+            ]
+        );
 
         $sut = new CreateDivisionPermissions($division);
 

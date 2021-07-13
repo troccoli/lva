@@ -10,37 +10,46 @@ class ForgottenPasswordTest extends TestCase
     public function testAccessForGuests(): void
     {
         $this->get('/password/reset')
-            ->assertOk();
+             ->assertOk();
     }
 
     public function testAccessForAuthenticatedUsers(): void
     {
-        $this->actingAs(factory(User::class)->create())
-            ->get('/password/reset')
-            ->assertRedirect('/dashboard');
+        $this->actingAs(User::factory()->create())
+             ->get('/password/reset')
+             ->assertRedirect('/dashboard');
     }
 
     public function testRequestingResetPassword(): void
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         // Missing email
         $this->post('/password/email', [])
-            ->assertSessionHasErrors(['email']);
+             ->assertSessionHasErrors(['email']);
 
         // Wrong format
-        $this->post('/password/email', [
-            'email' => 'a',
-        ])->assertSessionHasErrors(['email']);
+        $this->post(
+            '/password/email',
+            [
+                'email' => 'a',
+            ]
+        )->assertSessionHasErrors(['email']);
 
         // Non-existing user
-        $this->post('/password/email', [
-            'email' => 'tom@example.org',
-        ])->assertSessionHasNoErrors();
+        $this->post(
+            '/password/email',
+            [
+                'email' => 'tom@example.org',
+            ]
+        )->assertSessionHasNoErrors();
 
         // Existing user
-        $this->post('/password/email', [
-            'email' => $user->email,
-        ])->assertSessionHasNoErrors();
+        $this->post(
+            '/password/email',
+            [
+                'email' => $user->email,
+            ]
+        )->assertSessionHasNoErrors();
     }
 }

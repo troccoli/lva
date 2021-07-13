@@ -5,6 +5,7 @@ namespace Tests\Integration\Api\V1;
 use App\Models\Club;
 use App\Models\Competition;
 use App\Models\Division;
+use App\Models\Fixture;
 use App\Models\Season;
 use App\Models\Team;
 use App\Models\Venue;
@@ -13,112 +14,112 @@ use Illuminate\Database\Eloquent\Collection;
 
 trait TestFixtures
 {
-    /** @var Season */
     private $season1;
-    /** @var Season */
     private $season2;
 
-    /** @var Competition */
     private $competition1;
-    /** @var Competition */
     private $competition2;
-    /** @var Competition */
     private $competition3;
-    /** @var Competition */
     private $competition4;
-    /** @var Competition */
     private $competition5;
 
-    /** @var Division */
     private $division1;
-    /** @var Division */
     private $division2;
-    /** @var Division */
     private $division3;
-    /** @var Division */
     private $division4;
-    /** @var Division */
     private $division5;
-    /** @var Division */
     private $division6;
 
-    /** @var Venue */
     private $venue1;
-    /** @var Venue */
     private $venue2;
-    /** @var Venue */
     private $venue3;
 
-    /** @var Club */
     private $club1;
-    /** @var Club */
     private $club2;
-    /** @var Club */
     private $club3;
-    /** @var Club */
     private $club4;
 
-    /** @var Team */
     private $team1;
-    /** @var Team */
     private $team2;
-    /** @var Team */
     private $team3;
-    /** @var Team */
     private $team4;
-    /** @var Team */
     private $team5;
-    /** @var Team */
     private $team6;
-    /** @var Team */
     private $team7;
 
     private function setUpFixtures(): void
     {
-        $this->season1 = factory(Season::class)->create(['year' => 2000]);
-        $this->season2 = factory(Season::class)->create(['year' => 2001]);
+        $this->season1 = Season::factory()->create(['year' => 2000]);
+        $this->season2 = Season::factory()->create(['year' => 2001]);
 
-        $this->competition1 = factory(Competition::class)->create(['season_id' => $this->season1->getId()]);
-        $this->competition2 = factory(Competition::class)->create(['season_id' => $this->season1->getId()]);
-        $this->competition3 = factory(Competition::class)->create(['season_id' => $this->season2->getId()]);
-        $this->competition4 = factory(Competition::class)->create(['season_id' => $this->season2->getId()]);
-        $this->competition5 = factory(Competition::class)->create(['season_id' => $this->season2->getId()]);
+        $this->competition1 = Competition::factory()->for($this->season1)->create();
+        $this->competition2 = Competition::factory()->for($this->season1)->create();
+        $this->competition3 = Competition::factory()->for($this->season2)->create();
+        $this->competition4 = Competition::factory()->for($this->season2)->create();
+        $this->competition5 = Competition::factory()->for($this->season2)->create();
 
-        $this->division1 = factory(Division::class)->create(['competition_id' => $this->competition1->getId()]);
-        $this->division2 = factory(Division::class)->create(['competition_id' => $this->competition2->getId()]);
-        $this->division3 = factory(Division::class)->create(['competition_id' => $this->competition2->getId()]);
-        $this->division4 = factory(Division::class)->create(['competition_id' => $this->competition3->getId()]);
-        $this->division5 = factory(Division::class)->create(['competition_id' => $this->competition4->getId()]);
-        $this->division6 = factory(Division::class)->create(['competition_id' => $this->competition5->getId()]);
+        $this->division1 = Division::factory()->for($this->competition1)->create();
+        $this->division2 = Division::factory()->for($this->competition2)->create();
+        $this->division3 = Division::factory()->for($this->competition2)->create();
+        $this->division4 = Division::factory()->for($this->competition3)->create();
+        $this->division5 = Division::factory()->for($this->competition4)->create();
+        $this->division6 = Division::factory()->for($this->competition5)->create();
 
-        $this->venue1 = factory(Venue::class)->create();
-        $this->venue2 = factory(Venue::class)->create();
-        $this->venue3 = factory(Venue::class)->create();
+        $this->venue1 = Venue::factory()->create();
+        $this->venue2 = Venue::factory()->create();
+        $this->venue3 = Venue::factory()->create();
 
-        $this->club1 = aClub()->withVenue($this->venue1)->build();
-        $this->club2 = aClub()->withVenue($this->venue2)->build();
-        $this->club3 = aClub()->withVenue($this->venue3)->build();
-        $this->club4 = aClub()->withoutVenue()->build();
+        $this->club1 = Club::factory()->for($this->venue1)->create();
+        $this->club2 = Club::factory()->for($this->venue2)->create();
+        $this->club3 = Club::factory()->for($this->venue3)->create();
+        $this->club4 = Club::factory()->withoutVenue()->create();
 
-        $this->team1 = aTeam()->inClub($this->club1)->inDivision($this->division1)->inDivision($this->division2)->inDivision($this->division4)->build();
-        $this->team2 = aTeam()->inClub($this->club2)->inDivision($this->division1)->inDivision($this->division2)->inDivision($this->division4)->build();
-        $this->team3 = aTeam()->inClub($this->club3)->withVenue($this->venue3)->inDivision($this->division1)->inDivision($this->division3)->inDivision($this->division4)->build();
-        $this->team4 = aTeam()->inClub($this->club3)->inDivision($this->division1)->inDivision($this->division3)->inDivision($this->division5)->build();
-        $this->team5 = aTeam()->inClub($this->club1)->inDivision($this->division2)->inDivision($this->division5)->build();
-        $this->team6 = aTeam()->inClub($this->club2)->inDivision($this->division3)->inDivision($this->division6)->withVenue($this->venue1)->build();
-        $this->team7 = aTeam()->inClub($this->club4)->inDivision($this->division6)->withVenue($this->venue2)->build();
+        $this->team1 = Team::factory()
+                           ->for($this->club1)
+                           ->hasAttached($this->division1)
+                           ->hasAttached($this->division2)
+                           ->hasAttached($this->division4)
+                           ->create();
+        $this->team2 = Team::factory()
+                           ->for($this->club2)
+                           ->hasAttached($this->division1)
+                           ->hasAttached($this->division2)
+                           ->hasAttached($this->division4)
+                           ->create();
+        $this->team3 = Team::factory()
+                           ->for($this->club3)
+                           ->for($this->venue3)
+                           ->hasAttached($this->division1)
+                           ->hasAttached($this->division3)
+                           ->hasAttached($this->division4)
+                           ->create();
+        $this->team4 = Team::factory()
+                           ->for($this->club3)
+                           ->hasAttached($this->division1)
+                           ->hasAttached($this->division3)
+                           ->hasAttached($this->division5)
+                           ->create();
+        $this->team5 = Team::factory()
+                           ->for($this->club1)
+                           ->hasAttached($this->division2)
+                           ->hasAttached($this->division5)
+                           ->create();
+        $this->team6 = Team::factory()
+                           ->for($this->club2)
+                           ->hasAttached($this->division3)
+                           ->hasAttached($this->division6)
+                           ->for($this->venue1)
+                           ->create();
+        $this->team7 = Team::factory()->for($this->club4)->hasAttached($this->division6)->for($this->venue2)->create();
 
         $this->createRoundRobinFixtures();
     }
 
     private function createRoundRobinFixtures(): void
     {
-        /** @var Collection $divisions */
         $divisions = Division::all();
 
-        /** @var Division $division */
         foreach ($divisions as $division) {
-            /** @var Collection $teams */
             $teams = $division->getTeams()->keyBy('id');
 
             $matchDate = Carbon::createFromDate($division->getCompetition()->getSeason()->getYear(), 8, 16);
@@ -136,13 +137,13 @@ trait TestFixtures
 
                     $matchTime = $this->setMatchTime($matchDate);
 
-                    aFixture()
-                        ->inDivision($division)
-                        ->number($matchNumber++)
-                        ->on($matchDate, $matchTime)
-                        ->between($homeTeam, $awayTeam)
-                        ->at($homeTeam->getVenue())
-                        ->build();
+                    Fixture::factory()
+                           ->inDivision($division)
+                           ->number($matchNumber++)
+                           ->on($matchDate, $matchTime)
+                           ->between($homeTeam, $awayTeam)
+                           ->at($homeTeam->getVenue())
+                           ->create();
                 }
                 $matchDate->addDay();
             }

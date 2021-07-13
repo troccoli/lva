@@ -3,22 +3,17 @@
 namespace Tests\Integration\Repositories;
 
 use App\Helpers\RolesHelper;
+use App\Models\Club;
 use App\Models\Competition;
 use App\Models\Division;
 use App\Models\Season;
+use App\Models\Team;
 use App\Repositories\AccessibleDivisions;
 use Tests\TestCase;
 
 class AccessibleDivisionsTest extends TestCase
 {
     private AccessibleDivisions $sut;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->sut = new AccessibleDivisions();
-    }
 
     public function testItReturnsNoDivisionsIfThereAreNone(): void
     {
@@ -27,38 +22,15 @@ class AccessibleDivisionsTest extends TestCase
 
     public function testItReturnsAllDivisionsForSiteAdministrators(): void
     {
-        /** @var Season $season1 */
-        $season1 = factory(Season::class)->create(['year' => 2000]);
-        /** @var Competition $competition1 */
-        $competition1 = factory(Competition::class)->create([
-            'season_id' => $season1->getId(),
-        ]);
-        /** @var Division $division1 */
-        $division1 = factory(Division::class)->create([
-            'competition_id' => $competition1->getId(),
-        ]);
-        /** @var Division $division2 */
-        $division2 = factory(Division::class)->create([
-            'competition_id' => $competition1->getId(),
-        ]);
-        /** @var Competition $competition2 */
-        $competition2 = factory(Competition::class)->create([
-            'season_id' => $season1->getId(),
-        ]);
-        /** @var Division $division3 */
-        $division3 = factory(Division::class)->create([
-            'competition_id' => $competition2->getId(),
-        ]);
-        /** @var Season $season2 */
-        $season2 = factory(Season::class)->create(['year' => 2001]);
-        /** @var Competition $competition3 */
-        $competition3 = factory(Competition::class)->create([
-            'season_id' => $season2->getId(),
-        ]);
-        /** @var Division $division4 */
-        $division4 = factory(Division::class)->create([
-            'competition_id' => $competition3->getId(),
-        ]);
+        $season1 = Season::factory()->create(['year' => 2000]);
+        $competition1 = Competition::factory()->for($season1)->create();
+        $division1 = Division::factory()->for($competition1)->create();
+        $division2 = Division::factory()->for($competition1)->create();
+        $competition2 = Competition::factory()->for($season1)->create();
+        $division3 = Division::factory()->for($competition2)->create();
+        $season2 = Season::factory()->create(['year' => 2001]);
+        $competition3 = Competition::factory()->for($season2)->create();
+        $division4 = Division::factory()->for($competition3)->create();
 
         $divisions = $this->sut->get($this->siteAdmin);
 
@@ -71,38 +43,18 @@ class AccessibleDivisionsTest extends TestCase
 
     public function testItReturnsOnlyTheDivisionsInTheSetCompetitionsForSiteAdministrators(): void
     {
-        /** @var Season $season1 */
-        $season1 = factory(Season::class)->create(['year' => 2000]);
+        $season1 = Season::factory()->create(['year' => 2000]);
         /** @var Competition $competition1 */
-        $competition1 = factory(Competition::class)->create([
-            'season_id' => $season1->getId(),
-        ]);
-        /** @var Division $division1 */
-        $division1 = factory(Division::class)->create([
-            'competition_id' => $competition1->getId(),
-        ]);
-        /** @var Division $division2 */
-        $division2 = factory(Division::class)->create([
-            'competition_id' => $competition1->getId(),
-        ]);
+        $competition1 = Competition::factory()->for($season1)->create();
+        $division1 = Division::factory()->for($competition1)->create();
+        $division2 = Division::factory()->for($competition1)->create();
         /** @var Competition $competition2 */
-        $competition2 = factory(Competition::class)->create([
-            'season_id' => $season1->getId(),
-        ]);
-        /** @var Division $division3 */
-        $division3 = factory(Division::class)->create([
-            'competition_id' => $competition2->getId(),
-        ]);
-        /** @var Season $season2 */
-        $season2 = factory(Season::class)->create(['year' => 2001]);
+        $competition2 = Competition::factory()->for($season1)->create();
+        $division3 = Division::factory()->for($competition2)->create();
+        $season2 = Season::factory()->create(['year' => 2001]);
         /** @var Competition $competition3 */
-        $competition3 = factory(Competition::class)->create([
-            'season_id' => $season2->getId(),
-        ]);
-        /** @var Division $division4 */
-        $division4 = factory(Division::class)->create([
-            'competition_id' => $competition3->getId(),
-        ]);
+        $competition3 = Competition::factory()->for($season2)->create();
+        $division4 = Division::factory()->for($competition3)->create();
 
         $divisions = $this->sut->inCompetition($competition1)->get($this->siteAdmin);
 
@@ -124,37 +76,18 @@ class AccessibleDivisionsTest extends TestCase
     public function testItReturnsSomeDivisionsForSeasonAdministrators(): void
     {
         /** @var Season $season1 */
-        $season1 = factory(Season::class)->create(['year' => 2000]);
+        $season1 = Season::factory()->create(['year' => 2000]);
         /** @var Competition $competition1 */
-        $competition1 = factory(Competition::class)->create([
-            'season_id' => $season1->getId(),
-        ]);
-        /** @var Division $division1 */
-        $division1 = factory(Division::class)->create([
-            'competition_id' => $competition1->getId(),
-        ]);
-        /** @var Division $division2 */
-        $division2 = factory(Division::class)->create([
-            'competition_id' => $competition1->getId(),
-        ]);
+        $competition1 = Competition::factory()->for($season1)->create();
+        $division1 = Division::factory()->for($competition1)->create();
+        $division2 = Division::factory()->for($competition1)->create();
         /** @var Competition $competition2 */
-        $competition2 = factory(Competition::class)->create([
-            'season_id' => $season1->getId(),
-        ]);
-        /** @var Division $division3 */
-        $division3 = factory(Division::class)->create([
-            'competition_id' => $competition2->getId(),
-        ]);
-        /** @var Season $season2 */
-        $season2 = factory(Season::class)->create(['year' => 2001]);
+        $competition2 = Competition::factory()->for($season1)->create();
+        $division3 = Division::factory()->for($competition2)->create();
+        $season2 = Season::factory()->create(['year' => 2001]);
         /** @var Competition $competition3 */
-        $competition3 = factory(Competition::class)->create([
-            'season_id' => $season2->getId(),
-        ]);
-        /** @var Division $division4 */
-        $division4 = factory(Division::class)->create([
-            'competition_id' => $competition3->getId(),
-        ]);
+        $competition3 = Competition::factory()->for($season2)->create();
+        Division::factory()->for($competition3)->create();
 
         $season1Admin = $this->userWithRole(RolesHelper::seasonAdmin($season1));
 
@@ -179,28 +112,14 @@ class AccessibleDivisionsTest extends TestCase
 
     public function testItReturnsSomeDivisionsForCompetitionAdministrators(): void
     {
-        /** @var Season $season1 */
-        $season1 = factory(Season::class)->create(['year' => 2000]);
+        $season1 = Season::factory()->create(['year' => 2000]);
         /** @var Competition $competition1 */
-        $competition1 = factory(Competition::class)->create([
-            'season_id' => $season1->getId(),
-        ]);
-        /** @var Division $division1 */
-        $division1 = factory(Division::class)->create([
-            'competition_id' => $competition1->getId(),
-        ]);
-        /** @var Division $division2 */
-        $division2 = factory(Division::class)->create([
-            'competition_id' => $competition1->getId(),
-        ]);
+        $competition1 = Competition::factory()->for($season1)->create();
+        $division1 = Division::factory()->for($competition1)->create();
+        $division2 = Division::factory()->for($competition1)->create();
         /** @var Competition $competition2 */
-        $competition2 = factory(Competition::class)->create([
-            'season_id' => $season1->getId(),
-        ]);
-        /** @var Division $division3 */
-        $division3 = factory(Division::class)->create([
-            'competition_id' => $competition2->getId(),
-        ]);
+        $competition2 = Competition::factory()->for($season1)->create();
+        Division::factory()->for($competition2)->create();
 
         $competition1Admin = $this->userWithRole(RolesHelper::competitionAdmin($competition1));
 
@@ -220,28 +139,15 @@ class AccessibleDivisionsTest extends TestCase
 
     public function testItReturnsOneDivisionForDivisionAdministrators(): void
     {
-        /** @var Season $season1 */
-        $season1 = factory(Season::class)->create(['year' => 2000]);
+        $season1 = Season::factory()->create(['year' => 2000]);
         /** @var Competition $competition1 */
-        $competition1 = factory(Competition::class)->create([
-            'season_id' => $season1->getId(),
-        ]);
+        $competition1 = Competition::factory()->for($season1)->create();
         /** @var Division $division1 */
-        $division1 = factory(Division::class)->create([
-            'competition_id' => $competition1->getId(),
-        ]);
-        /** @var Division $division2 */
-        $division2 = factory(Division::class)->create([
-            'competition_id' => $competition1->getId(),
-        ]);
+        $division1 = Division::factory()->for($competition1)->create();
+        Division::factory()->for($competition1)->create();
         /** @var Competition $competition2 */
-        $competition2 = factory(Competition::class)->create([
-            'season_id' => $season1->getId(),
-        ]);
-        /** @var Division $division3 */
-        $division3 = factory(Division::class)->create([
-            'competition_id' => $competition2->getId(),
-        ]);
+        $competition2 = Competition::factory()->for($season1)->create();
+        Division::factory()->for($competition2)->create();
 
         $division1Admin = $this->userWithRole(RolesHelper::divisionAdmin($division1));
 
@@ -259,18 +165,12 @@ class AccessibleDivisionsTest extends TestCase
 
     public function testReturnsNoDivisionsForClubSecretaries(): void
     {
-        /** @var Season $season1 */
-        $season1 = factory(Season::class)->create(['year' => 2000]);
-        /** @var Competition $competition1 */
-        $competition1 = factory(Competition::class)->create([
-            'season_id' => $season1->getId(),
-        ]);
-        /** @var Division $division1 */
-        $division1 = factory(Division::class)->create([
-            'competition_id' => $competition1->getId(),
-        ]);
+        $season1 = Season::factory()->create(['year' => 2000]);
+        $competition1 = Competition::factory()->for($season1)->create();
+        Division::factory()->for($competition1)->create();
 
-        $club = aClub()->build();
+        /** @var Club $club */
+        $club = Club::factory()->create();
         $clubSecretary = $this->userWithRole(RolesHelper::clubSecretary($club));
 
         $this->assertEmpty($this->sut->get($clubSecretary));
@@ -278,20 +178,21 @@ class AccessibleDivisionsTest extends TestCase
 
     public function testReturnsNoDivisionsForTeamSecretaries(): void
     {
-        /** @var Season $season1 */
-        $season1 = factory(Season::class)->create(['year' => 2000]);
-        /** @var Competition $competition1 */
-        $competition1 = factory(Competition::class)->create([
-            'season_id' => $season1->getId(),
-        ]);
-        /** @var Division $division1 */
-        $division1 = factory(Division::class)->create([
-            'competition_id' => $competition1->getId(),
-        ]);
+        $season1 = Season::factory()->create(['year' => 2000]);
+        $competition1 = Competition::factory()->for($season1)->create();
+        Division::factory()->for($competition1)->create();
 
-        $team = aTeam()->build();
+        /** @var Team $team */
+        $team = Team::factory()->create();
         $teamSecretary = $this->userWithRole(RolesHelper::teamSecretary($team));
 
         $this->assertEmpty($this->sut->get($teamSecretary));
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->sut = new AccessibleDivisions();
     }
 }

@@ -2,8 +2,6 @@
 
 namespace App\Policies;
 
-use App\Helpers\RolesHelper;
-use App\Models\Club;
 use App\Models\User;
 use App\Models\Venue;
 use Illuminate\Auth\Access\HandlesAuthorization;
