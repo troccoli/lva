@@ -16,10 +16,10 @@
         "bootswatch": "^4.6.0",
         "cross-env": "^7.0.3",
         "jquery": "^3.6.0",
-        "laravel-mix": "^5.0.9",
+        "laravel-mix": "^6.0.49",
         "lodash": "^4.17.21",
         "popper.js": "^1.16.1",
-        "resolve-url-loader": "^3.1.2",
+        "resolve-url-loader": "^5.0.0",
         "sass": "^1.32.10",
         "sass-loader": "^8.0.0",
         "vue": "^2.6.12"
