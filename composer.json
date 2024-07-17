@@ -1,62 +1,28 @@
 {
-    "name": "troccoli/lva",
+    "name": "laravel/laravel",
     "type": "project",
-    "description": "Admin for LVA Referee Administrators.",
+    "description": "The skeleton application for the Laravel framework.",
     "keywords": [
-        "framework",
         "laravel",
-        "volleyball",
-        "referee",
-        "admin",
-        "london",
-        "sport"
+        "framework"
     ],
     "license": "MIT",
-    "authors": [
-        {
-            "name": "Giulio Troccoli-Allard",
-            "email": "giulio@troccoli.it"
-        }
-    ],
     "require": {
-        "php": "^8.0",
-        "diglactic/laravel-breadcrumbs": "^6.1",
-        "doctrine/dbal": "^2.10",
-        "fakerphp/faker": "^1.14",
-        "fideloper/proxy": "^4.2",
-        "fruitcake/laravel-cors": "^1.0",
-        "guzzlehttp/guzzle": "^7.0.1",
-        "laravel/framework": "^8.0",
-        "laravel/passport": "^10.0",
-        "laravel/tinker": "^2.0",
-        "laravel/ui": "^3.0",
-        "laravelcollective/html": "^6.0",
-        "mnito/round-robin": "^1.2",
-        "realrashid/sweet-alert": "^3.0",
-        "spatie/laravel-permission": "^4.0",
-        "webpatser/laravel-uuid": "^4.0"
+        "php": "^8.3",
+        "inertiajs/inertia-laravel": "^1.0",
+        "laravel/framework": "^11.9",
+        "laravel/sanctum": "^4.0",
+        "laravel/tinker": "^2.9",
+        "tightenco/ziggy": "^2.0"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "^3.3",
-        "beyondcode/laravel-dump-server": "^1.0",
-        "facade/ignition": "^2.3.6",
-        "fakerphp/faker": "^1.14",
-        "filp/whoops": "^2.0",
-        "laravel/dusk": "^6.0",
-        "laravel/sail": "^1.8",
-        "mockery/mockery": "^1.4.0",
-        "nunomaduro/collision": "^5.0",
-        "phpunit/phpunit": "^9.0"
-    },
-    "config": {
-        "optimize-autoloader": true,
-        "preferred-install": "dist",
-        "sort-packages": true
-    },
-    "extra": {
-        "laravel": {
-            "dont-discover": []
-        }
+        "fakerphp/faker": "^1.23",
+        "laravel/breeze": "^2.1",
+        "laravel/pint": "^1.13",
+        "laravel/sail": "^1.26",
+        "mockery/mockery": "^1.6",
+        "nunomaduro/collision": "^8.0",
+        "phpunit/phpunit": "^11.0.1"
     },
     "autoload": {
         "psr-4": {
@@ -68,23 +34,39 @@
     "autoload-dev": {
         "psr-4": {
             "Tests\\": "tests/"
-        },
-        "files": [
-            "tests/Builders/helpers.php"
-        ]
+        }
     },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
         ],
+        "post-update-cmd": [
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+        ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
         "post-create-project-cmd": [
-            "@php artisan key:generate --ansi"
+            "@php artisan key:generate --ansi",
+            "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
+            "@php artisan migrate --graceful --ansi"
         ]
-    }
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": []
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
 }
