@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7ffbc9a41c4216fb7f080cfaff649bd4",
+    "content-hash": "ac3185c83e50928e9daaaf430346b8a9",
     "packages": [
         {
             "name": "brick/math",
@@ -6261,6 +6261,58 @@
                 "source": "https://github.com/laravel/sail"
             },
             "time": "2024-07-05T16:01:51+00:00"
+        },
+        {
+            "name": "mnito/round-robin",
+            "version": "v2.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mnito/round-robin.git",
+                "reference": "79838b3f21abe2ff87118f84559fe06315c64d71"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mnito/round-robin/zipball/79838b3f21abe2ff87118f84559fe06315c64d71",
+                "reference": "79838b3f21abe2ff87118f84559fe06315c64d71",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "9.5.*"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/round-robin.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael P. Nitowski",
+                    "email": "mpnitowski@gmail.com",
+                    "homepage": "http://mnito.co"
+                }
+            ],
+            "description": "Round-robin schedule generation implementation in PHP",
+            "homepage": "https://github.com/mnito/round-robin",
+            "keywords": [
+                "generation",
+                "robin",
+                "round",
+                "round-robin",
+                "schedule"
+            ],
+            "support": {
+                "issues": "https://github.com/mnito/round-robin/issues",
+                "source": "https://github.com/mnito/round-robin/tree/v2.2.0"
+            },
+            "time": "2021-09-06T22:46:23+00:00"
         },
         {
             "name": "mockery/mockery",
