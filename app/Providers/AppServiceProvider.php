@@ -8,22 +8,16 @@ class AppServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
-        if (! $this->app->environment('production')) {
-            $this->app->register(DuskServiceProvider::class);
-        }
+        //
     }
 
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         //
     }
