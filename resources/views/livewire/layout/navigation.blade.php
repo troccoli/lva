@@ -65,7 +65,7 @@ new class extends Component
                             >
                                 <x-heroicon-o-sun class="w-5 h-5" ::class="theme === 'light' ? 'hidden' : 'block'" />
                                 <x-heroicon-s-sun class="w-5 h-5" ::class="theme === 'light' ? 'block' : 'hidden'" />
-                                {{ __('Light') }}
+                                Light
                             </button>
                             <button class="flex w-full items-center gap-3 px-3 py-2 text-start text-sm leading-5 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out"
                                     :class="theme === 'dark' ? 'dark:text-gray-100 dark:font-medium' : 'text-gray-700 font-normal dark:text-gray-400 dark:font-normal'"
@@ -73,7 +73,7 @@ new class extends Component
                             >
                                 <x-heroicon-o-moon class="w-5 h-5" ::class="theme === 'dark' ? 'hidden' : 'block'" />
                                 <x-heroicon-s-moon class="w-5 h-5" ::class="theme === 'dark' ? 'block' : 'hidden'" />
-                                {{ __('Dark') }}
+                                Dark
                             </button>
                             <button class="flex w-full items-center gap-3 px-3 py-2 text-start text-sm leading-5 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out"
                                     :class="theme === undefined ? 'text-gray-900 font-medium dark:text-gray-100 dark:font-medium' : 'text-gray-700 font-normal dark:text-gray-400 dark:font-normal'"
@@ -83,7 +83,7 @@ new class extends Component
                                                                ::class="theme === undefined ? 'hidden' : 'block'" />
                                 <x-heroicon-s-computer-desktop class="w-5 h-5"
                                                                ::class="theme === undefined  ? 'block' : 'hidden'" />
-                                {{ __('System') }}
+                                System
                             </button>
                         </x-slot>
                     </x-dropdown>
@@ -108,13 +108,13 @@ new class extends Component
 
                     <x-slot name="content">
                         <x-dropdown-link :href="route('profile')" wire:navigate>
-                            {{ __('Profile') }}
+                            Profile
                         </x-dropdown-link>
 
                         <!-- Authentication -->
                         <button wire:click="logout" class="w-full text-start">
                             <x-dropdown-link>
-                                {{ __('Log Out') }}
+                                Log Out
                             </x-dropdown-link>
                         </button>
                     </x-slot>
@@ -148,13 +148,13 @@ new class extends Component
                                 ::class="theme === 'light' ? 'border-gray-400' : ''">
                 <x-heroicon-o-sun class="w-5 h-5 mr-2" ::class="theme === 'light' ? 'hidden' : 'block'" />
                 <x-heroicon-s-sun class="w-5 h-5 mr-2" ::class="theme === 'light' ? 'block' : 'hidden'" />
-                {{ __('Light') }}
+                Light
             </x-secondary-button>
             <x-secondary-button @click="darkMode()" class="justify-center"
                                 ::class="theme === 'dark' ? 'dark:border-white' : ''">
                 <x-heroicon-o-moon class="w-5 h-5 mr-2" ::class="theme === 'dark' ? 'hidden' : 'block'" />
                 <x-heroicon-s-moon class="w-5 h-5 mr-2" ::class="theme === 'dark' ? 'block' : 'hidden'" />
-                {{ __('Dark') }}
+                Dark
             </x-secondary-button>
             <x-secondary-button @click="systemMode()" class="justify-center"
                                 ::class="theme === undefined ? 'border-gray-400 dark:border-white' : ''">
@@ -162,7 +162,7 @@ new class extends Component
                                                ::class="theme === undefined ? 'hidden' : 'block'" />
                 <x-heroicon-s-computer-desktop class="w-5 h-5 mr-2"
                                                ::class="theme === undefined ? 'block' : 'hidden'" />
-                {{ __('System') }}
+                System
             </x-secondary-button>
         </div>
 
@@ -177,13 +177,13 @@ new class extends Component
 
             <div class="mt-3 space-y-1">
                 <x-responsive-nav-link :href="route('profile')" wire:navigate>
-                    {{ __('Profile') }}
+                    Profile
                 </x-responsive-nav-link>
 
                 <!-- Authentication -->
                 <button wire:click="logout" class="w-full text-start">
                     <x-responsive-nav-link>
-                        {{ __('Log Out') }}
+                        Log Out
                     </x-responsive-nav-link>
                 </button>
             </div>

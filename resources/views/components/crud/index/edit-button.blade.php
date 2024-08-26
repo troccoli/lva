@@ -1,7 +1,7 @@
 @props(['route' => '', 'model' => '', 'label' => ''])
 
 @php
-    $label = empty($label) ? __('Edit') : $label;
+    $label = empty($label) ? 'Edit' : $label;
 @endphp
 
 <a type="button" wire:navigate href="{{ route($route, $model) }}"
