@@ -15,7 +15,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="font-sans antialiased">
-<div class="min-h-screen bg-white dark:bg-gray-800">
+<div class="min-h-screen bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400">
     <livewire:layout.navigation />
 
     <div class="flex">
@@ -32,10 +32,8 @@
 
             <!-- Page Content -->
             <main>
-                <div class="py-12">
-                    <div class="mx-auto sm:px-6 lg:px-8 text-gray-900 dark:text-gray-100">
-                        {{ $slot }}
-                    </div>
+                <div class="px-4 md:px-6 lg:px-8 text-gray-900 dark:text-gray-100">
+                    {{ $slot }}
                 </div>
             </main>
         </div>

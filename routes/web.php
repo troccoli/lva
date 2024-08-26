@@ -10,7 +10,11 @@ Route::middleware(['auth', 'verified'])
 
         Route::prefix('data-management')
             ->group(function () {
-                Route::view('seasons', 'seasons')->name('seasons');
+                Route::get('/seasons', \App\Livewire\Seasons\Index::class)->name('seasons.index');
+                Route::get('/seasons/create', \App\Livewire\Seasons\Create::class)->name('seasons.create');
+                Route::get('/seasons/show/{season}', \App\Livewire\Seasons\Show::class)->name('seasons.show');
+                Route::get('/seasons/update/{season}', \App\Livewire\Seasons\Edit::class)->name('seasons.edit');
+
                 Route::view('competitions', 'competitions')->name('competitions');
                 Route::view('divisions', 'divisions')->name('divisions');
                 Route::view('fixtures', 'fixtures')->name('fixtures');

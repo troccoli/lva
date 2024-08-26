@@ -2,7 +2,7 @@
     {{ __('Dashboard') }}
 </x-responsive-nav-link>
 <hr class="hidden md:block"/>
-<x-responsive-nav-link :href="route('seasons')" :active="request()->routeIs('seasons')" wire:navigate>
+<x-responsive-nav-link :href="route('seasons.index')" :active="request()->routeIs('seasons.*')" wire:navigate>
     {{ __('Seasons') }}
 </x-responsive-nav-link>
 <x-responsive-nav-link :href="route('competitions')" :active="request()->routeIs('competitions')" wire:navigate>
