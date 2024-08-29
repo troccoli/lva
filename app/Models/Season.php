@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Contracts\Selectable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read string $name
  * @property-read Collection $competitions
  */
-class Season extends Model
+class Season extends Model implements Selectable
 {
     use HasFactory,
         HasUuids;
@@ -33,5 +34,10 @@ class Season extends Model
     public function competitions(): HasMany
     {
         return $this->hasMany(Competition::class);
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
     }
 }

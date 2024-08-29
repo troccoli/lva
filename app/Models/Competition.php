@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Builders\CompetitionBuilder;
+use App\Models\Contracts\Selectable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -18,7 +19,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *
  * @method CompetitionBuilder query()
  */
-class Competition extends Model
+class Competition extends Model implements Selectable
 {
     use HasFactory,
         HasUuids;
@@ -42,5 +43,10 @@ class Competition extends Model
     public function divisions(): HasMany
     {
         return $this->hasMany(Division::class);
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
     }
 }

@@ -15,7 +15,11 @@ Route::middleware(['auth', 'verified'])
                 Route::get('/seasons/show/{season}', \App\Livewire\Seasons\Show::class)->name('seasons.show');
                 Route::get('/seasons/update/{season}', \App\Livewire\Seasons\Edit::class)->name('seasons.edit');
 
-                Route::view('competitions', 'competitions')->name('competitions');
+                Route::get('/competitions', \App\Livewire\Competitions\Index::class)->name('competitions.index');
+                Route::get('/competitions/create', \App\Livewire\Competitions\Create::class)->name('competitions.create');
+                Route::get('/competitions/show/{competition}', \App\Livewire\Competitions\Show::class)->name('competitions.show');
+                Route::get('/competitions/update/{competition}', \App\Livewire\Competitions\Edit::class)->name('competitions.edit');
+
                 Route::view('divisions', 'divisions')->name('divisions');
                 Route::view('fixtures', 'fixtures')->name('fixtures');
                 Route::view('clubs', 'clubs')->name('clubs');

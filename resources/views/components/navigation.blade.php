@@ -5,7 +5,7 @@
 <x-responsive-nav-link :href="route('seasons.index')" :active="request()->routeIs('seasons.*')" wire:navigate>
     Seasons
 </x-responsive-nav-link>
-<x-responsive-nav-link :href="route('competitions')" :active="request()->routeIs('competitions')" wire:navigate>
+<x-responsive-nav-link :href="route('competitions.index')" :active="request()->routeIs('competitions.*')" wire:navigate>
     Competitions
 </x-responsive-nav-link>
 <x-responsive-nav-link :href="route('divisions')" :active="request()->routeIs('divisions')" wire:navigate>
