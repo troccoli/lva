@@ -20,7 +20,11 @@ Route::middleware(['auth', 'verified'])
                 Route::get('/competitions/show/{competition}', \App\Livewire\Competitions\Show::class)->name('competitions.show');
                 Route::get('/competitions/update/{competition}', \App\Livewire\Competitions\Edit::class)->name('competitions.edit');
 
-                Route::view('divisions', 'divisions')->name('divisions');
+                Route::get('/divisions', \App\Livewire\Divisions\Index::class)->name('divisions.index');
+                Route::get('/divisions/create', \App\Livewire\Divisions\Create::class)->name('divisions.create');
+                Route::get('/divisions/show/{division}', \App\Livewire\Divisions\Show::class)->name('divisions.show');
+                Route::get('/divisions/update/{division}', \App\Livewire\Divisions\Edit::class)->name('divisions.edit');
+
                 Route::view('fixtures', 'fixtures')->name('fixtures');
                 Route::view('clubs', 'clubs')->name('clubs');
                 Route::view('teams', 'teams')->name('teams');

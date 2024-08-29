@@ -1,0 +1,31 @@
+<x-crud.header>Divisions</x-crud.header>
+
+<div class="w-full">
+    <x-crud.subheader add-route="divisions.create" class="mb-4">
+        A list of all the divisions in the system
+    </x-crud.subheader>
+    <x-crud.content>
+        <x-crud.index.table columns="season,competition,name,display order">
+            @foreach ($divisions as $division)
+                <x-crud.index.row row-key="{{ $division->getKey() }}">
+                    <x-crud.index.cell>{{ $division->competition->season->name }}</x-crud.index.cell>
+                    <x-crud.index.cell>{{ $division->competition->name }}</x-crud.index.cell>
+                    <x-crud.index.cell>{{ $division->name }}</x-crud.index.cell>
+                    <x-crud.index.cell>{{ $division->display_order }}</x-crud.index.cell>
+                    <x-crud.index.cell class="flex gap-1 pl-2 pr-0 font-medium">
+                        <x-crud.index.show-button route="divisions.show" :model="$division" />
+                        <x-crud.index.edit-button route="divisions.edit" :model="$division" />
+                        <x-crud.index.delete-button :model="$division">
+                            Are you sure you want to delete the {{ $division->name }} divisions in the {{ $division->competition->name }}
+                            competition in the {{ $division->competition->season->name }} season?
+                        </x-crud.index.delete-button>
+                    </x-crud.index.cell>
+                </x-crud.index.row>
+            @endforeach
+        </x-crud.index.table>
+
+        <div class="mt-4 px-4">
+            {!! $divisions->withQueryString()->links() !!}
+        </div>
+    </x-crud.content>
+</div>

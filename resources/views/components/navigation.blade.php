@@ -8,7 +8,7 @@
 <x-responsive-nav-link :href="route('competitions.index')" :active="request()->routeIs('competitions.*')" wire:navigate>
     Competitions
 </x-responsive-nav-link>
-<x-responsive-nav-link :href="route('divisions')" :active="request()->routeIs('divisions')" wire:navigate>
+<x-responsive-nav-link :href="route('divisions.index')" :active="request()->routeIs('divisions.*')" wire:navigate>
     Divisions
 </x-responsive-nav-link>
 <hr class="hidden md:block"/>
