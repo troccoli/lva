@@ -21,7 +21,7 @@ class FixturesSeeder extends Seeder
 
         /** @var Division $division */
         foreach ($divisions as $division) {
-            $teams = $division->teams->keyBy((new Team())->getKeyName());
+            $teams = $division->teams->keyBy((new Team)->getKeyName());
 
             $matchDate = Carbon::today()->setYear($division->competition->season->year);
             $matchNumber = 1;
