@@ -15,6 +15,7 @@ class Edit extends Component
 
     public function mount(Club $club): void
     {
+        $this->form->creating = false;
         $this->form->setClubModel($club);
     }
 

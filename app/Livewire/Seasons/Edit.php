@@ -14,6 +14,7 @@ class Edit extends Component
 
     public function mount(Season $season): void
     {
+        $this->form->creating = false;
         $this->form->setSeasonModel($season);
     }
 

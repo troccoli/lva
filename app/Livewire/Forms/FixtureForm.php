@@ -29,6 +29,8 @@ class FixtureForm extends Form
 
     public ?string $divisionName;
 
+    public bool $creating = true;
+
     public function rules(): array
     {
         return [
@@ -52,22 +54,23 @@ class FixtureForm extends Form
         $this->away_team_id = $this->fixtureModel->away_team_id;
         $this->match_date = $this->fixtureModel->match_date;
         $this->venue_id = $this->fixtureModel->venue_id;
-        $this->seasonName = $this->fixtureModel->division?->competition?->season?->name;
-        $this->competitionName = $this->fixtureModel->division?->competition?->name;
-        $this->divisionName = $this->fixtureModel->division?->name;
+        $this->seasonName = $this->fixtureModel->division->competition->season->name;
+        $this->competitionName = $this->fixtureModel->division->competition->name;
+        $this->divisionName = $this->fixtureModel->division->name;
     }
 
     public function store(): void
     {
-        $this->fixtureModel->create($this->validate());
+        $this->fixtureModel = Fixture::create($this->validate());
 
-        $this->reset();
+        $this->resetExcept('fixtureModel');
     }
 
     public function update(): void
     {
         $this->fixtureModel->update($this->validate());
+        $this->fixtureModel->refresh();
 
-        $this->reset();
+        $this->resetExcept('fixtureModel');
     }
 }

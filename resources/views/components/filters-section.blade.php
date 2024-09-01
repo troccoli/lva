@@ -1,0 +1,3 @@
+<div class='my-8 flex flex-col space-y-4 md:flex-row md:space-x-4 md:space-y-0'>
+    {{ $slot }}
+</div>

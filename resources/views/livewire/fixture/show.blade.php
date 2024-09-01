@@ -1,7 +1,9 @@
-<x-crud.header>Fixtures</x-crud.header>
-
 <div class="w-full">
-    <x-crud.subheader back-route="fixtures.index">Details of the a fixture</x-crud.subheader>
+    <x-crud.header>Fixtures</x-crud.header>
+    <x-crud.subheader back>
+        Details of the a fixture
+    </x-crud.subheader>
+
     <x-crud.content>
         <x-crud.show.table>
             <x-crud.show.model-field label="Season">{{ $fixture->division->competition->season->name }}</x-crud.show.model-field>

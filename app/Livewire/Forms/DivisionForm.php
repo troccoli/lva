@@ -19,6 +19,8 @@ class DivisionForm extends Form
 
     public ?string $competitionName;
 
+    public bool $creating = true;
+
     public function rules(): array
     {
         return [
@@ -51,15 +53,16 @@ class DivisionForm extends Form
 
     public function store(): void
     {
-        $this->divisionModel->create($this->validate());
+        $this->divisionModel = Division::create($this->validate());
 
-        $this->reset();
+        $this->resetExcept('divisionModel');
     }
 
     public function update(): void
     {
         $this->divisionModel->update($this->validate());
+        $this->divisionModel->refresh();
 
-        $this->reset();
+        $this->resetExcept('divisionModel');
     }
 }

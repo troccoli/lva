@@ -20,6 +20,8 @@ class Show extends Component
     #[Layout('layouts.app')]
     public function render(): View
     {
-        return view('livewire.competition.show', ['competition' => $this->form->competitionModel]);
+        return view('livewire.competition.show', [
+            'competition' => $this->form->competitionModel,
+        ]);
     }
 }

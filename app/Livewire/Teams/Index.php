@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Teams;
 
+use App\Livewire\Clubs\Filter as ClubFilter;
 use App\Models\Club;
 use App\Models\Team;
 use Illuminate\View\View;
@@ -16,21 +17,11 @@ class Index extends Component
 
     public string $clubId;
 
-    public array $filters;
-
     public function mount(): void
     {
         $clubs = Club::query()->orderBy('name')->get();
-        $this->clubId = $clubs->first()->getKey();
-
-        $this->filters = [
-            'clubs' => [
-                'label' => 'Clubs',
-                'options' => $clubs,
-                'currentOption' => $this->clubId,
-                'event' => 'club-selected',
-            ],
-        ];
+        $firstClub = $clubs->first();
+        $this->clubId = $firstClub->getKey();
     }
 
     #[Layout('layouts.app')]
@@ -42,7 +33,10 @@ class Index extends Component
             ->orderBy('name')
             ->simplePaginate(10);
 
-        return view('livewire.team.index', compact('teams'))
+        return view('livewire.team.index', [
+            'teams' => $teams,
+            'createUrl' => route('teams.create', ['for' => $this->clubId]),
+        ])
             ->with('i', $this->getPage() * $teams->perPage());
     }
 
@@ -50,7 +44,11 @@ class Index extends Component
     {
         $team->delete();
 
-        $this->redirectRoute('teams.index', navigate: true);
+        $this->redirectRoute(
+            name: 'teams.index',
+            parameters: ClubFilter::buildQueryParam($this->clubId),
+            navigate: true
+        );
     }
 
     #[On('club-selected')]

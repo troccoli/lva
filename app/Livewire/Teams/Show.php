@@ -20,6 +20,8 @@ class Show extends Component
     #[Layout('layouts.app')]
     public function render(): View
     {
-        return view('livewire.team.show', ['team' => $this->form->teamModel]);
+        return view('livewire.team.show', [
+            'team' => $this->form->teamModel,
+        ]);
     }
 }

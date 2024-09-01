@@ -20,6 +20,8 @@ class Show extends Component
     #[Layout('layouts.app')]
     public function render(): View
     {
-        return view('livewire.division.show', ['division' => $this->form->divisionModel]);
+        return view('livewire.division.show', [
+            'division' => $this->form->divisionModel,
+        ]);
     }
 }

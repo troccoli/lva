@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Teams;
 
+use App\Livewire\Clubs\Filter as ClubFilter;
 use App\Livewire\Forms\TeamForm;
 use App\Models\Club;
 use App\Models\Team;
@@ -16,6 +17,7 @@ class Edit extends Component
 
     public function mount(Team $team): void
     {
+        $this->form->creating = false;
         $this->form->setTeamModel($team);
     }
 
@@ -23,7 +25,11 @@ class Edit extends Component
     {
         $this->form->update();
 
-        $this->redirectRoute('teams.index', navigate: true);
+        $this->redirectRoute(
+            name: 'teams.index',
+            parameters: ClubFilter::buildQueryParam($this->form->teamModel->club_id),
+            navigate: true
+        );
     }
 
     #[Layout('layouts.app')]

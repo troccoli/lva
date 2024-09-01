@@ -3,6 +3,7 @@
 namespace App\Livewire\Competitions;
 
 use App\Livewire\Forms\CompetitionForm;
+use App\Livewire\Seasons\Filter as SeasonsFilter;
 use App\Models\Competition;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
@@ -14,6 +15,7 @@ class Edit extends Component
 
     public function mount(Competition $competition): void
     {
+        $this->form->creating = false;
         $this->form->setCompetitionModel($competition);
     }
 
@@ -21,7 +23,11 @@ class Edit extends Component
     {
         $this->form->update();
 
-        $this->redirectRoute('competitions.index', navigate: true);
+        $this->redirectRoute(
+            name: 'competitions.index',
+            parameters: SeasonsFilter::buildQueryParam($this->form->competitionModel->season_id),
+            navigate: true
+        );
     }
 
     #[Layout('layouts.app')]

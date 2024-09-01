@@ -14,6 +14,7 @@ class Edit extends Component
 
     public function mount(Venue $venue): void
     {
+        $this->form->creating = false;
         $this->form->setVenueModel($venue);
     }
 

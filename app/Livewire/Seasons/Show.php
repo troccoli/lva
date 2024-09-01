@@ -20,6 +20,8 @@ class Show extends Component
     #[Layout('layouts.app')]
     public function render(): View
     {
-        return view('livewire.season.show', ['season' => $this->form->seasonModel]);
+        return view('livewire.season.show', [
+            'season' => $this->form->seasonModel,
+        ]);
     }
 }

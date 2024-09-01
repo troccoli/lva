@@ -3,7 +3,6 @@
 namespace App\Livewire\Venues;
 
 use App\Livewire\Forms\VenueForm;
-use App\Models\Venue;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -12,9 +11,9 @@ class Create extends Component
 {
     public VenueForm $form;
 
-    public function mount(Venue $venue): void
+    public function mount(): void
     {
-        $this->form->setVenueModel($venue);
+        $this->form->creating = true;
     }
 
     public function save(): void

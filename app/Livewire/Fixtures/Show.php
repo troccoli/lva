@@ -20,6 +20,8 @@ class Show extends Component
     #[Layout('layouts.app')]
     public function render(): View
     {
-        return view('livewire.fixture.show', ['fixture' => $this->form->fixtureModel]);
+        return view('livewire.fixture.show', [
+            'fixture' => $this->form->fixtureModel,
+        ]);
     }
 }

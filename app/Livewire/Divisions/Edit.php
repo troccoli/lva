@@ -2,7 +2,9 @@
 
 namespace App\Livewire\Divisions;
 
+use App\Livewire\Competitions\Filter as CompetitionsFilter;
 use App\Livewire\Forms\DivisionForm;
+use App\Livewire\Seasons\Filter as SeasonsFilter;
 use App\Models\Division;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
@@ -14,6 +16,7 @@ class Edit extends Component
 
     public function mount(Division $division): void
     {
+        $this->form->creating = false;
         $this->form->setDivisionModel($division);
     }
 
@@ -21,7 +24,14 @@ class Edit extends Component
     {
         $this->form->update();
 
-        $this->redirectRoute('divisions.index', navigate: true);
+        $this->redirectRoute(
+            name: 'divisions.index',
+            parameters: array_merge(
+                SeasonsFilter::buildQueryParam($this->form->divisionModel->competition->season_id),
+                CompetitionsFilter::buildQueryParam($this->form->divisionModel->competition_id)
+            ),
+            navigate: true
+        );
     }
 
     #[Layout('layouts.app')]

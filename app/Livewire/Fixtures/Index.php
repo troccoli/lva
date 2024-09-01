@@ -2,7 +2,9 @@
 
 namespace App\Livewire\Fixtures;
 
-use App\Models\Competition;
+use App\Livewire\Competitions\Filter as CompetitionsFilter;
+use App\Livewire\Divisions\Filter as DivisionsFilter;
+use App\Livewire\Seasons\Filter as SeasonsFilter;
 use App\Models\Fixture;
 use App\Models\Season;
 use Illuminate\View\View;
@@ -17,37 +19,14 @@ class Index extends Component
 
     public string $divisionId;
 
-    public array $filters;
-
     public function mount(): void
     {
         $seasons = Season::latest('year')->get();
-        $currentSeason = $seasons->first();
-        $competitions = $currentSeason->competitions;
-        $currentCompetition = $competitions->first();
-        $divisions = $currentCompetition->divisions;
+        $latestSeason = $seasons->first();
+        $competitions = $latestSeason->competitions;
+        $firstCompetition = $competitions->first();
+        $divisions = $firstCompetition->divisions;
         $this->divisionId = $divisions->first()->getKey();
-
-        $this->filters = [
-            'seasons' => [
-                'label' => 'Seasons',
-                'options' => $seasons,
-                'currentOption' => $currentSeason->getKey(),
-                'event' => 'season-selected',
-            ],
-            'competitions' => [
-                'label' => 'Competitions',
-                'options' => $competitions,
-                'currentOption' => $currentCompetition->getKey(),
-                'event' => 'competition-selected',
-            ],
-            'divisions' => [
-                'label' => 'Divisions',
-                'options' => $divisions,
-                'currentOption' => $this->divisionId,
-                'event' => 'division-selected',
-            ],
-        ];
     }
 
     #[Layout('layouts.app')]
@@ -59,39 +38,30 @@ class Index extends Component
             ->oldest('match_number')
             ->simplePaginate(10);
 
-        return view('livewire.fixture.index', compact('fixtures'))
+        return view('livewire.fixture.index', [
+            'fixtures' => $fixtures,
+            'createUrl' => route('fixtures.create', ['for' => $this->divisionId]),
+        ])
             ->with('i', $this->getPage() * $fixtures->perPage());
     }
 
     public function delete(Fixture $fixture): void
     {
+        $seasonId = $fixture->division->competition->season_id;
+        $competitionId = $fixture->division->competition_id;
+        $divisionId = $fixture->division_id;
+
         $fixture->delete();
 
-        $this->redirectRoute('fixtures.index', navigate: true);
-    }
-
-    #[On('season-selected')]
-    public function updateCompetitions($seasonId): void
-    {
-        $selectedSeason = Season::findOrFail($seasonId);
-        $competitions = $selectedSeason->competitions;
-        $selectedCompetition = $competitions->first();
-        $divisions = $selectedCompetition->divisions;
-        $this->divisionId = $divisions->first()->getKey();
-        $this->filters['competitions']['options'] = $competitions;
-        $this->filters['competitions']['currentOption'] = $selectedCompetition->getKey();
-        $this->filters['divisions']['options'] = $divisions;
-        $this->filters['divisions']['currentOption'] = $this->divisionId;
-    }
-
-    #[On('competition-selected')]
-    public function setCurrentCompetition($competitionId): void
-    {
-        $selectedCompetition = Competition::findOrFail($competitionId);
-        $divisions = $selectedCompetition->divisions;
-        $this->divisionId = $divisions->first()->getKey();
-        $this->filters['divisions']['options'] = $divisions;
-        $this->filters['divisions']['currentOption'] = $this->divisionId;
+        $this->redirectRoute(
+            name: 'divisions.index',
+            parameters: array_merge(
+                SeasonsFilter::buildQueryParam($seasonId),
+                CompetitionsFilter::buildQueryParam($competitionId),
+                DivisionsFilter::buildQueryParam($divisionId),
+            ),
+            navigate: true
+        );
     }
 
     #[On('division-selected')]

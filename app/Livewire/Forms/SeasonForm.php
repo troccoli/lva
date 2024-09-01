@@ -11,6 +11,8 @@ class SeasonForm extends Form
 
     public ?int $year = null;
 
+    public bool $creating = true;
+
     public function rules(): array
     {
         return [
@@ -27,15 +29,16 @@ class SeasonForm extends Form
 
     public function store(): void
     {
-        $this->seasonModel->create($this->validate());
+        $this->seasonModel = Season::create($this->validate());
 
-        $this->reset();
+        $this->resetExcept('seasonModel');
     }
 
     public function update(): void
     {
         $this->seasonModel->update($this->validate());
+        $this->seasonModel->refresh();
 
-        $this->reset();
+        $this->resetExcept('seasonModel');
     }
 }

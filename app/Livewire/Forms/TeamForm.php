@@ -17,6 +17,8 @@ class TeamForm extends Form
 
     public ?string $venue_id;
 
+    public bool $creating = true;
+
     public function rules(): array
     {
         return [
@@ -31,22 +33,23 @@ class TeamForm extends Form
         $this->teamModel = $teamModel;
 
         $this->club_id = $this->teamModel->club_id;
-        $this->clubName = $this->teamModel->club?->name;
+        $this->clubName = $this->teamModel->club->name;
         $this->name = $this->teamModel->name;
         $this->venue_id = $this->teamModel->venue_id;
     }
 
     public function store(): void
     {
-        $this->teamModel->create($this->validate());
+        $this->teamModel = Team::create($this->validate());
 
-        $this->reset();
+        $this->resetExcept('teamModel');
     }
 
     public function update(): void
     {
         $this->teamModel->update($this->validate());
+        $this->teamModel->refresh();
 
-        $this->reset();
+        $this->resetExcept('teamModel');
     }
 }

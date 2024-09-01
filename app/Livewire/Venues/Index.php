@@ -17,7 +17,10 @@ class Index extends Component
     {
         $venues = Venue::simplePaginate(10);
 
-        return view('livewire.venue.index', compact('venues'))
+        return view('livewire.venue.index', [
+            'venues' => $venues,
+            'createUrl' => route('venues.create'),
+        ])
             ->with('i', $this->getPage() * $venues->perPage());
     }
 

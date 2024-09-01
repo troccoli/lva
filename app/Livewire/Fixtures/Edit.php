@@ -2,7 +2,10 @@
 
 namespace App\Livewire\Fixtures;
 
+use App\Livewire\Competitions\Filter as CompetitionsFilter;
+use App\Livewire\Divisions\Filter as DivisionsFilter;
 use App\Livewire\Forms\FixtureForm;
+use App\Livewire\Seasons\Filter as SeasonsFilter;
 use App\Models\Fixture;
 use App\Models\Team;
 use App\Models\Venue;
@@ -16,6 +19,7 @@ class Edit extends Component
 
     public function mount(Fixture $fixture): void
     {
+        $this->form->creating = false;
         $this->form->setFixtureModel($fixture);
     }
 
@@ -23,7 +27,19 @@ class Edit extends Component
     {
         $this->form->update();
 
-        $this->redirectRoute('fixtures.index', navigate: true);
+        $seasonId = $this->form->fixtureModel->division->competition->season_id;
+        $competitionId = $this->form->fixtureModel->division->competition_id;
+        $divisionId = $this->form->fixtureModel->division_id;
+
+        $this->redirectRoute(
+            name: 'divisions.index',
+            parameters: array_merge(
+                SeasonsFilter::buildQueryParam($seasonId),
+                CompetitionsFilter::buildQueryParam($competitionId),
+                DivisionsFilter::buildQueryParam($divisionId),
+            ),
+            navigate: true
+        );
     }
 
     #[Layout('layouts.app')]

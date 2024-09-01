@@ -1,10 +1,10 @@
-<x-crud.header>Clubs</x-crud.header>
-
 <div class="w-full">
-    <x-crud.subheader add-route="clubs.create" class="mb-4">
+    <x-crud.header>Clubs</x-crud.header>
+    <x-crud.subheader create create-url="{{ $createUrl }}">
         A list of all the clubs in the system
     </x-crud.subheader>
-    <x-crud.content>
+
+    <x-crud.content class="mt-4">
         <x-crud.index.table columns="name,venue">
             @foreach ($clubs as $club)
                 <x-crud.index.row row-key="{{ $club->getKey() }}">

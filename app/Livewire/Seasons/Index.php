@@ -17,7 +17,10 @@ class Index extends Component
     {
         $seasons = Season::latest('year')->simplePaginate(10);
 
-        return view('livewire.season.index', compact('seasons'))
+        return view('livewire.season.index', [
+            'seasons' => $seasons,
+            'createUrl' => route('seasons.create'),
+        ])
             ->with('i', $this->getPage() * $seasons->perPage());
     }
 

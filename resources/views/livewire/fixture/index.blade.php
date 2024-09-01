@@ -1,10 +1,15 @@
-<x-crud.header>Fixtures</x-crud.header>
-
 <div class="w-full">
-    <x-crud.subheader add-route="fixtures.create" class="mb-4">
+    <x-crud.header>Fixtures</x-crud.header>
+    <x-crud.subheader create create-url="{{ $createUrl }}">
         A list of all the fixtures in the system
     </x-crud.subheader>
-    <livewire:filters :filters="$filters"/>
+
+    <x-filters-section>
+        <livewire:seasons.filter/>
+        <livewire:competitions.filter/>
+        <livewire:divisions.filter/>
+    </x-filters-section>
+
     <x-crud.content>
         <x-crud.index.table columns="#,home team, away team, date, start time, venue">
             @foreach ($fixtures as $fixture)

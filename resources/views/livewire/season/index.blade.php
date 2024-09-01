@@ -1,8 +1,10 @@
-<x-crud.header>Seasons</x-crud.header>
-
 <div class="w-full">
-    <x-crud.subheader add-route="seasons.create" class="mb-4">A list of all the seasons in the system</x-crud.subheader>
-    <x-crud.content>
+    <x-crud.header>Seasons</x-crud.header>
+    <x-crud.subheader create create-url="{{ $createUrl }}">
+        A list of all the seasons in the system
+    </x-crud.subheader>
+
+    <x-crud.content class="mt-4">
         <x-crud.index.table columns="name">
             @foreach ($seasons as $season)
                 <x-crud.index.row row-key="{{ $season->getKey() }}">

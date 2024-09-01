@@ -1,8 +1,13 @@
-<x-crud.header>Teams</x-crud.header>
-
 <div class="w-full">
-    <x-crud.subheader add-route="teams.create" class="mb-4">A list of all the teams in the system</x-crud.subheader>
-    <livewire:filters :filters="$filters"/>
+    <x-crud.header>Teams</x-crud.header>
+    <x-crud.subheader create create-url="{{ $createUrl }}">
+        A list of all the teams in the system
+    </x-crud.subheader>
+
+    <x-filters-section>
+        <livewire:clubs.filter />
+    </x-filters-section>
+
     <x-crud.content>
         <x-crud.index.table columns="name,venue">
             @foreach ($teams as $team)

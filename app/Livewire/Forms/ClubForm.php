@@ -13,6 +13,8 @@ class ClubForm extends Form
 
     public ?string $venue_id;
 
+    public bool $creating = true;
+
     public function rules(): array
     {
         return [
@@ -31,9 +33,9 @@ class ClubForm extends Form
 
     public function store(): void
     {
-        $this->clubModel->create($this->validate());
+        $this->clubModel = Club::create($this->validate());
 
-        $this->reset();
+        $this->resetExcept('clubModel');
     }
 
     public function update(): void

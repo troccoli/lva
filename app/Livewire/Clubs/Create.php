@@ -3,7 +3,6 @@
 namespace App\Livewire\Clubs;
 
 use App\Livewire\Forms\ClubForm;
-use App\Models\Club;
 use App\Models\Venue;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
@@ -13,9 +12,9 @@ class Create extends Component
 {
     public ClubForm $form;
 
-    public function mount(Club $club): void
+    public function mount(): void
     {
-        $this->form->setClubModel($club);
+        $this->form->creating = true;
     }
 
     public function save(): void

@@ -15,6 +15,8 @@ class CompetitionForm extends Form
 
     public ?string $name;
 
+    public bool $creating = true;
+
     public function rules(): array
     {
         return [
@@ -35,22 +37,23 @@ class CompetitionForm extends Form
     {
         $this->competitionModel = $competitionModel;
 
-        $this->seasonName = $this->competitionModel->season?->name;
+        $this->seasonName = $this->competitionModel->season->name;
         $this->season_id = $this->competitionModel->season_id;
         $this->name = $this->competitionModel->name;
     }
 
     public function store(): void
     {
-        $this->competitionModel->create($this->validate());
+        $this->competitionModel = Competition::create($this->validate());
 
-        $this->reset();
+        $this->resetExcept('competitionModel');
     }
 
     public function update(): void
     {
         $this->competitionModel->update($this->validate());
+        $this->competitionModel->refresh();
 
-        $this->reset();
+        $this->resetExcept('competitionModel');
     }
 }

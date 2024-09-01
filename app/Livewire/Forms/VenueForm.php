@@ -11,6 +11,8 @@ class VenueForm extends Form
 
     public ?string $name;
 
+    public bool $creating = true;
+
     public function rules(): array
     {
         return [
@@ -27,15 +29,16 @@ class VenueForm extends Form
 
     public function store(): void
     {
-        $this->venueModel->create($this->validate());
+        $this->venueModel = Venue::create($this->validate());
 
-        $this->reset();
+        $this->resetExcept('venueModel');
     }
 
     public function update(): void
     {
         $this->venueModel->update($this->validate());
+        $this->venueModel->refresh();
 
-        $this->reset();
+        $this->resetExcept('venueModel');
     }
 }

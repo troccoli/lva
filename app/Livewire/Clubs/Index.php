@@ -20,7 +20,10 @@ class Index extends Component
             ->with('venue')
             ->simplePaginate(10);
 
-        return view('livewire.club.index', compact('clubs'))
+        return view('livewire.club.index', [
+            'clubs' => $clubs,
+            'createUrl' => route('clubs.create'),
+        ])
             ->with('i', $this->getPage() * $clubs->perPage());
     }
 
