@@ -26,7 +26,12 @@ Route::middleware(['auth', 'verified'])
                 Route::get('/divisions/update/{division}', \App\Livewire\Divisions\Edit::class)->name('divisions.edit');
 
                 Route::view('fixtures', 'fixtures')->name('fixtures');
-                Route::view('clubs', 'clubs')->name('clubs');
+
+                Route::get('/clubs', \App\Livewire\Clubs\Index::class)->name('clubs.index');
+                Route::get('/clubs/create', \App\Livewire\Clubs\Create::class)->name('clubs.create');
+                Route::get('/clubs/show/{club}', \App\Livewire\Clubs\Show::class)->name('clubs.show');
+                Route::get('/clubs/update/{club}', \App\Livewire\Clubs\Edit::class)->name('clubs.edit');
+
                 Route::view('teams', 'teams')->name('teams');
                 Route::view('venues', 'venues')->name('venues');
             });

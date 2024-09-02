@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Contracts\Selectable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read Collection $teams
  * @property-read ?Venue $venue
  */
-class Club extends Model
+class Club extends Model implements Selectable
 {
     use HasFactory,
         HasUuids;
@@ -33,5 +34,10 @@ class Club extends Model
     public function venue(): BelongsTo
     {
         return $this->belongsTo(Venue::class);
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
     }
 }

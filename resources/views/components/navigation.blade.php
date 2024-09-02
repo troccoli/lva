@@ -12,7 +12,7 @@
     Divisions
 </x-responsive-nav-link>
 <hr class="hidden md:block"/>
-<x-responsive-nav-link :href="route('clubs')" :active="request()->routeIs('clubs')" wire:navigate>
+<x-responsive-nav-link :href="route('clubs.index')" :active="request()->routeIs('clubs.*')" wire:navigate>
     Clubs
 </x-responsive-nav-link>
 <x-responsive-nav-link :href="route('teams')" :active="request()->routeIs('teams')" wire:navigate>
