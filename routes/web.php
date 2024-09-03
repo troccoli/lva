@@ -32,7 +32,11 @@ Route::middleware(['auth', 'verified'])
                 Route::get('/clubs/show/{club}', \App\Livewire\Clubs\Show::class)->name('clubs.show');
                 Route::get('/clubs/update/{club}', \App\Livewire\Clubs\Edit::class)->name('clubs.edit');
 
-                Route::view('teams', 'teams')->name('teams');
+                Route::get('/teams', \App\Livewire\Teams\Index::class)->name('teams.index');
+                Route::get('/teams/create', \App\Livewire\Teams\Create::class)->name('teams.create');
+                Route::get('/teams/show/{team}', \App\Livewire\Teams\Show::class)->name('teams.show');
+                Route::get('/teams/update/{team}', \App\Livewire\Teams\Edit::class)->name('teams.edit');
+
                 Route::view('venues', 'venues')->name('venues');
             });
 

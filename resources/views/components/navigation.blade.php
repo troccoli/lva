@@ -15,7 +15,7 @@
 <x-responsive-nav-link :href="route('clubs.index')" :active="request()->routeIs('clubs.*')" wire:navigate>
     Clubs
 </x-responsive-nav-link>
-<x-responsive-nav-link :href="route('teams')" :active="request()->routeIs('teams')" wire:navigate>
+<x-responsive-nav-link :href="route('teams.index')" :active="request()->routeIs('teams.*')" wire:navigate>
     Teams
 </x-responsive-nav-link>
 <hr class="hidden md:block"/>
