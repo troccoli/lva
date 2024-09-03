@@ -16,9 +16,12 @@ Route::middleware(['auth', 'verified'])
                 Route::get('/seasons/update/{season}', \App\Livewire\Seasons\Edit::class)->name('seasons.edit');
 
                 Route::get('/competitions', \App\Livewire\Competitions\Index::class)->name('competitions.index');
-                Route::get('/competitions/create', \App\Livewire\Competitions\Create::class)->name('competitions.create');
-                Route::get('/competitions/show/{competition}', \App\Livewire\Competitions\Show::class)->name('competitions.show');
-                Route::get('/competitions/update/{competition}', \App\Livewire\Competitions\Edit::class)->name('competitions.edit');
+                Route::get('/competitions/create',
+                    \App\Livewire\Competitions\Create::class)->name('competitions.create');
+                Route::get('/competitions/show/{competition}',
+                    \App\Livewire\Competitions\Show::class)->name('competitions.show');
+                Route::get('/competitions/update/{competition}',
+                    \App\Livewire\Competitions\Edit::class)->name('competitions.edit');
 
                 Route::get('/divisions', \App\Livewire\Divisions\Index::class)->name('divisions.index');
                 Route::get('/divisions/create', \App\Livewire\Divisions\Create::class)->name('divisions.create');
@@ -37,7 +40,10 @@ Route::middleware(['auth', 'verified'])
                 Route::get('/teams/show/{team}', \App\Livewire\Teams\Show::class)->name('teams.show');
                 Route::get('/teams/update/{team}', \App\Livewire\Teams\Edit::class)->name('teams.edit');
 
-                Route::view('venues', 'venues')->name('venues');
+                Route::get('/venues', \App\Livewire\Venues\Index::class)->name('venues.index');
+                Route::get('/venues/create', \App\Livewire\Venues\Create::class)->name('venues.create');
+                Route::get('/venues/show/{venue}', \App\Livewire\Venues\Show::class)->name('venues.show');
+                Route::get('/venues/update/{venue}', \App\Livewire\Venues\Edit::class)->name('venues.edit');
             });
 
         Route::view('appointments', 'appointments')->name('appointments');

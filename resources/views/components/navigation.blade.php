@@ -19,7 +19,7 @@
     Teams
 </x-responsive-nav-link>
 <hr class="hidden md:block"/>
-<x-responsive-nav-link :href="route('venues')" :active="request()->routeIs('venues')" wire:navigate>
+<x-responsive-nav-link :href="route('venues.index')" :active="request()->routeIs('venues.*')" wire:navigate>
     Venues
 </x-responsive-nav-link>
 <hr class="hidden md:block"/>
