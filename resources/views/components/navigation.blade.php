@@ -30,6 +30,6 @@
     Appointments
 </x-responsive-nav-link>
 <hr class="hidden md:block"/>
-<x-responsive-nav-link :href="route('fixtures')" :active="request()->routeIs('fixtures')" wire:navigate>
+<x-responsive-nav-link :href="route('fixtures.index')" :active="request()->routeIs('fixtures.*')" wire:navigate>
     Fixtures
 </x-responsive-nav-link>

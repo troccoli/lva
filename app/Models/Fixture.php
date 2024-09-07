@@ -54,7 +54,7 @@ class Fixture extends Model
         return Attribute::make(
             get: function (mixed $value, array $attributes): CarbonImmutable {
                 /** @var Carbon $matchDatetime */
-                $matchDatetime = $attributes['match_date']->copy()->toMutable();
+                $matchDatetime = Carbon::create($attributes['match_date']);
                 $matchDatetime->setTimeFrom($attributes['start_time']);
 
                 return $matchDatetime->toImmutable();

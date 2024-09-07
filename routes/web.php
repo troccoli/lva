@@ -28,7 +28,10 @@ Route::middleware(['auth', 'verified'])
                 Route::get('/divisions/show/{division}', \App\Livewire\Divisions\Show::class)->name('divisions.show');
                 Route::get('/divisions/update/{division}', \App\Livewire\Divisions\Edit::class)->name('divisions.edit');
 
-                Route::view('fixtures', 'fixtures')->name('fixtures');
+                Route::get('/fixtures', \App\Livewire\Fixtures\Index::class)->name('fixtures.index');
+                Route::get('/fixtures/create', \App\Livewire\Fixtures\Create::class)->name('fixtures.create');
+                Route::get('/fixtures/show/{fixture}', \App\Livewire\Fixtures\Show::class)->name('fixtures.show');
+                Route::get('/fixtures/update/{fixture}', \App\Livewire\Fixtures\Edit::class)->name('fixtures.edit');
 
                 Route::get('/clubs', \App\Livewire\Clubs\Index::class)->name('clubs.index');
                 Route::get('/clubs/create', \App\Livewire\Clubs\Create::class)->name('clubs.create');

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Contracts\Selectable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,7 +20,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read Collection $homeFixtures
  * @property-read Collection $awayFixtures
  */
-class Team extends Model
+class Team extends Model implements Selectable
 {
     use HasFactory,
         HasUuids;
@@ -54,5 +55,10 @@ class Team extends Model
     public function awayFixtures(): HasMany
     {
         return $this->hasMany(related: Fixture::class, foreignKey: 'away_team_id', localKey: 'id');
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
     }
 }

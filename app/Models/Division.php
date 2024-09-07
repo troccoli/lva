@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Builders\DivisionBuilder;
+use App\Models\Contracts\Selectable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,7 +23,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *
  * @method DivisionBuilder query()
  */
-class Division extends Model
+class Division extends Model implements Selectable
 {
     use HasFactory,
         HasUuids,
@@ -53,5 +54,10 @@ class Division extends Model
     public function fixtures(): HasMany
     {
         return $this->hasMany(Fixture::class);
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
     }
 }
