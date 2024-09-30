@@ -1,6 +1,6 @@
 @props(['back' => false, 'create' => false, 'createUrl' => '' ])
 
-<div {{ $attributes->merge(['class' => 'flex w-full items-center']) }}>
+<div {{ $attributes->merge(['class' => 'mx-1 flex w-full items-center']) }}>
     <p class="text-md grow">{{ $slot }}</p>
     <div class="grow-0">
         @if ($back)

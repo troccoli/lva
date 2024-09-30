@@ -1,7 +1,7 @@
-<div class="space-y-6">
+<div class="mb-4 space-y-6">
     <x-crud.chosen-filters-section>
-        <x-crud.chosen-filter label="Season" value="{{ $this->form->seasonName }}"/>
-        <x-crud.chosen-filter label="Competition" value="{{ $this->form->competitionName }}"/>
+        <x-crud.chosen-filter label="Season" value="{{ $this->form->seasonName }}" />
+        <x-crud.chosen-filter label="Competition" value="{{ $this->form->competitionName }}" />
     </x-crud.chosen-filters-section>
     <div>
         <x-input-label for="name" value="Name" />
@@ -32,7 +32,5 @@
         @enderror
     </div>
 
-    <div class="flex items-center gap-4">
-        <x-primary-button>Save</x-primary-button>
-    </div>
+    <x-primary-button>Save</x-primary-button>
 </div>

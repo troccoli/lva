@@ -1,4 +1,4 @@
-<div class="space-y-6">
+<div class="mb-4 space-y-6">
     <div>
         <x-input-label for="year" value="Year" />
         <x-text-input
@@ -13,7 +13,5 @@
         @enderror
     </div>
 
-    <div class="flex items-center gap-4">
-        <x-primary-button>Save</x-primary-button>
-    </div>
+    <x-primary-button>Save</x-primary-button>
 </div>
