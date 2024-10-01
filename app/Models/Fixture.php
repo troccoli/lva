@@ -20,7 +20,7 @@ use Illuminate\Support\Carbon;
  * @property string home_team_id
  * @property string away_team_id
  * @property CarbonImmutable $match_date
- * @property-read CarbonImmutable $match_datetime
+ * @property-read CarbonImmutable $matchDateTime
  * @property string venue_id
  * @property-read Division $division
  * @property-read Team homeTeam

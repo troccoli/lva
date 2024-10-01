@@ -38,7 +38,7 @@ class Create extends Component
         $divisionId = $this->form->fixtureModel->division_id;
 
         $this->redirectRoute(
-            name: 'divisions.index',
+            name: 'fixtures.index',
             parameters: array_merge(
                 SeasonsFilter::buildQueryParam($seasonId),
                 CompetitionsFilter::buildQueryParam($competitionId),

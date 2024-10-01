@@ -39,7 +39,7 @@ class FixtureForm extends Form
             'home_team_id' => 'required|uuid|exists:teams,id',
             'away_team_id' => 'required|uuid|exists:teams,id',
             'match_date' => 'required|date',
-            'start_time' => 'required|time',
+            'start_time' => 'required|date_format:H:i',
             'venue_id' => 'required|uuid|exists:venues,id',
         ];
     }
