@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\DivisionCreated;
 use App\Models\Builders\DivisionBuilder;
 use App\Models\Contracts\Selectable;
 use Illuminate\Database\Eloquent\Collection;
@@ -34,6 +35,10 @@ class Division extends Model implements Selectable
         'competition_id',
         'name',
         'display_order',
+    ];
+
+    protected $dispatchesEvents = [
+        'created' => DivisionCreated::class,
     ];
 
     public function newEloquentBuilder($query): DivisionBuilder

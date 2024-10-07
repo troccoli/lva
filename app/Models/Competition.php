@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\CompetitionCreated;
 use App\Models\Builders\CompetitionBuilder;
 use App\Models\Contracts\Selectable;
 use Illuminate\Database\Eloquent\Collection;
@@ -28,6 +29,10 @@ class Competition extends Model implements Selectable
     protected $fillable = [
         'season_id',
         'name',
+    ];
+
+    protected $dispatchesEvents = [
+        'created' => CompetitionCreated::class,
     ];
 
     public function newEloquentBuilder($query): CompetitionBuilder

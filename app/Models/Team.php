@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\TeamCreated;
 use App\Models\Contracts\Selectable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -30,6 +31,10 @@ class Team extends Model implements Selectable
         'club_id',
         'name',
         'venue_id',
+    ];
+
+    protected $dispatchesEvents = [
+        'created' => TeamCreated::class,
     ];
 
     public function club(): BelongsTo

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\ClubCreated;
 use App\Models\Contracts\Selectable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -24,6 +25,10 @@ class Club extends Model implements Selectable
     protected $fillable = [
         'name',
         'venue_id',
+    ];
+
+    protected $dispatchesEvents = [
+        'created' => ClubCreated::class,
     ];
 
     public function teams(): HasMany

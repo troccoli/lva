@@ -1,0 +1,132 @@
+<?php
+
+namespace App\Helpers;
+
+use App\Models\Club;
+use App\Models\Competition;
+use App\Models\Division;
+use App\Models\Season;
+use App\Models\Team;
+
+final class PermissionsHelper
+{
+    final public static function addSeason(): string
+    {
+        return 'add-season';
+    }
+
+    final public static function viewSeason(Season $season): string
+    {
+        return "view-season-{$season->getKey()}";
+    }
+
+    final public static function editSeason(Season $season): string
+    {
+        return "edit-season-{$season->getKey()}";
+    }
+
+    final public static function deleteSeason(Season $season): string
+    {
+        return "delete-season-{$season->getKey()}";
+    }
+
+    final public static function addCompetition(Season $season): string
+    {
+        return "add-competition-in-season-{$season->getKey()}";
+    }
+
+    final public static function viewCompetition(Competition $competition): string
+    {
+        return "view-competition-{$competition->getKey()}";
+    }
+
+    final public static function editCompetition(Competition $competition): string
+    {
+        return "edit-competition-{$competition->getKey()}";
+    }
+
+    final public static function deleteCompetition(Competition $competition): string
+    {
+        return "delete-competition-{$competition->getKey()}";
+    }
+
+    final public static function addDivision(Competition $competition): string
+    {
+        return "add-division-in-competition-{$competition->getKey()}";
+    }
+
+    final public static function viewDivision(Division $division): string
+    {
+        return "view-division-{$division->getKey()}";
+    }
+
+    final public static function editDivision(Division $division): string
+    {
+        return "edit-division-{$division->getKey()}";
+    }
+
+    final public static function deleteDivision(Division $division): string
+    {
+        return "delete-division-{$division->getKey()}";
+    }
+
+    final public static function viewFixtures(Division $division): string
+    {
+        return "view-fixtures-in-division-{$division->getKey()}";
+    }
+
+    final public static function addFixtures(Division $division): string
+    {
+        return "add-fixtures-in-division-{$division->getKey()}";
+    }
+
+    final public static function editFixtures(Division $division): string
+    {
+        return "edit-fixtures-in-division-{$division->getKey()}";
+    }
+
+    final public static function deleteFixtures(Division $division): string
+    {
+        return "delete-fixtures-in-division-{$division->getKey()}";
+    }
+
+    final public static function addClub(): string
+    {
+        return 'add-club';
+    }
+
+    final public static function viewClub(Club $club): string
+    {
+        return "view-club-{$club->getKey()}";
+    }
+
+    final public static function editClub(Club $club): string
+    {
+        return "edit-club-{$club->getKey()}";
+    }
+
+    final public static function deleteClub(Club $club): string
+    {
+        return "delete-club-{$club->getKey()}";
+    }
+
+    final public static function addTeam(Club $club): string
+    {
+        return "add-team-in-club-{$club->getKey()}";
+    }
+
+    final public static function viewTeam(Team $team): string
+    {
+        return "view-team-{$team->getKey()}";
+    }
+
+    final public static function editTeam(Team $team): string
+    {
+        return "edit-team-{$team->getKey()}";
+    }
+
+    final public static function deleteTeam(Team $team): string
+    {
+        return "delete-team-{$team->getKey()}";
+    }
+}

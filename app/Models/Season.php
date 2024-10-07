@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\SeasonCreated;
 use App\Models\Contracts\Selectable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -22,6 +23,10 @@ class Season extends Model implements Selectable
     /** @var array<int, string> */
     protected $fillable = [
         'year',
+    ];
+
+    protected $dispatchesEvents = [
+        'created' => SeasonCreated::class,
     ];
 
     protected static function booted(): void
