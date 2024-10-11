@@ -5,20 +5,18 @@ namespace App\Listeners;
 use App\Events\ClubCreated;
 use App\Helpers\PermissionsHelper;
 use App\Helpers\RolesHelper;
-use App\Jobs\CreateClubPermissions;
-use App\Jobs\CreateClubSecretaryRole;
-use App\Models\Club;
+use App\Jobs\Permissions\CreateClubPermissions;
+use App\Jobs\Roles\CreateClubSecretaryRole;
 use Spatie\Permission\Models\Role;
 
 class SetUpClubSecretary
 {
     public function handle(ClubCreated $event): void
     {
-        /** @var Club $club */
         $club = $event->club;
 
-        CreateClubSecretaryRole::dispatchNow($club);
-        CreateClubPermissions::dispatchNow($club);
+        CreateClubSecretaryRole::dispatchSync($club);
+        CreateClubPermissions::dispatchSync($club);
 
         $role = Role::findByName(RolesHelper::clubSecretary($club));
         $role->givePermissionTo([

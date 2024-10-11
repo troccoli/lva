@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use App\Events\DivisionCreated;
-use Illuminate\Database\Eloquent\Builder;
+use App\Models\Builders\DivisionBuilder;
+use App\Models\Contracts\Selectable;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,30 +14,36 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Division extends Model
+/**
+ * @property string $competition_id
+ * @property string $name
+ * @property int $display_order
+ * @property-read Competition $competition
+ * @property-read Collection $teams
+ * @property-read Collection $fixtures
+ *
+ * @method DivisionBuilder query()
+ */
+class Division extends Model implements Selectable
 {
-    use HasFactory;
-    use SoftDeletes;
+    use HasFactory,
+        HasUuids,
+        SoftDeletes;
 
-    protected $fillable = ['competition_id', 'name', 'display_order'];
+    /** @var array<int, string> */
+    protected $fillable = [
+        'competition_id',
+        'name',
+        'display_order',
+    ];
 
     protected $dispatchesEvents = [
         'created' => DivisionCreated::class,
     ];
 
-    public function getId(): int
+    public function newEloquentBuilder($query): DivisionBuilder
     {
-        return $this->id;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function getOrder(): int
-    {
-        return $this->display_order;
+        return new DivisionBuilder($query);
     }
 
     public function competition(): BelongsTo
@@ -43,19 +51,9 @@ class Division extends Model
         return $this->belongsTo(Competition::class);
     }
 
-    public function getCompetition(): Competition
-    {
-        return $this->competition;
-    }
-
     public function teams(): BelongsToMany
     {
         return $this->belongsToMany(Team::class);
-    }
-
-    public function getTeams(): Collection
-    {
-        return $this->teams;
     }
 
     public function fixtures(): HasMany
@@ -63,18 +61,8 @@ class Division extends Model
         return $this->hasMany(Fixture::class);
     }
 
-    public function getFixtures(): Collection
+    public function getName(): string
     {
-        return $this->fixtures;
-    }
-
-    public function scopeInOrder(Builder $builder): Builder
-    {
-        return $builder->orderBy('display_order');
-    }
-
-    public function scopeInCompetition(Builder $builder, Competition $competition): Builder
-    {
-        return $builder->where('competition_id', $competition->getId());
+        return $this->name;
     }
 }

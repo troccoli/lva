@@ -13,17 +13,22 @@ use Spatie\Permission\Models\Role;
 final class RolesHelper
 {
     public const SITE_ADMIN = 'Site Administrator';
+
     public const REF_ADMIN = 'Referees Administrator';
 
     private const SEASON_ADMIN_TEMPLATE = 'Season %s Administrator';
+
     private const COMPETITION_ADMIN_TEMPLATE = 'Competition %s Administrator';
+
     private const DIVISION_ADMIN_TEMPLATE = 'Division %s Administrator';
+
     private const CLUB_SECRETARY_TEMPLATE = 'Club %s Secretary';
+
     private const TEAM_SECRETARY_TEMPLATE = 'Team %s Secretary';
 
     final public static function seasonAdmin(Season $season): string
     {
-        return sprintf(self::SEASON_ADMIN_TEMPLATE, $season->getId());
+        return sprintf(self::SEASON_ADMIN_TEMPLATE, $season->getKey());
     }
 
     final public static function isSeasonAdmin(Role $role): bool
@@ -42,7 +47,7 @@ final class RolesHelper
 
     final public static function competitionAdmin(Competition $competition): string
     {
-        return sprintf(self::COMPETITION_ADMIN_TEMPLATE, $competition->getId());
+        return sprintf(self::COMPETITION_ADMIN_TEMPLATE, $competition->getKey());
     }
 
     final public static function isCompetitionAdmin(Role $role): bool
@@ -61,7 +66,7 @@ final class RolesHelper
 
     final public static function divisionAdmin(Division $competition): string
     {
-        return sprintf(self::DIVISION_ADMIN_TEMPLATE, $competition->getId());
+        return sprintf(self::DIVISION_ADMIN_TEMPLATE, $competition->getKey());
     }
 
     final public static function isDivisionAdmin(Role $role): bool
@@ -80,7 +85,7 @@ final class RolesHelper
 
     final public static function clubSecretary(Club $club): string
     {
-        return sprintf(self::CLUB_SECRETARY_TEMPLATE, $club->getId());
+        return sprintf(self::CLUB_SECRETARY_TEMPLATE, $club->getKey());
     }
 
     final public static function isClubSecretary(Role $role): bool
@@ -99,7 +104,7 @@ final class RolesHelper
 
     final public static function teamSecretary(Team $team): string
     {
-        return sprintf(self::TEAM_SECRETARY_TEMPLATE, $team->getId());
+        return sprintf(self::TEAM_SECRETARY_TEMPLATE, $team->getKey());
     }
 
     final public static function isTeamSecretary(Role $role): bool
@@ -118,6 +123,6 @@ final class RolesHelper
 
     private static function buildPattern(string $template): string
     {
-        return '/^'.Str::replaceFirst('%s', '(\d+)', $template).'$/';
+        return '/^'.Str::replaceFirst('%s', '([0-9a-f\-]+)', $template).'$/';
     }
 }

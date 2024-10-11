@@ -11,10 +11,5 @@ class ClubCreated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $club;
-
-    public function __construct(Club $club)
-    {
-        $this->club = $club;
-    }
+    public function __construct(public Club $club) {}
 }

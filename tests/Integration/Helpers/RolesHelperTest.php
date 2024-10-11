@@ -1,7 +1,5 @@
 <?php
 
-namespace Tests\Integration\Helpers;
-
 use App\Helpers\RolesHelper;
 use App\Models\Club;
 use App\Models\Competition;
@@ -9,262 +7,198 @@ use App\Models\Division;
 use App\Models\Season;
 use App\Models\Team;
 use Spatie\Permission\Models\Role;
-use Tests\TestCase;
 
-class RolesHelperTest extends TestCase
-{
-    public function testItReturnsTheSeasonAdministratorRoleName(): void
-    {
-        /** @var Season $season */
-        $season = Season::factory()->create();
-        $seasonId = $season->getId();
+it('returns the season administrator role name', function () {
+    /** @var Season $season */
+    $season = Season::factory()->create();
+    $seasonId = $season->getKey();
 
-        $this->assertSame("Season $seasonId Administrator", RolesHelper::seasonAdmin($season));
-    }
+    expect(RolesHelper::seasonAdmin($season))->toBe("Season $seasonId Administrator");
+});
 
-    public function testItCanCheckIfTheRoleIsSeasonAdministrator(): void
-    {
-        $seasonAdmin = aRole()
-            ->named('Season 1 Administrator')
-            ->build();
-        $siteAdmin = aRole()
-            ->named('Useless Role')
-            ->build();
+it('can check if the role is season administrator', function () {
+    $seasonAdmin = Role::create(['name' => 'Season 1 Administrator']);
+    $siteAdmin = Role::create(['name' => 'Useless Role']);
 
-        $this->assertTrue(RolesHelper::isSeasonAdmin($seasonAdmin));
-        $this->assertFalse(RolesHelper::isSeasonAdmin($siteAdmin));
-    }
+    expect(RolesHelper::isSeasonAdmin($seasonAdmin))->toBeTrue()
+        ->and(RolesHelper::isSeasonAdmin($siteAdmin))->toBeFalse();
+});
 
-    public function testItGetsTheSeasonFromTheSeasonAdministratorRole(): void
-    {
-        /** @var Season $season */
-        $season = Season::factory()->create();
-        $seasonId = $season->getId();
-        /** @var Role $role */
-        $role = Role::findByName("Season $seasonId Administrator");
+it('gets the season from the season administrator role', function () {
+    /** @var Season $season */
+    $season = Season::factory()->create();
+    $seasonId = $season->getKey();
 
-        $this->assertTrue(RolesHelper::findSeason($role)->is($season));
-    }
+    /** @var Role $role */
+    $role = Role::findByName("Season $seasonId Administrator");
 
-    public function testItDoesNotGetTheSeasonIfTheSeasonDoesNotExist(): void
-    {
-        $role = aRole()
-            ->named('Season 1 Administrator')
-            ->build();
+    expect(RolesHelper::findSeason($role)->is($season))->toBeTrue();
+});
 
-        $this->assertNull(RolesHelper::findSeason($role));
-    }
+it('does not get the season if the season does not exist', function () {
+    $role = Role::create(['name' => 'Season 1 Administrator']);
 
-    public function testItDoesNotGetTheSeasonIfTheRoleIsNotSeasonAdministrator(): void
-    {
-        $role = aRole()
-            ->named('Competition 1 Administrator')
-            ->build();
+    expect(RolesHelper::findSeason($role))->toBeNull();
+});
 
-        $this->assertNull(RolesHelper::findSeason($role));
-    }
+it('does not get the season if the role is not season administrator', function () {
+    $role = Role::create(['name' => 'Competition 1 Administrator']);
 
-    public function testItReturnsTheCompetitionAdministratorRoleName(): void
-    {
-        /** @var Competition $competition */
-        $competition = Competition::factory()->create();
-        $competitionId = $competition->getId();
+    expect(RolesHelper::findSeason($role))->toBeNull();
+});
 
-        $this->assertSame("Competition $competitionId Administrator", RolesHelper::competitionAdmin($competition));
-    }
+it('returns the competition administrator role name', function () {
+    /** @var Competition $competition */
+    $competition = Competition::factory()->create();
+    $competitionId = $competition->getKey();
 
-    public function testItCanCheckIfTheRoleIsCompetitionAdministrator(): void
-    {
-        $competitionAdmin = aRole()
-            ->named('Competition 1 Administrator')
-            ->build();
-        $siteAdmin = aRole()
-            ->named('Useless Role')
-            ->build();
+    expect(RolesHelper::competitionAdmin($competition))->toBe("Competition $competitionId Administrator");
+});
 
-        $this->assertTrue(RolesHelper::isCompetitionAdmin($competitionAdmin));
-        $this->assertFalse(RolesHelper::isCompetitionAdmin($siteAdmin));
-    }
+it('can check if the role is competition administrator', function () {
+    $competitionAdmin = Role::create(['name' => 'Competition 1 Administrator']);
+    $siteAdmin = Role::create(['name' => 'Useless Role']);
 
-    public function testItGetsTheCompetitionFromTheCompetitionAdministratorRole(): void
-    {
-        /** @var Competition $competition */
-        $competition = Competition::factory()->create();
-        $competitionId = $competition->getId();
-        /** @var Role $role */
-        $role = Role::findByName("Competition $competitionId Administrator");
+    expect(RolesHelper::isCompetitionAdmin($competitionAdmin))->toBeTrue()
+        ->and(RolesHelper::isCompetitionAdmin($siteAdmin))->toBeFalse();
+});
 
-        $this->assertTrue(RolesHelper::findCompetition($role)->is($competition));
-    }
+it('gets the competition from the competition administrator role', function () {
+    /** @var Competition $competition */
+    $competition = Competition::factory()->create();
+    $competitionId = $competition->getKey();
 
-    public function testItDoesNotGetTheCompetitionIfTheCompetitionDoesNotExist(): void
-    {
-        $role = aRole()
-            ->named('Competition 1 Administrator')
-            ->build();
+    /** @var Role $role */
+    $role = Role::findByName("Competition $competitionId Administrator");
 
-        $this->assertNull(RolesHelper::findCompetition($role));
-    }
+    expect(RolesHelper::findCompetition($role)->is($competition))->toBeTrue();
+});
 
-    public function testItDoesNotGetTheCompetitionIfTheRoleIsNotCompetitionAdministrator(): void
-    {
-        $role = aRole()
-            ->named('Season 1 Administrator')
-            ->build();
+it('does not get the competition if the competition does not exist', function () {
+    $role = Role::create(['name' => 'Competition 1 Administrator']);
 
-        $this->assertNull(RolesHelper::findCompetition($role));
-    }
+    expect(RolesHelper::findCompetition($role))->toBeNull();
+});
 
-    public function testItReturnsTheDivisionAdministratorRoleName(): void
-    {
-        /** @var Division $division */
-        $division = Division::factory()->create();
-        $divisionId = $division->getId();
+it('does not get the competition if the role is not competition administrator', function () {
+    $role = Role::create(['name' => 'Season 1 Administrator']);
 
-        $this->assertSame("Division $divisionId Administrator", RolesHelper::divisionAdmin($division));
-    }
+    expect(RolesHelper::findCompetition($role))->toBeNull();
+});
 
-    public function testItCanCheckIfTheRoleIsDivisionAdministrator(): void
-    {
-        $divisionAdministrator = aRole()
-            ->named('Division 1 Administrator')
-            ->build();
-        $siteAdmin = aRole()
-            ->named('Useless Role')
-            ->build();
+it('returns the division administrator role name', function () {
+    /** @var Division $division */
+    $division = Division::factory()->create();
+    $divisionId = $division->getKey();
 
-        $this->assertTrue(RolesHelper::isDivisionAdmin($divisionAdministrator));
-        $this->assertFalse(RolesHelper::isDivisionAdmin($siteAdmin));
-    }
+    expect(RolesHelper::divisionAdmin($division))->toBe("Division $divisionId Administrator");
+});
 
-    public function testItGetsTheDivisionFromTheDivisionAdministratorRole(): void
-    {
-        /** @var Division $division */
-        $division = Division::factory()->create();
-        $divisionId = $division->getId();
-        /** @var Role $role */
-        $role = Role::findByName("Division $divisionId Administrator");
+it('can check if the role is division administrator', function () {
+    $divisionAdministrator = Role::create(['name' => 'Division 1 Administrator']);
+    $siteAdmin = Role::create(['name' => 'Useless Role']);
 
-        $this->assertTrue(RolesHelper::findDivision($role)->is($division));
-    }
+    expect(RolesHelper::isDivisionAdmin($divisionAdministrator))->toBeTrue()
+        ->and(RolesHelper::isDivisionAdmin($siteAdmin))->toBeFalse();
+});
 
-    public function testItDoesNotGetTheDivisionIfTheDivisionDoesNotExist(): void
-    {
-        $role = aRole()
-            ->named('Division 1 Administrator')
-            ->build();
+it('gets the division from the division administrator role', function () {
+    /** @var Division $division */
+    $division = Division::factory()->create();
+    $divisionId = $division->getKey();
 
-        $this->assertNull(RolesHelper::findDivision($role));
-    }
+    /** @var Role $role */
+    $role = Role::findByName("Division $divisionId Administrator");
 
-    public function testItDoesNotGetTheDivisionIfTheRoleIsNotDivisionAdministrator(): void
-    {
-        $role = aRole()
-            ->named('Season 1 Administrator')
-            ->build();
+    expect(RolesHelper::findDivision($role)->is($division))->toBeTrue();
+});
 
-        $this->assertNull(RolesHelper::findDivision($role));
-    }
+it('does not get the division if the division does not exist', function () {
+    $role = Role::create(['name' => 'Division 1 Administrator']);
 
-    public function testItReturnsTheClubSecretaryRoleName(): void
-    {
-        /** @var Club $club */
-        $club = Club::factory()->create();
-        $clubId = $club->getId();
+    expect(RolesHelper::findDivision($role))->toBeNull();
+});
 
-        $this->assertSame("Club $clubId Secretary", RolesHelper::clubSecretary($club));
-    }
+it('does not get the division if the role is not division administrator', function () {
+    $role = Role::create(['name' => 'Season 1 Administrator']);
 
-    public function testItCanCheckIfTheRoleIsClubSecretary(): void
-    {
-        $clubSecretary = aRole()
-            ->named('Club 1 Secretary')
-            ->build();
-        $siteAdmin = aRole()
-            ->named('Useless Role')
-            ->build();
+    expect(RolesHelper::findDivision($role))->toBeNull();
+});
 
-        $this->assertTrue(RolesHelper::isClubSecretary($clubSecretary));
-        $this->assertFalse(RolesHelper::isClubSecretary($siteAdmin));
-    }
+it('returns the club secretary role name', function () {
+    /** @var Club $club */
+    $club = Club::factory()->create();
+    $clubId = $club->getKey();
 
-    public function testItGetsTheClubFromTheClubSecretaryRole(): void
-    {
-        /** @var Club $club */
-        $club = Club::factory()->create();
-        $clubId = $club->getId();
-        /** @var Role $role */
-        $role = Role::findByName("Club $clubId Secretary");
+    expect(RolesHelper::clubSecretary($club))->toBe("Club $clubId Secretary");
+});
 
-        $this->assertTrue(RolesHelper::findClub($role)->is($club));
-    }
+it('can check if the role is club secretary', function () {
+    $clubSecretary = Role::create(['name' => 'Club 1 Secretary']);
+    $siteAdmin = Role::create(['name' => 'Useless Role']);
 
-    public function testItDoesNotGetTheClubIfTheClubDoesNotExist(): void
-    {
-        $role = aRole()
-            ->named('Club 1 Secretary')
-            ->build();
+    expect(RolesHelper::isClubSecretary($clubSecretary))->toBeTrue()
+        ->and(RolesHelper::isClubSecretary($siteAdmin))->toBeFalse();
+});
 
-        $this->assertNull(RolesHelper::findClub($role));
-    }
+it('gets the club from the club secretary role', function () {
+    /** @var Club $club */
+    $club = Club::factory()->create();
+    $clubId = $club->getKey();
 
-    public function testItDoesNotGetTheClubIfTheRoleIsNotClubSecretary(): void
-    {
-        $role = aRole()
-            ->named('Season 1 Administrator')
-            ->build();
+    /** @var Role $role */
+    $role = Role::findByName("Club $clubId Secretary");
 
-        $this->assertNull(RolesHelper::findClub($role));
-    }
+    expect(RolesHelper::findClub($role)->is($club))->toBeTrue();
+});
 
-    public function testItReturnsTheTeamSecretaryRoleName(): void
-    {
-        /** @var Team $team */
-        $team = Team::factory()->create();
-        $teamId = $team->getId();
+it('does not get the club if the club does not exist', function () {
+    $role = Role::create(['name' => 'Club 1 Secretary']);
 
-        $this->assertSame("Team $teamId Secretary", RolesHelper::teamSecretary($team));
-    }
+    expect(RolesHelper::findClub($role))->toBeNull();
+});
 
-    public function testItCanCheckIfTheRoleIsTeamSecretary(): void
-    {
-        $teamSecretary = aRole()
-            ->named('Team 1 Secretary')
-            ->build();
-        $siteAdmin = aRole()
-            ->named('Useless Role')
-            ->build();
+it('does not get the club if the role is not club secretary', function () {
+    $role = Role::create(['name' => 'Season 1 Administrator']);
 
-        $this->assertTrue(RolesHelper::isTeamSecretary($teamSecretary));
-        $this->assertFalse(RolesHelper::isTeamSecretary($siteAdmin));
-    }
+    expect(RolesHelper::findClub($role))->toBeNull();
+});
 
-    public function testItGetsTheTeamFromTheTeamSecretaryRole(): void
-    {
-        /** @var Team $team */
-        $team = Team::factory()->create();
-        $teamId = $team->getId();
-        /** @var Role $role */
-        $role = Role::findByName("Team $teamId Secretary");
+it('returns the team secretary role name', function () {
+    /** @var Team $team */
+    $team = Team::factory()->create();
+    $teamId = $team->getKey();
 
-        $this->assertTrue(RolesHelper::findTeam($role)->is($team));
-    }
+    expect(RolesHelper::teamSecretary($team))->toBe("Team $teamId Secretary");
+});
 
-    public function testItDoesNotGetTheTeamIfTheTeamDoesNotExist(): void
-    {
-        $role = aRole()
-            ->named('Team 1 Secretary')
-            ->build();
+it('can check if the role is team secretary', function () {
+    $teamSecretary = Role::create(['name' => 'Team 1 Secretary']);
+    $siteAdmin = Role::create(['name' => 'Useless Role']);
 
-        $this->assertNull(RolesHelper::findTeam($role));
-    }
+    expect(RolesHelper::isTeamSecretary($teamSecretary))->toBeTrue()
+        ->and(RolesHelper::isTeamSecretary($siteAdmin))->toBeFalse();
+});
 
-    public function testItDoesNotGetTheTeamIfTheRoleIsNotTeamSecretary(): void
-    {
-        $role = aRole()
-            ->named('Season 1 Administrator')
-            ->build();
+it('gets the team from the team secretary role', function () {
+    /** @var Team $team */
+    $team = Team::factory()->create();
+    $teamId = $team->getKey();
 
-        $this->assertNull(RolesHelper::findTeam($role));
-    }
-}
+    /** @var Role $role */
+    $role = Role::findByName("Team $teamId Secretary");
+
+    expect(RolesHelper::findTeam($role)->is($team))->toBeTrue();
+});
+
+it('does not get the team if the team does not exist', function () {
+    $role = Role::create(['name' => 'Team 1 Secretary']);
+
+    expect(RolesHelper::findTeam($role))->toBeNull();
+});
+
+it('does not get the team if the role is not team secretary', function () {
+    $role = Role::create(['name' => 'Season 1 Administrator']);
+
+    expect(RolesHelper::findTeam($role))->toBeNull();
+});

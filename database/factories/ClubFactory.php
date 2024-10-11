@@ -2,28 +2,34 @@
 
 namespace Database\Factories;
 
-use App\Models\Club;
 use App\Models\Venue;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Club>
+ */
 class ClubFactory extends Factory
 {
-    protected $model = Club::class;
-
+    /** @return array<string, mixed> */
     public function definition(): array
     {
         return [
-            'name' => $this->faker->unique()->state(),
+            'name' => fake()->unique()->country(),
             'venue_id' => Venue::factory(),
         ];
     }
 
-    public function withoutVenue()
+    public function withoutVenue(): static
     {
-        return $this->state(function (array $attributes): array {
-            return [
-                'venue_id' => null,
-            ];
-        });
+        return $this->state(fn (array $attributes) => [
+            'venue_id' => null,
+        ]);
+    }
+
+    public function at(Venue|VenueFactory|string $venue): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'venue_id' => $venue,
+        ]);
     }
 }

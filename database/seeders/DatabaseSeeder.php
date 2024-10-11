@@ -8,20 +8,19 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        $this->call(SeasonsTableSeeder::class);
-        $this->call(CompetitionsTableSeeder::class);
-        $this->call(DivisionsTableSeeder::class);
+        $this->call(SeasonsSeeder::class);
+        $this->call(CompetitionsSeeder::class);
+        $this->call(DivisionsSeeder::class);
 
-        $this->call(VenuesTableSeeder::class);
+        $this->call(VenuesSeeder::class);
 
-        $this->call(ClubsTableSeeder::class);
-        $this->call(TeamsTableSeeder::class);
+        $this->call(ClubsSeeder::class);
+        $this->call(TeamsSeeder::class);
 
-        $this->call(DivisionsTeamsTableSeeder::class);
+        $this->call(DivisionsTeamsSeeder::class);
 
-        $this->call(FixturesTableSeeder::class);
+        $this->call(FixturesSeeder::class);
 
-        $this->call(RolesAndPermissionsSeeder::class);
-        $this->call(UsersTableSeeder::class);
+        $this->call(UsersSeeder::class);
     }
 }

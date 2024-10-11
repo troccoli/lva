@@ -3,77 +3,64 @@
 namespace Database\Factories;
 
 use App\Models\Division;
-use App\Models\Fixture;
 use App\Models\Team;
 use App\Models\Venue;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Carbon;
 
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Fixture>
+ */
 class FixtureFactory extends Factory
 {
-    protected $model = Fixture::class;
-
+    /** @return array<string, mixed> */
     public function definition(): array
     {
         return [
-            'match_number' => $this->faker->unique()->randomNumber(),
+            'match_number' => fake()->unique()->randomNumber(),
             'division_id' => Division::factory(),
             'home_team_id' => Team::factory(),
             'away_team_id' => Team::factory(),
-            'match_date' => $this->faker->date(),
-            'match_time' => $this->faker->time(),
+            'match_date' => fake()->date(),
+            'start_time' => fake()->time(),
             'venue_id' => Venue::factory(),
         ];
     }
 
-    public function number(int $matchNumber): self
+    public function number(int $matchNumber): static
     {
-        return $this->state(function (array $attributes) use ($matchNumber) {
-            return [
-                'match_number' => $matchNumber,
-            ];
-        });
+        return $this->state(fn (array $attributes) => [
+            'match_number' => $matchNumber,
+        ]);
     }
 
-    public function inDivision(Division $division): self
+    public function inDivision(Division|DivisionFactory|string $division): static
     {
-        return $this->state(function (array $attributes) use ($division) {
-            return [
-                'division_id' => $division->getId(),
-            ];
-        });
+        return $this->state(fn (array $attributes) => [
+            'division_id' => $division,
+        ]);
     }
 
-    public function between(Team $homeTeam, Team $awayTeam): self
+    public function between(Team|TeamFactory|string $homeTeam, Team|TeamFactory|string $awayTeam): static
     {
-        return $this->state(function (array $attributes) use ($homeTeam, $awayTeam) {
-            return [
-                'home_team_id' => $homeTeam->getId(),
-                'away_team_id' => $awayTeam->getId(),
-            ];
-        });
+        return $this->state(fn (array $attributes) => [
+            'home_team_id' => $homeTeam,
+            'away_team_id' => $awayTeam,
+        ]);
     }
 
-    public function on(Carbon $date, ?Carbon $time = null): self
+    public function on(Carbon $date, ?Carbon $time = null): static
     {
-        return $this->state(function (array $attributes) use ($date, $time) {
-            $data = [
-                'match_date' => $date,
-            ];
-            if ($time) {
-                $data['match_time'] = $time;
-            }
-
-            return $data;
-        });
+        return $this->state(fn (array $attributes) => [
+            'match_date' => $date,
+            'start_time' => $time,
+        ]);
     }
 
-    public function at(Venue $venue): self
+    public function at(Venue|VenueFactory|string $venue): static
     {
-        return $this->state(function (array $attributes) use ($venue) {
-            return [
-                'venue_id' => $venue->getId(),
-            ];
-        });
+        return $this->state(fn (array $attributes) => [
+            'venue_id' => $venue,
+        ]);
     }
 }

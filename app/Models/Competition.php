@@ -3,32 +3,41 @@
 namespace App\Models;
 
 use App\Events\CompetitionCreated;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use App\Models\Builders\CompetitionBuilder;
+use App\Models\Contracts\Selectable;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
-class Competition extends Model
+/**
+ * @property string $season_id
+ * @property string $name
+ * @property-read Season $season
+ * @property-read Collection $divisions
+ *
+ * @method CompetitionBuilder query()
+ */
+class Competition extends Model implements Selectable
 {
-    use HasFactory;
+    use HasFactory,
+        HasUuids;
 
-    protected $fillable = ['season_id', 'name'];
+    /** @var array<int, string> */
+    protected $fillable = [
+        'season_id',
+        'name',
+    ];
 
     protected $dispatchesEvents = [
         'created' => CompetitionCreated::class,
     ];
 
-    public function getId(): int
+    public function newEloquentBuilder($query): CompetitionBuilder
     {
-        return $this->id;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
+        return new CompetitionBuilder($query);
     }
 
     public function season(): BelongsTo
@@ -36,43 +45,13 @@ class Competition extends Model
         return $this->belongsTo(Season::class);
     }
 
-    public function getSeason(): Season
-    {
-        return $this->season;
-    }
-
     public function divisions(): HasMany
     {
         return $this->hasMany(Division::class);
     }
 
-    public function getDivisions(): EloquentCollection
+    public function getName(): string
     {
-        return $this->divisions;
-    }
-
-    public function fixtures(): HasManyThrough
-    {
-        return $this->hasManyThrough(Fixture::class, Division::class);
-    }
-
-    public function getFixtures(): EloquentCollection
-    {
-        return $this->fixtures;
-    }
-
-    public function scopeInSeason(Builder $query, Season $season): Builder
-    {
-        return $query->where('season_id', $season->getId());
-    }
-
-    public function scopeOrderByName(Builder $query): Builder
-    {
-        return $query->orderBy('name');
-    }
-
-    public function scopeOrderBySeasonDesc(Builder $query): Builder
-    {
-        return $query->orderByDesc('season_id');
+        return $this->name;
     }
 }

@@ -3,36 +3,37 @@
 namespace App\Models;
 
 use App\Events\SeasonCreated;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use App\Models\Contracts\Selectable;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Collection;
 
-class Season extends Model
+/**
+ * @property int $year
+ * @property-read string $name
+ * @property-read Collection $competitions
+ */
+class Season extends Model implements Selectable
 {
-    use HasFactory;
+    use HasFactory,
+        HasUuids;
 
-    protected $fillable = ['year'];
+    /** @var array<int, string> */
+    protected $fillable = [
+        'year',
+    ];
 
     protected $dispatchesEvents = [
         'created' => SeasonCreated::class,
     ];
 
-    public function getId(): int
+    protected static function booted(): void
     {
-        return $this->id;
-    }
-
-    public function getYear(): int
-    {
-        return $this->year;
-    }
-
-    public function getName(): string
-    {
-        return sprintf('%4u/%02u', $this->year, ($this->year + 1) % 100);
+        static::saving(function (Season $season) {
+            $season->name = sprintf('%4u/%02u', $season->year, ($season->year + 1) % 100);
+        });
     }
 
     public function competitions(): HasMany
@@ -40,20 +41,8 @@ class Season extends Model
         return $this->hasMany(Competition::class);
     }
 
-    public function getCompetitions(): EloquentCollection
+    public function getName(): string
     {
-        return $this->competitions;
-    }
-
-    public function getFixtures(): Collection
-    {
-        return $this->getCompetitions()->map(function (Competition $competition): Collection {
-            return $competition->getFixtures();
-        })->flatten();
-    }
-
-    public function scopeOrderedByYear(Builder $query): Builder
-    {
-        return $query->orderBy('year');
+        return $this->name;
     }
 }

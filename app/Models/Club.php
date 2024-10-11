@@ -3,41 +3,37 @@
 namespace App\Models;
 
 use App\Events\ClubCreated;
-use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use App\Models\Contracts\Selectable;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Collection;
 
-class Club extends Model
+/**
+ * @property string $name
+ * @property-read Collection $teams
+ * @property-read ?Venue $venue
+ */
+class Club extends Model implements Selectable
 {
-    use HasFactory;
+    use HasFactory,
+        HasUuids;
 
-    protected $fillable = ['name', 'venue_id'];
+    /** @var array<int, string> */
+    protected $fillable = [
+        'name',
+        'venue_id',
+    ];
 
     protected $dispatchesEvents = [
         'created' => ClubCreated::class,
     ];
 
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
     public function teams(): HasMany
     {
         return $this->hasMany(Team::class);
-    }
-
-    public function getTeams(): EloquentCollection
-    {
-        return $this->teams;
     }
 
     public function venue(): BelongsTo
@@ -45,20 +41,8 @@ class Club extends Model
         return $this->belongsTo(Venue::class);
     }
 
-    public function getVenue(): ?Venue
+    public function getName(): string
     {
-        return $this->venue;
-    }
-
-    public function getVenueId(): ?string
-    {
-        return $this->venue_id;
-    }
-
-    public function getFixtures(): Collection
-    {
-        return $this->getTeams()->map(function (Team $team): Collection {
-            return $team->getFixtures();
-        })->flatten();
+        return $this->name;
     }
 }

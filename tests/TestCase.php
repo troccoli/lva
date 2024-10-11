@@ -11,7 +11,6 @@ use Spatie\Permission\Models\Role;
 
 abstract class TestCase extends BaseTestCase
 {
-    use CreatesApplication;
     use RefreshDatabase;
 
     protected User $siteAdmin;

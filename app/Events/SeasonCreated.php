@@ -11,10 +11,5 @@ class SeasonCreated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public Season $season;
-
-    public function __construct(Season $season)
-    {
-        $this->season = $season;
-    }
+    public function __construct(public Season $season) {}
 }

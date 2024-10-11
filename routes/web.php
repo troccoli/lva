@@ -1,38 +1,60 @@
 <?php
 
-use App\Http\Controllers\ClubController;
-use App\Http\Controllers\CompetitionController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\DivisionController;
-use App\Http\Controllers\FixturesController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\SeasonController;
-use App\Http\Controllers\TeamController;
-use App\Http\Controllers\VenueController;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Auth::routes(['verify' => true]);
-
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::view('/', 'welcome');
 
 Route::middleware(['auth', 'verified'])
-     ->group(function (): void {
-         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-         Route::resource('seasons', SeasonController::class)->except('show');
-         Route::prefix('seasons/{season}')
-              ->group(function (): void {
-                  Route::resource('competitions', CompetitionController::class)->except('show');
-              });
-         Route::prefix('competitions/{competition}')
-              ->group(function (): void {
-                  Route::resource('divisions', DivisionController::class)->except('show');
-              });
-         Route::get('fixtures', [FixturesController::class, 'index'])->name('fixtures.index');
-         Route::resource('clubs', ClubController::class)->except('show');
-         Route::prefix('clubs/{club}')
-              ->group(function (): void {
-                  Route::resource('teams', TeamController::class)->except('show');
-              });
-         Route::resource('venues', VenueController::class);
-     });
+    ->group(function () {
+        Route::view('dashboard', 'dashboard')->name('dashboard');
+
+        Route::prefix('data-management')
+            ->group(function () {
+                Route::get('/seasons', \App\Livewire\Seasons\Index::class)->name('seasons.index');
+                Route::get('/seasons/create', \App\Livewire\Seasons\Create::class)->name('seasons.create');
+                Route::get('/seasons/show/{season}', \App\Livewire\Seasons\Show::class)->name('seasons.show');
+                Route::get('/seasons/update/{season}', \App\Livewire\Seasons\Edit::class)->name('seasons.edit');
+
+                Route::get('/competitions', \App\Livewire\Competitions\Index::class)->name('competitions.index');
+                Route::get('/competitions/create',
+                    \App\Livewire\Competitions\Create::class)->name('competitions.create');
+                Route::get('/competitions/show/{competition}',
+                    \App\Livewire\Competitions\Show::class)->name('competitions.show');
+                Route::get('/competitions/update/{competition}',
+                    \App\Livewire\Competitions\Edit::class)->name('competitions.edit');
+
+                Route::get('/divisions', \App\Livewire\Divisions\Index::class)->name('divisions.index');
+                Route::get('/divisions/create', \App\Livewire\Divisions\Create::class)->name('divisions.create');
+                Route::get('/divisions/show/{division}', \App\Livewire\Divisions\Show::class)->name('divisions.show');
+                Route::get('/divisions/update/{division}', \App\Livewire\Divisions\Edit::class)->name('divisions.edit');
+
+                Route::get('/fixtures', \App\Livewire\Fixtures\Index::class)->name('fixtures.index');
+                Route::get('/fixtures/create', \App\Livewire\Fixtures\Create::class)->name('fixtures.create');
+                Route::get('/fixtures/show/{fixture}', \App\Livewire\Fixtures\Show::class)->name('fixtures.show');
+                Route::get('/fixtures/update/{fixture}', \App\Livewire\Fixtures\Edit::class)->name('fixtures.edit');
+
+                Route::get('/clubs', \App\Livewire\Clubs\Index::class)->name('clubs.index');
+                Route::get('/clubs/create', \App\Livewire\Clubs\Create::class)->name('clubs.create');
+                Route::get('/clubs/show/{club}', \App\Livewire\Clubs\Show::class)->name('clubs.show');
+                Route::get('/clubs/update/{club}', \App\Livewire\Clubs\Edit::class)->name('clubs.edit');
+
+                Route::get('/teams', \App\Livewire\Teams\Index::class)->name('teams.index');
+                Route::get('/teams/create', \App\Livewire\Teams\Create::class)->name('teams.create');
+                Route::get('/teams/show/{team}', \App\Livewire\Teams\Show::class)->name('teams.show');
+                Route::get('/teams/update/{team}', \App\Livewire\Teams\Edit::class)->name('teams.edit');
+
+                Route::get('/venues', \App\Livewire\Venues\Index::class)->name('venues.index');
+                Route::get('/venues/create', \App\Livewire\Venues\Create::class)->name('venues.create');
+                Route::get('/venues/show/{venue}', \App\Livewire\Venues\Show::class)->name('venues.show');
+                Route::get('/venues/update/{venue}', \App\Livewire\Venues\Edit::class)->name('venues.edit');
+            });
+
+        Route::view('appointments', 'appointments')->name('appointments');
+        Route::view('people', 'people')->name('people');
+    });
+
+Route::view('profile', 'profile')
+    ->middleware(['auth'])
+    ->name('profile');
+
+require __DIR__.'/auth.php';

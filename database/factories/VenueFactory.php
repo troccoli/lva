@@ -2,19 +2,19 @@
 
 namespace Database\Factories;
 
-use App\Models\Venue;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Venue>
+ */
 class VenueFactory extends Factory
 {
-    protected $model = Venue::class;
-
+    /** @return array<string, mixed> */
     public function definition(): array
     {
         return [
-            'id' => $this->faker->unique()->uuid(),
-            'name' => Str::replace("\n", ' ', $this->faker->unique()->address()),
+            'name' => Str::replace("\n", ' ', fake()->unique()->address()),
         ];
     }
 }

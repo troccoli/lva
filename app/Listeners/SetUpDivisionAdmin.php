@@ -5,22 +5,19 @@ namespace App\Listeners;
 use App\Events\DivisionCreated;
 use App\Helpers\PermissionsHelper;
 use App\Helpers\RolesHelper;
-use App\Jobs\CreateDivisionAdminRole;
-use App\Jobs\CreateDivisionPermissions;
-use App\Models\Division;
+use App\Jobs\Permissions\CreateDivisionPermissions;
+use App\Jobs\Roles\CreateDivisionAdminRole;
 use Spatie\Permission\Models\Role;
 
 class SetUpDivisionAdmin
 {
     public function handle(DivisionCreated $event): void
     {
-        /** @var Division $division */
         $division = $event->division;
 
-        CreateDivisionAdminRole::dispatchNow($division);
-        CreateDivisionPermissions::dispatchNow($division);
+        CreateDivisionAdminRole::dispatchSync($division);
+        CreateDivisionPermissions::dispatchSync($division);
 
-        /** @var Role $divisionAdminRole */
         $divisionAdminRole = Role::findByName(RolesHelper::divisionAdmin($division));
         $divisionAdminRole->givePermissionTo([
             PermissionsHelper::viewDivision($division),
@@ -29,11 +26,11 @@ class SetUpDivisionAdmin
             PermissionsHelper::editFixtures($division),
             PermissionsHelper::deleteFixtures($division),
             PermissionsHelper::viewFixtures($division),
-            PermissionsHelper::viewCompetition($division->getCompetition()),
-            PermissionsHelper::viewSeason($division->getCompetition()->getSeason()),
+            PermissionsHelper::viewCompetition($division->competition),
+            PermissionsHelper::viewSeason($division->competition->season),
         ]);
 
-        $competitionAdminRole = Role::findByName(RolesHelper::competitionAdmin($division->getCompetition()));
+        $competitionAdminRole = Role::findByName(RolesHelper::competitionAdmin($division->competition));
         $competitionAdminRole->givePermissionTo([
             PermissionsHelper::viewDivision($division),
             PermissionsHelper::editDivision($division),
@@ -44,7 +41,7 @@ class SetUpDivisionAdmin
             PermissionsHelper::viewFixtures($division),
         ]);
 
-        $seasonAdminRole = Role::findByName(RolesHelper::seasonAdmin($division->getCompetition()->getSeason()));
+        $seasonAdminRole = Role::findByName(RolesHelper::seasonAdmin($division->competition->season));
         $seasonAdminRole->givePermissionTo([
             PermissionsHelper::viewDivision($division),
             PermissionsHelper::editDivision($division),

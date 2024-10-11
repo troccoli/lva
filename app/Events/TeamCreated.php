@@ -11,10 +11,5 @@ class TeamCreated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $team;
-
-    public function __construct(Team $team)
-    {
-        $this->team = $team;
-    }
+    public function __construct(public Team $team) {}
 }

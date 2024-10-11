@@ -11,10 +11,5 @@ class CompetitionCreated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public Competition $competition;
-
-    public function __construct(Competition $competition)
-    {
-        $this->competition = $competition;
-    }
+    public function __construct(public Competition $competition) {}
 }

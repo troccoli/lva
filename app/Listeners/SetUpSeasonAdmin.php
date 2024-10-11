@@ -5,22 +5,19 @@ namespace App\Listeners;
 use App\Events\SeasonCreated;
 use App\Helpers\PermissionsHelper;
 use App\Helpers\RolesHelper;
-use App\Jobs\CreateSeasonAdminRole;
-use App\Jobs\CreateSeasonPermissions;
-use App\Models\Season;
+use App\Jobs\Permissions\CreateSeasonPermissions;
+use App\Jobs\Roles\CreateSeasonAdminRole;
 use Spatie\Permission\Models\Role;
 
 class SetUpSeasonAdmin
 {
     public function handle(SeasonCreated $event): void
     {
-        /** @var Season $season */
         $season = $event->season;
 
-        CreateSeasonAdminRole::dispatchNow($season);
-        CreateSeasonPermissions::dispatchNow($season);
+        CreateSeasonAdminRole::dispatchSync($season);
+        CreateSeasonPermissions::dispatchSync($season);
 
-        /** @var Role $role */
         $role = Role::findByName(RolesHelper::seasonAdmin($season));
         $role->givePermissionTo([
             PermissionsHelper::viewSeason($season),

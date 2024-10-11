@@ -9,9 +9,9 @@ trait SeederProgressBar
 {
     private ProgressBar $progressBar;
 
-    private function initProgressBar(int $max = null): void
+    private function initProgressBar(?int $max = null): void
     {
-        $this->progressBar = new ProgressBar(new ConsoleOutput());
+        $this->progressBar = new ProgressBar(new ConsoleOutput);
         $this->progressBar->setFormat('[%bar%] %percent:3s%%');
         $this->progressBar->start($max);
     }

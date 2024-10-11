@@ -1,0 +1,16 @@
+name: Matrix
+
+on:
+  push
+
+jobs:
+  master-matrix:
+    strategy:
+      matrix:
+        os: ['ubuntu-latest', 'macos-latest']
+        php: ['8.3']
+    uses: ./.github/workflows/test.yml
+    with:
+      os: ${{ matrix.os }}
+      php: ${{ matrix.php }}
+    secrets: inherit

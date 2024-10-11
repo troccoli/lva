@@ -2,17 +2,18 @@
 
 namespace Database\Factories;
 
-use App\Models\Season;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Season>
+ */
 class SeasonFactory extends Factory
 {
-    protected $model = Season::class;
-
+    /** @return array<string, mixed> */
     public function definition(): array
     {
         return [
-            'year' => $this->faker->unique()->year(),
+            'year' => fake()->unique()->year(),
         ];
     }
 }
